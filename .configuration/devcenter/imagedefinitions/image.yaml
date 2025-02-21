@@ -1,23 +1,30 @@
+schemaVersion: '1.0'
 image:
-  name: dev-box-image
-  version: 1.0.0
-  description: Image definition for Dev Box
-  os: Windows 11
-  components:
-    - name: Visual Studio Code
-      version: latest
-    - name: Git
-      version: latest
-    - name: Node.js
-      version: 14.x
-    - name: Python
-      version: 3.9.x
-    - name: Docker
-      version: latest
-  setupScripts:
-    - path: scripts/setup.ps1
-      description: PowerShell script to set up the environment
+  name: dotnet-backend-engineer
+  description: Image for .NET backend development
   tags:
-    - dev
-    - box
-    - development
+    - dotnet
+    - backend
+    - devbox
+  os: windows
+  components:
+    - name: dotnet-sdk
+      version: '6.0'
+    - name: visual-studio
+      version: '2022'
+      workloads:
+        - name: netcore
+        - name: azure
+    - name: git
+      version: 'latest'
+    - name: nodejs
+      version: '14.x'
+    - name: docker
+      version: 'latest'
+  environmentVariables:
+    - name: DOTNET_CLI_TELEMETRY_OPTOUT
+      value: '1'
+    - name: DOTNET_SKIP_FIRST_TIME_EXPERIENCE
+      value: '1'
+    - name: NUGET_XMLDOC_MODE
+      value: 'skip'
