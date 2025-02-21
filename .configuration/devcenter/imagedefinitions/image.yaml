@@ -1,30 +1,29 @@
-schemaVersion: '1.0'
-image:
-  name: dotnet-backend-engineer
-  description: Image for .NET backend development
-  tags:
-    - dotnet
-    - backend
-    - devbox
-  os: windows
-  components:
-    - name: dotnet-sdk
-      version: '6.0'
-    - name: visual-studio
-      version: '2022'
-      workloads:
-        - name: netcore
-        - name: azure
-    - name: git
-      version: 'latest'
-    - name: nodejs
-      version: '14.x'
-    - name: docker
-      version: 'latest'
-  environmentVariables:
-    - name: DOTNET_CLI_TELEMETRY_OPTOUT
-      value: '1'
-    - name: DOTNET_SKIP_FIRST_TIME_EXPERIENCE
-      value: '1'
-    - name: NUGET_XMLDOC_MODE
-      value: 'skip'
+name: dotnet-backend-devbox
+version: 1.0.0
+os: Windows 11 Enterprise
+architecture: x64
+
+setup:
+  - name: Apply DSC Configuration for Development Tools
+    script: |
+      winget configure --file development-tools.dsc.json
+
+  - name: Apply DSC Configuration for Windows Features
+    script: |
+      winget configure --file windows-features.dsc.json
+
+  - name: Apply DSC Configuration for WSL2
+    script: |
+      winget configure --file wsl2-setup.dsc.json
+
+  - name: Apply DSC Configuration for Git Configuration
+    script: |
+      winget configure --file git-config.dsc.json
+
+  - name: Apply DSC Configuration for Dotnet Tools
+    script: |
+      winget configure --file dotnet-tools.dsc.json
+
+  - name: Apply DSC Configuration for Environment Variables
+    script: |
+      winget configure --file env-variables.dsc.json
