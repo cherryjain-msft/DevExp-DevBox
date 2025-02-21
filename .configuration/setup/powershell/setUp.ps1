@@ -50,7 +50,7 @@ function Set-Up {
         azd config show
 
         Write-Output "Resetting azd config..."
-        azd config reset --no-prompt
+        azd config reset --force
 
         azd config show
         if ($LASTEXITCODE -ne 0) {
