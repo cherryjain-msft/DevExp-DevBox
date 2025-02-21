@@ -1,6 +1,3 @@
-@description('The name of the Dev Center resource.')
-param name string
-
 @description('Deployment Environment')
 @allowed([
   'dev'
@@ -22,7 +19,7 @@ var settings = environment == 'dev'
 
 @description('Dev Center Resource')
 resource devCenter 'Microsoft.DevCenter/devcenters@2024-10-01-preview' = {
-  name: name
+  name: settings.devCenterName
   location: resourceGroup().location
   tags: settings.tags
   identity: {

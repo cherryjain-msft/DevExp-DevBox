@@ -1,4 +1,5 @@
 {
+    "devCenterName": "contosoDevCenter-prod",
     "catalogItemSyncEnableStatus": "Enabled",
     "microsoftHostedNetworkEnableStatus": "Enabled",
     "installAzureMonitorAgentEnableStatus": "Enabled",

@@ -1,7 +1,7 @@
 {
     "connectivity": {
         "create": true, // Creates a new resource group if true
-        "name": "kac_digitaloffice_devbox_network_eus_dev_rg",
+        "name": "Connectivity",
         "description": "connectivity",
         "tags": {
             "environment": "dev",
@@ -15,7 +15,7 @@
     },
     "identity": {
         "create": true,
-        "name": "kac_digitaloffice_devbox_identity_eus_dev_rg",
+        "name": "Identity",
         "description": "identity",
         "tags": {
             "environment": "dev",
@@ -29,8 +29,8 @@
     },
     "management": {
         "create": true,
-        "name": "kac_digitaloffice_devbox_management_eus_dev_rg",
-        "logAnalyticsName": "workload-loganalytics",
+        "name": "Management",
+        "logAnalyticsName": "loganalytics-dev",
         "description": "management",
         "tags": {
             "environment": "dev",
@@ -44,8 +44,7 @@
     },
     "workload": {
         "create": true,
-        "name": "kac_digitaloffice_devbox_eus_dev_rg",
-        "devCenterName": "kac-digitaloffice-devctr",
+        "name": "Workload",
         "description": "prodExp",
         "tags": {
             "environment": "dev",

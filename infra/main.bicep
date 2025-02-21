@@ -85,7 +85,6 @@ module workload '../src/workload/devCenterModule.bicep' = {
   scope: resourceGroup(workloadResourceGroupName)
   name: 'workload'
   params: {
-    name: landingZone.workload.devCenterName
     networkConnections: connectivity.outputs.networkConnections
     environment: environment
     workspaceId: monitoring.outputs.logAnalyticsId
