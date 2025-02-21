@@ -1,3 +1,4 @@
+name: Deploy DevBox to Azure
 # Run when commits are pushed to main
 on:
   workflow_dispatch:
