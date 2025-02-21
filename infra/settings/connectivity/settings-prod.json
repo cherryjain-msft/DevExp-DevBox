@@ -1,6 +1,6 @@
 {
     "create": true,
-    "name": "okn-eus-prd-okn-dev-box-spoke-vnet",
+    "name": "devBoxVnet-prod",
     "addressPrefixes": [
         "10.0.0.0/16"
     ],
@@ -19,7 +19,7 @@
         }
     ],
     "tags": {
-        "environment": "prod",
+        "environment": "dev",
         "division": "Platforms",
         "team": "DevExp",
         "project": "DevExp-DevBox",

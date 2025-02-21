@@ -1,7 +1,7 @@
 {
     "connectivity": {
         "create": true, // Creates a new resource group if true
-        "name": "Connectivity",
+        "name": "Connectivity-prod",
         "description": "connectivity",
         "tags": {
             "environment": "prod",
@@ -15,7 +15,7 @@
     },
     "identity": {
         "create": true,
-        "name": "Identity",
+        "name": "Identity-prod",
         "description": "identity",
         "tags": {
             "environment": "prod",
@@ -29,7 +29,7 @@
     },
     "management": {
         "create": true,
-        "name": "Management",
+        "name": "Management-prod",
         "logAnalyticsName": "loganalytics-prod",
         "description": "management",
         "tags": {
@@ -44,7 +44,7 @@
     },
     "workload": {
         "create": true,
-        "name": "Workload",
+        "name": "Workload-prod",
         "description": "prodExp",
         "tags": {
             "environment": "prod",
