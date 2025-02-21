@@ -49,7 +49,7 @@ function SetupScheduledTasks {
 
     $Trigger = $Task.Triggers.Create(9)
     $Trigger.Enabled = $true
-    $Trigger.Repetition.Interval="PT1M"
+    $Trigger.Repetition.Interval = "PT1M"
 
     $Action = $Task.Actions.Create(0)
     $Action.Path = "PowerShell.exe"
@@ -79,13 +79,13 @@ function SetupScheduledTasks {
 
 function WithRetry {
     Param(
-        [Parameter(Position=0, Mandatory=$true)]
+        [Parameter(Position = 0, Mandatory = $true)]
         [scriptblock]$ScriptBlock,
 
-        [Parameter(Position=1, Mandatory=$false)]
+        [Parameter(Position = 1, Mandatory = $false)]
         [int]$Maximum = 5,
 
-        [Parameter(Position=2, Mandatory=$false)]
+        [Parameter(Position = 2, Mandatory = $false)]
         [int]$Delay = 100
     )
 
@@ -96,7 +96,8 @@ function WithRetry {
         try {
             Invoke-Command -Command $ScriptBlock
             return
-        } catch {
+        }
+        catch {
             $lastException = $_
             Write-Error $_
 
@@ -125,7 +126,7 @@ function InstallPS7 {
             }
         } -Maximum 5 -Delay 100
         # Need to update the path post install
-        $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") + ";C:\Program Files\PowerShell\7"
+        $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User") + ";C:\Program Files\PowerShell\7"
         Write-Host "Done Installing PowerShell 7"
     }
     else {
@@ -200,7 +201,8 @@ function InstallWinGet {
                 Expand-Archive $MsUiXamlZip -DestinationPath $MsUiXaml
                 Add-AppxPackage -Path "$($MsUiXaml)\tools\AppX\$($architecture)\Release\Microsoft.UI.Xaml.2.8.appx" -ForceApplicationShutdown
                 Write-Host "Done Installing Microsoft.UI.Xaml"
-            } catch {
+            }
+            catch {
                 Write-Host "Failed to install Microsoft.UI.Xaml"
                 Write-Error $_
             }
@@ -223,7 +225,7 @@ function InstallWinGet {
         }
 
         Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe
-        $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") + ";C:\Program Files\PowerShell\7"
+        $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User") + ";C:\Program Files\PowerShell\7"
         Write-Host "WinGet version: $(winget -v)"
     }
 
@@ -242,7 +244,7 @@ if (!(Get-Command git -ErrorAction SilentlyContinue)) {
         Write-Host "'winget install --id Git.Git -e --source winget' exited with code: $($installExitCode)"
         if ($installExitCode -eq 0) {
             # add git to path
-            $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") + ";C:\Program Files\Git\cmd"
+            $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User") + ";C:\Program Files\Git\cmd"
         }
     }
 
@@ -261,7 +263,7 @@ if (!(Get-Command git -ErrorAction SilentlyContinue)) {
 
         $tempOutFile = [System.IO.Path]::GetTempFileName() + ".out.json"
         $installGitCommand = "Install-WinGetPackage -Source winget -Id Git.Git | ConvertTo-Json -Depth 10 | Tee-Object -FilePath '$($tempOutFile)'"
-        $processCreation = Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{CommandLine="C:\Program Files\PowerShell\7\pwsh.exe $($mtaFlag) -Command `"$($installGitCommand)`""}
+        $processCreation = Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{CommandLine = "C:\Program Files\PowerShell\7\pwsh.exe $($mtaFlag) -Command `"$($installGitCommand)`"" }
         if (!($processCreation) -or !($processCreation.ProcessId)) {
             Write-Error "Failed to install Git.Git package. Process creation failed."
             exit 1
@@ -295,7 +297,7 @@ if (!(Get-Command git -ErrorAction SilentlyContinue)) {
         }
 
         # add git to path
-        $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") + ";C:\Program Files\Git\cmd"
+        $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User") + ";C:\Program Files\Git\cmd"
     }
 }
 
@@ -309,7 +311,7 @@ if (!(Get-Command git-lfs -ErrorAction SilentlyContinue)) {
         Write-Host "'winget install --id GitHub.GitLFS -e --source winget' exited with code: $($installExitCode)"
         if ($installExitCode -eq 0) {
             # add git-lfs to path
-            $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") + ";C:\Program Files\Git LFS"
+            $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User") + ";C:\Program Files\Git LFS"
         }
     }
 
@@ -328,7 +330,7 @@ if (!(Get-Command git-lfs -ErrorAction SilentlyContinue)) {
 
         $tempOutFile = [System.IO.Path]::GetTempFileName() + ".out.json"
         $installGitLfsCommand = "Install-WinGetPackage -Source winget -Id GitHub.GitLFS | ConvertTo-Json -Depth 10 | Tee-Object -FilePath '$($tempOutFile)'"
-        $processCreation = Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{CommandLine="C:\Program Files\PowerShell\7\pwsh.exe $($mtaFlag) -Command `"$($installGitLfsCommand)`""}
+        $processCreation = Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{CommandLine = "C:\Program Files\PowerShell\7\pwsh.exe $($mtaFlag) -Command `"$($installGitLfsCommand)`"" }
         if (!($processCreation) -or !($processCreation.ProcessId)) {
             Write-Error "Failed to install git-lfs package. Process creation failed."
             exit 1
@@ -362,7 +364,7 @@ if (!(Get-Command git-lfs -ErrorAction SilentlyContinue)) {
         }
 
         # add git-lfs to path
-        $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") + ";C:\Program Files\Git LFS"
+        $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User") + ";C:\Program Files\Git LFS"
     }
 }
 
@@ -564,8 +566,7 @@ if (!$repoCloned -and ($RepositoryUrl -match "github.com")) {
 }
 
 
-if ($repoCloned)
-{
+if ($repoCloned) {
     exit 0 #Success!
 }
 
@@ -583,7 +584,7 @@ Write-Host "Writing commands to user script"
 
 function AppendToUserScript {
     Param(
-        [Parameter(Position=0, Mandatory=$true)]
+        [Parameter(Position = 0, Mandatory = $true)]
         [string]$Content
     )
 

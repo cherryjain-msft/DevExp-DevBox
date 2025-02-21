@@ -7,7 +7,7 @@ param (
 # Function to delete a GitHub secret
 function Remove-GitHubSecret {
     param (
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string]$ghSecretName
     )
 
@@ -26,7 +26,8 @@ function Remove-GitHubSecret {
         }
 
         Write-Output "GitHub secret: $ghSecretName deleted successfully."
-    } catch {
+    }
+    catch {
         Write-Error "Error: $_"
         return 1
     }
@@ -35,7 +36,7 @@ function Remove-GitHubSecret {
 # Function to validate input parameters
 function Test-Input {
     param (
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string]$ghSecretName
     )
 
@@ -44,7 +45,8 @@ function Test-Input {
         if ([string]::IsNullOrEmpty($ghSecretName)) {
             throw "Missing required parameters."
         }
-    } catch {
+    }
+    catch {
         Write-Error "Error: $_"
         Write-Output "Usage: Test-Input -ghSecretName <ghSecretName>"
         return 1
@@ -63,7 +65,8 @@ function Connect-ToGitHub {
         }
 
         Write-Output "Successfully logged in to GitHub."
-    } catch {
+    }
+    catch {
         Write-Error "Error: $_"
         return 1
     }
@@ -78,7 +81,8 @@ try {
             Remove-GitHubSecret -ghSecretName $ghSecretName
         }
     }
-} catch {
+}
+catch {
     Write-Error "Script execution failed: $_"
     exit 1
 }

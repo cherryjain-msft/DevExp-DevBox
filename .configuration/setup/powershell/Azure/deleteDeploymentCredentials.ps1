@@ -7,7 +7,7 @@ param (
 # Function to delete deployment credentials
 function Remove-DeploymentCredentials {
     param (
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string]$appDisplayName
     )
 
@@ -34,7 +34,8 @@ function Remove-DeploymentCredentials {
         }
 
         Write-Output "Service principal and App Registration deleted successfully."
-    } catch {
+    }
+    catch {
         Write-Error "Error: $_"
         return 1
     }
@@ -43,7 +44,7 @@ function Remove-DeploymentCredentials {
 # Function to validate input parameters
 function Test-Input {
     param (
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string]$appDisplayName
     )
 
@@ -60,7 +61,8 @@ try {
     if ($LASTEXITCODE -eq 0) {
         Remove-DeploymentCredentials -appDisplayName $appDisplayName
     }
-} catch {
+}
+catch {
     Write-Error "Script execution failed: $_"
     exit 1
 }

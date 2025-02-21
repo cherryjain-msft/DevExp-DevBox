@@ -57,7 +57,7 @@ else {
 $msUiXamlPackage = Get-AppxPackage -Name "Microsoft.UI.Xaml.2.8" | Where-Object { $_.Version -ge "8.2310.30001.0" }
 if (!($msUiXamlPackage)) {
     # instal Microsoft.UI.Xaml
-    try{
+    try {
         Write-Host "Installing Microsoft.UI.Xaml"
         $architecture = "x64"
         if ($env:PROCESSOR_ARCHITECTURE -eq "ARM64") {
@@ -69,7 +69,8 @@ if (!($msUiXamlPackage)) {
         Expand-Archive $MsUiXamlZip -DestinationPath $MsUiXaml
         Add-AppxPackage -Path "$($MsUiXaml)\tools\AppX\$($architecture)\Release\Microsoft.UI.Xaml.2.8.appx" -ForceApplicationShutdown
         Write-Host "Done Installing Microsoft.UI.Xaml"
-    } catch {
+    }
+    catch {
         Write-Host "Failed to install Microsoft.UI.Xaml"
         Write-Error $_
     }
@@ -97,7 +98,7 @@ if (!($desktopAppInstallerPackage) -or ($desktopAppInstallerPackage.Version -lt 
 Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe
 Write-Host "WinGet version: $(winget -v)"
 
-$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
 Write-Host "Done Updating WinGet"
 
 # Revert PSGallery installation policy to untrusted

@@ -1,0 +1,60 @@
+{
+    "connectivity": {
+        "create": true, // Creates a new resource group if true
+        "name": "kac_digitaloffice_devbox_network_eus_dev_rg",
+        "description": "connectivity",
+        "tags": {
+            "environment": "dev",
+            "division": "Platforms",
+            "team": "DevExp",
+            "project": "DevExp-DevBox",
+            "costCenter": "IT",
+            "owner": "Evilazaro",
+            "landingZone": "Connectivity"
+        }
+    },
+    "identity": {
+        "create": true,
+        "name": "kac_digitaloffice_devbox_identity_eus_dev_rg",
+        "description": "identity",
+        "tags": {
+            "environment": "dev",
+            "division": "Platforms",
+            "team": "DevExp",
+            "project": "DevExp-DevBox",
+            "costCenter": "IT",
+            "owner": "Evilazaro",
+            "landingZone": "Identity"
+        }
+    },
+    "management": {
+        "create": true,
+        "name": "kac_digitaloffice_devbox_management_eus_dev_rg",
+        "logAnalyticsName": "workload-loganalytics",
+        "description": "management",
+        "tags": {
+            "environment": "dev",
+            "division": "Platforms",
+            "team": "DevExp",
+            "project": "DevExp-DevBox",
+            "costCenter": "IT",
+            "owner": "Evilazaro",
+            "landingZone": "Management"
+        }
+    },
+    "workload": {
+        "create": true,
+        "name": "kac_digitaloffice_devbox_eus_dev_rg",
+        "devCenterName": "kac-digitaloffice-devctr",
+        "description": "prodExp",
+        "tags": {
+            "environment": "dev",
+            "division": "Platforms",
+            "team": "DevExp",
+            "project": "DevExp-DevBox",
+            "costCenter": "IT",
+            "owner": "Evilazaro",
+            "landingZone": "Workload"
+        }
+    }
+}

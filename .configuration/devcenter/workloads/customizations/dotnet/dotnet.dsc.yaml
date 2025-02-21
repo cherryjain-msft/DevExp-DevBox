@@ -4,10 +4,10 @@ properties:
   ### RESOURCES: System Configuration
   ########################################
   resources:
-      ########################################################
-      ### Installs Dotnet SDK and Runtime
-      ########################################################
-      ### Install: Microsoft.DotNet.SDK.9
+    ########################################################
+    ### Installs Dotnet SDK and Runtime
+    ########################################################
+    ### Install: Microsoft.DotNet.SDK.9
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Microsoft.DotNet.SDK.9
       directives:

@@ -4,23 +4,23 @@ properties:
   ### RESOURCES: System Configuration
   ########################################
   resources:
-      ########################################################
-      ### Updates required before apply configurations
-      ########################################################
-      ### Install PSDscResources
-      ### Enable: WinGet
-      ### Enable: AppInstaller
-      ### Enable: AppInstallerFileBuilder
-      ### Enable: DevHome
-      ### Enable: DevHome Azure Extension
-      ### Enable: DevHome GitHub Extension
-      ### Install: Git
-      ### Install: GitHub.CLI
-      ### Install: GitHub.GitHubDesktop
-      ### Enable: Developer Mode
-      ### Install: Windows Terminal
-      ### Install: Microsoft.Office
-      ########################################################
+    ########################################################
+    ### Updates required before apply configurations
+    ########################################################
+    ### Install PSDscResources
+    ### Enable: WinGet
+    ### Enable: AppInstaller
+    ### Enable: AppInstallerFileBuilder
+    ### Enable: DevHome
+    ### Enable: DevHome Azure Extension
+    ### Enable: DevHome GitHub Extension
+    ### Install: Git
+    ### Install: GitHub.CLI
+    ### Install: GitHub.GitHubDesktop
+    ### Enable: Developer Mode
+    ### Install: Windows Terminal
+    ### Install: Microsoft.Office
+    ########################################################
     - resource: PSDscResources/Script
       id: PSDscResources
       directives:
@@ -69,7 +69,7 @@ properties:
       settings:
         SetScript: |
           $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
-          winget install Microsoft.DevHome --accept-package-agreements --accept-source-agreements  --verbose --force	
+          winget install Microsoft.DevHome --accept-package-agreements --accept-source-agreements  --verbose --force
         GetScript: return $false
         TestScript: return $false
       dependsOn:

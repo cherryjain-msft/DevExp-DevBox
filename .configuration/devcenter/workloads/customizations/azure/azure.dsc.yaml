@@ -11,8 +11,8 @@ properties:
   ### Install: Microsoft Bicep
   ########################################
   resources:
-      ### Install Microsoft Azure CLI
-      ### -------------------------------------
+    ### Install Microsoft Azure CLI
+    ### -------------------------------------
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Microsoft.AzureCLI
       directives:
