@@ -46,8 +46,13 @@ function Set-Up {
         # .\Azure\generateDeploymentCredentials.ps1 -appName $appName -displayName $displayName
         .\Azure\createUsersAndAssignRole.ps1
 
+        Write-Host "Showing current Detaults Config..."
+        azd config show
+
         Write-Output "Resetting azd config..."
         azd config reset --no-prompt
+
+        azd config show
         if ($LASTEXITCODE -ne 0) {
             throw "Failed to reset azd config."
         }
@@ -60,7 +65,7 @@ function Set-Up {
             throw "Failed to set default workload name."
         }
         Write-Output "azd config reset successfully."
-
+        azd config show
         Write-Output "Creating new environments..."
         azd env new dev --no-prompt
         if ($LASTEXITCODE -ne 0) {
