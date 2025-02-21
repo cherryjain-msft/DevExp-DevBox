@@ -45,7 +45,7 @@
     "workload": {
         "create": true,
         "name": "kac_digitaloffice_devbox_eus_prod_rg",
-        "devCenterName": "kac-digitaloffice-devctr",
+        "devCenterName": "kac-digitaloffice-prodctr",
         "description": "prodExp",
         "tags": {
             "environment": "prod",
