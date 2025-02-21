@@ -1,0 +1,23 @@
+image:
+  name: dev-box-image
+  version: 1.0.0
+  description: Image definition for Dev Box
+  os: Windows 11
+  components:
+    - name: Visual Studio Code
+      version: latest
+    - name: Git
+      version: latest
+    - name: Node.js
+      version: 14.x
+    - name: Python
+      version: 3.9.x
+    - name: Docker
+      version: latest
+  setupScripts:
+    - path: scripts/setup.ps1
+      description: PowerShell script to set up the environment
+  tags:
+    - dev
+    - box
+    - development
