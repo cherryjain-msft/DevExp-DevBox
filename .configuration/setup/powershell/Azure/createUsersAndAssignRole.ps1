@@ -6,13 +6,13 @@ $subscriptionId = (az account show --query id -o tsv)
 # Function to assign a role to a user or service principal
 function Set-Role {
     param (
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string]$userIdentityId,
 
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string]$roleName,
 
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string]$idType
     )
 
@@ -24,10 +24,12 @@ function Set-Role {
 
         if ($result) {
             Write-Output "Role '$roleName' assigned successfully."
-        } else {
+        }
+        else {
             throw "Failed to assign role '$roleName' to identityId $userIdentityId."
         }
-    } catch {
+    }
+    catch {
         Write-Error "Error: $_"
         return 2
     }
@@ -60,7 +62,8 @@ function New-UserAssignments {
         }
 
         Write-Output "User assignments and role assignments completed successfully for currentUser: $currentUser"
-    } catch {
+    }
+    catch {
         Write-Error "Error: $_"
         return 1
     }

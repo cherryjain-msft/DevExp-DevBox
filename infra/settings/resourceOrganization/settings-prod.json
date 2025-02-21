@@ -1,0 +1,59 @@
+{
+    "connectivity": {
+        "create": true, // Creates a new resource group if true
+        "name": "Connectivity",
+        "description": "connectivity",
+        "tags": {
+            "environment": "prod",
+            "division": "Platforms",
+            "team": "DevExp",
+            "project": "DevExp-DevBox",
+            "costCenter": "IT",
+            "owner": "Evilazaro",
+            "landingZone": "Connectivity"
+        }
+    },
+    "identity": {
+        "create": true,
+        "name": "Identity",
+        "description": "identity",
+        "tags": {
+            "environment": "prod",
+            "division": "Platforms",
+            "team": "DevExp",
+            "project": "DevExp-DevBox",
+            "costCenter": "IT",
+            "owner": "Evilazaro",
+            "landingZone": "Identity"
+        }
+    },
+    "management": {
+        "create": true,
+        "name": "Management",
+        "logAnalyticsName": "loganalytics-prod",
+        "description": "management",
+        "tags": {
+            "environment": "prod",
+            "division": "Platforms",
+            "team": "DevExp",
+            "project": "DevExp-DevBox",
+            "costCenter": "IT",
+            "owner": "Evilazaro",
+            "landingZone": "Management"
+        }
+    },
+    "workload": {
+        "create": true,
+        "name": "Workload",
+        "description": "prodExp",
+        "tags": {
+            "environment": "prod",
+            "division": "Platforms",
+            "team": "DevExp",
+            "project": "DevExp-DevBox",
+            "costCenter": "IT",
+            "owner": "Evilazaro",
+            "landingZone": "Workload"
+        }
+    }
+}

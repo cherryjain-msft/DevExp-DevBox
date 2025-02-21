@@ -4,14 +4,14 @@ properties:
   ### RESOURCES: System Configuration
   ########################################
   resources:
-      ########################################################
-      ### Updates required before apply configurations
-      ########################################################
-      ### Install: Docker Desktop
-      ### Install: Kubernetes kubectl
-      ### Install: Microsoft Azure Kubelogin
-      ########################################################
-      ### -----------------------------------------------------
+    ########################################################
+    ### Updates required before apply configurations
+    ########################################################
+    ### Install: Docker Desktop
+    ### Install: Kubernetes kubectl
+    ### Install: Microsoft Azure Kubelogin
+    ########################################################
+    ### -----------------------------------------------------
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Docker.DockerDesktop
       directives:

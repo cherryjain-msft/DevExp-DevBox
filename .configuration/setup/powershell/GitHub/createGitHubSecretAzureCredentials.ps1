@@ -13,7 +13,8 @@ function Connect-ToGitHub {
         }
 
         Write-Output "Successfully logged in to GitHub."
-    } catch {
+    }
+    catch {
         Write-Error "Error: $_"
         return 1
     }
@@ -49,7 +50,8 @@ function Set-GitHubSecretAuthentication {
 
         Write-Output "GitHub secret: $ghSecretName set successfully."
         Write-Output "GitHub secret body: $ghSecretBody"
-    } catch {
+    }
+    catch {
         Write-Error "Error: $_"
         return 1
     }
@@ -66,7 +68,8 @@ function Test-Input {
         if ([string]::IsNullOrEmpty($ghSecretBody)) {
             throw "Missing required parameters."
         }
-    } catch {
+    }
+    catch {
         Write-Error "Error: $_"
         Write-Output "Usage: Test-Input -ghSecretBody <ghSecretBody>"
         return 1
@@ -79,7 +82,8 @@ try {
     if ($LASTEXITCODE -eq 0) {
         Set-GitHubSecretAuthentication -ghSecretBody $ghSecretBody
     }
-} catch {
+}
+catch {
     Write-Error "Script execution failed: $_"
     exit 1
 }

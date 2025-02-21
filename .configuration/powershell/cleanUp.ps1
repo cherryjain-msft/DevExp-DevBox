@@ -6,19 +6,14 @@ $WarningPreference = "Stop"
 
 # Azure Resource Group Names Constants
 $solutionName = "Contoso"
-$devBoxResourceGroupName = "$solutionName-DevExp-RG"
-$networkResourceGroupName = "$solutionName-DevExp-Connectivity-RG"
-
-# Identity Parameters Constants
-$customRoleName = "ContosoDevCenterDevBoxRole"
-
-# Get the current subscription ID
-$subscriptionId = (az account show --query id --output tsv)
+$workloadResourceGroup = "Workload"
+$connectivityResourceGroup = "Connectivity"
+$managemwentResourceGroup = "Management"
 
 # Function to delete a resource group
 function Remove-ResourceGroup {
     param (
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string]$resourceGroupName
     )
 
@@ -37,10 +32,12 @@ function Remove-ResourceGroup {
             Write-Output "Deleting resource group: $resourceGroupName..."
             az group delete --name $resourceGroupName --yes --no-wait
             Write-Output "Resource group $resourceGroupName deletion initiated."
-        } else {
+        }
+        else {
             Write-Output "Resource group $resourceGroupName does not exist. Skipping deletion."
         }
-    } catch {
+    }
+    catch {
         Write-Error "Error deleting resource group $resourceGroupName $_"
         return 1
     }
@@ -50,12 +47,14 @@ function Remove-ResourceGroup {
 function Remove-Resources {
     try {
         Clear-Host
-        Remove-ResourceGroup -resourceGroupName $devBoxResourceGroupName
-        Remove-ResourceGroup -resourceGroupName $networkResourceGroupName
+        Remove-ResourceGroup -resourceGroupName $workloadResourceGroup
+        Remove-ResourceGroup -resourceGroupName $connectivityResourceGroup
+        Remove-ResourceGroup -resourceGroupName $managemwentResourceGroup
         Remove-ResourceGroup -resourceGroupName "NetworkWatcherRG"
         Remove-ResourceGroup -resourceGroupName "Default-ActivityLogAlerts"
         Remove-ResourceGroup -resourceGroupName "DefaultResourceGroup-WUS2"
-    } catch {
+    }
+    catch {
         Write-Error "Error during cleanup process: $_"
         return 1
     }
@@ -64,7 +63,8 @@ function Remove-Resources {
 # Main script execution
 try {
     Remove-Resources
-} catch {
+}
+catch {
     Write-Error "Script execution failed: $_"
     exit 1
 }

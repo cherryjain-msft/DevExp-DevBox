@@ -1,4 +1,3 @@
-
 # This is a Chocolatey package installation task for Dev Box.
 $schema: "1.0"
 name: choco
@@ -14,7 +13,7 @@ parameters:
       The name of the Chocolatey package to install.
       For example, "git".
       Visit https://chocolatey.org/packages to learn
-      more about Chocolatey packages. 
+      more about Chocolatey packages.
   version:
     default: ""
     type: string
@@ -24,7 +23,7 @@ parameters:
     default: ""
     type: string
     required: false
-    description: Additional params required for the package to install.  
+    description: Additional params required for the package to install.
   ignoreChecksums:
     default: false
     type: boolean
@@ -39,7 +38,7 @@ documentation:
         package: oraclejdk
         version: 17.0.2
     - name: choco
-      description: install azure functions core tools 
+      description: install azure functions core tools
       parameters:
         package: azure-functions-core-tools
         switches: /x64

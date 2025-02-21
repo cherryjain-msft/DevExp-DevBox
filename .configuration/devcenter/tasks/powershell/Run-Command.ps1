@@ -3,7 +3,7 @@ param(
     [string]$Command,
     [Parameter()]
     [string]$WorkingDirectory
- )
+)
 
 # Check if workingDirectory is set and not empty and if so, change to it.
 if ($WorkingDirectory -and $WorkingDirectory -ne "") {

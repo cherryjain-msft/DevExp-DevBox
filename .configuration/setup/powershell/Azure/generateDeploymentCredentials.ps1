@@ -67,7 +67,8 @@ function New-DeploymentCredentials {
 
         # Create GitHub secret for Azure credentials
         New-GitHubSecretAzureCredentials -ghSecretBody $ghSecretBody
-    } catch {
+    }
+    catch {
         Write-Error "Error: $_"
         return 1
     }
@@ -89,7 +90,8 @@ function New-UsersAndAssignRole {
         }
 
         Write-Output "Users created and roles assigned successfully."
-    } catch {
+    }
+    catch {
         Write-Error "Error: $_"
         return 1
     }
@@ -117,7 +119,8 @@ function New-GitHubSecretAzureCredentials {
         }
 
         Write-Output "GitHub secret for Azure credentials created successfully."
-    } catch {
+    }
+    catch {
         Write-Error "Error: $_"
         return 1
     }
@@ -127,7 +130,8 @@ function New-GitHubSecretAzureCredentials {
 try {
     Test-Input -appName $appName -displayName $displayName
     New-DeploymentCredentials -appName $appName -displayName $displayName
-} catch {
+}
+catch {
     Write-Error "Script execution failed: $_"
     exit 1
 }

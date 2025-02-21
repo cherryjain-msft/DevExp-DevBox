@@ -1,0 +1,30 @@
+{
+    "create": true,
+    "name": "okn-eus-prd-okn-dev-box-spoke-vnet",
+    "addressPrefixes": [
+        "10.0.0.0/16"
+    ],
+    "subnets": [
+        {
+            "name": "eShop",
+            "properties": {
+                "addressPrefix": "10.0.0.0/24"
+            }
+        },
+        {
+            "name": "identityProvider",
+            "properties": {
+                "addressPrefix": "10.0.1.0/24"
+            }
+        }
+    ],
+    "tags": {
+        "environment": "dev",
+        "division": "Platforms",
+        "team": "DevExp",
+        "project": "DevExp-DevBox",
+        "costCenter": "IT",
+        "owner": "Evilazaro",
+        "resources": "Network"
+    }
+}

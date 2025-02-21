@@ -7,7 +7,7 @@ author: Microsoft Corporation
 command: .\main.ps1 -RepositoryUrl {{ repositoryUrl }} -Directory {{ directory }} -Branch {{ branch }} -Pat {{ pat }}
 parameters:
   repositoryUrl:
-    default: ''
+    default: ""
     type: string
     required: true
     description: The URL of the repository to clone.
@@ -20,12 +20,12 @@ parameters:
       equivalent of the working directory under which the git command will
       execute.
   branch:
-    default: ''
+    default: ""
     type: string
     required: false
     description: The branch to clone.
   pat:
-    default: ''
+    default: ""
     type: string
     required: false
     description: The PAT (personal access token) to use when cloning the repository.

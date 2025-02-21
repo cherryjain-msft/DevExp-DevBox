@@ -20,7 +20,8 @@ function Remove-Deployments {
             az deployment sub delete --name $deployment
             Write-Output "Deployment $deployment deleted."
         }
-    } catch {
+    }
+    catch {
         Write-Error "Error deleting deployments: $_"
         return 1
     }
@@ -29,10 +30,10 @@ function Remove-Deployments {
 # Function to clean up the setup by deleting users, credentials, and GitHub secrets
 function Remove-SetUp {
     param (
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string]$appDisplayName,
 
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [string]$ghSecretName
     )
 
@@ -73,7 +74,8 @@ function Remove-SetUp {
         }
 
         Write-Output "Cleanup process completed successfully for appDisplayName: $appDisplayName and ghSecretName: $ghSecretName"
-    } catch {
+    }
+    catch {
         Write-Error "Error during cleanup process: $_"
         return 1
     }
@@ -83,7 +85,8 @@ function Remove-SetUp {
 try {
     Clear-Host
     Remove-SetUp -appDisplayName $appDisplayName -ghSecretName $ghSecretName
-} catch {
+}
+catch {
     Write-Error "Script execution failed: $_"
     exit 1
 }
