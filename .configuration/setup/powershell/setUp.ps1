@@ -51,6 +51,14 @@ function Set-Up {
         if ($LASTEXITCODE -ne 0) {
             throw "Failed to reset azd config."
         }
+        azd config set defaults.AZURE_LOCATION "eastus"
+        if ($LASTEXITCODE -ne 0) {
+            throw "Failed to set default Azure location."
+        }
+        azd config set defaults.WORKLOAD_NAME "Contoso"
+        if ($LASTEXITCODE -ne 0) {
+            throw "Failed to set default workload name."
+        }
         Write-Output "azd config reset successfully."
 
         Write-Output "Creating new environments..."
