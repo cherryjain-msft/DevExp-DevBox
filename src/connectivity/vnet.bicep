@@ -73,7 +73,9 @@ resource networkConnection 'Microsoft.DevCenter/networkConnections@2024-10-01-pr
     tags: networkSettings.tags
     properties: {
       domainJoinType: 'AzureADJoin'
-      subnetId: (networkSettings.create) ? virtualNetwork.properties.subnets[i].id : existingVNet.properties.subnets[i].id
+      subnetId: (networkSettings.create)
+        ? virtualNetwork.properties.subnets[i].id
+        : existingVNet.properties.subnets[i].id
     }
   }
 ]

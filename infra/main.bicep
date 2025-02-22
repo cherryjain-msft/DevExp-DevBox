@@ -48,13 +48,6 @@ output connectivityVNetId string = connectivity.outputs.virtualNetworkId
 @description('Connectivity vNet Name')
 output connectivityVNetName string = connectivity.outputs.virtualNetworkName
 
-@description('Connectivity Resource Group')
-resource workloadResourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZone.workload.create) {
-  name: landingZone.workload.name
-  location: location
-  tags: landingZone.workload.tags
-}
-
 
 @description('Deploy Workload Module')
 module workload '../src/workload/devCenterModule.bicep' = {
@@ -67,6 +60,9 @@ module workload '../src/workload/devCenterModule.bicep' = {
     location: location
   }
 }
+
+@description('Workload Resource Group')
+output workloadResourceGroup string = workload.outputs.workloadResourceGroupName
 
 @description('Workload Dev Center Id')
 output workloadDevCenterId string = workload.outputs.devCenterId

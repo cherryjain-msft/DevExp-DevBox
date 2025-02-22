@@ -21,22 +21,29 @@ var networkSettings = environment == 'dev'
   ? loadJsonContent('../../infra/settings/connectivity/settings-dev.json')
   : loadJsonContent('../../infra/settings/connectivity/settings-prod.json')
 
-  @description('Resource Group')
-  resource vNetResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-    name: landingZone.name
-    location: location
-  }
-  
+@description('Resource Group')
+resource vNetResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = if (landingZone.create) {
+  name: landingZone.name
+  location: location
+}
+
+@description('Existing Resource Group')
+resource existingVNetResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!landingZone.create) {
+  name: landingZone.name
+}
 
 module vnet 'vnet.bicep' = {
-  name: 'vnet'
-  scope:vNetResourceGroup
+  name: 'VirtualNetwork'
+  scope: (landingZone.create ? vNetResourceGroup : existingVNetResourceGroup)
   params: {
     networkSettings: networkSettings
     workspaceId: workspaceId
   }
 }
 
+output connectivityResourceGroupName string = (landingZone.create
+  ? vNetResourceGroup.name
+  : existingVNetResourceGroup.name)
 output virtualNetworkId string = vnet.outputs.virtualNetworkId
 output virtualNetworkName string = vnet.outputs.virtualNetworkName
 output networkConnections array = vnet.outputs.networkConnections

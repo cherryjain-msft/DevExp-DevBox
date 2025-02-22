@@ -83,7 +83,7 @@ resource vNetAttachment 'Microsoft.DevCenter/devcenters/attachednetworks@2024-10
 
 @description('Network Connections')
 output vNetAttachments array = [
-  for (connection,i) in networkConnections: {
+  for (connection, i) in networkConnections: {
     id: vNetAttachment[i].id
     name: connection.name
   }
@@ -91,7 +91,7 @@ output vNetAttachments array = [
 
 @description('Compute Gallery')
 resource computeGallery 'Microsoft.Compute/galleries@2024-03-03' = if (settings.computeGallery.create) {
-  name:  '${settings.computeGallery.name}${uniqueString(resourceGroup().id)}'
+  name: '${settings.computeGallery.name}${uniqueString(resourceGroup().id)}'
   location: resourceGroup().location
   tags: settings.computeGallery.tags
   properties: {
@@ -138,12 +138,11 @@ resource devBoxDefinitions 'Microsoft.DevCenter/devcenters/devboxdefinitions@202
 
 @description('Dev Center DevBox Definitions')
 output devBoxDefinitions array = [
-  for (devBoxDefinition,i) in settings.devBoxDefinitions: {
+  for (devBoxDefinition, i) in settings.devBoxDefinitions: {
     id: devBoxDefinitions[i].id
     name: devBoxDefinition.name
   }
 ]
-
 
 @description('Dev Center Catalogs')
 resource catalogs 'Microsoft.DevCenter/devcenters/catalogs@2024-10-01-preview' = [
@@ -172,7 +171,7 @@ resource catalogs 'Microsoft.DevCenter/devcenters/catalogs@2024-10-01-preview' =
 
 @description('Dev Center Catalogs')
 output devCenterCatalogs array = [
-  for (catalog,i) in settings.devCenterCatalogs: {
+  for (catalog, i) in settings.devCenterCatalogs: {
     id: catalogs[i].id
     name: catalogs[i].name
   }
@@ -192,12 +191,11 @@ resource devCenterEnvironments 'Microsoft.DevCenter/devcenters/environmentTypes@
 
 @description('Dev Center Environments')
 output devCenterEnvironments array = [
-  for (environment,i) in settings.environmentTypes: {
+  for (environment, i) in settings.environmentTypes: {
     id: devCenterEnvironments[i].id
     name: environment.name
   }
 ]
-
 
 @description('Dev Center Projects')
 module projects 'projects/projectModule.bicep' = [
@@ -214,17 +212,16 @@ module projects 'projects/projectModule.bicep' = [
       tags: project.tags
     }
     dependsOn: [
-     vNetAttachment
-     devBoxDefinitions
+      vNetAttachment
+      devBoxDefinitions
     ]
   }
 ]
 
 @description('Dev Center Projects')
 output projects array = [
-  for (project,i) in settings.projects: {
+  for (project, i) in settings.projects: {
     id: projects[i].outputs.id
     name: project.name
   }
 ]
-

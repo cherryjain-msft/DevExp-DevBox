@@ -94,7 +94,7 @@ resource projectEnvironments 'Microsoft.DevCenter/projects/environmentTypes@2024
 
 @description('Project Environments')
 output projectEnvironments array = [
-  for (environment,i) in environments: {
+  for (environment, i) in environments: {
     id: projectEnvironments[i].id
     name: environment.name
   }
@@ -122,9 +122,8 @@ resource devBoxPool 'Microsoft.DevCenter/projects/pools@2024-10-01-preview' = [
 ]
 
 output devBoxPools array = [
-  for (pool,i) in devBoxPools: {
+  for (pool, i) in devBoxPools: {
     id: devBoxPool[i].id
     name: pool.name
   }
 ]
-

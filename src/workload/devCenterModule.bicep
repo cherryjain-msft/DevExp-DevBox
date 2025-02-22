@@ -31,12 +31,15 @@ resource workloadResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' =
   location: location
 }
 
-output workloadResourceGroupName string = (landingZone.create) ? workloadResourceGroup.name : landingZone.name
+@description('Existing Workload Resource Group')
+resource existingWorkloadResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!landingZone.create) {
+  name: landingZone.name
+}
 
 @description('Dev Center Resource')
 module devCenter './devCenter.bicep' = {
   name: 'devCenter'
-  scope: resourceGroup(workloadResourceGroupName)
+  scope: (landingZone.create ? workloadResourceGroup : existingWorkloadResourceGroup)
   params: {
     settings: settings
     networkConnections: networkConnections
@@ -46,3 +49,6 @@ module devCenter './devCenter.bicep' = {
 
 output devCenterId string = devCenter.outputs.devCenterId
 output devCenterName string = devCenter.outputs.devCenterName
+output workloadResourceGroupName string = (landingZone.create
+  ? workloadResourceGroup.name
+  : existingWorkloadResourceGroup.name)
