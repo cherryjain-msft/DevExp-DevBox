@@ -1,18 +1,19 @@
+targetScope = 'subscription'
+
 @description('Solution Name')
 param name string
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-10-01' = {
+@description('Connectivity Resource Group')
+resource managementResourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = if (true) {
   name: name
-  location: resourceGroup().location
-  properties: {
-    sku: {
-      name: 'PerGB2018'
-    }
-  }
+  location: 'easus2'
+  tags: {}
 }
 
-@description('The ID of the Log Analytics workspace.')
-output workspaceId string = logAnalyticsWorkspace.id
-
-output logAnalyticsId string = logAnalyticsWorkspace.id
-output logAnalyticsName string = logAnalyticsWorkspace.name
+module logAnalytics  'logAnalytics.bicep' = {
+  scope: managementResourceGroup
+  name: 'log'
+  params: {
+    name: 'logAnalytics'
+  }
+}

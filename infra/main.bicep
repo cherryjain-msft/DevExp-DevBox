@@ -32,7 +32,7 @@ var managementResourceGroupName = (landingZone.management.create)
 
 @description('Monitoring Resources')
 module monitoring '../src/management/monitoringModule.bicep' = {
-  scope: resourceGroup(managementResourceGroupName)
+  scope: subscription()
   name: 'monitoring'
   params: {
     name: landingZone.management.logAnalyticsName
