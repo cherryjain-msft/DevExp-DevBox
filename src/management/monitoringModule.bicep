@@ -1,13 +1,18 @@
 @description('Solution Name')
 param name string
 
-module logAnalytics './logAnalytics.bicep' = {
-  name: 'logAnalytics'
-  scope: resourceGroup()
-  params: {
-    name: '${name}-${uniqueString(resourceGroup().id)}'
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-10-01' = {
+  name: name
+  location: resourceGroup().location
+  properties: {
+    sku: {
+      name: 'PerGB2018'
+    }
   }
 }
 
-output logAnalyticsId string = logAnalytics.outputs.workspaceId
-output logAnalyticsName string = logAnalytics.name
+@description('The ID of the Log Analytics workspace.')
+output workspaceId string = logAnalyticsWorkspace.id
+
+output logAnalyticsId string = logAnalyticsWorkspace.id
+output logAnalyticsName string = logAnalyticsWorkspace.name

@@ -81,17 +81,23 @@ module roleAssignments '../identity/devCenterRoleAssignments.bicep' = {
 output roleAssignments array = roleAssignments.outputs.roleAssignments
 
 @description('Deploys Network Connections for the Dev Center')
-module vNetAttachment 'devBoxConfiguration/networkConnections.bicep'= {
-  name: 'vNetAttachments'
-  scope: resourceGroup()
-  params: {
-    devCenterName: devCenter.name
-    networkConnections: networkConnections
+resource vNetAttachment 'Microsoft.DevCenter/devcenters/attachednetworks@2024-10-01-preview' = [
+  for connection in networkConnections: {
+    name: connection.name
+    parent: devCenter
+    properties: {
+      networkConnectionId: connection.id
+    }
   }
-}
+]
 
 @description('Network Connections')
-output vNetAttachments array = vNetAttachment.outputs.vNetAttachments
+output vNetAttachments array = [
+  for (connection,i) in networkConnections: {
+    id: vNetAttachment[i].id
+    name: connection.name
+  }
+]
 
 @description('Compute Gallery')
 resource computeGallery 'Microsoft.Compute/galleries@2024-03-03' = if (settings.computeGallery.create) {
@@ -122,43 +128,86 @@ resource devCenterGallery 'Microsoft.DevCenter/devcenters/galleries@2024-10-01-p
 }
 
 @description('Dev Center DevBox Definitions')
-module devBoxDefinitions 'devBoxConfiguration/devboxDefinitions.bicep' = {
-  name: 'devBoxDefinitions'
-  scope: resourceGroup()
-  params: {
-    devCenterName: devCenter.name
-    definitions: settings.devBoxDefinitions
+resource devBoxDefinitions 'Microsoft.DevCenter/devcenters/devboxdefinitions@2024-10-01-preview' = [
+  for devBoxDefinition in settings.devBoxDefinitions: {
+    name: devBoxDefinition.name
+    tags: devBoxDefinition.tags
+    location: resourceGroup().location
+    parent: devCenter
+    properties: {
+      hibernateSupport: devBoxDefinition.hibernateSupport
+      imageReference: {
+        id: '${resourceId('Microsoft.DevCenter/devcenters/galleries/',devCenter.name,'Default')}/images/${devBoxDefinition.image}'
+      }
+      sku: {
+        name: devBoxDefinition.sku
+      }
+    }
   }
-}
+]
 
 @description('Dev Center DevBox Definitions')
-output devBoxDefinitions array = devBoxDefinitions.outputs.devBoxDefinitions
+output devBoxDefinitions array = [
+  for (devBoxDefinition,i) in settings.devBoxDefinitions: {
+    id: devBoxDefinitions[i].id
+    name: devBoxDefinition.name
+  }
+]
+
 
 @description('Dev Center Catalogs')
-module devCenterCatalogs 'environmentConfiguration/catalogs.bicep'= {
-  name: 'devCenterCatalogs'
-  scope: resourceGroup()
-  params: {
-    devCenterCatalogs: settings.devCenterCatalogs
-    devCenterName: devCenter.name
+resource catalogs 'Microsoft.DevCenter/devcenters/catalogs@2024-10-01-preview' = [
+  for catalog in settings.devCenterCatalogs: {
+    name: catalog.name
+    parent: devCenter
+    properties: (catalog.gitHub)
+      ? {
+          gitHub: {
+            uri: catalog.uri
+            branch: catalog.branch
+            path: catalog.path
+          }
+          syncType: 'Scheduled'
+        }
+      : {
+          adoGit: {
+            uri: catalog.uri
+            branch: catalog.branch
+            path: catalog.path
+          }
+          syncType: 'Scheduled'
+        }
   }
-}
+]
 
 @description('Dev Center Catalogs')
-output devCenterCatalogs array = devCenterCatalogs.outputs.devCenterCatalogs
-
-@description('Dev Center Environments')
-module devCenterEnvironments 'environmentConfiguration/environmentTypes.bicep'= {
-  name: 'devCenterEnvironmentTypes'
-  scope: resourceGroup()
-  params: {
-    devCenterName: devCenter.name
-    environmentTypes: settings.environmentTypes
+output devCenterCatalogs array = [
+  for (catalog,i) in settings.devCenterCatalogs: {
+    id: catalogs[i].id
+    name: catalogs[i].name
   }
-}
+]
 
 @description('Dev Center Environments')
-output devCenterEnvironments array = devCenterEnvironments.outputs.devCenterEnvironments
+resource devCenterEnvironments 'Microsoft.DevCenter/devcenters/environmentTypes@2024-10-01-preview' = [
+  for environment in settings.environmentTypes: {
+    name: environment.name
+    parent: devCenter
+    tags: environment.tags
+    properties: {
+      displayName: environment.name
+    }
+  }
+]
+
+@description('Dev Center Environments')
+output devCenterEnvironments array = [
+  for (environment,i) in settings.environmentTypes: {
+    id: devCenterEnvironments[i].id
+    name: environment.name
+  }
+]
+
 
 @description('Dev Center Projects')
 module projects 'projects/projectModule.bicep' = [
