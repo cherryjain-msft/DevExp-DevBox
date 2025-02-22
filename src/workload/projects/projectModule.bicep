@@ -123,7 +123,7 @@ resource devBoxPool 'Microsoft.DevCenter/projects/pools@2024-10-01-preview' = [
 
 output devBoxPools array = [
   for (pool,i) in devBoxPools: {
-    id: devBoxPools[i].id
+    id: devBoxPool[i].id
     name: pool.name
   }
 ]

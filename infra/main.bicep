@@ -1,8 +1,5 @@
 targetScope = 'subscription'
 
-@description('Solution Name')
-param workloadName string
-
 @description('Location for the deployment')
 param location string
 
@@ -25,6 +22,7 @@ module monitoring '../src/management/monitoringModule.bicep' = {
   name: 'monitoring'
   params: {
     landingZone: landingZone.management
+    location: location
   }
 }
 
@@ -33,24 +31,14 @@ output monitoringLogAnalyticsId string = monitoring.outputs.logAnalyticsId
 @description('Monitoring Log Analytics Name')
 output monitoringLogAnalyticsName string = monitoring.outputs.logAnalyticsName
 
-@description('Connectivity Resource Group')
-resource connectivityResourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZone.connectivity.create) {
-  name: landingZone.connectivity.name
-  location: location
-  tags: landingZone.connectivity.tags
-}
-
-var connectivityResourceGroupName = (landingZone.connectivity.create)
-  ? connectivityResourceGroup.name
-  : landingZone.connectivity.name
-
 @description('Deploy Connectivity Module')
 module connectivity '../src/connectivity/connectivityModule.bicep' = {
-  scope: resourceGroup(connectivityResourceGroupName)
   name: 'connectivity'
   params: {
     environment: environment
     workspaceId: monitoring.outputs.logAnalyticsId
+    location: location
+    landingZone: landingZone.connectivity
   }
 }
 
@@ -67,16 +55,16 @@ resource workloadResourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' =
   tags: landingZone.workload.tags
 }
 
-var workloadResourceGroupName = (landingZone.workload.create) ? workloadResourceGroup.name : landingZone.workload.name
 
 @description('Deploy Workload Module')
 module workload '../src/workload/devCenterModule.bicep' = {
-  scope: resourceGroup(workloadResourceGroupName)
   name: 'workload'
   params: {
     networkConnections: connectivity.outputs.networkConnections
     environment: environment
     workspaceId: monitoring.outputs.logAnalyticsId
+    landingZone: landingZone.workload
+    location: location
   }
 }
 

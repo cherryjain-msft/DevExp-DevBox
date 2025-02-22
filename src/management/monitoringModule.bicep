@@ -1,12 +1,15 @@
 targetScope = 'subscription'
 
+@description('Location for the deployment')
+param location string
+
 @description('Landing Zone')
 param landingZone object
 
 @description('Connectivity Resource Group')
 resource managementResourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZone.create) {
   name: landingZone.name
-  location: 'easus2'
+  location: location
   tags: {}
 }
 
