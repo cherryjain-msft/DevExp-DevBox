@@ -12,6 +12,12 @@ param networkConnections array
 @description('Workspace ID')
 param workspaceId string
 
+@description('Dev Center Compute Gallery')
+param computeGalleryName string
+
+@description('Compute Gallery ID')
+param computeGalleryId string
+
 @description('Dev Center settings')
 var settings = loadJsonContent('../../infra/settings/workload/settings.json')
 
@@ -36,6 +42,8 @@ module devCenter './devCenter.bicep' = {
     settings: settings
     networkConnections: networkConnections
     workspaceId: workspaceId
+    computeGalleryName: computeGalleryName
+    computeGalleryId: computeGalleryId
   }
 }
 

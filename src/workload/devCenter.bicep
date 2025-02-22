@@ -7,6 +7,12 @@ param workspaceId string
 @description('Dev Center settings')
 param settings object
 
+@description('Dev Center Compute Gallery')
+param computeGalleryName string
+
+@description('Compute Gallery ID')
+param computeGalleryId string
+
 @description('Dev Center Resource')
 resource devCenter 'Microsoft.DevCenter/devcenters@2024-10-01-preview' = {
   name: settings.devCenterName
@@ -89,28 +95,12 @@ output vNetAttachments array = [
   }
 ]
 
-@description('Compute Gallery')
-resource computeGallery 'Microsoft.Compute/galleries@2024-03-03' = if (settings.computeGallery.create) {
-  name: '${settings.computeGallery.name}${uniqueString(resourceGroup().id)}'
-  location: resourceGroup().location
-  tags: settings.computeGallery.tags
-  properties: {
-    description: 'Dev Center Compute Gallery'
-  }
-}
-
-@description('Compute Gallery ID')
-output computeGalleryId string = computeGallery.id
-
-@description('Compute Gallery Name')
-output computeGalleryName string = computeGallery.name
-
 @description('DevCenter Compute Gallery')
 resource devCenterGallery 'Microsoft.DevCenter/devcenters/galleries@2024-10-01-preview' = {
-  name: computeGallery.name
+  name: computeGalleryName
   parent: devCenter
   properties: {
-    galleryResourceId: computeGallery.id
+    galleryResourceId: computeGalleryId
   }
   dependsOn: [
     roleAssignments

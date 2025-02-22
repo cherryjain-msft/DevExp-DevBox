@@ -1,0 +1,12 @@
+{
+    "name": "imageComputeGallery",
+    "create": true,
+    "tags": {
+        "environment": "dev",
+        "division": "Platforms",
+        "team": "DevExp",
+        "project": "DevExp-DevBox",
+        "costCenter": "IT",
+        "owner": "Evilazaro"
+    }
+}

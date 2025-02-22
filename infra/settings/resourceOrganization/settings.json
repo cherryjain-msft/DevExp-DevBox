@@ -13,10 +13,10 @@
             "landingZone": "Connectivity"
         }
     },
-    "imageGallery": {
+    "computeGallery": {
         "create": true,
-        "name": "DevExp-ImageGallery",
-        "description": "ImageGallery",
+        "name": "DevExp-computeGallery",
+        "description": "computeGallery",
         "tags": {
             "environment": "dev",
             "division": "Platforms",
