@@ -1,13 +1,5 @@
 targetScope = 'subscription'
 
-@description('Deployment Environment')
-@allowed([
-  'dev'
-  'test'
-  'prod'
-])
-param environment string
-
 @description('Location')
 param location string
 
@@ -21,9 +13,7 @@ param networkConnections array
 param workspaceId string
 
 @description('Dev Center settings')
-var settings = environment == 'dev'
-  ? loadJsonContent('../../infra/settings/workload/settings.dev.json')
-  : loadJsonContent('../../infra/settings/workload/settings.prod.json')
+var settings = loadJsonContent('../../infra/settings/workload/settings.json')
 
 @description('Workload Resource Group')
 resource workloadResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = if (landingZone.create) {

@@ -3,23 +3,13 @@ targetScope = 'subscription'
 @description('Location for the deployment')
 param location string
 
-@description('Deployment Environment')
-@allowed([
-  'dev'
-  'test'
-  'prod'
-])
-param environment string
-
 @description('Log Analytics Workspace')
 param workspaceId string
 
 @description('Landing Zone Information')
 param landingZone object
 
-var networkSettings = environment == 'dev'
-  ? loadJsonContent('../../infra/settings/connectivity/settings-dev.json')
-  : loadJsonContent('../../infra/settings/connectivity/settings-prod.json')
+var networkSettings = loadJsonContent('../../infra/settings/connectivity/settings.json')
 
 @description('Resource Group')
 resource vNetResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = if (landingZone.create) {
