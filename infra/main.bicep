@@ -19,23 +19,12 @@ var landingZone = environment == 'dev'
   ? loadJsonContent('settings/resourceOrganization/settings-dev.json')
   : loadJsonContent('settings/resourceOrganization/settings-prod.json')
 
-@description('Connectivity Resource Group')
-resource managementResourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZone.management.create) {
-  name: landingZone.management.name
-  location: location
-  tags: landingZone.management.tags
-}
-
-var managementResourceGroupName = (landingZone.management.create)
-  ? managementResourceGroup.name
-  : landingZone.management.name
-
 @description('Monitoring Resources')
 module monitoring '../src/management/monitoringModule.bicep' = {
   scope: subscription()
   name: 'monitoring'
   params: {
-    name: landingZone.management.logAnalyticsName
+    landingZone: landingZone.management
   }
 }
 
