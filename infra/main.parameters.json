@@ -4,9 +4,6 @@
   "parameters": {
     "location": {
       "value": "${AZURE_LOCATION}"
-    },
-    "environment": {
-      "value": "${AZURE_ENV_NAME}"
     }
   }
 }
