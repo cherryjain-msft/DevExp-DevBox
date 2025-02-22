@@ -22,9 +22,11 @@ resource existingVNetResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-0
   name: landingZone.name
 }
 
+var vNetResourceGroupName = landingZone.create ? vNetResourceGroup.name : landingZone.name
+
 module vnet 'vnet.bicep' = {
   name: 'VirtualNetwork'
-  scope: (landingZone.create ? vNetResourceGroup : existingVNetResourceGroup)
+  scope: resourceGroup(vNetResourceGroupName)
   params: {
     networkSettings: networkSettings
     workspaceId: workspaceId

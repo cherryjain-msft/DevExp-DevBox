@@ -26,10 +26,12 @@ resource existingWorkloadResourceGroup 'Microsoft.Resources/resourceGroups@2021-
   name: landingZone.name
 }
 
+var resourceGroupName = landingZone.create ? workloadResourceGroup.name : landingZone.name
+
 @description('Dev Center Resource')
 module devCenter './devCenter.bicep' = {
   name: 'devCenter'
-  scope: (landingZone.create ? workloadResourceGroup : existingWorkloadResourceGroup)
+  scope: resourceGroup(resourceGroupName)
   params: {
     settings: settings
     networkConnections: networkConnections

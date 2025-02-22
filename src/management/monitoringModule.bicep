@@ -18,8 +18,10 @@ resource existingManagementResourceGroup 'Microsoft.Resources/resourceGroups@202
   name: landingZone.name
 }
 
+var resourceGroupName = landingZone.create ? managementResourceGroup.name : landingZone.name
+
 module logAnalytics 'logAnalytics.bicep' = {
-  scope: (landingZone.create ? managementResourceGroup : existingManagementResourceGroup)
+  scope: resourceGroup(resourceGroupName)
   name: 'logAnalitycs'
   params: {
     name: landingZone.logAnalyticsName
