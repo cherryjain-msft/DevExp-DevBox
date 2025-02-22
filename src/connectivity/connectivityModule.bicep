@@ -1,96 +1,41 @@
-@description('Deployment Environment')
-@allowed([
-  'dev'
-  'test'
-  'prod'
-])
-param environment string
+targetScope = 'subscription'
+
+@description('Location for the deployment')
+param location string
 
 @description('Log Analytics Workspace')
 param workspaceId string
 
-var networkSettings = environment == 'dev'
-  ? loadJsonContent('../../infra/settings/connectivity/settings-dev.json')
-  : loadJsonContent('../../infra/settings/connectivity/settings-prod.json')
+@description('Landing Zone Information')
+param landingZone object
 
-@description('Virtual Network')
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = if (networkSettings.create) {
-  name: networkSettings.name
-  location: resourceGroup().location
-  tags: networkSettings.tags
-  properties: {
-    addressSpace: {
-      addressPrefixes: networkSettings.addressPrefixes
-    }
-    subnets: [
-      for subnet in networkSettings.subnets: {
-        name: subnet.name
-        properties: {
-          addressPrefix: subnet.properties.addressPrefix
-        }
-      }
-    ]
-  }
+var networkSettings = loadJsonContent('../../infra/settings/connectivity/settings.json')
+
+@description('Resource Group')
+resource vNetResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = if (landingZone.create) {
+  name: landingZone.name
+  location: location
 }
 
-resource existingVNet 'Microsoft.Network/virtualNetworks@2024-05-01' existing = if (!networkSettings.create) {
-  name: networkSettings.name
-  scope: resourceGroup()
+@description('Existing Resource Group')
+resource existingVNetResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!landingZone.create) {
+  name: landingZone.name
 }
 
-@description('Network Diagnostic Settings')
-resource logAnalyticsDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (!networkSettings.create) {
-  name: 'virtualNetwork-DiagnosticSettings'
-  scope: virtualNetwork
-  properties: {
-    logAnalyticsDestinationType: 'AzureDiagnostics'
-    logs: [
-      {
-        categoryGroup: 'allLogs'
-        enabled: true
-      }
-    ]
-    metrics: [
-      {
-        category: 'AllMetrics'
-        enabled: true
-      }
-    ]
+var vNetResourceGroupName = landingZone.create ? vNetResourceGroup.name : landingZone.name
+
+module vnet 'vnet.bicep' = {
+  name: 'VirtualNetwork'
+  scope: resourceGroup(vNetResourceGroupName)
+  params: {
+    networkSettings: networkSettings
     workspaceId: workspaceId
   }
 }
 
-@description('Virtual Network Id')
-output virtualNetworkId string = (networkSettings.create) ? virtualNetwork.id : existingVNet.id
-
-@description('Virtual Network Subnets')
-output virtualNetworkSubnets array = [
-  for (subnet, i) in networkSettings.subnets: {
-    id: (networkSettings.create) ? virtualNetwork.properties.subnets[i].id : existingVNet.properties.subnets[i].id
-    name: (networkSettings.create) ? subnet.name : existingVNet.properties.subnets[i].name
-  }
-]
-
-@description('Virtual Network Name')
-output virtualNetworkName string = (networkSettings.create) ? virtualNetwork.name : existingVNet.name
-
-@description('Network Connections for the Virtual Network Subnets')
-resource networkConnection 'Microsoft.DevCenter/networkConnections@2024-10-01-preview' = [
-  for (subnet, i) in networkSettings.subnets: {
-    name: subnet.name
-    location: resourceGroup().location
-    tags: networkSettings.tags
-    properties: {
-      domainJoinType: 'AzureADJoin'
-      subnetId: (networkSettings.create) ? virtualNetwork.properties.subnets[i].id : existingVNet.properties.subnets[i].id
-    }
-  }
-]
-
-@description('Network Connections created')
-output networkConnections array = [
-  for (connection, i) in networkSettings.subnets: {
-    id: networkConnection[i].id
-    name: networkConnection[i].name
-  }
-]
+output connectivityResourceGroupName string = (landingZone.create
+  ? vNetResourceGroup.name
+  : existingVNetResourceGroup.name)
+output virtualNetworkId string = vnet.outputs.virtualNetworkId
+output virtualNetworkName string = vnet.outputs.virtualNetworkName
+output networkConnections array = vnet.outputs.networkConnections

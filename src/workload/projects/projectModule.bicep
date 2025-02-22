@@ -58,32 +58,72 @@ module projectRoleAssignments '../../identity/projectRoleAssignments.bicep' = {
 }
 
 @description('Project Catalogs')
-module projectCatalogs 'catalogs.bicep' = {
-  name: '${project.name}-catalogs'
-  scope: resourceGroup()
-  params: {
-    projectName: project.name
-    catalogs: catalogs
+resource catalog 'Microsoft.DevCenter/projects/catalogs@2024-10-01-preview' = [
+  for catalog in catalogs: {
+    name: catalog.name
+    parent: project
+    properties: {
+      gitHub: {
+        uri: catalog.uri
+        branch: catalog.branch
+        path: catalog.path
+      }
+    }
   }
-}
+]
 
 @description('Project Environments')
-module projectEnvironments 'projectEnvironmenType.bicep' = {
-  name: '${project.name}-environments'
-  scope: resourceGroup()
-  params: {
-    environments: environments
-    projectName: project.name
+resource projectEnvironments 'Microsoft.DevCenter/projects/environmentTypes@2024-10-01-preview' = [
+  for environment in environments: {
+    name: environment.name
+    parent: project
+    tags: environment.tags
+    identity: {
+      type: 'SystemAssigned'
+    }
+    properties: {
+      displayName: environment.name
+      deploymentTargetId: subscription().id
+      status: 'Enabled'
+      creatorRoleAssignment: {
+        roles: toObject(environment.roles, role => role.id, role => role.properties)
+      }
+    }
   }
-}
+]
 
-@description('Project DevBox Pools')
-module projectDevBoxPools 'devboxPools.bicep' = {
-  name: '${project.name}-devBoxPools'
-  scope: resourceGroup()
-  params: {
-    projectName: project.name
-    pools: devBoxPools
+@description('Project Environments')
+output projectEnvironments array = [
+  for (environment, i) in environments: {
+    id: projectEnvironments[i].id
+    name: environment.name
   }
-}
+]
 
+resource devBoxPool 'Microsoft.DevCenter/projects/pools@2024-10-01-preview' = [
+  for pool in devBoxPools: {
+    name: pool.name
+    location: resourceGroup().location
+    parent: project
+    tags: {
+      tag1: 'value1'
+      tag2: 'value2'
+    }
+    properties: {
+      displayName: pool.name
+      devBoxDefinitionName: pool.devBoxDefinitionName
+      licenseType: 'Windows_Client'
+      localAdministrator: 'Enabled'
+      singleSignOnStatus: 'Enabled'
+      networkConnectionName: pool.networkConnectionName
+      virtualNetworkType: 'Unmanaged'
+    }
+  }
+]
+
+output devBoxPools array = [
+  for (pool, i) in devBoxPools: {
+    id: devBoxPool[i].id
+    name: pool.name
+  }
+]

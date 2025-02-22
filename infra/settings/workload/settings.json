@@ -1,10 +1,10 @@
 {
-    "devCenterName": "contosoDevCenter-prod",
+    "devCenterName": "DevExp-devCenter",
     "catalogItemSyncEnableStatus": "Enabled",
     "microsoftHostedNetworkEnableStatus": "Enabled",
     "installAzureMonitorAgentEnableStatus": "Enabled",
     "tags": {
-        "environment": "prod",
+        "environment": "dev",
         "division": "Platforms",
         "team": "DevExp",
         "project": "DevExp-DevBox",
@@ -26,18 +26,6 @@
         ],
         "userAssignedIdentities": {}
     },
-    "computeGallery": {
-        "name": "imageComputeGallery",
-        "create": true,
-        "tags": {
-            "environment": "prod",
-            "division": "Platforms",
-            "team": "DevExp",
-            "project": "DevExp-DevBox",
-            "costCenter": "IT",
-            "owner": "Evilazaro"
-        }
-    },
     "devBoxDefinitions": [
         {
             "name": "backEndEngineer",
@@ -47,7 +35,7 @@
             "hibernateSupport": "Disabled",
             "default": true,
             "tags": {
-                "environment": "prod",
+                "environment": "dev",
                 "division": "Platforms",
                 "team": "DevExp",
                 "project": "DevExp-DevBox",
@@ -63,7 +51,7 @@
             "hibernateSupport": "Enabled",
             "default": true,
             "tags": {
-                "environment": "prod",
+                "environment": "dev",
                 "division": "Platforms",
                 "team": "DevExp",
                 "project": "DevExp-DevBox",
@@ -124,7 +112,7 @@
                         }
                     ],
                     "tags": {
-                        "environment": "prod",
+                        "environment": "dev",
                         "division": "Platforms",
                         "team": "DevExp",
                         "project": "DevExp-DevBox",
@@ -141,7 +129,7 @@
                         }
                     ],
                     "tags": {
-                        "environment": "prod",
+                        "environment": "dev",
                         "division": "Platforms",
                         "team": "DevExp",
                         "project": "DevExp-DevBox",
@@ -158,7 +146,7 @@
                         }
                     ],
                     "tags": {
-                        "environment": "prod",
+                        "environment": "dev",
                         "division": "Platforms",
                         "team": "DevExp",
                         "project": "DevExp-DevBox",
@@ -180,7 +168,7 @@
                 }
             ],
             "tags": {
-                "environment": "prod",
+                "environment": "dev",
                 "division": "Platforms",
                 "team": "DevExp",
                 "project": "DevExp-DevBox",
@@ -223,7 +211,7 @@
                         }
                     ],
                     "tags": {
-                        "environment": "prod",
+                        "environment": "dev",
                         "division": "Platforms",
                         "team": "DevExp",
                         "project": "DevExp-DevBox",
@@ -240,7 +228,7 @@
                         }
                     ],
                     "tags": {
-                        "environment": "prod",
+                        "environment": "dev",
                         "division": "Platforms",
                         "team": "DevExp",
                         "project": "DevExp-DevBox",
@@ -262,7 +250,7 @@
                 }
             ],
             "tags": {
-                "environment": "prod",
+                "environment": "dev",
                 "division": "Platforms",
                 "team": "DevExp",
                 "project": "DevExp-DevBox",
@@ -275,7 +263,7 @@
         {
             "name": "dev",
             "tags": {
-                "environment": "prod",
+                "environment": "dev",
                 "division": "Platforms",
                 "team": "DevExp",
                 "project": "DevExp-DevBox",
@@ -286,7 +274,7 @@
         {
             "name": "prod",
             "tags": {
-                "environment": "prod",
+                "environment": "dev",
                 "division": "Platforms",
                 "team": "DevExp",
                 "project": "DevExp-DevBox",
@@ -297,7 +285,7 @@
         {
             "name": "staging",
             "tags": {
-                "environment": "prod",
+                "environment": "dev",
                 "division": "Platforms",
                 "team": "DevExp",
                 "project": "DevExp-DevBox",

@@ -1,10 +1,10 @@
 {
     "connectivity": {
         "create": true, // Creates a new resource group if true
-        "name": "Connectivity-prod",
+        "name": "DevExp-Connectivity",
         "description": "connectivity",
         "tags": {
-            "environment": "prod",
+            "environment": "dev",
             "division": "Platforms",
             "team": "DevExp",
             "project": "DevExp-DevBox",
@@ -13,12 +13,12 @@
             "landingZone": "Connectivity"
         }
     },
-    "identity": {
+    "computeGallery": {
         "create": true,
-        "name": "Identity-prod",
-        "description": "identity",
+        "name": "DevExp-computeGallery",
+        "description": "computeGallery",
         "tags": {
-            "environment": "prod",
+            "environment": "dev",
             "division": "Platforms",
             "team": "DevExp",
             "project": "DevExp-DevBox",
@@ -29,11 +29,11 @@
     },
     "management": {
         "create": true,
-        "name": "Management-prod",
-        "logAnalyticsName": "loganalytics-prod",
+        "name": "DevExp-Management",
+        "logAnalyticsName": "loganalytics-dev",
         "description": "management",
         "tags": {
-            "environment": "prod",
+            "environment": "dev",
             "division": "Platforms",
             "team": "DevExp",
             "project": "DevExp-DevBox",
@@ -44,10 +44,10 @@
     },
     "workload": {
         "create": true,
-        "name": "Workload-prod",
+        "name": "DevExp-Workload",
         "description": "prodExp",
         "tags": {
-            "environment": "prod",
+            "environment": "dev",
             "division": "Platforms",
             "team": "DevExp",
             "project": "DevExp-DevBox",
