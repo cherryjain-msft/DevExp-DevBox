@@ -1,5 +1,5 @@
 {
-    "name": "imageComputeGallery",
+    "name": "computeGallery",
     "create": true,
     "tags": {
         "environment": "dev",

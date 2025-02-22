@@ -2,7 +2,7 @@
 param settings object
 
 @description('Compute Gallery')
-resource computeGallery 'Microsoft.Compute/galleries@2024-03-03' = if (settings.computeGallery.create) {
+resource computeGallery 'Microsoft.Compute/galleries@2024-03-03' = if (settings.create) {
   name: '${settings.name}${uniqueString(resourceGroup().id)}'
   location: resourceGroup().location
   tags: settings.tags
