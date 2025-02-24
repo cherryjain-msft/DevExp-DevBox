@@ -6,16 +6,6 @@ metadata:
   description: A development box for building and testing Azure Dev CLI
   version: 0.1.0
 
-hooks:
-  preprovision: 
-    windows:
-      shell: pwsh
-      run: |
-        echo "Running preprovision hook"
-        ./configuration/setup/powershell/setUp.ps1
-      continueOnError: false
-      interactive: false
-
 infra:
   provider: bicep
   path: ./infra/main.bicep

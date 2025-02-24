@@ -9,6 +9,7 @@ $solutionName = "DevExp"
 $workloadResourceGroup = "DevExp-Workload"
 $connectivityResourceGroup = "DevExp-Connectivity"
 $managemwentResourceGroup = "DevExp-Management"
+$computeResourceGroup = "DevExp-Compute"
 
 # Function to delete a resource group
 function Remove-ResourceGroup {
@@ -50,6 +51,7 @@ function Remove-Resources {
         Remove-ResourceGroup -resourceGroupName $workloadResourceGroup
         Remove-ResourceGroup -resourceGroupName $connectivityResourceGroup
         Remove-ResourceGroup -resourceGroupName $managemwentResourceGroup
+        Remove-ResourceGroup -resourceGroupName $computeResourceGroup
         Remove-ResourceGroup -resourceGroupName "NetworkWatcherRG"
         Remove-ResourceGroup -resourceGroupName "Default-ActivityLogAlerts"
         Remove-ResourceGroup -resourceGroupName "DefaultResourceGroup-WUS2"
