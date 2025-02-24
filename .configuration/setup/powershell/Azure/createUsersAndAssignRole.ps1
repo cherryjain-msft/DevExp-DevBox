@@ -17,6 +17,16 @@ function Set-Role {
     )
 
     try {
+        Write-Output "Checking if '$roleName' role is already assigned to identityId $userIdentityId..."
+
+        # Check if the role is already assigned
+        $existingAssignment = az role assignment list --assignee $userIdentityId --role $roleName --scope /subscriptions/$subscriptionId --query "[?principalType=='$idType']" -o tsv
+
+        if ($existingAssignment) {
+            Write-Output "Role '$roleName' is already assigned to identityId $userIdentityId. Skipping assignment."
+            return 0
+        }
+
         Write-Output "Assigning '$roleName' role to identityId $userIdentityId..."
 
         # Attempt to assign the role
