@@ -39,10 +39,8 @@ module vnetDiagnosticSettings '../management/diagnosticSettings.bicep'= {
   }
 } 
 
-@description('Virtual Network Id')
 output virtualNetworkId string = (networkSettings.create) ? virtualNetwork.id : existingVNet.id
 
-@description('Virtual Network Subnets')
 output virtualNetworkSubnets array = [
   for (subnet, i) in networkSettings.subnets: {
     id: (networkSettings.create) ? virtualNetwork.properties.subnets[i].id : existingVNet.properties.subnets[i].id
@@ -50,7 +48,6 @@ output virtualNetworkSubnets array = [
   }
 ]
 
-@description('Virtual Network Name')
 output virtualNetworkName string = (networkSettings.create) ? virtualNetwork.name : existingVNet.name
 
 @description('Network Connections for the Virtual Network Subnets')
@@ -68,7 +65,6 @@ resource networkConnection 'Microsoft.DevCenter/networkConnections@2024-10-01-pr
   }
 ]
 
-@description('Network Connections created')
 output networkConnections array = [
   for (connection, i) in networkSettings.subnets: {
     id: networkConnection[i].id

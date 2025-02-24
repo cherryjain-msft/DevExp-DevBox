@@ -40,10 +40,7 @@ resource project 'Microsoft.DevCenter/projects@2024-10-01-preview' = {
   }
 }
 
-@description('Project ID')
 output id string = project.id
-
-@description('Project Name')
 output name string = project.name
 
 @description('Dev Center Projects Role Assignments')
@@ -92,7 +89,6 @@ resource projectEnvironments 'Microsoft.DevCenter/projects/environmentTypes@2024
   }
 ]
 
-@description('Project Environments')
 output projectEnvironments array = [
   for (environment, i) in environments: {
     id: projectEnvironments[i].id

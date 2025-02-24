@@ -10,9 +10,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-10
   }
 }
 
-@description('The ID of the Log Analytics workspace.')
 output workspaceId string = logAnalyticsWorkspace.id
-
 output logAnalyticsId string = logAnalyticsWorkspace.id
 output logAnalyticsName string = logAnalyticsWorkspace.name
 
@@ -24,3 +22,7 @@ module logAnalyticsDiagnostics 'diagnosticSettings.bicep' = {
     workspaceId: logAnalyticsWorkspace.id
   }
 }
+
+output diagnosticSettingsId string = logAnalyticsDiagnostics.outputs.diagnosticSettingsId
+output diagnosticSettingsName string = logAnalyticsDiagnostics.outputs.diagnosticSettingsName
+output diagnosticSettingsType string = logAnalyticsDiagnostics.outputs.diagnosticSettingsType

@@ -16,9 +16,7 @@ module monitoring '../src/management/monitoringModule.bicep' = {
   }
 }
 
-@description('Monitoring Log Analytics Id')
 output monitoringLogAnalyticsId string = monitoring.outputs.logAnalyticsId
-@description('Monitoring Log Analytics Name')
 output monitoringLogAnalyticsName string = monitoring.outputs.logAnalyticsName
 
 @description('Deploy Connectivity Module')
@@ -31,10 +29,7 @@ module connectivity '../src/connectivity/connectivityModule.bicep' = {
   }
 }
 
-@description('Connectivity vNet Id')
 output connectivityVNetId string = connectivity.outputs.virtualNetworkId
-
-@description('Connectivity vNet Name')
 output connectivityVNetName string = connectivity.outputs.virtualNetworkName
 
 @description('Compute Gallery')
@@ -59,11 +54,6 @@ module workload '../src/workload/devCenterModule.bicep' = {
   }
 }
 
-@description('Workload Resource Group')
 output workloadResourceGroup string = workload.outputs.workloadResourceGroupName
-
-@description('Workload Dev Center Id')
 output workloadDevCenterId string = workload.outputs.devCenterId
-
-@description('Workload Dev Center Name')
 output workloadDevCenterName string = workload.outputs.devCenterName

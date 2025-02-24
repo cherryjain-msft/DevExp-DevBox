@@ -11,8 +11,5 @@ resource computeGallery 'Microsoft.Compute/galleries@2024-03-03' = if (settings.
   }
 }
 
-@description('Compute Gallery ID')
 output computeGalleryId string = computeGallery.id
-
-@description('Compute Gallery Name')
 output computeGalleryName string = computeGallery.name

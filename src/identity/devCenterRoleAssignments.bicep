@@ -23,7 +23,6 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   }
 ]
 
-@description('Role Assignments')
 output roleAssignments array = [
   for (role, i) in roles: {
     id: roleAssignment[i].id

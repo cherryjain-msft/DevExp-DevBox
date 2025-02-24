@@ -35,10 +35,7 @@ resource devCenter 'Microsoft.DevCenter/devcenters@2024-10-01-preview' = {
   }
 }
 
-@description('Dev Center ID')
 output devCenterId string = devCenter.id
-
-@description('Dev Center Name')
 output devCenterName string = devCenter.name
 
 @description('Network Diagnostic Settings')
@@ -61,7 +58,6 @@ module roleAssignments '../identity/devCenterRoleAssignments.bicep' = {
   }
 }
 
-@description('Dev Center Role Assignments')
 output roleAssignments array = roleAssignments.outputs.roleAssignments
 
 @description('Deploys Network Connections for the Dev Center')
@@ -75,7 +71,6 @@ resource vNetAttachment 'Microsoft.DevCenter/devcenters/attachednetworks@2024-10
   }
 ]
 
-@description('Network Connections')
 output vNetAttachments array = [
   for (connection, i) in networkConnections: {
     id: vNetAttachment[i].id
@@ -114,7 +109,6 @@ resource devBoxDefinitions 'Microsoft.DevCenter/devcenters/devboxdefinitions@202
   }
 ]
 
-@description('Dev Center DevBox Definitions')
 output devBoxDefinitions array = [
   for (devBoxDefinition, i) in settings.devBoxDefinitions: {
     id: devBoxDefinitions[i].id
@@ -147,7 +141,6 @@ resource catalogs 'Microsoft.DevCenter/devcenters/catalogs@2024-10-01-preview' =
   }
 ]
 
-@description('Dev Center Catalogs')
 output devCenterCatalogs array = [
   for (catalog, i) in settings.devCenterCatalogs: {
     id: catalogs[i].id
@@ -167,7 +160,6 @@ resource devCenterEnvironments 'Microsoft.DevCenter/devcenters/environmentTypes@
   }
 ]
 
-@description('Dev Center Environments')
 output devCenterEnvironments array = [
   for (environment, i) in settings.environmentTypes: {
     id: devCenterEnvironments[i].id
@@ -196,7 +188,6 @@ module projects 'projects/projectModule.bicep' = [
   }
 ]
 
-@description('Dev Center Projects')
 output projects array = [
   for (project, i) in settings.projects: {
     id: projects[i].outputs.id

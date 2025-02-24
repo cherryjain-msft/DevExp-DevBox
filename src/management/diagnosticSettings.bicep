@@ -42,3 +42,7 @@ resource logAnalyticsDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2
     workspaceId: workspaceId
   }
 }
+
+output diagnosticSettingsId string = logAnalyticsDiagnosticSettings.id
+output diagnosticSettingsName string = logAnalyticsDiagnosticSettings.name
+output diagnosticSettingsType string = logAnalyticsDiagnosticSettings.type

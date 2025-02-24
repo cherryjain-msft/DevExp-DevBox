@@ -26,3 +26,6 @@ module logAnalytics 'logAnalytics.bicep' = {
 output managementResourceGroupName string = (landingZone.create ? managementResourceGroup.name : landingZone.name)
 output logAnalyticsId string = logAnalytics.outputs.logAnalyticsId
 output logAnalyticsName string = logAnalytics.outputs.logAnalyticsName
+output diagnosticSettingsId string = logAnalytics.outputs.diagnosticSettingsId
+output diagnosticSettingsName string = logAnalytics.outputs.diagnosticSettingsName
+output diagnosticSettingsType string = logAnalytics.outputs.diagnosticSettingsType
