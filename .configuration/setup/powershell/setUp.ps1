@@ -46,36 +46,33 @@ function Set-Up {
         # .\Azure\generateDeploymentCredentials.ps1 -appName $appName -displayName $displayName
         .\Azure\createUsersAndAssignRole.ps1
 
-        Write-Host "Showing current Detaults Config..."
-        azd config show
+        # Check if environments already exist
+        $devEnvExists = azd env list | Select-String -Pattern "dev"
+        $prodEnvExists = azd env list | Select-String -Pattern "prod"
 
-        Write-Output "Resetting azd config..."
-        azd config reset --force
-
-        azd config show
-        if ($LASTEXITCODE -ne 0) {
-            throw "Failed to reset azd config."
-        }
-        azd config set defaults.AZURE_LOCATION "eastus"
-        if ($LASTEXITCODE -ne 0) {
-            throw "Failed to set default Azure location."
-        }
-        azd config set defaults.WORKLOAD_NAME "Contoso"
-        if ($LASTEXITCODE -ne 0) {
-            throw "Failed to set default workload name."
-        }
-        Write-Output "azd config reset successfully."
-        azd config show
-        Write-Output "Creating new environments..."
-        azd env new dev --no-prompt
-        if ($LASTEXITCODE -ne 0) {
+        if (-not $devEnvExists) {
+            Write-Output "Creating 'dev' environment..."
+            azd env new dev --no-prompt
+            if ($LASTEXITCODE -ne 0) {
             throw "Failed to create 'dev' environment."
+            }
+            Write-Output "'dev' environment created successfully."
         }
-        azd env new prod --no-prompt
-        if ($LASTEXITCODE -ne 0) {
+        else {
+            Write-Output "'dev' environment already exists."
+        }
+
+        if (-not $prodEnvExists) {
+            Write-Output "Creating 'prod' environment..."
+            azd env new prod --no-prompt
+            if ($LASTEXITCODE -ne 0) {
             throw "Failed to create 'prod' environment."
+            }
+            Write-Output "'prod' environment created successfully."
         }
-        Write-Output "Environments created successfully."
+        else {
+            Write-Output "'prod' environment already exists."
+        }
 
         Write-Output "Deployment credentials set up successfully."
     }
