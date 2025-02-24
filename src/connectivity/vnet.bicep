@@ -30,7 +30,7 @@ resource existingVNet 'Microsoft.Network/virtualNetworks@2024-05-01' existing = 
 }
 
 @description('Network Diagnostic Settings')
-resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (networkSettings.create) {
   name: virtualNetwork.name
   scope: virtualNetwork
   properties: {
@@ -60,25 +60,3 @@ output virtualNetworkSubnets array = [
 ]
 
 output virtualNetworkName string = (networkSettings.create) ? virtualNetwork.name : existingVNet.name
-
-@description('Network Connections for the Virtual Network Subnets')
-resource networkConnection 'Microsoft.DevCenter/networkConnections@2024-10-01-preview' = [
-  for (subnet, i) in networkSettings.subnets: {
-    name: subnet.name
-    location: resourceGroup().location
-    tags: networkSettings.tags
-    properties: {
-      domainJoinType: 'AzureADJoin'
-      subnetId: (networkSettings.create)
-        ? virtualNetwork.properties.subnets[i].id
-        : existingVNet.properties.subnets[i].id
-    }
-  }
-]
-
-output networkConnections array = [
-  for (connection, i) in networkSettings.subnets: {
-    id: networkConnection[i].id
-    name: networkConnection[i].name
-  }
-]

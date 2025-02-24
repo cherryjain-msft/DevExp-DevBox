@@ -1,5 +1,5 @@
-@description('networkConnections')
-param networkConnections array
+@description('subnets')
+param subnets array
 
 @description('Log Analytics Workspace')
 param workspaceId string
@@ -74,19 +74,32 @@ module roleAssignments '../identity/devCenterRoleAssignments.bicep' = {
 
 output roleAssignments array = roleAssignments.outputs.roleAssignments
 
-@description('Deploys Network Connections for the Dev Center')
-resource vNetConnections 'Microsoft.DevCenter/devcenters/attachednetworks@2024-10-01-preview' = [
-  for connection in networkConnections: {
-    name: connection.name
-    parent: devCenter
+@description('Network Connections for the Virtual Network Subnets')
+resource netConnection 'Microsoft.DevCenter/networkConnections@2024-10-01-preview' = [
+  for (subnet, i) in subnets: {
+    name: subnet.name
+    location: resourceGroup().location
+    tags: settings.tags
     properties: {
-      networkConnectionId: connection.id
+      domainJoinType: 'AzureADJoin'
+      subnetId: subnet.id
     }
   }
 ]
 
-output vNetAttachments array = [
-  for (connection, i) in networkConnections: {
+@description('Deploys Network Connections for the Dev Center')
+resource vNetConnections 'Microsoft.DevCenter/devcenters/attachednetworks@2024-10-01-preview' = [
+  for (connection, i) in subnets: {
+    name: connection.name
+    parent: devCenter
+    properties: {
+      networkConnectionId: netConnection[i].id
+    }
+  }
+]
+
+output devCenterVnetConnections array = [
+  for (connection, i) in subnets: {
     id: vNetConnections[i].id
     name: connection.name
   }

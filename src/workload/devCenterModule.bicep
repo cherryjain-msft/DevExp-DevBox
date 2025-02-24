@@ -7,7 +7,7 @@ param location string
 param landingZone object
 
 @description('Network Connections settings')
-param networkConnections array
+param sbunets array
 
 @description('Workspace ID')
 param workspaceId string
@@ -37,7 +37,7 @@ module devCenter './devCenter.bicep' = {
   scope: az.resourceGroup(resourceGroupName)
   params: {
     settings: settings
-    networkConnections: networkConnections
+    subnets: sbunets
     workspaceId: workspaceId
     computeGalleryName: computeGalleryName
     computeGalleryId: computeGalleryId

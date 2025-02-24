@@ -33,4 +33,4 @@ module virtualNetwork 'vnet.bicep' = {
 output connectivityResourceGroupName string = (landingZone.create ? resourceGroup.name : landingZone.name)
 output virtualNetworkId string = virtualNetwork.outputs.virtualNetworkId
 output virtualNetworkName string = virtualNetwork.outputs.virtualNetworkName
-output networkConnections array = virtualNetwork.outputs.networkConnections
+output virtualNetworkSubnets array = virtualNetwork.outputs.virtualNetworkSubnets

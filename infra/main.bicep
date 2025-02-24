@@ -33,6 +33,7 @@ module connectivity '../src/connectivity/connectivityModule.bicep' = {
 
 output connectivityVNetId string = connectivity.outputs.virtualNetworkId
 output connectivityVNetName string = connectivity.outputs.virtualNetworkName
+output virtualNetworkSubnets array = connectivity.outputs.virtualNetworkSubnets
 
 @description('Compute Gallery')
 module compute '../src/computegallery/computeGalleryModule.bicep' = {
@@ -47,7 +48,7 @@ module compute '../src/computegallery/computeGalleryModule.bicep' = {
 module workload '../src/workload/devCenterModule.bicep' = {
   name: 'workload-${formattedDateTime}'
   params: {
-    networkConnections: connectivity.outputs.networkConnections
+    sbunets: connectivity.outputs.virtualNetworkSubnets
     workspaceId: monitoring.outputs.logAnalyticsId
     landingZone: landingZone.workload
     location: location
