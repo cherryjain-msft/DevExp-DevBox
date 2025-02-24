@@ -15,7 +15,7 @@ output logAnalyticsId string = logAnalyticsWorkspace.id
 output logAnalyticsName string = logAnalyticsWorkspace.name
 
 @description('Log Analytics Diagnostic Settings')
-resource logAnalyticsDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
   name: logAnalyticsWorkspace.name
   scope: logAnalyticsWorkspace
   properties: {
@@ -37,6 +37,6 @@ resource logAnalyticsDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2
 }
 
 
-output diagnosticSettingsId string = logAnalyticsDiagnosticSettings.id
-output diagnosticSettingsName string = logAnalyticsDiagnosticSettings.name
-output diagnosticSettingsType string = logAnalyticsDiagnosticSettings.type
+output diagnosticSettingsId string = diagnosticSettings.id
+output diagnosticSettingsName string = diagnosticSettings.name
+output diagnosticSettingsType string = diagnosticSettings.type

@@ -33,7 +33,7 @@ output connectivityVNetId string = connectivity.outputs.virtualNetworkId
 output connectivityVNetName string = connectivity.outputs.virtualNetworkName
 
 @description('Compute Gallery')
-module computeGallery '../src/computegallery/computeGalleryModule.bicep'= {
+module compute '../src/computegallery/computeGalleryModule.bicep'= {
   name: 'compute'
   params: {
     location: location
@@ -49,8 +49,8 @@ module workload '../src/workload/devCenterModule.bicep' = {
     workspaceId: monitoring.outputs.logAnalyticsId
     landingZone: landingZone.workload
     location: location
-    computeGalleryName: computeGallery.outputs.computeGalleryName
-    computeGalleryId: computeGallery.outputs.computeGalleryId
+    computeGalleryName: compute.outputs.computeGalleryName
+    computeGalleryId: compute.outputs.computeGalleryId
   }
 }
 

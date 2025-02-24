@@ -22,17 +22,17 @@ param computeGalleryId string
 var settings = loadJsonContent('../../infra/settings/workload/settings.json')
 
 @description('Workload Resource Group')
-resource workloadResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = if (landingZone.create) {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = if (landingZone.create) {
   name: landingZone.name
   location: location
 }
 
-var resourceGroupName = landingZone.create ? workloadResourceGroup.name : landingZone.name
+var resourceGroupName = landingZone.create ? resourceGroup.name : landingZone.name
 
 @description('Dev Center Resource')
 module devCenter './devCenter.bicep' = {
   name: 'devCenter'
-  scope: resourceGroup(resourceGroupName)
+  scope: az.resourceGroup(resourceGroupName)
   params: {
     settings: settings
     networkConnections: networkConnections
@@ -44,4 +44,4 @@ module devCenter './devCenter.bicep' = {
 
 output devCenterId string = devCenter.outputs.devCenterId
 output devCenterName string = devCenter.outputs.devCenterName
-output workloadResourceGroupName string = (landingZone.create ? workloadResourceGroup.name : landingZone.name)
+output workloadResourceGroupName string = (landingZone.create ? resourceGroup.name : landingZone.name)

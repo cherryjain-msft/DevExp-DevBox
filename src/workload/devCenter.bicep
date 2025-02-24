@@ -39,7 +39,7 @@ output devCenterId string = devCenter.id
 output devCenterName string = devCenter.name
 
 @description('DevCenter Diagnostic Settings')
-resource logAnalyticsDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
   name: devCenter.name
   scope: devCenter
   properties: {
@@ -73,7 +73,7 @@ module roleAssignments '../identity/devCenterRoleAssignments.bicep' = {
 output roleAssignments array = roleAssignments.outputs.roleAssignments
 
 @description('Deploys Network Connections for the Dev Center')
-resource vNetAttachment 'Microsoft.DevCenter/devcenters/attachednetworks@2024-10-01-preview' = [
+resource vNetConnections 'Microsoft.DevCenter/devcenters/attachednetworks@2024-10-01-preview' = [
   for connection in networkConnections: {
     name: connection.name
     parent: devCenter
@@ -85,7 +85,7 @@ resource vNetAttachment 'Microsoft.DevCenter/devcenters/attachednetworks@2024-10
 
 output vNetAttachments array = [
   for (connection, i) in networkConnections: {
-    id: vNetAttachment[i].id
+    id: vNetConnections[i].id
     name: connection.name
   }
 ]
@@ -161,7 +161,7 @@ output devCenterCatalogs array = [
 ]
 
 @description('Dev Center Environments')
-resource devCenterEnvironments 'Microsoft.DevCenter/devcenters/environmentTypes@2024-10-01-preview' = [
+resource environmentTypes 'Microsoft.DevCenter/devcenters/environmentTypes@2024-10-01-preview' = [
   for environment in settings.environmentTypes: {
     name: environment.name
     parent: devCenter
@@ -174,7 +174,7 @@ resource devCenterEnvironments 'Microsoft.DevCenter/devcenters/environmentTypes@
 
 output devCenterEnvironments array = [
   for (environment, i) in settings.environmentTypes: {
-    id: devCenterEnvironments[i].id
+    id: environmentTypes[i].id
     name: environment.name
   }
 ]
@@ -194,7 +194,7 @@ module projects 'projects/projectModule.bicep' = [
       tags: project.tags
     }
     dependsOn: [
-      vNetAttachment
+      vNetConnections
       devBoxDefinitions
     ]
   }

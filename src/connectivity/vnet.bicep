@@ -30,7 +30,7 @@ resource existingVNet 'Microsoft.Network/virtualNetworks@2024-05-01' existing = 
 }
 
 @description('Network Diagnostic Settings')
-resource vnetDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
   name: virtualNetwork.name
   scope: virtualNetwork
   properties: {

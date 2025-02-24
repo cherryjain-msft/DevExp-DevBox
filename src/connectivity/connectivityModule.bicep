@@ -12,23 +12,23 @@ param landingZone object
 var networkSettings = loadJsonContent('../../infra/settings/connectivity/settings.json')
 
 @description('Resource Group')
-resource vNetResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = if (landingZone.create) {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = if (landingZone.create) {
   name: landingZone.name
   location: location
 }
 
-var vNetResourceGroupName = landingZone.create ? vNetResourceGroup.name : landingZone.name
+var vNetResourceGroupName = landingZone.create ? resourceGroup.name : landingZone.name
 
-module vnet 'vnet.bicep' = {
+module virtualNetwork 'vnet.bicep' = {
   name: 'VirtualNetwork'
-  scope: resourceGroup(vNetResourceGroupName)
+  scope: az.resourceGroup(vNetResourceGroupName)
   params: {
     networkSettings: networkSettings
     workspaceId: workspaceId
   }
 }
 
-output connectivityResourceGroupName string = (landingZone.create ? vNetResourceGroup.name : landingZone.name)
-output virtualNetworkId string = vnet.outputs.virtualNetworkId
-output virtualNetworkName string = vnet.outputs.virtualNetworkName
-output networkConnections array = vnet.outputs.networkConnections
+output connectivityResourceGroupName string = (landingZone.create ? resourceGroup.name : landingZone.name)
+output virtualNetworkId string = virtualNetwork.outputs.virtualNetworkId
+output virtualNetworkName string = virtualNetwork.outputs.virtualNetworkName
+output networkConnections array = virtualNetwork.outputs.networkConnections
