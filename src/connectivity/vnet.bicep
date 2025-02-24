@@ -30,15 +30,26 @@ resource existingVNet 'Microsoft.Network/virtualNetworks@2024-05-01' existing = 
 }
 
 @description('Network Diagnostic Settings')
-module vnetDiagnosticSettings '../management/diagnosticSettings.bicep'= {
-  name: 'vnetDiagnosticSettings'
-  params: {
-    resourceType: 'vNet'
-    resourceName: (networkSettings.create) ? virtualNetwork.name : existingVNet.name
+resource vnetDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: virtualNetwork.name
+  scope: virtualNetwork
+  properties: {
+    logAnalyticsDestinationType: 'AzureDiagnostics'
+    logs: [
+      {
+        categoryGroup: 'allLogs'
+        enabled: true
+      }
+    ]
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+      }
+    ]
     workspaceId: workspaceId
   }
-} 
-
+}
 output virtualNetworkId string = (networkSettings.create) ? virtualNetwork.id : existingVNet.id
 
 output virtualNetworkSubnets array = [

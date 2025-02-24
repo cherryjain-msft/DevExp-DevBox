@@ -14,15 +14,29 @@ output workspaceId string = logAnalyticsWorkspace.id
 output logAnalyticsId string = logAnalyticsWorkspace.id
 output logAnalyticsName string = logAnalyticsWorkspace.name
 
-module logAnalyticsDiagnostics 'diagnosticSettings.bicep' = {
-  name: 'logAnalyticsDiagnostics'
-  params: {
-    resourceType: 'loganalytics'
-    resourceName: logAnalyticsWorkspace.name
+@description('Log Analytics Diagnostic Settings')
+resource logAnalyticsDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: logAnalyticsWorkspace.name
+  scope: logAnalyticsWorkspace
+  properties: {
+    logAnalyticsDestinationType: 'AzureDiagnostics'
+    logs: [
+      {
+        categoryGroup: 'allLogs'
+        enabled: true
+      }
+    ]
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+      }
+    ]
     workspaceId: logAnalyticsWorkspace.id
   }
 }
 
-output diagnosticSettingsId string = logAnalyticsDiagnostics.outputs.diagnosticSettingsId
-output diagnosticSettingsName string = logAnalyticsDiagnostics.outputs.diagnosticSettingsName
-output diagnosticSettingsType string = logAnalyticsDiagnostics.outputs.diagnosticSettingsType
+
+output diagnosticSettingsId string = logAnalyticsDiagnosticSettings.id
+output diagnosticSettingsName string = logAnalyticsDiagnosticSettings.name
+output diagnosticSettingsType string = logAnalyticsDiagnosticSettings.type
