@@ -15,7 +15,7 @@
     },
     "computeGallery": {
         "create": true,
-        "name": "DevExp-computeGallery",
+        "name": "DevExp-Compute",
         "description": "computeGallery",
         "tags": {
             "environment": "dev",
