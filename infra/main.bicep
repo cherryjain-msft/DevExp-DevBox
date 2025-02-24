@@ -39,7 +39,7 @@ output connectivityVNetName string = connectivity.outputs.virtualNetworkName
 
 @description('Compute Gallery')
 module computeGallery '../src/computegallery/computeGalleryModule.bicep'= {
-  name: 'computeGallery'
+  name: 'compute'
   params: {
     location: location
     landingZone: landingZone.computeGallery

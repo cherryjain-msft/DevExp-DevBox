@@ -13,11 +13,6 @@ resource managementResourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01'
   tags: {}
 }
 
-@description('Existing Management Resource Group')
-resource existingManagementResourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' existing = if (!landingZone.create) {
-  name: landingZone.name
-}
-
 var resourceGroupName = landingZone.create ? managementResourceGroup.name : landingZone.name
 
 module logAnalytics 'logAnalytics.bicep' = {
@@ -28,8 +23,6 @@ module logAnalytics 'logAnalytics.bicep' = {
   }
 }
 
-output managementResourceGroupName string = (landingZone.create
-  ? managementResourceGroup.name
-  : existingManagementResourceGroup.name)
+output managementResourceGroupName string = (landingZone.create ? managementResourceGroup.name : landingZone.name)
 output logAnalyticsId string = logAnalytics.outputs.logAnalyticsId
 output logAnalyticsName string = logAnalytics.outputs.logAnalyticsName

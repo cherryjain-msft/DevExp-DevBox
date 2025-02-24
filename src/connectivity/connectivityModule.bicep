@@ -17,11 +17,6 @@ resource vNetResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = if 
   location: location
 }
 
-@description('Existing Resource Group')
-resource existingVNetResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!landingZone.create) {
-  name: landingZone.name
-}
-
 var vNetResourceGroupName = landingZone.create ? vNetResourceGroup.name : landingZone.name
 
 module vnet 'vnet.bicep' = {
@@ -33,9 +28,7 @@ module vnet 'vnet.bicep' = {
   }
 }
 
-output connectivityResourceGroupName string = (landingZone.create
-  ? vNetResourceGroup.name
-  : existingVNetResourceGroup.name)
+output connectivityResourceGroupName string = (landingZone.create ? vNetResourceGroup.name : landingZone.name)
 output virtualNetworkId string = vnet.outputs.virtualNetworkId
 output virtualNetworkName string = vnet.outputs.virtualNetworkName
 output networkConnections array = vnet.outputs.networkConnections
