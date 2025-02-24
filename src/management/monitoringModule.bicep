@@ -6,6 +6,8 @@ param location string
 @description('Landing Zone')
 param landingZone object
 
+param formattedDateTime string = utcNow()
+
 @description('Connectivity Resource Group')
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZone.create) {
   name: landingZone.name
@@ -17,7 +19,7 @@ var resourceGroupName = landingZone.create ? resourceGroup.name : landingZone.na
 
 module logAnalytics 'logAnalytics.bicep' = {
   scope: az.resourceGroup(resourceGroupName)
-  name: 'logAnalitycs'
+  name: 'logAnalitycs-${formattedDateTime}'
   params: {
     name: landingZone.logAnalyticsName
   }

@@ -6,6 +6,7 @@ param location string
 @description('Landing Zone Information')
 param landingZone object
 
+param formattedDateTime string = utcNow()
 
 var settings = loadJsonContent('../../infra/settings/computegallery/settings.json')
 
@@ -18,8 +19,8 @@ resource imageGalleryResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-0
 var resourceGroupName = landingZone.create ? imageGalleryResourceGroup.name : landingZone.name
 
 @description('Compute Gallery')
-module computeGallery  'computeGallery.bicep' = {
-  name: 'computeGallery'
+module computeGallery 'computeGallery.bicep' = {
+  name: 'computeGallery-${formattedDateTime}'
   scope: resourceGroup(resourceGroupName)
   params: {
     settings: settings
@@ -28,5 +29,3 @@ module computeGallery  'computeGallery.bicep' = {
 
 output computeGalleryId string = computeGallery.outputs.computeGalleryId
 output computeGalleryName string = computeGallery.outputs.computeGalleryName
-
-

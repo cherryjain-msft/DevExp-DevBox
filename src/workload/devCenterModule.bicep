@@ -18,6 +18,8 @@ param computeGalleryName string
 @description('Compute Gallery ID')
 param computeGalleryId string
 
+param formattedDateTime string = utcNow()
+
 @description('Dev Center settings')
 var settings = loadJsonContent('../../infra/settings/workload/settings.json')
 
@@ -31,7 +33,7 @@ var resourceGroupName = landingZone.create ? resourceGroup.name : landingZone.na
 
 @description('Dev Center Resource')
 module devCenter './devCenter.bicep' = {
-  name: 'devCenter'
+  name: 'devCenter-${formattedDateTime}'
   scope: az.resourceGroup(resourceGroupName)
   params: {
     settings: settings

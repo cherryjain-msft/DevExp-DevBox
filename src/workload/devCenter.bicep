@@ -13,6 +13,8 @@ param computeGalleryName string
 @description('Compute Gallery ID')
 param computeGalleryId string
 
+param formattedDateTime string = utcNow()
+
 @description('Dev Center Resource')
 resource devCenter 'Microsoft.DevCenter/devcenters@2024-10-01-preview' = {
   name: settings.devCenterName
@@ -61,7 +63,7 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
 }
 
 module roleAssignments '../identity/devCenterRoleAssignments.bicep' = {
-  name: 'roleAssignments'
+  name: 'roleAssignments-${formattedDateTime}'
   scope: subscription()
   params: {
     scope: 'subscription'
@@ -182,7 +184,7 @@ output devCenterEnvironments array = [
 @description('Dev Center Projects')
 module projects 'projects/projectModule.bicep' = [
   for project in settings.projects: {
-    name: '${project.name}-project'
+    name: '${project.name}-project-${formattedDateTime}'
     scope: resourceGroup()
     params: {
       name: project.name

@@ -6,10 +6,12 @@ param location string
 @description('Landing Zone Information')
 var landingZone = loadJsonContent('settings/resourceOrganization/settings.json')
 
+param formattedDateTime string = utcNow()
+
 @description('Monitoring Resources')
 module monitoring '../src/management/monitoringModule.bicep' = {
   scope: subscription()
-  name: 'monitoring'
+  name: 'monitoring-${formattedDateTime}'
   params: {
     landingZone: landingZone.management
     location: location
@@ -21,7 +23,7 @@ output monitoringLogAnalyticsName string = monitoring.outputs.logAnalyticsName
 
 @description('Deploy Connectivity Module')
 module connectivity '../src/connectivity/connectivityModule.bicep' = {
-  name: 'connectivity'
+  name: 'connectivity-${formattedDateTime}'
   params: {
     workspaceId: monitoring.outputs.logAnalyticsId
     location: location
@@ -33,8 +35,8 @@ output connectivityVNetId string = connectivity.outputs.virtualNetworkId
 output connectivityVNetName string = connectivity.outputs.virtualNetworkName
 
 @description('Compute Gallery')
-module compute '../src/computegallery/computeGalleryModule.bicep'= {
-  name: 'compute'
+module compute '../src/computegallery/computeGalleryModule.bicep' = {
+  name: 'compute-${formattedDateTime}'
   params: {
     location: location
     landingZone: landingZone.computeGallery
@@ -43,7 +45,7 @@ module compute '../src/computegallery/computeGalleryModule.bicep'= {
 
 @description('Deploy Workload Module')
 module workload '../src/workload/devCenterModule.bicep' = {
-  name: 'workload'
+  name: 'workload-${formattedDateTime}'
   params: {
     networkConnections: connectivity.outputs.networkConnections
     workspaceId: monitoring.outputs.logAnalyticsId

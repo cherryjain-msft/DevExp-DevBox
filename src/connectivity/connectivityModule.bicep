@@ -9,6 +9,8 @@ param workspaceId string
 @description('Landing Zone Information')
 param landingZone object
 
+param formattedDateTime string = utcNow()
+
 var networkSettings = loadJsonContent('../../infra/settings/connectivity/settings.json')
 
 @description('Resource Group')
@@ -20,7 +22,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = if (lan
 var vNetResourceGroupName = landingZone.create ? resourceGroup.name : landingZone.name
 
 module virtualNetwork 'vnet.bicep' = {
-  name: 'VirtualNetwork'
+  name: 'VirtualNetwork-${formattedDateTime}'
   scope: az.resourceGroup(vNetResourceGroupName)
   params: {
     networkSettings: networkSettings
