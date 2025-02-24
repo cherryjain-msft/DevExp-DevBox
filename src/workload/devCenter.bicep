@@ -42,26 +42,14 @@ output devCenterId string = devCenter.id
 output devCenterName string = devCenter.name
 
 @description('Network Diagnostic Settings')
-resource logAnalyticsDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
-  name: 'devCenter-DiagnosticSettings'
-  scope: devCenter
-  properties: {
-    logAnalyticsDestinationType: 'AzureDiagnostics'
-    logs: [
-      {
-        categoryGroup: 'allLogs'
-        enabled: true
-      }
-    ]
-    metrics: [
-      {
-        category: 'AllMetrics'
-        enabled: true
-      }
-    ]
+module devCenterDiagnosticSettings '../management/diagnosticSettings.bicep'= {
+  name: 'vnetDiagnosticSettings'
+  params: {
+    resourceType: 'devcenter'
+    resourceName: devCenter.name
     workspaceId: workspaceId
   }
-}
+} 
 
 module roleAssignments '../identity/devCenterRoleAssignments.bicep' = {
   name: 'roleAssignments'

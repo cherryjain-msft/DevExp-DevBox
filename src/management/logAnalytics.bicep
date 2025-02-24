@@ -15,3 +15,12 @@ output workspaceId string = logAnalyticsWorkspace.id
 
 output logAnalyticsId string = logAnalyticsWorkspace.id
 output logAnalyticsName string = logAnalyticsWorkspace.name
+
+module logAnalyticsDiagnostics 'diagnosticSettings.bicep' = {
+  name: 'logAnalyticsDiagnostics'
+  params: {
+    resourceType: 'loganalytics'
+    resourceName: logAnalyticsWorkspace.name
+    workspaceId: logAnalyticsWorkspace.id
+  }
+}
