@@ -17,6 +17,7 @@ var networkSettings = loadJsonContent('../../infra/settings/connectivity/setting
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = if (landingZone.create) {
   name: landingZone.name
   location: location
+  tags: landingZone.tags
 }
 
 var vNetResourceGroupName = landingZone.create ? resourceGroup.name : landingZone.name

@@ -27,6 +27,7 @@ var settings = loadJsonContent('../../infra/settings/workload/settings.json')
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = if (landingZone.create) {
   name: landingZone.name
   location: location
+  tags: landingZone.tags
 }
 
 var resourceGroupName = landingZone.create ? resourceGroup.name : landingZone.name

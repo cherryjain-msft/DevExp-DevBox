@@ -12,7 +12,7 @@ param formattedDateTime string = utcNow()
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZone.create) {
   name: landingZone.name
   location: location
-  tags: {}
+  tags: landingZone.tags
 }
 
 var resourceGroupName = landingZone.create ? resourceGroup.name : landingZone.name
