@@ -56,7 +56,7 @@ output computeGalleryName string = compute.outputs.computeGalleryName
 
 @description('Deploy Workload Module')
 module workload '../src/workload/devCenterModule.bicep' = {
-  name: 'workload-${formattedDateTime}'
+  name: 'workload-${environmentName}-${formattedDateTime}'
   params: {
     environmentName: environmentName
     sbunets: connectivity.outputs.virtualNetworkSubnets
