@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 @description('Location for the deployment')
-param location string
+param location string = 'eastus2'
 
 @description('Landing Zone Information')
 var landingZone = loadJsonContent('settings/resourceOrganization/settings.json')
@@ -43,6 +43,9 @@ module compute '../src/compute/computeGalleryModule.bicep' = {
     location: location
     landingZone: landingZone.computeGallery
   }
+  dependsOn: [
+    connectivity
+  ]
 }
 
 output computeGalleryName string = compute.outputs.computeGalleryName
