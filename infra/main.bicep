@@ -16,7 +16,7 @@ param formattedDateTime string = utcNow()
 @description('Monitoring Resources')
 module monitoring '../src/management/monitoringModule.bicep' = {
   scope: subscription()
-  name: 'monitoring-${formattedDateTime}'
+  name: 'monitoring-${environmentName}-${formattedDateTime}'
   params: {
     environmentName: environmentName
     landingZone: landingZone.management
@@ -29,7 +29,7 @@ output monitoringLogAnalyticsName string = monitoring.outputs.logAnalyticsName
 
 @description('Deploy Connectivity Module')
 module connectivity '../src/connectivity/connectivityModule.bicep' = {
-  name: 'connectivity-${formattedDateTime}'
+  name: 'connectivity-${environmentName}-${formattedDateTime}'
   params: {
     environmentName: environmentName
     workspaceId: monitoring.outputs.logAnalyticsId
@@ -43,7 +43,7 @@ output connectivityVNetName string = connectivity.outputs.virtualNetworkName
 
 @description('Compute Gallery')
 module compute '../src/compute/computeGalleryModule.bicep' = {
-  name: 'compute-${formattedDateTime}'
+  name: 'compute-${environmentName}-${formattedDateTime}'
   params: {
     environmentName: environmentName
     location: location
