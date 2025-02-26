@@ -48,3 +48,5 @@ module devCenter './devCenter.bicep' = {
 output devCenterId string = devCenter.outputs.devCenterId
 output devCenterName string = devCenter.outputs.devCenterName
 output workloadResourceGroupName string = (landingZone.create ? resourceGroup.name : landingZone.name)
+output devBoxDefinitions  array = devCenter.outputs.devBoxDefinitions
+

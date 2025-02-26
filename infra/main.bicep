@@ -63,3 +63,4 @@ module workload '../src/workload/devCenterModule.bicep' = {
 output workloadResourceGroup string = workload.outputs.workloadResourceGroupName
 output workloadDevCenterId string = workload.outputs.devCenterId
 output workloadDevCenterName string = workload.outputs.devCenterName
+output workloadDevBoxDefinitions array = workload.outputs.devBoxDefinitions

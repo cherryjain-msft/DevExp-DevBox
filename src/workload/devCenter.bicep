@@ -62,6 +62,10 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
   }
 }
 
+output diagnosticSettingsId string = diagnosticSettings.id
+output diagnosticSettingsName string = diagnosticSettings.name
+output diagnosticSettingsType string = diagnosticSettings.type
+
 module roleAssignments '../identity/devCenterRoleAssignments.bicep' = {
   name: 'roleAssignments-${formattedDateTime}'
   scope: subscription()
@@ -84,6 +88,13 @@ resource netConnection 'Microsoft.DevCenter/networkConnections@2024-10-01-previe
       domainJoinType: 'AzureADJoin'
       subnetId: subnet.id
     }
+  }
+]
+
+output netConnection array = [
+  for (connection, i) in subnets: {
+    id: netConnection[i].id
+    name: connection.name
   }
 ]
 
@@ -116,6 +127,9 @@ resource devCenterGallery 'Microsoft.DevCenter/devcenters/galleries@2024-10-01-p
     roleAssignments
   ]
 }
+
+output devCenterGalleryId string = devCenterGallery.id
+output devCenterGalleryName string = devCenterGallery.name
 
 @description('Dev Center DevBox Definitions')
 resource devBoxDefinitions 'Microsoft.DevCenter/devcenters/devboxdefinitions@2024-10-01-preview' = [
