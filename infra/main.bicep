@@ -37,7 +37,7 @@ output connectivityVNetName string = connectivity.outputs.virtualNetworkName
 output virtualNetworkSubnets array = connectivity.outputs.virtualNetworkSubnets
 
 @description('Compute Gallery')
-module compute '../src/computegallery/computeGalleryModule.bicep' = {
+module compute '../src/compute/computeGalleryModule.bicep' = {
   name: 'compute-${formattedDateTime}'
   params: {
     location: location
