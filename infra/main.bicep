@@ -24,7 +24,7 @@ module monitoring '../src/management/monitoringModule.bicep' = {
   }
 }
 
-output monitoringLogAnalyticsId string = monitoring.outputs.logAnalyticsId
+output monitoringResourceGroup string = monitoring.outputs.managementResourceGroupName
 output monitoringLogAnalyticsName string = monitoring.outputs.logAnalyticsName
 
 @description('Deploy Connectivity Module')
@@ -38,9 +38,8 @@ module connectivity '../src/connectivity/connectivityModule.bicep' = {
   }
 }
 
-output connectivityVNetId string = connectivity.outputs.virtualNetworkId
+output connectivityResourceGroup string = connectivity.outputs.connectivityResourceGroupName
 output connectivityVNetName string = connectivity.outputs.virtualNetworkName
-output virtualNetworkSubnets array = connectivity.outputs.virtualNetworkSubnets
 
 @description('Compute Gallery')
 module compute '../src/compute/computeGalleryModule.bicep' = {
@@ -52,8 +51,8 @@ module compute '../src/compute/computeGalleryModule.bicep' = {
   }
 }
 
+output computeResourceGroup string = compute.outputs.computeResourceGroupName
 output computeGalleryName string = compute.outputs.computeGalleryName
-output computeGalleryId string = compute.outputs.computeGalleryId
 
 @description('Deploy Workload Module')
 module workload '../src/workload/devCenterModule.bicep' = {
@@ -70,12 +69,5 @@ module workload '../src/workload/devCenterModule.bicep' = {
 }
 
 output workloadResourceGroup string = workload.outputs.workloadResourceGroupName
-output workloadDevCenterId string = workload.outputs.devCenterId
 output workloadDevCenterName string = workload.outputs.devCenterName
-output workloadRoleAssignments array = workload.outputs.roleAssignments
-output workloadNetConnections array = workload.outputs.netConnections
-output workloadDevBoxDefinitions array = workload.outputs.devBoxDefinitions
-output workloadDevCenterVnetAttachments array = workload.outputs.devCenterVnetAttachments
-output workloadDevCenterCatalogs array = workload.outputs.devCenterCatalogs
-output workloadDevCenterEnvironments array = workload.outputs.devCenterEnvironments
 output workloadDevCenterProjects array = workload.outputs.devCenterprojects
