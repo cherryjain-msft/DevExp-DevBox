@@ -1,5 +1,9 @@
 targetScope = 'subscription'
 
+@description('Environment Name')
+@allowed(['dev', 'staging', 'prod'])
+param environmentName string 
+
 @description('Location for the deployment')
 param location string
 
@@ -15,7 +19,7 @@ var networkSettings = loadJsonContent('../../infra/settings/connectivity/setting
 
 @description('Resource Group')
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = if (landingZone.create) {
-  name: landingZone.name
+  name: '${landingZone.name}-${environmentName}-rg'
   location: location
   tags: landingZone.tags
 }
@@ -32,6 +36,5 @@ module virtualNetwork 'vnet.bicep' = {
 }
 
 output connectivityResourceGroupName string = (landingZone.create ? resourceGroup.name : landingZone.name)
-output virtualNetworkId string = virtualNetwork.outputs.virtualNetworkId
 output virtualNetworkName string = virtualNetwork.outputs.virtualNetworkName
 output virtualNetworkSubnets array = virtualNetwork.outputs.virtualNetworkSubnets

@@ -1,5 +1,9 @@
 targetScope = 'subscription'
 
+@description('Environment Name')
+@allowed(['dev', 'staging', 'prod'])
+param environmentName string 
+
 @description('Location')
 param location string
 
@@ -25,7 +29,7 @@ var settings = loadJsonContent('../../infra/settings/workload/settings.json')
 
 @description('Workload Resource Group')
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = if (landingZone.create) {
-  name: landingZone.name
+  name: '${landingZone.name}-${environmentName}-rg'
   location: location
   tags: landingZone.tags
 }
@@ -45,13 +49,6 @@ module devCenter './devCenter.bicep' = {
   }
 }
 
-output devCenterId string = devCenter.outputs.devCenterId
 output devCenterName string = devCenter.outputs.devCenterName
 output workloadResourceGroupName string = (landingZone.create ? resourceGroup.name : landingZone.name)
-output roleAssignments array = devCenter.outputs.roleAssignments
-output netConnections array = devCenter.outputs.netConnections
-output devBoxDefinitions array = devCenter.outputs.devBoxDefinitions
-output devCenterVnetAttachments array = devCenter.outputs.devCenterVnetAttachments
-output devCenterCatalogs array = devCenter.outputs.devCenterCatalogs
-output devCenterEnvironments array = devCenter.outputs.devCenterEnvironments
 output devCenterprojects array = devCenter.outputs.devCenterprojects

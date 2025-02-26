@@ -1,5 +1,9 @@
 targetScope = 'subscription'
 
+@description('Environment Name')
+@allowed(['dev', 'staging', 'prod'])
+param environmentName string 
+
 @description('Location for the deployment')
 param location string = 'eastus2'
 
@@ -12,46 +16,49 @@ param formattedDateTime string = utcNow()
 @description('Monitoring Resources')
 module monitoring '../src/management/monitoringModule.bicep' = {
   scope: subscription()
-  name: 'monitoring-${formattedDateTime}'
+  name: 'monitoring-${environmentName}-${formattedDateTime}'
   params: {
+    environmentName: environmentName
     landingZone: landingZone.management
     location: location
   }
 }
 
-output monitoringLogAnalyticsId string = monitoring.outputs.logAnalyticsId
+output monitoringResourceGroup string = monitoring.outputs.managementResourceGroupName
 output monitoringLogAnalyticsName string = monitoring.outputs.logAnalyticsName
 
 @description('Deploy Connectivity Module')
 module connectivity '../src/connectivity/connectivityModule.bicep' = {
-  name: 'connectivity-${formattedDateTime}'
+  name: 'connectivity-${environmentName}-${formattedDateTime}'
   params: {
+    environmentName: environmentName
     workspaceId: monitoring.outputs.logAnalyticsId
     location: location
     landingZone: landingZone.connectivity
   }
 }
 
-output connectivityVNetId string = connectivity.outputs.virtualNetworkId
+output connectivityResourceGroup string = connectivity.outputs.connectivityResourceGroupName
 output connectivityVNetName string = connectivity.outputs.virtualNetworkName
-output virtualNetworkSubnets array = connectivity.outputs.virtualNetworkSubnets
 
 @description('Compute Gallery')
 module compute '../src/compute/computeGalleryModule.bicep' = {
-  name: 'compute-${formattedDateTime}'
+  name: 'compute-${environmentName}-${formattedDateTime}'
   params: {
+    environmentName: environmentName
     location: location
     landingZone: landingZone.computeGallery
   }
 }
 
+output computeResourceGroup string = compute.outputs.computeResourceGroupName
 output computeGalleryName string = compute.outputs.computeGalleryName
-output computeGalleryId string = compute.outputs.computeGalleryId
 
 @description('Deploy Workload Module')
 module workload '../src/workload/devCenterModule.bicep' = {
-  name: 'workload-${formattedDateTime}'
+  name: 'workload-${environmentName}-${formattedDateTime}'
   params: {
+    environmentName: environmentName
     sbunets: connectivity.outputs.virtualNetworkSubnets
     workspaceId: monitoring.outputs.logAnalyticsId
     landingZone: landingZone.workload
@@ -62,12 +69,5 @@ module workload '../src/workload/devCenterModule.bicep' = {
 }
 
 output workloadResourceGroup string = workload.outputs.workloadResourceGroupName
-output workloadDevCenterId string = workload.outputs.devCenterId
 output workloadDevCenterName string = workload.outputs.devCenterName
-output workloadRoleAssignments array = workload.outputs.roleAssignments
-output workloadNetConnections array = workload.outputs.netConnections
-output workloadDevBoxDefinitions array = workload.outputs.devBoxDefinitions
-output workloadDevCenterVnetAttachments array = workload.outputs.devCenterVnetAttachments
-output workloadDevCenterCatalogs array = workload.outputs.devCenterCatalogs
-output workloadDevCenterEnvironments array = workload.outputs.devCenterEnvironments
 output workloadDevCenterProjects array = workload.outputs.devCenterprojects

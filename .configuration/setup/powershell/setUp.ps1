@@ -42,37 +42,8 @@ function Set-Up {
             winget upgrade Microsoft.Azd -e --accept-source-agreements --accept-package-agreements
         }
 
-        # Execute the script to generate deployment credentials
-        # .\Azure\generateDeploymentCredentials.ps1 -appName $appName -displayName $displayName
         .\Azure\createUsersAndAssignRole.ps1
 
-        # Check if environments already exist
-        $devEnvExists = azd env list | Select-String -Pattern "dev"
-        $prodEnvExists = azd env list | Select-String -Pattern "prod"
-
-        if (-not $devEnvExists) {
-            Write-Output "Creating 'dev' environment..."
-            azd env new dev --no-prompt
-            if ($LASTEXITCODE -ne 0) {
-            throw "Failed to create 'dev' environment."
-            }
-            Write-Output "'dev' environment created successfully."
-        }
-        else {
-            Write-Output "'dev' environment already exists."
-        }
-
-        if (-not $prodEnvExists) {
-            Write-Output "Creating 'prod' environment..."
-            azd env new prod --no-prompt
-            if ($LASTEXITCODE -ne 0) {
-            throw "Failed to create 'prod' environment."
-            }
-            Write-Output "'prod' environment created successfully."
-        }
-        else {
-            Write-Output "'prod' environment already exists."
-        }
 
         Write-Output "Deployment credentials set up successfully."
     }
