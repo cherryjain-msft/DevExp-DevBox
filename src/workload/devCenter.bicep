@@ -17,7 +17,7 @@ param formattedDateTime string = utcNow()
 
 @description('Dev Center Resource')
 resource devCenter 'Microsoft.DevCenter/devcenters@2024-10-01-preview' = {
-  name: '${settings.devCenterName}-${uniqueString(resourceGroup().id)}'
+  name: settings.devCenterName
   location: resourceGroup().location
   tags: settings.tags
   identity: {
