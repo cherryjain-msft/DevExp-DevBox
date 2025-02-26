@@ -10,7 +10,8 @@
             "project": "DevExp-DevBox",
             "costCenter": "IT",
             "owner": "Evilazaro",
-            "landingZone": "Connectivity"
+            "landingZone": "Connectivity",
+            "resources": "ResourceGroup"
         }
     },
     "computeGallery": {
@@ -24,7 +25,8 @@
             "project": "DevExp-DevBox",
             "costCenter": "IT",
             "owner": "Evilazaro",
-            "landingZone": "Identity"
+            "landingZone": "Identity",
+            "resources": "ResourceGroup"
         }
     },
     "management": {
@@ -39,7 +41,8 @@
             "project": "DevExp-DevBox",
             "costCenter": "IT",
             "owner": "Evilazaro",
-            "landingZone": "Management"
+            "landingZone": "Management",
+            "resources": "ResourceGroup"
         }
     },
     "workload": {
@@ -53,7 +56,8 @@
             "project": "DevExp-DevBox",
             "costCenter": "IT",
             "owner": "Evilazaro",
-            "landingZone": "Workload"
+            "landingZone": "Workload",
+            "resources": "ResourceGroup"
         }
     }
 }

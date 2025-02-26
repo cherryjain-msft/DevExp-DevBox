@@ -9,7 +9,8 @@
         "team": "DevExp",
         "project": "DevExp-DevBox",
         "costCenter": "IT",
-        "owner": "Evilazaro"
+        "owner": "Evilazaro",
+        "resources": "DevCenter"
     },
     "identity": {
         "type": "SystemAssigned",
@@ -40,7 +41,8 @@
                 "team": "DevExp",
                 "project": "DevExp-DevBox",
                 "costCenter": "IT",
-                "owner": "Evilazaro"
+                "owner": "Evilazaro",
+                "resources": "DevBoxDefinition"
             }
         },
         {
@@ -56,7 +58,8 @@
                 "team": "DevExp",
                 "project": "DevExp-DevBox",
                 "costCenter": "IT",
-                "owner": "Evilazaro"
+                "owner": "Evilazaro",
+                "resources": "DevBoxDefinition"
             }
         }
     ],
@@ -117,7 +120,8 @@
                         "team": "DevExp",
                         "project": "DevExp-DevBox",
                         "costCenter": "IT",
-                        "owner": "Evilazaro"
+                        "owner": "Evilazaro",
+                        "resources": "Environment"
                     }
                 },
                 {
@@ -134,7 +138,8 @@
                         "team": "DevExp",
                         "project": "DevExp-DevBox",
                         "costCenter": "IT",
-                        "owner": "Evilazaro"
+                        "owner": "Evilazaro",
+                        "resources": "Environment"
                     }
                 },
                 {
@@ -151,7 +156,8 @@
                         "team": "DevExp",
                         "project": "DevExp-DevBox",
                         "costCenter": "IT",
-                        "owner": "Evilazaro"
+                        "owner": "Evilazaro",
+                        "resources": "Environment"
                     }
                 }
             ],
@@ -173,7 +179,8 @@
                 "team": "DevExp",
                 "project": "DevExp-DevBox",
                 "costCenter": "IT",
-                "owner": "Evilazaro"
+                "owner": "Evilazaro",
+                "resources": "DevBoxPool"
             }
         },
         {
@@ -216,7 +223,8 @@
                         "team": "DevExp",
                         "project": "DevExp-DevBox",
                         "costCenter": "IT",
-                        "owner": "Evilazaro"
+                        "owner": "Evilazaro",
+                        "resources": "Environment"
                     }
                 },
                 {
@@ -233,7 +241,8 @@
                         "team": "DevExp",
                         "project": "DevExp-DevBox",
                         "costCenter": "IT",
-                        "owner": "Evilazaro"
+                        "owner": "Evilazaro",
+                        "resources": "Environment"
                     }
                 }
             ],
@@ -255,7 +264,8 @@
                 "team": "DevExp",
                 "project": "DevExp-DevBox",
                 "costCenter": "IT",
-                "owner": "Evilazaro"
+                "owner": "Evilazaro",
+                "resources": "DevBoxPool"
             }
         }
     ],
@@ -268,7 +278,8 @@
                 "team": "DevExp",
                 "project": "DevExp-DevBox",
                 "costCenter": "IT",
-                "owner": "Evilazaro"
+                "owner": "Evilazaro",
+                "resources": "EnvironmentType"
             }
         },
         {
@@ -279,7 +290,8 @@
                 "team": "DevExp",
                 "project": "DevExp-DevBox",
                 "costCenter": "IT",
-                "owner": "Evilazaro"
+                "owner": "Evilazaro",
+                "resources": "EnvironmentType"
             }
         },
         {
@@ -290,7 +302,8 @@
                 "team": "DevExp",
                 "project": "DevExp-DevBox",
                 "costCenter": "IT",
-                "owner": "Evilazaro"
+                "owner": "Evilazaro",
+                "resources": "EnvironmentType"
             }
         }
     ]
