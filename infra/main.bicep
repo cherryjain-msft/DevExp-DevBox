@@ -44,6 +44,9 @@ module compute '../src/computegallery/computeGalleryModule.bicep' = {
   }
 }
 
+output computeGalleryName string = compute.outputs.computeGalleryName
+output computeGalleryId string = compute.outputs.computeGalleryId
+
 @description('Deploy Workload Module')
 module workload '../src/workload/devCenterModule.bicep' = {
   name: 'workload-${formattedDateTime}'
