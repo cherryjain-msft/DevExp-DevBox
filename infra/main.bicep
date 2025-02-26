@@ -6,6 +6,7 @@ param location string
 @description('Landing Zone Information')
 var landingZone = loadJsonContent('settings/resourceOrganization/settings.json')
 
+@description('Formatted Date Time')
 param formattedDateTime string = utcNow()
 
 @description('Monitoring Resources')
@@ -63,4 +64,10 @@ module workload '../src/workload/devCenterModule.bicep' = {
 output workloadResourceGroup string = workload.outputs.workloadResourceGroupName
 output workloadDevCenterId string = workload.outputs.devCenterId
 output workloadDevCenterName string = workload.outputs.devCenterName
+output workloadRoleAssignments array = workload.outputs.roleAssignments
+output workloadNetConnections array = workload.outputs.netConnections
 output workloadDevBoxDefinitions array = workload.outputs.devBoxDefinitions
+output workloadDevCenterVnetAttachments array = workload.outputs.devCenterVnetAttachments
+output workloadDevCenterCatalogs array = workload.outputs.devCenterCatalogs
+output workloadDevCenterEnvironments array = workload.outputs.devCenterEnvironments
+output workloadDevCenterProjects array = workload.outputs.devCenterprojects

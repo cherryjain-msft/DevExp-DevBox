@@ -91,7 +91,7 @@ resource netConnection 'Microsoft.DevCenter/networkConnections@2024-10-01-previe
   }
 ]
 
-output netConnection array = [
+output netConnections array = [
   for (connection, i) in subnets: {
     id: netConnection[i].id
     name: connection.name
@@ -99,7 +99,7 @@ output netConnection array = [
 ]
 
 @description('Deploys Network Connections for the Dev Center')
-resource vNetConnections 'Microsoft.DevCenter/devcenters/attachednetworks@2024-10-01-preview' = [
+resource devCenterVnetAttachment 'Microsoft.DevCenter/devcenters/attachednetworks@2024-10-01-preview' = [
   for (connection, i) in subnets: {
     name: connection.name
     parent: devCenter
@@ -109,9 +109,9 @@ resource vNetConnections 'Microsoft.DevCenter/devcenters/attachednetworks@2024-1
   }
 ]
 
-output devCenterVnetConnections array = [
+output devCenterVnetAttachments array = [
   for (connection, i) in subnets: {
-    id: vNetConnections[i].id
+    id: devCenterVnetAttachment[i].id
     name: connection.name
   }
 ]
@@ -223,13 +223,13 @@ module projects 'projects/projectModule.bicep' = [
       tags: project.tags
     }
     dependsOn: [
-      vNetConnections
+      devCenterVnetAttachment
       devBoxDefinitions
     ]
   }
 ]
 
-output projects array = [
+output devCenterprojects array = [
   for (project, i) in settings.projects: {
     id: projects[i].outputs.id
     name: project.name
