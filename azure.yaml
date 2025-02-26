@@ -6,6 +6,9 @@ metadata:
   description: A development box for building and testing Azure Dev CLI
   version: 0.1.0
 
+cloud:
+  name: AzureCloud
+
 infra:
   provider: bicep
   path: ./infra/main.bicep
