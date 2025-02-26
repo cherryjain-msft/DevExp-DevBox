@@ -5,11 +5,11 @@ $ErrorActionPreference = "Stop"
 $WarningPreference = "Stop"
 
 # Azure Resource Group Names Constants
-$solutionName = "DevExp"
-$workloadResourceGroup = "DevExp-Workload"
-$connectivityResourceGroup = "DevExp-Connectivity"
-$managemwentResourceGroup = "DevExp-Management"
-$computeResourceGroup = "DevExp-Compute"
+$solutionName = "DevExP"
+$workloadResourceGroup = "DevExP-Workload"
+$connectivityResourceGroup = "DevExP-Connectivity"
+$managemwentResourceGroup = "DevExP-Management"
+$computeResourceGroup = "DevExP-Compute"
 
 # Function to delete a resource group
 function Remove-ResourceGroup {

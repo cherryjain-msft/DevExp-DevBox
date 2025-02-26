@@ -1,13 +1,13 @@
 {
     "connectivity": {
         "create": true, // Creates a new resource group if true
-        "name": "DevExp-Connectivity",
+        "name": "DevExP-Connectivity",
         "description": "connectivity",
         "tags": {
             "environment": "dev",
             "division": "Platforms",
-            "team": "DevExp",
-            "project": "DevExp-DevBox",
+            "team": "DevExP",
+            "project": "DevExP-DevBox",
             "costCenter": "IT",
             "owner": "Evilazaro",
             "landingZone": "Connectivity",
@@ -16,13 +16,13 @@
     },
     "computeGallery": {
         "create": true,
-        "name": "DevExp-Compute",
+        "name": "DevExP-Compute",
         "description": "computeGallery",
         "tags": {
             "environment": "dev",
             "division": "Platforms",
-            "team": "DevExp",
-            "project": "DevExp-DevBox",
+            "team": "DevExP",
+            "project": "DevExP-DevBox",
             "costCenter": "IT",
             "owner": "Evilazaro",
             "landingZone": "Identity",
@@ -31,14 +31,14 @@
     },
     "management": {
         "create": true,
-        "name": "DevExp-Management",
+        "name": "DevExP-Management",
         "logAnalyticsName": "loganalytics-dev",
         "description": "management",
         "tags": {
             "environment": "dev",
             "division": "Platforms",
-            "team": "DevExp",
-            "project": "DevExp-DevBox",
+            "team": "DevExP",
+            "project": "DevExP-DevBox",
             "costCenter": "IT",
             "owner": "Evilazaro",
             "landingZone": "Management",
@@ -47,13 +47,13 @@
     },
     "workload": {
         "create": true,
-        "name": "DevExp-Workload",
+        "name": "DevExP-Workload",
         "description": "prodExp",
         "tags": {
             "environment": "dev",
             "division": "Platforms",
-            "team": "DevExp",
-            "project": "DevExp-DevBox",
+            "team": "DevExP",
+            "project": "DevExP-DevBox",
             "costCenter": "IT",
             "owner": "Evilazaro",
             "landingZone": "Workload",

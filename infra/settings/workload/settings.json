@@ -1,13 +1,13 @@
 {
-    "devCenterName": "DevExp",
+    "devCenterName": "DevExP",
     "catalogItemSyncEnableStatus": "Enabled",
     "microsoftHostedNetworkEnableStatus": "Enabled",
     "installAzureMonitorAgentEnableStatus": "Enabled",
     "tags": {
         "environment": "dev",
         "division": "Platforms",
-        "team": "DevExp",
-        "project": "DevExp-DevBox",
+        "team": "DevExP",
+        "project": "DevExP-DevBox",
         "costCenter": "IT",
         "owner": "Evilazaro",
         "resources": "DevCenter"
@@ -38,8 +38,8 @@
             "tags": {
                 "environment": "dev",
                 "division": "Platforms",
-                "team": "DevExp",
-                "project": "DevExp-DevBox",
+                "team": "DevExP",
+                "project": "DevExP-DevBox",
                 "costCenter": "IT",
                 "owner": "Evilazaro",
                 "resources": "DevBoxDefinition"
@@ -55,8 +55,8 @@
             "tags": {
                 "environment": "dev",
                 "division": "Platforms",
-                "team": "DevExp",
-                "project": "DevExp-DevBox",
+                "team": "DevExP",
+                "project": "DevExP-DevBox",
                 "costCenter": "IT",
                 "owner": "Evilazaro",
                 "resources": "DevBoxDefinition"
@@ -67,7 +67,7 @@
         {
             "gitHub": true,
             "name": "customTasks",
-            "uri": "https://github.com/Evilazaro/DevExp-DevBox.git",
+            "uri": "https://github.com/Evilazaro/DevExP-DevBox.git",
             "branch": "main",
             "path": ".configuration/devcenter/tasks"
         }
@@ -93,14 +93,14 @@
                 {
                     "gitHub": true,
                     "name": "environments",
-                    "uri": "https://github.com/Evilazaro/DevExp-DevBox.git",
+                    "uri": "https://github.com/Evilazaro/DevExP-DevBox.git",
                     "branch": "main",
                     "path": ".configuration"
                 },
                 {
                     "gitHub": true,
                     "name": "imageDefinitions",
-                    "uri": "https://github.com/Evilazaro/DevExp-DevBox.git",
+                    "uri": "https://github.com/Evilazaro/DevExP-DevBox.git",
                     "branch": "main",
                     "path": "deploy/settings/workload/tasks"
                 }
@@ -117,8 +117,8 @@
                     "tags": {
                         "environment": "dev",
                         "division": "Platforms",
-                        "team": "DevExp",
-                        "project": "DevExp-DevBox",
+                        "team": "DevExP",
+                        "project": "DevExP-DevBox",
                         "costCenter": "IT",
                         "owner": "Evilazaro",
                         "resources": "Environment"
@@ -135,8 +135,8 @@
                     "tags": {
                         "environment": "dev",
                         "division": "Platforms",
-                        "team": "DevExp",
-                        "project": "DevExp-DevBox",
+                        "team": "DevExP",
+                        "project": "DevExP-DevBox",
                         "costCenter": "IT",
                         "owner": "Evilazaro",
                         "resources": "Environment"
@@ -153,8 +153,8 @@
                     "tags": {
                         "environment": "dev",
                         "division": "Platforms",
-                        "team": "DevExp",
-                        "project": "DevExp-DevBox",
+                        "team": "DevExP",
+                        "project": "DevExP-DevBox",
                         "costCenter": "IT",
                         "owner": "Evilazaro",
                         "resources": "Environment"
@@ -176,8 +176,8 @@
             "tags": {
                 "environment": "dev",
                 "division": "Platforms",
-                "team": "DevExp",
-                "project": "DevExp-DevBox",
+                "team": "DevExP",
+                "project": "DevExP-DevBox",
                 "costCenter": "IT",
                 "owner": "Evilazaro",
                 "resources": "DevBoxPool"
@@ -220,8 +220,8 @@
                     "tags": {
                         "environment": "dev",
                         "division": "Platforms",
-                        "team": "DevExp",
-                        "project": "DevExp-DevBox",
+                        "team": "DevExP",
+                        "project": "DevExP-DevBox",
                         "costCenter": "IT",
                         "owner": "Evilazaro",
                         "resources": "Environment"
@@ -238,8 +238,8 @@
                     "tags": {
                         "environment": "dev",
                         "division": "Platforms",
-                        "team": "DevExp",
-                        "project": "DevExp-DevBox",
+                        "team": "DevExP",
+                        "project": "DevExP-DevBox",
                         "costCenter": "IT",
                         "owner": "Evilazaro",
                         "resources": "Environment"
@@ -261,8 +261,8 @@
             "tags": {
                 "environment": "dev",
                 "division": "Platforms",
-                "team": "DevExp",
-                "project": "DevExp-DevBox",
+                "team": "DevExP",
+                "project": "DevExP-DevBox",
                 "costCenter": "IT",
                 "owner": "Evilazaro",
                 "resources": "DevBoxPool"
@@ -275,8 +275,8 @@
             "tags": {
                 "environment": "dev",
                 "division": "Platforms",
-                "team": "DevExp",
-                "project": "DevExp-DevBox",
+                "team": "DevExP",
+                "project": "DevExP-DevBox",
                 "costCenter": "IT",
                 "owner": "Evilazaro",
                 "resources": "EnvironmentType"
@@ -287,8 +287,8 @@
             "tags": {
                 "environment": "dev",
                 "division": "Platforms",
-                "team": "DevExp",
-                "project": "DevExp-DevBox",
+                "team": "DevExP",
+                "project": "DevExP-DevBox",
                 "costCenter": "IT",
                 "owner": "Evilazaro",
                 "resources": "EnvironmentType"
@@ -299,8 +299,8 @@
             "tags": {
                 "environment": "dev",
                 "division": "Platforms",
-                "team": "DevExp",
-                "project": "DevExp-DevBox",
+                "team": "DevExP",
+                "project": "DevExP-DevBox",
                 "costCenter": "IT",
                 "owner": "Evilazaro",
                 "resources": "EnvironmentType"
