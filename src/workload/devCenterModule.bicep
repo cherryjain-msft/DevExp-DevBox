@@ -49,13 +49,6 @@ module devCenter './devCenter.bicep' = {
   }
 }
 
-output devCenterId string = devCenter.outputs.devCenterId
 output devCenterName string = devCenter.outputs.devCenterName
 output workloadResourceGroupName string = (landingZone.create ? resourceGroup.name : landingZone.name)
-output roleAssignments array = devCenter.outputs.roleAssignments
-output netConnections array = devCenter.outputs.netConnections
-output devBoxDefinitions array = devCenter.outputs.devBoxDefinitions
-output devCenterVnetAttachments array = devCenter.outputs.devCenterVnetAttachments
-output devCenterCatalogs array = devCenter.outputs.devCenterCatalogs
-output devCenterEnvironments array = devCenter.outputs.devCenterEnvironments
 output devCenterprojects array = devCenter.outputs.devCenterprojects

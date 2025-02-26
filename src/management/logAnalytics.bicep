@@ -38,4 +38,4 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
 
 output diagnosticSettingsId string = diagnosticSettings.id
 output diagnosticSettingsName string = diagnosticSettings.name
-output diagnosticSettingsType string = diagnosticSettings.type
+
