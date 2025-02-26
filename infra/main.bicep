@@ -43,9 +43,6 @@ module compute '../src/compute/computeGalleryModule.bicep' = {
     location: location
     landingZone: landingZone.computeGallery
   }
-  dependsOn: [
-    connectivity
-  ]
 }
 
 output computeGalleryName string = compute.outputs.computeGalleryName
