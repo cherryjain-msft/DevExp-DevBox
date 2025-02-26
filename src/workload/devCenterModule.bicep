@@ -1,5 +1,9 @@
 targetScope = 'subscription'
 
+@description('Environment Name')
+@allowed(['dev', 'staging', 'prod'])
+param environmentName string 
+
 @description('Location')
 param location string
 
@@ -25,7 +29,7 @@ var settings = loadJsonContent('../../infra/settings/workload/settings.json')
 
 @description('Workload Resource Group')
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = if (landingZone.create) {
-  name: landingZone.name
+  name: '${landingZone.name}-${environmentName}-rg'
   location: location
   tags: landingZone.tags
 }

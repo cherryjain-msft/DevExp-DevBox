@@ -1,5 +1,9 @@
 targetScope = 'subscription'
 
+@description('Environment Name')
+@allowed(['dev', 'staging', 'prod'])
+param environmentName string 
+
 @description('Location for the deployment')
 param location string
 
@@ -12,7 +16,7 @@ var settings = loadJsonContent('../../infra/settings/compute/settings.json')
 
 @description('Resource Group')
 resource imageGalleryResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = if (landingZone.create) {
-  name: landingZone.name
+  name: '${landingZone.name}-${environmentName}-rg'
   location: location
   tags: landingZone.tags
 }

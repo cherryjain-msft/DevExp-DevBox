@@ -1,5 +1,9 @@
 targetScope = 'subscription'
 
+@description('Environment Name')
+@allowed(['dev', 'staging', 'prod'])
+param environmentName string 
+
 @description('Location for the deployment')
 param location string = 'eastus2'
 
@@ -14,6 +18,7 @@ module monitoring '../src/management/monitoringModule.bicep' = {
   scope: subscription()
   name: 'monitoring-${formattedDateTime}'
   params: {
+    environmentName: environmentName
     landingZone: landingZone.management
     location: location
   }
@@ -26,6 +31,7 @@ output monitoringLogAnalyticsName string = monitoring.outputs.logAnalyticsName
 module connectivity '../src/connectivity/connectivityModule.bicep' = {
   name: 'connectivity-${formattedDateTime}'
   params: {
+    environmentName: environmentName
     workspaceId: monitoring.outputs.logAnalyticsId
     location: location
     landingZone: landingZone.connectivity
@@ -40,6 +46,7 @@ output virtualNetworkSubnets array = connectivity.outputs.virtualNetworkSubnets
 module compute '../src/compute/computeGalleryModule.bicep' = {
   name: 'compute-${formattedDateTime}'
   params: {
+    environmentName: environmentName
     location: location
     landingZone: landingZone.computeGallery
   }
@@ -52,6 +59,7 @@ output computeGalleryId string = compute.outputs.computeGalleryId
 module workload '../src/workload/devCenterModule.bicep' = {
   name: 'workload-${formattedDateTime}'
   params: {
+    environmentName: environmentName
     sbunets: connectivity.outputs.virtualNetworkSubnets
     workspaceId: monitoring.outputs.logAnalyticsId
     landingZone: landingZone.workload
