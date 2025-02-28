@@ -5,7 +5,7 @@ param subnets array
 param workspaceId string
 
 @description('Dev Center settings')
-param settings object
+param settings DevCenterSettings
 
 @description('Dev Center Compute Gallery')
 param computeGalleryName string
@@ -14,6 +14,55 @@ param computeGalleryName string
 param computeGalleryId string
 
 param formattedDateTime string = utcNow()
+
+type DevBoxDefinition = {
+  name: string
+  tags: object
+  hibernateSupport: bool
+  image: string
+  sku: string
+}
+
+type Catalog = {
+  gitHub: bool
+  name: string
+  uri: string
+  branch: string
+  path: string
+}
+
+type environmentType = {
+  name: string
+  tags: object
+}
+
+type Project = {
+  name: string
+  catalogs: array
+  identity: {
+    roles: array
+  }
+  environments: array
+  pools: array
+  tags: object
+}
+
+type DevCenterSettings = {
+  devCenterName: string
+  tags: object
+  identity: {
+    type: string
+    userAssignedIdentities: object
+    roles: array
+  }
+  catalogItemSyncEnableStatus: string
+  microsoftHostedNetworkEnableStatus: string
+  installAzureMonitorAgentEnableStatus: string
+  devBoxDefinitions: DevBoxDefinition[]
+  devCenterCatalogs: Catalog[]
+  environmentTypes: environmentType[]
+  projects: Project[]
+}
 
 @description('Dev Center Resource')
 resource devCenter 'Microsoft.DevCenter/devcenters@2024-10-01-preview' = {

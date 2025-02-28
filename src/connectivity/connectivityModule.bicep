@@ -30,7 +30,7 @@ module virtualNetwork 'vnet.bicep' = {
   name: 'VirtualNetwork-${formattedDateTime}'
   scope: az.resourceGroup(vNetResourceGroupName)
   params: {
-    networkSettings: networkSettings
+    settings: networkSettings
     workspaceId: workspaceId
   }
 }

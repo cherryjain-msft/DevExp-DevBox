@@ -1,5 +1,11 @@
 @description('Compute Gallery Name')
-param settings object
+param settings ComputeSettings
+
+type ComputeSettings = {
+  name: string
+  create: bool
+  tags: object
+}
 
 @description('Compute Gallery')
 resource computeGallery 'Microsoft.Compute/galleries@2024-03-03' = if (settings.create) {
