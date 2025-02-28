@@ -5,6 +5,7 @@ Example templates and customization configurations for Dev Box and Azure Deploym
 ## Table of Contents
 
 - [Solution Architecture](#solution-architecture)
+- [Get Started](#get-started)
 - [Contributing](#contributing)
 - [Trademarks](#trademarks)
 - [License](#license)
@@ -12,6 +13,28 @@ Example templates and customization configurations for Dev Box and Azure Deploym
 ## Solution Architecture
 
 ![Solution Architecture](./images/ContosoDevBox.png)
+
+## Get Started
+
+### Open a new Terminal
+
+![alt text](./images/image.png)
+
+### Login to Azure
+
+```bash
+azd auth login
+```
+
+### Create your environment
+```bash
+azd new env dev
+```
+
+### Provision the solution
+```bash
+azd provision -e dev
+```
 
 ## Contributing
 
