@@ -6,6 +6,10 @@ Example templates and customization configurations for Dev Box and Azure Deploym
 
 - [Solution Architecture](#solution-architecture)
 - [Get Started](#get-started)
+  - [Open a new Terminal](#open-a-new-terminal)
+  - [Login to Azure](#login-to-azure)
+  - [Create your environment](#create-your-environment)
+  - [Provision the solution](#provision-the-solution)
 - [Contributing](#contributing)
 - [Trademarks](#trademarks)
 - [License](#license)
