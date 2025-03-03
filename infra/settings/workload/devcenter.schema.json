@@ -1,0 +1,235 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DevCenter Configuration",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The name of the Dev Center."
+    },
+    "location": {
+      "type": "string",
+      "description": "The location of the Dev Center."
+    },
+    "catalogItemSyncEnableStatus": {
+      "type": "string",
+      "description": "Enable catalogs per project.",
+      "enum": [
+        "Enabled",
+        "Disabled"
+      ]
+    },
+    "microsoftHostedNetworkEnableStatus": {
+      "type": "string",
+      "description": "Enable Microsoft hosted network.",
+      "enum": [
+        "Enabled",
+        "Disabled"
+      ]
+    },
+    "installAzureMonitorAgentEnableStatus": {
+      "type": "string",
+      "description": "Enable installation of Azure Monitor Agent.",
+      "enum": [
+        "Enabled",
+        "Disabled"
+      ]
+    },
+    "identity": {
+      "type": "object",
+      "$ref": "#/definitions/identity"
+    },
+    "network": {
+      "type": "object",
+      "properties": {
+        "create": {
+          "type": "boolean",
+          "description": "Create a new network."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the network."
+        },
+        "addressPrefixes": {
+          "type": "array",
+          "minItems": 1,
+          "$ref": "#/definitions/addressPrefix",
+          "description": "The address prefix of the network."
+        },
+        "subnets": {
+          "type": "array",
+          "minItems": 1,
+          "$ref": "#/definitions/subnet",
+          "description": "The subnets of the network."
+        }
+      }
+    },
+    "catalogs": {
+      "type": "array",
+      "description": "List of catalogs.",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/catalog"
+      }
+    },
+    "environmentTypes": {
+      "type": "array",
+      "description": "List of environment types.",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/environmentType"
+      }
+    },
+    "projects": {
+      "type": "array",
+      "description": "List of projects.",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/project"
+      }
+    }
+  },
+  "definitions": {
+    "identity": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "The type of identity.",
+          "enum": [
+            "None",
+            "SystemAssigned",
+            "UserAssigned",
+            "SystemAssigned, UserAssigned"
+          ]
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "addressPrefix": {
+      "type": "string"
+    },
+    "subnet": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the subnet."
+        },
+        "addressPrefix": {
+          "type": "string",
+          "description": "The address prefix of the subnet."
+        }
+      },
+      "required": [
+        "name",
+        "addressPrefix"
+      ]
+    },
+    "catalog": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the catalog."
+        },
+        "type": {
+          "type": "string",
+          "description": "The type of the catalog.",
+          "enum": [
+            "gitHub",
+            "adoGit"
+          ]
+        },
+        "uri": {
+          "type": "string",
+          "description": "The URI of the catalog."
+        },
+        "branch": {
+          "type": "string",
+          "description": "The branch of the catalog."
+        },
+        "path": {
+          "type": "string",
+          "description": "The path to the catalog."
+        }
+      },
+      "required": [
+        "name",
+        "type",
+        "uri",
+        "branch",
+        "path"
+      ]
+    },
+    "project": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the project."
+        },
+        "description": {
+          "type": "string",
+          "description": "The description of the project."
+        },
+        "environmentTypes": {
+          "type": "array",
+          "title": "The environment types for the project",
+          "description": "The environment types must be defined in the environmentTypes section of the DevCenter configuration file.",
+          "items": {
+            "$ref": "#/definitions/projectEnvironmentType"
+          }
+        },
+        "catalogs": {
+          "type": "array",
+          "description": "List of catalogs for the project.",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/catalog"
+          }
+        }
+      },
+      "required": [
+        "name",
+        "description",
+        "catalogs"
+      ]
+    },
+    "environmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the environment type."
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "projectEnvironmentType": {
+      "type": "object",
+      "required": [
+        "name",
+        "deploymentTargetId"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "The name of the environment type"
+        },
+        "identity": {
+          "type": "object",
+          "$ref": "#/definitions/identity"
+        },
+        "deploymentTargetId": {
+          "type": "string",
+          "title": "The Azure subscription id to deploy environments"
+        }
+      }
+    }
+  }
+}
