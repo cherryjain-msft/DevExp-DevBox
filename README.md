@@ -107,9 +107,6 @@ You are going to see a new *.azure* folder with the *dev environment* configurat
 Assign the Current User to the Dev Center RBAC Roles. This script will assign the current user to the DevCenter Project Admin, Dev Box User, Deployment Environments Reader, and Deployment Environments User RBAC roles. You can see more details on the [Azure role-based access control in Microsoft Dev Box](https://learn.microsoft.com/en-us/azure/dev-box/concept-dev-box-role-based-access-control), and [Azure role-based access control in Azure Deployment Environments](https://learn.microsoft.com/en-us/azure/deployment-environments/concept-deployment-environments-role-based-access-control#built-in-roles).
 
 ```powershell
-cd .configuration\setup\powershell
-```
-```powershell
 .\setup.ps1
 ```
 ### Provision the solution

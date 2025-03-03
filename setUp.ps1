@@ -42,8 +42,7 @@ function Set-Up {
             winget upgrade Microsoft.Azd -e --accept-source-agreements --accept-package-agreements
         }
 
-        .\Azure\createUsersAndAssignRole.ps1
-
+        .\.configuration\setup\powershell\Azure\createUsersAndAssignRole.ps1
 
         Write-Output "Deployment credentials set up successfully."
     }

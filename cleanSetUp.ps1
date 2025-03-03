@@ -54,14 +54,14 @@ function Remove-SetUp {
 
         # Delete users and assigned roles
         Write-Output "Deleting users and assigned roles..."
-        .\Azure\deleteUsersAndAssignedRoles.ps1 -appDisplayName $appDisplayName
+        .\.configuration\setup\powershell\Azure\deleteUsersAndAssignedRoles.ps1 -appDisplayName $appDisplayName
         if ($LASTEXITCODE -ne 0) {
             throw "Failed to delete users and assigned roles."
         }
 
         # Delete deployment credentials
         Write-Output "Deleting deployment credentials..."
-        .\Azure\deleteDeploymentCredentials.ps1 -appDisplayName $appDisplayName
+        .\.configuration\setup\powershell\Azure\deleteDeploymentCredentials.ps1 -appDisplayName $appDisplayName
         if ($LASTEXITCODE -ne 0) {
             throw "Failed to delete deployment credentials."
         }
