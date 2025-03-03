@@ -111,6 +111,8 @@ Assign the Current User to the Dev Center RBAC Roles.
 
 ```powershell
 cd .configuration\setup\powershell
+```
+```powershell
 .\setup.ps1
 ```
 
