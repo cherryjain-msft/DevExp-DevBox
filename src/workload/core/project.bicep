@@ -8,6 +8,7 @@ type Project = {
   name: string
   description: string
   catalogs: array
+  environmentTypes: array
 }
 
 @description('Dev Center')
@@ -33,6 +34,17 @@ module catalogs 'projectCatalog.bicep' = [
     params: {
       projectName: project.name
       catalogConfig: catalog
+    }
+  }
+]
+
+@description('Project Environment Types')
+module environmentTypes 'projectEnvironmentType.bicep' = [
+  for environmentType in projectConfig.environmentTypes: {
+    name: environmentType.name
+    params: {
+      projectName: project.name
+      environmentConfig: environmentType
     }
   }
 ]
