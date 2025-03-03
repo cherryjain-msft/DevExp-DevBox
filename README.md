@@ -15,6 +15,7 @@ Example templates and customization configurations for Dev Box and Azure Deploym
     - [Open VS Code](#open-vs-code)
     - [Open a new Terminal](#open-a-new-terminal)
     - [Login to Azure](#login-to-azure)
+      - [Add the current user to the Dev Center Groups](#rbac)
     - [Create your environment](#create-your-environment)
     - [Provision the solution](#provision-the-solution)
   - [Create a DevBox](#comingsoon)
@@ -100,10 +101,20 @@ After the login to Azure has been completed, you must see the following message 
 ```powershell
 azd new env dev
 ```
-
 You are going to see a new *.azure* folder with the *dev environment* configuration that will be used by Azure Developer CLI.
 
 ![new dev environment](./images/newdevenv.png)
+
+#### RBAC
+
+Assign the Current User to the Dev Center RBAC Roles.
+
+```powershell
+cd .configuration\setup\powershell
+.\setup.ps1
+```
+
+This script will assign the current user to the DevCenter Project Admin, Dev Box User, Deployment Environments Reader, and Deployment Environments User RBAC roles. You can see more details on the [Azure role-based access control in Microsoft Dev Box](https://learn.microsoft.com/en-us/azure/dev-box/concept-dev-box-role-based-access-control), and [Azure role-based access control in Azure Deployment Environments](https://learn.microsoft.com/en-us/azure/deployment-environments/concept-deployment-environments-role-based-access-control#built-in-roles).
 
 #### Provision the solution
 ```powershell
