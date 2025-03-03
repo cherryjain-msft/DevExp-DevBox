@@ -2,7 +2,7 @@ param name string
 
 @description('Log Analytics Workspace')
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-10-01' = {
-  name: '${name}-law'
+  name: '${name}-${uniqueString(resourceGroup().id)}'
   location: resourceGroup().location
   properties: {
     sku: {

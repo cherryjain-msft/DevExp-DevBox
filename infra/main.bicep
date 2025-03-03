@@ -57,16 +57,27 @@ resource workloadRg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 }
 
 @description('Deploy Workload Module')
-module workload '../src/workload/devCenterModule.bicep' = {
-  name: 'workload'
+module workload '../src/workload/devCenter.bicep' = {
   scope: workloadRg
+  name: 'workload'
   params: {
-    sbunets: connectivity.outputs.virtualNetworkSubnets
-    workspaceId: monitoring.outputs.logAnalyticsId
+    location: location
+    logAnalyticsWorkspaceName: monitoring.outputs.logAnalyticsName
     computeGalleryName: compute.outputs.computeGalleryName
-    computeGalleryId: compute.outputs.computeGalleryId
   }
 }
+
+// @description('Deploy Workload Module')
+// module workload '../src/workload/devCenterModule.bicep' = {
+//   name: 'workload'
+//   scope: workloadRg
+//   params: {
+//     sbunets: connectivity.outputs.virtualNetworkSubnets
+//     workspaceId: monitoring.outputs.logAnalyticsId
+//     computeGalleryName: compute.outputs.computeGalleryName
+//     computeGalleryId: compute.outputs.computeGalleryId
+//   }
+// }
 
 // output workloadDevCenterName string = workload.outputs.devCenterName
 // output workloadDevCenterProjects array = workload.outputs.devCenterprojects

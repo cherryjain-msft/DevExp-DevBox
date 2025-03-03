@@ -2,7 +2,7 @@
 
 connectivity: 
   create: true 
-  name: DevExP-Connectivity
+  name: DevExP-Connectivity-dev
   description: connectivity
   tags:
     environment: dev
@@ -16,7 +16,7 @@ connectivity:
 
 compute:
   create: true
-  name: DevExP-Compute
+  name: DevExP-Compute-dev
   description: compute
   tags:
     environment: dev
@@ -30,7 +30,7 @@ compute:
 
 management:
   create: true
-  name: DevExP-Management
+  name: DevExP-Management-dev
   logAnalyticsName: loganalytics-dev
   description: management
   tags:
@@ -45,7 +45,7 @@ management:
     
 workload:
   create: true
-  name: DevExP-Workload
+  name: DevExP-Workload-dev
   description: prodExp
   tags:
     environment: dev

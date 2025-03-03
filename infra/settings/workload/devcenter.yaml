@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=./devcenter.schema.json
 
-name: DevExP-devcenter
+name: DevExP-dev
 location: eastus2
 catalogItemSyncEnableStatus: Enabled
 microsoftHostedNetworkEnableStatus: Enabled
@@ -15,12 +15,13 @@ catalogs:
     path: .configuration/devcenter/tasks
 environmentTypes:
   - name: dev
+  - name: staging
 projects:
   - name: identityProvider
     description: identityProvider
     environmentTypes:
       - name: dev
-        deploymentTargetId: "00000000-0000-0000-0000-000000000000"
+        deploymentTargetId: ""
     catalogs:
       - name: environments
         type: gitHub
