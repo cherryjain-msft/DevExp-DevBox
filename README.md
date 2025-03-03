@@ -16,7 +16,8 @@ Example templates and customization configurations for Dev Box and Azure Deploym
   - [Login to Azure](#login-to-azure)
     - [Add the current user to the Dev Center Groups](#rbac)
   - [Create your environment](#create-your-environment)
-  - [Provision the solution](#provision-the-solution)
+  - [Deploy solution to Azure](#deploy-solution-to-azure)
+    - [Checking the deployment](#checking-deployment)
 - [Create a DevBox](#comingsoon)
 - [Create a Deployment Environment](#comingsoon)
 - [Contributing](#contributing)
@@ -96,7 +97,7 @@ After the login to Azure has been completed, you must see the following message 
 
 ### Create your environment
 ```powershell
-azd new env dev
+azd env new dev
 ```
 You are going to see a new *.azure* folder with the *dev environment* configuration that will be used by Azure Developer CLI.
 
@@ -114,7 +115,7 @@ You will see the following output in the Terminal Window.
 ![setup](./images/setup.png)
 
 
-### Provision the solution
+### Deploy solution to Azure
 ```powershell
 azd provision -e dev
 ```
@@ -129,6 +130,8 @@ Select the Azure Region you want to deploy the workload to and press Enter.
 Azure Develper CLI will start the deployment to your Azure Subscription. When the deployment is finished, you must see the following message:
 
 ![Azure Deployment Finished](./images/azuredeploymentfinished.png)
+
+### Checking deployment
 
 ## Contributing
 
