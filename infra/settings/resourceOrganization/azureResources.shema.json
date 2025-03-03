@@ -12,7 +12,8 @@
                 },
                 "name": {
                     "type": "string",
-                    "description": "Name of the resource group"
+                    "description": "Name of the resource group",
+                    "default": "connectivity"
                 },
                 "description": {
                     "type": "string",
@@ -40,7 +41,8 @@
                 },
                 "name": {
                     "type": "string",
-                    "description": "Name of the resource group"
+                    "description": "Name of the resource group",
+                    "default": "compute"
                 },
                 "description": {
                     "type": "string",
@@ -68,11 +70,13 @@
                 },
                 "name": {
                     "type": "string",
-                    "description": "Name of the resource group"
+                    "description": "Name of the resource group",
+                    "default": "management"
                 },
                 "logAnalyticsName": {
                     "type": "string",
-                    "description": "Name of the Log Analytics workspace"
+                    "description": "Name of the Log Analytics workspace",
+                    "default": "logAnalytics"
                 },
                 "description": {
                     "type": "string",
@@ -101,7 +105,8 @@
                 },
                 "name": {
                     "type": "string",
-                    "description": "Name of the resource group"
+                    "description": "Name of the resource group",
+                    "default": "workload"
                 },
                 "description": {
                     "type": "string",
