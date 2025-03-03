@@ -58,12 +58,12 @@ winget install --id Microsoft.AzureCLI -e --source winget
 
 ### Clone this Repo
 
-```
+```powershell
 git clone https://github.com/Evilazaro/DevExp-DevBox.git
 ```
 
 ### Open VS Code
-```
+```powershell
 cd DevExp-DevBox
 
 code .
@@ -96,14 +96,24 @@ After the login to Azure has been completed, you must see the following message 
 ![Logint to Azure Completed](./images/azureloggedin.png)
 
 ### Create your environment
-```
+```powershell
 azd new env dev
 ```
 
+You are going to see a new *.azure* folder with the *dev environment* configuration that will be used by Azure Developer CLI. 
+![new dev environment](./images/newdevenv.png)
+
 ### Provision the solution
-```
+```powershell
 azd provision -e dev
 ```
+Select the Azure Subscription you want to deploy the workload to.
+
+![Azure Subscription](./images/azureSubscription.png)
+
+Select the Azure Region you want to deploy the workload to.
+
+![Azure Region](./images/azureRegion.png)
 
 ## Contributing
 
