@@ -41,7 +41,7 @@ module connectivity '../src/connectivity/connectivityModule.bicep' = {
 }
 
 resource computeRg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: landingZones.computeGallery.name
+  name: landingZones.compute.name
   location: location
 }
 

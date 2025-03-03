@@ -5,15 +5,18 @@
   "properties": {
     "name": {
       "type": "string",
-      "description": "The name of the Dev Center."
+      "description": "The name of the Dev Center.",
+      "default": "DevExP-devcenter"
     },
     "location": {
       "type": "string",
-      "description": "The location of the Dev Center."
+      "description": "The location of the Dev Center.",
+      "default": "eastus2"
     },
     "catalogItemSyncEnableStatus": {
       "type": "string",
       "description": "Enable catalogs per project.",
+      "default": "Enabled",
       "enum": [
         "Enabled",
         "Disabled"
@@ -22,6 +25,7 @@
     "microsoftHostedNetworkEnableStatus": {
       "type": "string",
       "description": "Enable Microsoft hosted network.",
+      "default": "Enabled",
       "enum": [
         "Enabled",
         "Disabled"
@@ -33,11 +37,15 @@
       "enum": [
         "Enabled",
         "Disabled"
-      ]
+      ],
+      "default": "Enabled"
     },
     "identity": {
       "type": "object",
-      "$ref": "#/definitions/identity"
+      "$ref": "#/definitions/identity",
+      "default": {
+        "type": "SystemAssigned"
+      }
     },
     "catalogs": {
       "type": "array",
@@ -82,6 +90,7 @@
         "type": {
           "type": "string",
           "description": "The type of identity.",
+          "default": "SystemAssigned",
           "enum": [
             "None",
             "SystemAssigned",
@@ -94,36 +103,18 @@
         "type"
       ]
     },
-    "addressPrefix": {
-      "type": "string"
-    },
-    "subnet": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "The name of the subnet."
-        },
-        "addressPrefix": {
-          "type": "string",
-          "description": "The address prefix of the subnet."
-        }
-      },
-      "required": [
-        "name",
-        "addressPrefix"
-      ]
-    },
     "catalog": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string",
-          "description": "The name of the catalog."
+          "description": "The name of the catalog.",
+          "default": "customTasks"
         },
         "type": {
           "type": "string",
           "description": "The type of the catalog.",
+          "default": "gitHub",
           "enum": [
             "gitHub",
             "adoGit"
@@ -131,15 +122,18 @@
         },
         "uri": {
           "type": "string",
-          "description": "The URI of the catalog."
+          "description": "The URI of the catalog.",
+          "default": "https://github.com/Evilazaro/DevExP-DevBox.git"
         },
         "branch": {
           "type": "string",
-          "description": "The branch of the catalog."
+          "description": "The branch of the catalog.",
+          "default": "main"
         },
         "path": {
           "type": "string",
-          "description": "The path to the catalog."
+          "description": "The path to the catalog.",
+          "default": ".configuration/devcenter/tasks"
         }
       },
       "required": [
@@ -148,18 +142,27 @@
         "uri",
         "branch",
         "path"
-      ]
+      ],
+      "default": {
+        "name": "customTasks",
+        "type": "gitHub",
+        "uri": "https://github.com/Evilazaro/DevExP-DevBox.git",
+        "branch": "main",
+        "path": ".configuration/devcenter/tasks"
+      }
     },
     "project": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string",
-          "description": "The name of the project."
+          "description": "The name of the project.",
+          "default": "identityProvider"
         },
         "description": {
           "type": "string",
-          "description": "The description of the project."
+          "description": "The description of the project.",
+          "default": "identityProvider"
         },
         "environmentTypes": {
           "type": "array",
@@ -190,7 +193,8 @@
       "properties": {
         "name": {
           "type": "string",
-          "description": "The name of the environment type."
+          "description": "The name of the environment type.",
+          "default": "dev"
         }
       },
       "required": [
@@ -206,7 +210,8 @@
       "properties": {
         "name": {
           "type": "string",
-          "title": "The name of the environment type"
+          "title": "The name of the environment type",
+          "default": "dev"
         },
         "identity": {
           "type": "object",
@@ -214,7 +219,8 @@
         },
         "deploymentTargetId": {
           "type": "string",
-          "title": "The Azure subscription id to deploy environments"
+          "title": "The Azure subscription id to deploy environments",
+          "default": ""
         }
       }
     }
