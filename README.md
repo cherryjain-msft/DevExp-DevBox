@@ -14,7 +14,7 @@ Example templates and customization configurations for Dev Box and Azure Deploym
   - [Open VS Code](#open-vs-code)
   - [Open a new Terminal](#open-a-new-terminal)
   - [Login to Azure](#login-to-azure)
-    - [Add the current user to the Dev Center Groups](#rbac)
+    - [Add the current user to the Dev Center Groups](#rbac---assign-the-current-user-to-the-dev-center-rbac-roles)
   - [Create your environment](#create-your-environment)
   - [Deploy solution to Azure](#deploy-solution-to-azure)
     - [Checking the deployment](#checking-deployment)
@@ -104,9 +104,9 @@ You are going to see a new *.azure* folder with the *dev environment* configurat
 
 ![new dev environment](./images/newdevenv.png)
 
-### RBAC
+### RBAC - Assign the Current User to the Dev Center RBAC Roles
 
-Assign the Current User to the Dev Center RBAC Roles. This script will assign the current user to the DevCenter Project Admin, Dev Box User, Deployment Environments Reader, and Deployment Environments User RBAC roles. You can see more details on the [Azure role-based access control in Microsoft Dev Box](https://learn.microsoft.com/en-us/azure/dev-box/concept-dev-box-role-based-access-control), and [Azure role-based access control in Azure Deployment Environments](https://learn.microsoft.com/en-us/azure/deployment-environments/concept-deployment-environments-role-based-access-control#built-in-roles).
+ This script will assign the current user to the DevCenter Project Admin, Dev Box User, Deployment Environments Reader, and Deployment Environments User RBAC roles. You can see more details on the [Azure role-based access control in Microsoft Dev Box](https://learn.microsoft.com/en-us/azure/dev-box/concept-dev-box-role-based-access-control), and [Azure role-based access control in Azure Deployment Environments](https://learn.microsoft.com/en-us/azure/deployment-environments/concept-deployment-environments-role-based-access-control#built-in-roles).
 
 ```powershell
 .\setup.ps1
