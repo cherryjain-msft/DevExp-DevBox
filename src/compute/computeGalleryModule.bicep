@@ -1,11 +1,13 @@
-var settings = loadJsonContent('../../infra/settings/compute/settings.json')
+var settings = loadYamlContent('../../infra/settings/compute/computeGallery.yaml')
 
 @description('Compute Gallery')
 module computeGallery 'computeGallery.bicep' = {
   name: 'computeGallery'
-  scope: resourceGroup()
   params: {
-    settings: settings
+    settings: {
+      name: settings.name
+      tags: settings.tags
+    }
   }
 }
 
