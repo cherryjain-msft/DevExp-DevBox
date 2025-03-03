@@ -5,7 +5,13 @@ Example templates and customization configurations for Dev Box and Azure Deploym
 ## Table of Contents
 
 - [Solution Architecture](#solution-architecture)
+- [Pre-requisites](#pre-requisites)
+  - [Install Git](#install-git)
+  - [Install Visual Studio Code](#install-visual-studio-code)
+  - [Install Azure Developer CLI](#install-azure-developer-cli)
 - [Get Started](#get-started)
+  - [Clone this Repo](#clone-this-repo)
+  - [Open VS Code](#open-vs-code)
   - [Open a new Terminal](#open-a-new-terminal)
   - [Login to Azure](#login-to-azure)
   - [Create your environment](#create-your-environment)
@@ -18,16 +24,46 @@ Example templates and customization configurations for Dev Box and Azure Deploym
 
 ![Solution Architecture](./images/ContosoDevBox.png)
 
+## Pre-requisites
+
+Before getting started, ensure you have the following tools installed on your Windows machine. You can use `winget` to install them quickly.
+
+### Install Git
+
+Git is required for cloning the repository.
+
+```powershell
+winget install --id Git.Git -e --source winget
+```
+
+### Install Visual Studio Code
+VS Code is used for editing and running scripts.
+
+```powershell
+winget install --id Microsoft.VisualStudioCode -e --source winget
+```
+
+### Install Azure Developer CLI
+Azure Developer CLI (azd) is required to interact with Azure services.
+
+```powershell
+winget install --id Microsoft.AzureCLI -e --source winget
+```
+
+## Solution Architecture
+
+![Solution Architecture](./images/ContosoDevBox.png)
+
 ## Get Started
 
 ### Clone this Repo
 
-```bash
+```
 git clone https://github.com/Evilazaro/DevExp-DevBox.git
 ```
 
 ### Open VS Code
-```bash
+```
 cd DevExp-DevBox
 
 code .
@@ -35,23 +71,37 @@ code .
 
 You are going to see VS Code with all the content of this repo
 
+![VS Code](./images/vscode.png)
+
 ### Open a new Terminal
 
-![alt text](./images/image.png)
+Click on Terminal Menu >> New Terminal
+
+![New Terminal](./images/terminalmenu.png)
+
+Your Visual Studio Code must be like the image below
+
+![VS Code Terminal](./images/vscodeterminal.png)
 
 ### Login to Azure
 
-```bash
+Type the command below into the Terminal Window and press enter
+```
 azd auth login
 ```
+Provide your Azure Credentials.
+
+After the login to Azure has been completed, you must see the following message below:
+
+![Logint to Azure Completed](./images/azureloggedin.png)
 
 ### Create your environment
-```bash
+```
 azd new env dev
 ```
 
 ### Provision the solution
-```bash
+```
 azd provision -e dev
 ```
 
