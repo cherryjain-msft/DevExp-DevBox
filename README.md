@@ -109,6 +109,11 @@ Assign the Current User to the Dev Center RBAC Roles. This script will assign th
 ```powershell
 .\setup.ps1
 ```
+You will see the following output in the Terminal Window.
+
+![setup](./images/setup.png)
+
+
 ### Provision the solution
 ```powershell
 azd provision -e dev
