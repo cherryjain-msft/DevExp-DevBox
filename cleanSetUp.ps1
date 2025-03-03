@@ -84,6 +84,7 @@ function Remove-SetUp {
 # Main script execution
 try {
     Clear-Host
+    .\.configuration\powershell\cleanUp.ps1
     Remove-SetUp -appDisplayName $appDisplayName -ghSecretName $ghSecretName
 }
 catch {
