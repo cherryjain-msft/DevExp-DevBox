@@ -8,7 +8,7 @@ param environmentName string
 param location string = 'eastus2'
 
 @description('Landing Zone Information')
-var landingZone = loadJsonContent('settings/resourceOrganization/settings.json')
+var landingZone = loadYamlContent('settings/resourceOrganization/azureResources.yaml')
 
 @description('Formatted Date Time')
 param formattedDateTime string = utcNow()

@@ -5,8 +5,10 @@ location: eastus2
 catalogItemSyncEnableStatus: Enabled
 microsoftHostedNetworkEnableStatus: Enabled
 installAzureMonitorAgentEnableStatus: Enabled
+
 identity:
   type: SystemAssigned
+
 network:
   create: true
   name: DevExP-vNet
@@ -16,20 +18,24 @@ network:
     - name: identityProvider
       properties:
         addressPrefix: 10.0.1.0/24
+
 catalogs:
   - name: catalog
     type: gitHub
     uri: https://github.com/Evilazaro/IdentityProvider.git
     branch: main
     path: ./path/to/catalog1
+    
   - name: catalog2
     type: gitHub
     uri: https://github.com/Evilazaro/IdentityProvider.git
     branch: main
     path: ./path/to/catalog2
+
 environmentTypes:
   - name: dev
   - name: prod
+
 projects:
   - name: project1
     description: Project 1 Description

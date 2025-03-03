@@ -1,7 +1,7 @@
 @description('Log Analytics Workspace')
 param workspaceId string
 
-var networkSettings = loadJsonContent('../../infra/settings/connectivity/settings.json')
+var networkSettings = loadYamlContent('../../infra/settings/connectivity/newtork.yaml')
 
 module virtualNetwork 'vnet.bicep' = {
   name: 'VirtualNetwork'
