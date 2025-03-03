@@ -19,8 +19,6 @@ param devBoxPools array
 @description('Project Tags')
 param tags object
 
-param formattedDateTime string = utcNow()
-
 resource project 'Microsoft.DevCenter/projects@2024-10-01-preview' = {
   name: name
   location: resourceGroup().location
@@ -47,7 +45,7 @@ output name string = project.name
 
 @description('Dev Center Projects Role Assignments')
 module projectRoleAssignments '../../identity/projectRoleAssignments.bicep' = {
-  name: '${project.name}-roleAssignments-${formattedDateTime}'
+  name: '${project.name}-roleAssignments'
   scope: resourceGroup()
   params: {
     scope: 'resourceGroup'

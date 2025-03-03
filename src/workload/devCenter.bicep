@@ -13,8 +13,6 @@ param computeGalleryName string
 @description('Compute Gallery ID')
 param computeGalleryId string
 
-param formattedDateTime string = utcNow()
-
 type DevBoxDefinition = {
   name: string
   tags: object
@@ -116,7 +114,7 @@ output diagnosticSettingsName string = diagnosticSettings.name
 output diagnosticSettingsType string = diagnosticSettings.type
 
 module roleAssignments '../identity/devCenterRoleAssignments.bicep' = {
-  name: 'roleAssignments-${formattedDateTime}'
+  name: 'roleAssignments'
   scope: subscription()
   params: {
     scope: 'subscription'
@@ -260,7 +258,7 @@ output devCenterEnvironments array = [
 @description('Dev Center Projects')
 module projects 'projects/projectModule.bicep' = [
   for project in settings.projects: {
-    name: '${project.name}-project-${formattedDateTime}'
+    name: '${project.name}-project'
     scope: resourceGroup()
     params: {
       name: project.name
