@@ -1,7 +1,7 @@
 param name string
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-10-01' = {
-  name: '${name}-${uniqueString(resourceGroup().id)}'
+  name: '${name}-${uniqueString(name,resourceGroup().id)}'
   location: resourceGroup().location
   properties: {
     sku: {
@@ -35,7 +35,4 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
     workspaceId: logAnalyticsWorkspace.id
   }
 }
-
-output diagnosticSettingsId string = diagnosticSettings.id
-output diagnosticSettingsName string = diagnosticSettings.name
 

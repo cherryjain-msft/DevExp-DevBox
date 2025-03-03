@@ -3,13 +3,12 @@ param settings ComputeSettings
 
 type ComputeSettings = {
   name: string
-  create: bool
   tags: object
 }
 
 @description('Compute Gallery')
-resource computeGallery 'Microsoft.Compute/galleries@2024-03-03' = if (settings.create) {
-  name: '${settings.name}${uniqueString(resourceGroup().id)}'
+resource computeGallery 'Microsoft.Compute/galleries@2024-03-03' = {
+  name: '${settings.name}-${uniqueString(settings.name, resourceGroup().id)}'
   location: resourceGroup().location
   tags: settings.tags
   properties: {

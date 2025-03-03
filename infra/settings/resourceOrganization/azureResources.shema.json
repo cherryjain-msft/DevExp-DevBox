@@ -1,0 +1,130 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Azure Resources Configuration",
+    "type": "object",
+    "properties": {
+        "connectivity": {
+            "type": "object",
+            "properties": {
+                "create": {
+                    "type": "boolean",
+                    "description": "Flag to indicate if the resource group should be created"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Name of the resource group"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Description of the resource group"
+                },
+                "tags": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "The tags to automatically apply to deployed environments"
+                }
+            },
+            "required": [
+                "create",
+                "name",
+                "description",
+                "tags"
+            ]
+        },
+        "computeGallery": {
+            "type": "object",
+            "properties": {
+                "create": {
+                    "type": "boolean",
+                    "description": "Flag to indicate if the resource group should be created"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Name of the resource group"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Description of the resource group"
+                },
+                "tags": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "The tags to automatically apply to deployed environments"
+                }
+            },
+            "required": [
+                "create",
+                "name",
+                "description",
+                "tags"
+            ]
+        },
+        "management": {
+            "type": "object",
+            "properties": {
+                "create": {
+                    "type": "boolean",
+                    "description": "Flag to indicate if the resource group should be created"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Name of the resource group"
+                },
+                "logAnalyticsName": {
+                    "type": "string",
+                    "description": "Name of the Log Analytics workspace"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Description of the resource group"
+                },
+                "tags": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "The tags to automatically apply to deployed environments"
+                }
+            },
+            "required": [
+                "create",
+                "name",
+                "logAnalyticsName",
+                "description",
+                "tags"
+            ]
+        },
+        "workload": {
+            "type": "object",
+            "properties": {
+                "create": {
+                    "type": "boolean",
+                    "description": "Flag to indicate if the resource group should be created"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Name of the resource group"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Description of the resource group"
+                },
+                "tags": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "The tags to automatically apply to deployed environments"
+                }
+            },
+            "required": [
+                "create",
+                "name",
+                "description",
+                "tags"
+            ]
+        }
+    },
+    "required": [
+        "connectivity",
+        "computeGallery",
+        "management",
+        "workload"
+    ]
+}

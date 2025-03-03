@@ -1,6 +1,5 @@
 {
     "name": "images",
-    "create": true,
     "tags": {
         "environment": "dev",
         "division": "Platforms",
