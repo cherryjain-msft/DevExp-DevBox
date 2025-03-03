@@ -17,6 +17,8 @@ Example templates and customization configurations for Dev Box and Azure Deploym
     - [Login to Azure](#login-to-azure)
     - [Create your environment](#create-your-environment)
     - [Provision the solution](#provision-the-solution)
+  - [Create a DevBox](#comingsoon)
+  - [Create a Deployment Environment](#comingsoon)
 - [Contributing](#contributing)
 - [Trademarks](#trademarks)
 - [License](#license)
@@ -107,13 +109,17 @@ You are going to see a new *.azure* folder with the *dev environment* configurat
 ```powershell
 azd provision -e dev
 ```
-Select the Azure Subscription you want to deploy the workload to.
+Select the Azure Subscription you want to deploy the workload to and press Enter.
 
 ![Azure Subscription](./images/azureSubscription.png)
 
-Select the Azure Region you want to deploy the workload to.
+Select the Azure Region you want to deploy the workload to and press Enter.
 
 ![Azure Region](./images/azureRegion.png)
+
+Azure Develper CLI will start the deployment to your Azure Subscription. When the deployment is finished, you must see the following message:
+
+![Azure Deployment Finished](./images/azuredeploymentfinished.png)
 
 ## Contributing
 
