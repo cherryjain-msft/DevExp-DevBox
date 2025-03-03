@@ -9,17 +9,16 @@ Example templates and customization configurations for Dev Box and Azure Deploym
   - [Install Git](#install-git)
   - [Install Visual Studio Code](#install-visual-studio-code)
   - [Install Azure Developer CLI](#install-azure-developer-cli)
-- [Get Started](#get-started)
-  - [Deploy Solution](#deploy-solution)
-    - [Clone this Repo](#clone-this-repo)
-    - [Open VS Code](#open-vs-code)
-    - [Open a new Terminal](#open-a-new-terminal)
-    - [Login to Azure](#login-to-azure)
-      - [Add the current user to the Dev Center Groups](#rbac)
-    - [Create your environment](#create-your-environment)
-    - [Provision the solution](#provision-the-solution)
-  - [Create a DevBox](#comingsoon)
-  - [Create a Deployment Environment](#comingsoon)
+- [Deploy Solution](#deploy-solution)
+  - [Clone this Repo](#clone-this-repo)
+  - [Open VS Code](#open-vs-code)
+  - [Open a new Terminal](#open-a-new-terminal)
+  - [Login to Azure](#login-to-azure)
+    - [Add the current user to the Dev Center Groups](#rbac)
+  - [Create your environment](#create-your-environment)
+  - [Provision the solution](#provision-the-solution)
+- [Create a DevBox](#comingsoon)
+- [Create a Deployment Environment](#comingsoon)
 - [Contributing](#contributing)
 - [Trademarks](#trademarks)
 - [License](#license)
@@ -54,17 +53,15 @@ Azure Developer CLI (azd) is required to interact with Azure services.
 winget install --id Microsoft.AzureCLI -e --source winget
 ```
 
-## Get Started
+## Deploy Solution
 
-### Deploy Solution
-
-#### Clone this Repo
+### Clone this Repo
 
 ```powershell
 git clone https://github.com/Evilazaro/DevExp-DevBox.git
 ```
 
-#### Open VS Code
+### Open VS Code
 ```powershell
 cd DevExp-DevBox
 
@@ -75,7 +72,7 @@ You are going to see VS Code with all the content of this repo
 
 ![VS Code](./images/vscode.png)
 
-#### Open a new Terminal
+### Open a new Terminal
 
 Click on Terminal Menu >> New Terminal
 
@@ -85,7 +82,7 @@ Your Visual Studio Code must be like the image below
 
 ![VS Code Terminal](./images/vscodeterminal.png)
 
-#### Login to Azure
+### Login to Azure
 
 Type the command below into the Terminal Window and press enter
 ```
@@ -97,7 +94,7 @@ After the login to Azure has been completed, you must see the following message 
 
 ![Logint to Azure Completed](./images/azureloggedin.png)
 
-#### Create your environment
+### Create your environment
 ```powershell
 azd new env dev
 ```
@@ -105,7 +102,7 @@ You are going to see a new *.azure* folder with the *dev environment* configurat
 
 ![new dev environment](./images/newdevenv.png)
 
-#### RBAC
+### RBAC
 
 Assign the Current User to the Dev Center RBAC Roles. This script will assign the current user to the DevCenter Project Admin, Dev Box User, Deployment Environments Reader, and Deployment Environments User RBAC roles. You can see more details on the [Azure role-based access control in Microsoft Dev Box](https://learn.microsoft.com/en-us/azure/dev-box/concept-dev-box-role-based-access-control), and [Azure role-based access control in Azure Deployment Environments](https://learn.microsoft.com/en-us/azure/deployment-environments/concept-deployment-environments-role-based-access-control#built-in-roles).
 
@@ -115,7 +112,7 @@ cd .configuration\setup\powershell
 ```powershell
 .\setup.ps1
 ```
-#### Provision the solution
+### Provision the solution
 ```powershell
 azd provision -e dev
 ```
