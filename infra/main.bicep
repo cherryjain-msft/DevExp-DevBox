@@ -10,9 +10,6 @@ param location string = 'eastus2'
 @description('Landing Zone Information')
 var landingZone = loadYamlContent('settings/resourceOrganization/azureResources.yaml')
 
-@description('Formatted Date Time')
-param formattedDateTime string = utcNow()
-
 @description('Connectivity Resource Group')
 resource monitoringRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZone.management.create) {
   name: '${landingZone.management.name}-${environmentName}-rg'
@@ -56,7 +53,7 @@ resource computeRg 'Microsoft.Resources/resourceGroups@2021-04-01' = if (landing
 
 @description('Compute Gallery')
 module compute '../src/compute/computeGalleryModule.bicep' = {
-  name: 'compute-${environmentName}-${formattedDateTime}'
+  name: 'compute-${environmentName}'
   scope: (landingZone.computeGallery.create ? computeRg : resourceGroup(landingZone.computeGallery.name))
 }
 
