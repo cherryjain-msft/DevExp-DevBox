@@ -20,10 +20,10 @@ projects:
     description: identityProvider
     environmentTypes:
       - name: dev
-        deploymentTargetId: ""
+        deploymentTargetId: "00000000-0000-0000-0000-000000000000"
     catalogs:
-      - name: customTasks
+      - name: environments
         type: gitHub
-        uri: https://github.com/Evilazaro/DevExP-DevBox.git
+        uri: https://github.com/Evilazaro/identityProvider.git
         branch: main
-        path: .configuration/devcenter/tasks
+        path: .configuration/devcenter/environments/dev

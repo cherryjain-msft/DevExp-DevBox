@@ -142,14 +142,48 @@
         "uri",
         "branch",
         "path"
-      ],
-      "default": {
-        "name": "customTasks",
-        "type": "gitHub",
-        "uri": "https://github.com/Evilazaro/DevExP-DevBox.git",
-        "branch": "main",
-        "path": ".configuration/devcenter/tasks"
-      }
+      ]
+    },
+    "projectCatalog": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the catalog.",
+          "default": "environments"
+        },
+        "type": {
+          "type": "string",
+          "description": "The type of the catalog.",
+          "default": "gitHub",
+          "enum": [
+            "gitHub",
+            "adoGit"
+          ]
+        },
+        "uri": {
+          "type": "string",
+          "description": "The URI of the catalog.",
+          "default": "https://github.com/Evilazaro/identityProvider.git"
+        },
+        "branch": {
+          "type": "string",
+          "description": "The branch of the catalog.",
+          "default": "main"
+        },
+        "path": {
+          "type": "string",
+          "description": "The path to the catalog.",
+          "default": ".configuration/devcenter/environments/dev"
+        }
+      },
+      "required": [
+        "name",
+        "type",
+        "uri",
+        "branch",
+        "path"
+      ]
     },
     "project": {
       "type": "object",
@@ -177,7 +211,7 @@
           "description": "List of catalogs for the project.",
           "minItems": 1,
           "items": {
-            "$ref": "#/definitions/catalog"
+            "$ref": "#/definitions/projectCatalog"
           }
         }
       },
@@ -220,7 +254,7 @@
         "deploymentTargetId": {
           "type": "string",
           "title": "The Azure subscription id to deploy environments",
-          "default": ""
+          "default": "00000000-0000-0000-0000-000000000000"
         }
       }
     }
