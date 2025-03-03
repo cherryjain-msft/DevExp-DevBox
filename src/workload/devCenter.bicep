@@ -18,7 +18,7 @@ param formattedDateTime string = utcNow()
 type DevBoxDefinition = {
   name: string
   tags: object
-  hibernateSupport: bool
+  hibernateSupport: string
   image: string
   sku: string
 }

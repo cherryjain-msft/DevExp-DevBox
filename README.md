@@ -100,7 +100,8 @@ After the login to Azure has been completed, you must see the following message 
 azd new env dev
 ```
 
-You are going to see a new *.azure* folder with the *dev environment* configuration that will be used by Azure Developer CLI. 
+You are going to see a new *.azure* folder with the *dev environment* configuration that will be used by Azure Developer CLI.
+
 ![new dev environment](./images/newdevenv.png)
 
 ### Provision the solution
