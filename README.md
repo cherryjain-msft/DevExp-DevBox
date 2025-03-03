@@ -65,7 +65,8 @@ git clone https://github.com/Evilazaro/DevExp-DevBox.git
 ### Open VS Code
 ```powershell
 cd DevExp-DevBox
-
+```
+```powershell
 code .
 ```
 
