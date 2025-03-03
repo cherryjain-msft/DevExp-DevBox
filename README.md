@@ -10,7 +10,7 @@ Example templates and customization configurations for Dev Box and Azure Deploym
   - [Install Visual Studio Code](#install-visual-studio-code)
   - [Install Azure Developer CLI](#install-azure-developer-cli)
 - [Get Started](#get-started)
-  - [Deploy Solution]
+  - [Deploy Solution](#deploy-solution)
     - [Clone this Repo](#clone-this-repo)
     - [Open VS Code](#open-vs-code)
     - [Open a new Terminal](#open-a-new-terminal)
