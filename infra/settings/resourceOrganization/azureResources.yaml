@@ -14,10 +14,10 @@ connectivity:
     landingZone: Connectivity
     resources: ResourceGroup
 
-computeGallery:
+compute:
   create: true
   name: DevExP-Compute
-  description: computeGallery
+  description: compute
   tags:
     environment: dev
     division: Platforms

@@ -31,7 +31,7 @@
                 "tags"
             ]
         },
-        "computeGallery": {
+        "compute": {
             "type": "object",
             "properties": {
                 "create": {
@@ -123,7 +123,7 @@
     },
     "required": [
         "connectivity",
-        "computeGallery",
+        "compute",
         "management",
         "workload"
     ]

@@ -9,16 +9,6 @@ installAzureMonitorAgentEnableStatus: Enabled
 identity:
   type: SystemAssigned
 
-network:
-  create: true
-  name: DevExP-vNet
-  addressPrefixes:
-    - 10.0.0.0/16
-  subnets:
-    - name: identityProvider
-      properties:
-        addressPrefix: 10.0.1.0/24
-
 catalogs:
   - name: catalog
     type: gitHub

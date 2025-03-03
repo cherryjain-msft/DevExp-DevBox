@@ -1,83 +1,65 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "Network Configuration",
-    "type": "object",
-    "properties": {
-      "create": {
-        "type": "boolean",
-        "description": "Flag to indicate if the network should be created"
-      },
-      "name": {
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Network Configuration",
+  "type": "object",
+  "properties": {
+    "create": {
+      "type": "boolean",
+      "description": "Flag to indicate if the network should be created"
+    },
+    "name": {
+      "type": "string",
+      "description": "Name of the virtual network"
+    },
+    "addressPrefixes": {
+      "type": "array",
+      "items": {
         "type": "string",
-        "description": "Name of the virtual network"
+        "pattern": "^([0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$"
       },
-      "addressPrefixes": {
-        "type": "array",
-        "items": {
-          "type": "string",
-          "pattern": "^([0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$"
-        },
-        "description": "List of address prefixes for the virtual network"
-      },
-      "subnets": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "name": {
-              "type": "string",
-              "description": "Name of the subnet"
-            },
-            "properties": {
-              "type": "object",
-              "properties": {
-                "addressPrefix": {
-                  "type": "string",
-                  "pattern": "^([0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$",
-                  "description": "Address prefix for the subnet"
-                }
-              },
-              "required": ["addressPrefix"]
-            }
-          },
-          "required": ["name", "properties"]
-        },
-        "description": "List of subnets within the virtual network"
-      },
-      "tags": {
+      "description": "List of address prefixes for the virtual network"
+    },
+    "subnets": {
+      "type": "array",
+      "items": {
         "type": "object",
         "properties": {
-          "environment": {
+          "name": {
             "type": "string",
-            "description": "Environment tag"
+            "description": "Name of the subnet"
           },
-          "division": {
-            "type": "string",
-            "description": "Division tag"
-          },
-          "team": {
-            "type": "string",
-            "description": "Team tag"
-          },
-          "project": {
-            "type": "string",
-            "description": "Project tag"
-          },
-          "costCenter": {
-            "type": "string",
-            "description": "Cost center tag"
-          },
-          "owner": {
-            "type": "string",
-            "description": "Owner tag"
-          },
-          "resources": {
-            "type": "string",
-            "description": "Resources tag"
+          "properties": {
+            "type": "object",
+            "properties": {
+              "addressPrefix": {
+                "type": "string",
+                "pattern": "^([0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$",
+                "description": "Address prefix for the subnet"
+              }
+            },
+            "required": [
+              "addressPrefix"
+            ]
           }
         },
-        "required": ["environment", "division", "team", "project", "costCenter", "owner", "resources"]
-      }
+        "required": [
+          "name",
+          "properties"
+        ]
+      },
+      "description": "List of subnets within the virtual network"
     },
-    "required": ["create", "name", "addressPrefixes", "subnets", "tags"]
-  }
+    "tags": {
+      "type": "object",
+      "additionalProperties": true,
+      "title": "The tags to automatically apply to deployed environments"
+    }
+  },
+  "required": [
+    "create",
+    "name",
+    "addressPrefixes",
+    "subnets",
+    "tags"
+  ]
+}
