@@ -20,6 +20,21 @@ Example templates and customization configurations for Dev Box and Azure Deploym
 
 ## Get Started
 
+### Clone this Repo
+
+```bash
+git clone https://github.com/Evilazaro/DevExp-DevBox.git
+```
+
+### Open VS Code
+```bash
+cd DevExp-DevBox
+
+code .
+```
+
+You are going to see VS Code with all the content of this repo
+
 ### Open a new Terminal
 
 ![alt text](./images/image.png)
