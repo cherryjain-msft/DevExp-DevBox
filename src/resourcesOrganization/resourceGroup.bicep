@@ -25,9 +25,3 @@ resource computeRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landing
   tags: landingZone.compute.tags
 }
 
-@description('Workload Resource Group')
-resource workloadRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZone.workload.create) {
-  name: landingZone.workload.name
-  location: location
-  tags: landingZone.workload.tags
-}

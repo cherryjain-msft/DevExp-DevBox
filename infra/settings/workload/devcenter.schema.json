@@ -97,6 +97,14 @@
             "UserAssigned",
             "SystemAssigned, UserAssigned"
           ]
+        },
+        "roleAssignments": {
+          "type": "array",
+          "description": "List of role assignments.",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
         }
       },
       "required": [

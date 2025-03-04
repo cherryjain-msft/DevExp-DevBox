@@ -23,5 +23,6 @@ resource environmentType 'Microsoft.DevCenter/projects/environmentTypes@2024-10-
     deploymentTargetId: empty(environmentConfig.deploymentTargetId)
       ? subscription().id
       : environmentConfig.deploymentTargetId
+    status: 'Enabled'
   }
 }

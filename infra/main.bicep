@@ -51,34 +51,15 @@ module compute '../src/compute/computeGalleryModule.bicep' = {
   scope: computeRg
 }
 
-resource workloadRg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: landingZones.workload.name
-  location: location
-}
-
-@description('Deploy Workload Module')
-module workload '../src/workload/devCenter.bicep' = {
-  scope: workloadRg
+module workload '../src/workload/workload.bicep' = {
   name: 'workload'
+  scope: subscription()
   params: {
     location: location
+    landingZone: landingZones.workload
     logAnalyticsWorkspaceName: monitoring.outputs.logAnalyticsName
     computeGalleryName: compute.outputs.computeGalleryName
     computeGalleryResourceGroupName: computeRg.name
+    subnets: connectivity.outputs.virtualNetworkSubnets
   }
 }
-
-// @description('Deploy Workload Module')
-// module workload '../src/workload/devCenterModule.bicep' = {
-//   name: 'workload'
-//   scope: workloadRg
-//   params: {
-//     sbunets: connectivity.outputs.virtualNetworkSubnets
-//     workspaceId: monitoring.outputs.logAnalyticsId
-//     computeGalleryName: compute.outputs.computeGalleryName
-//     computeGalleryId: compute.outputs.computeGalleryId
-//   }
-// }
-
-// output workloadDevCenterName string = workload.outputs.devCenterName
-// output workloadDevCenterProjects array = workload.outputs.devCenterprojects
