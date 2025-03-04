@@ -134,7 +134,7 @@ module roleAssignments '../identity/devCenterRoleAssignment.bicep' = [
     name: '${role}-roleAssignments'
     scope: subscription()
     params: {
-      role: role
+      roleName: role
       principalId: devcenter.identity.principalId
     }
   }
