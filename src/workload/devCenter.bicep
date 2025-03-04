@@ -133,6 +133,44 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
   }
 }
 
+var catalogToken = ''
+
+module keyVault '../security/keyvault.bicep' = if (!empty(catalogToken)) {
+  name: 'keyvault'
+  scope: resourceGroup()
+  params: {
+    name: devcenter.name
+    location: resourceGroup().location
+    tags: config.tags
+    principalId: devcenter.identity.principalId
+    permissions: {
+      secrets: [
+        'get'
+        'list'
+        'set'
+        'delete'
+      ]
+    }
+  }
+}
+
+module devCenterKeyVaultAccess '../security/keyvault-access.bicep' = {
+  name: '${deployment().name}-keyvault-access'
+  params: {
+    keyVaultName: keyVault.name
+    principalId: devcenter.identity.principalId
+  }
+}
+
+module catalogPatToken '../security/keyvault-secret.bicep' = {
+  name: '${deployment().name}-pat-token'
+  params: {
+    name: '${devcenter.name}-pat-token'
+    keyVaultName: keyVault.name
+    secretValue: catalogToken
+  }
+}
+
 @description('Dev Center Identity Role Assignments')
 module roleAssignments '../identity/devCenterRoleAssignment.bicep' = [
   for role in config.identity.roleAssignments: {
@@ -170,6 +208,8 @@ module catalogs 'core/catalog.bicep' = [
     params: {
       devCenterName: devcenter.name
       catalogConfig: catalog
+      keyVaultName: keyVault.name
+      patToken: catalogToken
     }
   }
 ]
