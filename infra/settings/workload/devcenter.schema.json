@@ -34,18 +34,14 @@
     "installAzureMonitorAgentEnableStatus": {
       "type": "string",
       "description": "Enable installation of Azure Monitor Agent.",
+      "default": "Enabled",
       "enum": [
         "Enabled",
         "Disabled"
-      ],
-      "default": "Enabled"
+      ]
     },
     "identity": {
-      "type": "object",
-      "$ref": "#/definitions/identity",
-      "default": {
-        "type": "SystemAssigned"
-      }
+      "$ref": "#/definitions/identity"
     },
     "devBoxDefinitions": {
       "type": "array",
@@ -78,6 +74,11 @@
       "items": {
         "$ref": "#/definitions/project"
       }
+    },
+    "tags": {
+      "type": "object",
+      "additionalProperties": true,
+      "title": "The tags to automatically apply to deployed environments"
     }
   },
   "required": [
@@ -89,7 +90,9 @@
     "identity",
     "catalogs",
     "environmentTypes",
-    "projects"
+    "projects",
+    "devBoxDefinitions",
+    "tags"
   ],
   "definitions": {
     "identity": {
@@ -180,7 +183,7 @@
         },
         "sku": {
           "type": "string",
-          "description": "The name of the environment type."
+          "description": "The SKU of the dev box."
         },
         "hibernateSupport": {
           "type": "string",
@@ -217,45 +220,17 @@
         "osStorageType"
       ]
     },
-    "projectCatalog": {
+    "environmentType": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string",
-          "description": "The name of the catalog.",
-          "default": "environments"
-        },
-        "type": {
-          "type": "string",
-          "description": "The type of the catalog.",
-          "default": "gitHub",
-          "enum": [
-            "gitHub",
-            "adoGit"
-          ]
-        },
-        "uri": {
-          "type": "string",
-          "description": "The URI of the catalog.",
-          "default": "https://github.com/Evilazaro/identityProvider.git"
-        },
-        "branch": {
-          "type": "string",
-          "description": "The branch of the catalog.",
-          "default": "main"
-        },
-        "path": {
-          "type": "string",
-          "description": "The path to the catalog.",
-          "default": ".configuration/devcenter/environments/dev"
+          "description": "The name of the environment type.",
+          "default": "dev"
         }
       },
       "required": [
-        "name",
-        "type",
-        "uri",
-        "branch",
-        "path"
+        "name"
       ]
     },
     "project": {
@@ -274,9 +249,9 @@
         "environmentTypes": {
           "type": "array",
           "title": "The environment types for the project",
-          "description": "The environment types must be defined in the environmentTypes section of the DevCenter configuration file.",
+          "description": "The environment types must be defined in the environmentTypes section.",
           "items": {
-            "$ref": "#/definitions/projectEnvironmentType"
+            "$ref": "#/definitions/environmentType"
           }
         },
         "catalogs": {
@@ -284,15 +259,7 @@
           "description": "List of catalogs for the project.",
           "minItems": 1,
           "items": {
-            "$ref": "#/definitions/projectCatalog"
-          },
-          "pools": {
-            "type": "array",
-            "description": "List of pools for the project.",
-            "minItems": 1,
-            "items": {
-              "$ref": "#/definitions/projectPool"
-            }
+            "$ref": "#/definitions/catalog"
           }
         }
       },
@@ -300,61 +267,7 @@
         "name",
         "description",
         "environmentTypes",
-        "catalogs",
-        "pools"
-      ]
-    },
-    "environmentType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "The name of the environment type.",
-          "default": "dev"
-        }
-      },
-      "required": [
-        "name"
-      ]
-    },
-    "projectEnvironmentType": {
-      "type": "object",
-      "required": [
-        "name",
-        "deploymentTargetId"
-      ],
-      "properties": {
-        "name": {
-          "type": "string",
-          "title": "The name of the environment type",
-          "default": "dev"
-        },
-        "identity": {
-          "type": "object",
-          "$ref": "#/definitions/identity"
-        },
-        "deploymentTargetId": {
-          "type": "string",
-          "title": "The Azure subscription id to deploy environments",
-          "default": "00000000-0000-0000-0000-000000000000"
-        }
-      }
-    },
-    "projectPool": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "The name of the pool."
-        },
-        "devBoxDefinitionName": {
-          "type": "string",
-          "description": "The description of the pool."
-        }
-      },
-      "required": [
-        "name",
-        "devBoxDefinitionName"
+        "catalogs"
       ]
     }
   }

@@ -25,6 +25,7 @@ type DevCenterconfig = {
   catalogItemSyncEnableStatus: Status
   microsoftHostedNetworkEnableStatus: Status
   installAzureMonitorAgentEnableStatus: Status
+  tags: object
 }
 
 type Status = 'Enabled' | 'Disabled'
@@ -59,6 +60,7 @@ type Project = {
   environmentTypes: ProjectEnvironmentType[]
   catalogs: Catalog[]
   pools: array
+  tags: object
 }
 
 type NetWorkConection = {
@@ -97,6 +99,7 @@ resource devcenter 'Microsoft.DevCenter/devcenters@2024-10-01-preview' = {
       installAzureMonitorAgentEnableStatus: config.installAzureMonitorAgentEnableStatus
     }
   }
+  tags: config.tags
 }
 
 resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2020-10-01' existing = {
@@ -205,6 +208,7 @@ module projects 'core/project.bicep' = [
       projectEnvironmentTypes: project.environmentTypes
       projectPools: project.pools
       networkConnectionName: networkConnections[0].outputs.vnetAttachmentName
+      tags: project.tags
     }
   }
 ]

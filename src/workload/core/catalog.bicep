@@ -23,21 +23,21 @@ resource devCenter 'Microsoft.DevCenter/devcenters@2024-10-01-preview' existing 
 resource catalog 'Microsoft.DevCenter/devcenters/catalogs@2024-10-01-preview' = {
   name: catalogConfig.name
   parent: devCenter
-  properties: catalogConfig.type == 'gitHub'
-    ? {
-        gitHub: {
+  properties: {
+    syncType: 'Scheduled'
+    gitHub: catalogConfig.type == 'gitHub'
+      ? {
           uri: catalogConfig.uri
           branch: catalogConfig.branch
           path: catalogConfig.path
         }
-        syncType: 'Scheduled'
-      }
-    : {
-        adoGit: {
+      : null
+    adoGit: catalogConfig.type == 'adoGit'
+      ? {
           uri: catalogConfig.uri
           branch: catalogConfig.branch
           path: catalogConfig.path
         }
-        syncType: 'Scheduled'
-      }
+      : null
+  }
 }
