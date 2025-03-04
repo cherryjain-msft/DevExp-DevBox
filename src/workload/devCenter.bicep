@@ -35,6 +35,11 @@ type Identity = {
   roleAssignments: RoleAssignment[]
 }
 
+type RoleAssignment = {
+  name: string
+  id: string
+}
+
 type Catalog = {
   name: string
   type: CatalogType
@@ -81,11 +86,6 @@ type DevBoxDefinition = {
 type HibernateSupport = 'Enabled' | 'Disabled'
 
 type StorageType = 'ssd_128gb' | 'ssd_256gb' | 'ssd_512gb' | 'ssd_1tb'
-
-type RoleAssignment = {
-  name: string
-  id: string
-}
 
 resource devcenter 'Microsoft.DevCenter/devcenters@2024-10-01-preview' = {
   name: '${config.name}-${uniqueString(resourceGroup().id)}'
@@ -136,7 +136,7 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
 @description('Dev Center Identity Role Assignments')
 module roleAssignments '../identity/devCenterRoleAssignment.bicep' = [
   for role in config.identity.roleAssignments: {
-    name: 'roleAssignments: ${role}'
+    name: 'roleAssignments-${role}'
     scope: subscription()
     params: {
       id: role.id
@@ -148,7 +148,7 @@ module roleAssignments '../identity/devCenterRoleAssignment.bicep' = [
 @description('Network Connections')
 module networkConnections 'core/networkConnection.bicep' = [
   for subnet in subnets: {
-    name: 'networkConnections: ${subnet.name}'
+    name: 'networkConnections-${subnet.name}'
     params: {
       name: subnet.name
       devCenterName: devcenter.name
@@ -166,7 +166,7 @@ output networkConnectionNames array = [
 @description('Dev Center Catalogs')
 module catalogs 'core/catalog.bicep' = [
   for catalog in devCenterCatalogs: {
-    name: 'catalogs: ${catalog.name}'
+    name: 'catalogs-${catalog.name}'
     params: {
       devCenterName: devcenter.name
       catalogConfig: catalog
@@ -177,7 +177,7 @@ module catalogs 'core/catalog.bicep' = [
 @description('Dev Center DevBox Definitions')
 module devBoxDefinitions 'core/devBoxDefinition.bicep' = [
   for devBoxDefinition in devCenterDevBoxDefinitions: {
-    name: 'devBoxDefinitions: ${devBoxDefinition.name}'
+    name: 'devBoxDefinitions-${devBoxDefinition.name}'
     params: {
       name: devBoxDefinition.name
       location: resourceGroup().location
@@ -193,7 +193,7 @@ module devBoxDefinitions 'core/devBoxDefinition.bicep' = [
 @description('Dev Center Environments')
 module environments 'core/environmentType.bicep' = [
   for environment in devCenterEnvironmentTypes: {
-    name: 'environmentTypes: ${environment.name}'
+    name: 'environmentTypes-${environment.name}'
     params: {
       devCenterName: devcenter.name
       environmentConfig: environment
@@ -204,7 +204,7 @@ module environments 'core/environmentType.bicep' = [
 @description('Dev Center Projects')
 module projects 'core/project.bicep' = [
   for project in devCenterProjects: {
-    name: 'Projects: ${project.name}'
+    name: 'Projects-${project.name}'
     params: {
       name: project.name
       projectDescription: project.name
