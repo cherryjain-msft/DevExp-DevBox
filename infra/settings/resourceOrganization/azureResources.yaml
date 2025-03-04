@@ -1,48 +1,6 @@
 # yaml-language-server: $schema=./azureResources.shema.json
 
-connectivity: 
-  create: true 
-  name: DevExP-Connectivity-dev
-  description: connectivity
-  tags:
-    environment: dev
-    division: Platforms
-    team: DevExP
-    project: DevExP-DevBox
-    costCenter: IT
-    owner: Evilazaro
-    landingZone: Connectivity
-    resources: ResourceGroup
-
-compute:
-  create: true
-  name: DevExP-Compute-dev
-  description: compute
-  tags:
-    environment: dev
-    division: Platforms
-    team: DevExP
-    project: DevExP-DevBox
-    costCenter: IT
-    owner: Evilazaro
-    landingZone: Identity
-    resources: ResourceGroup
-
-management:
-  create: true
-  name: DevExP-Management-dev
-  logAnalyticsName: loganalytics-dev
-  description: management
-  tags:
-    environment: dev
-    division: Platforms
-    team: DevExP
-    project: DevExP-DevBox
-    costCenter: IT
-    owner: Evilazaro
-    landingZone: Management
-    resources: ResourceGroup
-    
+  
 workload:
   create: true
   name: DevExP-Workload-dev

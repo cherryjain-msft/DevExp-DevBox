@@ -1,19 +1,8 @@
-targetScope = 'subscription'
-
-@description('Location for the deployment')
-param location string
-
-@description('Landing Zone Information')
-param landingZone LandingZone
-
 @description('Log Analytics Workspace')
 param logAnalyticsWorkspaceName string
 
 @description('Compute Gallery Name')
 param computeGalleryName string
-
-@description('Compute Gallery Resource Group Name')
-param computeGalleryResourceGroupName string
 
 @description('Subnets')
 param subnets NetWorkConection[]
@@ -32,21 +21,11 @@ type NetWorkConection = {
 @description('Dev Center Settings')
 var devCenterConfig = loadYamlContent('../../infra/settings/workload/devcenter.yaml')
 
-@description('Workload Resource Group')
-resource workloadRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZone.create) {
-  name: landingZone.name
-  location: location
-  tags: landingZone.tags
-}
-
-var rgName = landingZone.create ? workloadRg.name : landingZone.name
-
 module workload 'devCenter.bicep' = {
-  scope: resourceGroup(rgName)
-  name: 'workload'
+  scope: resourceGroup()
+  name: 'devCenter'
   params: {
     computeGalleryName: computeGalleryName
-    computeGalleryResourceGroupName: computeGalleryResourceGroupName
     config: devCenterConfig
     devCenterCatalogs: devCenterConfig.catalogs
     devCenterEnvironmentTypes: devCenterConfig.environmentTypes

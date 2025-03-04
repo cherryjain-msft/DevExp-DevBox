@@ -3,99 +3,6 @@
     "title": "Azure Resources Configuration",
     "type": "object",
     "properties": {
-        "connectivity": {
-            "type": "object",
-            "properties": {
-                "create": {
-                    "type": "boolean",
-                    "description": "Flag to indicate if the resource group should be created"
-                },
-                "name": {
-                    "type": "string",
-                    "description": "Name of the resource group",
-                    "default": "connectivity"
-                },
-                "description": {
-                    "type": "string",
-                    "description": "Description of the resource group"
-                },
-                "tags": {
-                    "type": "object",
-                    "additionalProperties": true,
-                    "title": "The tags to automatically apply to deployed environments"
-                }
-            },
-            "required": [
-                "create",
-                "name",
-                "description",
-                "tags"
-            ]
-        },
-        "compute": {
-            "type": "object",
-            "properties": {
-                "create": {
-                    "type": "boolean",
-                    "description": "Flag to indicate if the resource group should be created"
-                },
-                "name": {
-                    "type": "string",
-                    "description": "Name of the resource group",
-                    "default": "compute"
-                },
-                "description": {
-                    "type": "string",
-                    "description": "Description of the resource group"
-                },
-                "tags": {
-                    "type": "object",
-                    "additionalProperties": true,
-                    "title": "The tags to automatically apply to deployed environments"
-                }
-            },
-            "required": [
-                "create",
-                "name",
-                "description",
-                "tags"
-            ]
-        },
-        "management": {
-            "type": "object",
-            "properties": {
-                "create": {
-                    "type": "boolean",
-                    "description": "Flag to indicate if the resource group should be created"
-                },
-                "name": {
-                    "type": "string",
-                    "description": "Name of the resource group",
-                    "default": "management"
-                },
-                "logAnalyticsName": {
-                    "type": "string",
-                    "description": "Name of the Log Analytics workspace",
-                    "default": "logAnalytics"
-                },
-                "description": {
-                    "type": "string",
-                    "description": "Description of the resource group"
-                },
-                "tags": {
-                    "type": "object",
-                    "additionalProperties": true,
-                    "title": "The tags to automatically apply to deployed environments"
-                }
-            },
-            "required": [
-                "create",
-                "name",
-                "logAnalyticsName",
-                "description",
-                "tags"
-            ]
-        },
         "workload": {
             "type": "object",
             "properties": {
@@ -127,9 +34,6 @@
         }
     },
     "required": [
-        "connectivity",
-        "compute",
-        "management",
         "workload"
     ]
 }
