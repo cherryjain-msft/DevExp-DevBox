@@ -31,19 +31,12 @@ module connectivity '../src/connectivity/connectivity.bicep' = {
   }
 }
 
-@description('Deploy Compute Module')
-module compute '../src/compute/computeGalleryModule.bicep' = {
-  name: 'compute'
-  scope: workloadRg
-}
-
 @description('Deploy Workload Module')
 module workload '../src/workload/workload.bicep' = {
   name: 'workload'
   scope: workloadRg
   params: {
     logAnalyticsWorkspaceName: monitoring.outputs.logAnalyticsName
-    computeGalleryName: compute.outputs.computeGalleryName
     subnets: connectivity.outputs.virtualNetworkSubnets
   }
 }

@@ -1,9 +1,6 @@
 @description('Log Analytics Workspace')
 param logAnalyticsWorkspaceName string
 
-@description('Compute Gallery Name')
-param computeGalleryName string
-
 @description('Subnets')
 param subnets NetWorkConection[]
 
@@ -25,7 +22,6 @@ module workload 'devCenter.bicep' = {
   scope: resourceGroup()
   name: 'devCenter'
   params: {
-    computeGalleryName: computeGalleryName
     config: devCenterConfig
     devCenterCatalogs: devCenterConfig.catalogs
     devCenterEnvironmentTypes: devCenterConfig.environmentTypes

@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=compute.schema.json
 
-name: imageGallery
+name: imageGallery2
 tags:
   environment: dev
   division: Platforms

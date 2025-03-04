@@ -30,6 +30,7 @@ resource catalog 'Microsoft.DevCenter/devcenters/catalogs@2024-10-01-preview' = 
           branch: catalogConfig.branch
           path: catalogConfig.path
         }
+        syncType: 'Scheduled'
       }
     : {
         adoGit: {
@@ -37,5 +38,6 @@ resource catalog 'Microsoft.DevCenter/devcenters/catalogs@2024-10-01-preview' = 
           branch: catalogConfig.branch
           path: catalogConfig.path
         }
+        syncType: 'Scheduled'
       }
 }
