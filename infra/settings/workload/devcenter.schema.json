@@ -41,8 +41,6 @@
       ]
     },
     "identity": {
-      "type": "object",
-      "description": "The identity of the Dev Center.",
       "$ref": "#/definitions/identity"
     },
     "devBoxDefinitions": {
@@ -121,7 +119,8 @@
         }
       },
       "required": [
-        "type"
+        "type",
+        "roleAssignments"
       ]
     },
     "catalog": {
@@ -129,12 +128,10 @@
       "properties": {
         "name": {
           "type": "string",
-          "description": "The name of the catalog.",
           "default": "customTasks"
         },
         "type": {
           "type": "string",
-          "description": "The type of the catalog.",
           "default": "gitHub",
           "enum": [
             "gitHub",
@@ -143,17 +140,14 @@
         },
         "uri": {
           "type": "string",
-          "description": "The URI of the catalog.",
           "default": "https://github.com/Evilazaro/DevExP-DevBox.git"
         },
         "branch": {
           "type": "string",
-          "description": "The branch of the catalog.",
           "default": "main"
         },
         "path": {
           "type": "string",
-          "description": "The path to the catalog.",
           "default": ".configuration/devcenter/tasks"
         }
       },
@@ -170,26 +164,21 @@
       "properties": {
         "name": {
           "type": "string",
-          "description": "The name of the dev box definition.",
           "default": "DevExP-DevBox"
         },
         "image": {
           "type": "string",
-          "description": "The description of the dev box definition.",
           "default": "DevExP-DevBox"
         },
         "imageVersion": {
           "type": "string",
-          "description": "The version of the image.",
           "default": "latest"
         },
         "sku": {
-          "type": "string",
-          "description": "The SKU of the dev box."
+          "type": "string"
         },
         "hibernateSupport": {
           "type": "string",
-          "description": "The hibernate support for the dev box definition.",
           "default": "Enabled",
           "enum": [
             "Enabled",
@@ -198,7 +187,6 @@
         },
         "osStorageType": {
           "type": "string",
-          "description": "Storage Type for the OS disk.",
           "default": "ssd_512gb",
           "enum": [
             "ssd_128gb",
@@ -209,7 +197,6 @@
         },
         "default": {
           "type": "boolean",
-          "description": "The default dev box definition.",
           "default": true
         }
       },
@@ -227,7 +214,6 @@
       "properties": {
         "name": {
           "type": "string",
-          "description": "The name of the environment type.",
           "default": "dev"
         }
       },
@@ -240,25 +226,20 @@
       "properties": {
         "name": {
           "type": "string",
-          "description": "The name of the project.",
           "default": "identityProvider"
         },
         "description": {
           "type": "string",
-          "description": "The description of the project.",
           "default": "identityProvider"
         },
         "environmentTypes": {
           "type": "array",
-          "title": "The environment types for the project",
-          "description": "The environment types must be defined in the environmentTypes section.",
           "items": {
             "$ref": "#/definitions/environmentType"
           }
         },
         "catalogs": {
           "type": "array",
-          "description": "List of catalogs for the project.",
           "minItems": 1,
           "items": {
             "$ref": "#/definitions/catalog"
@@ -266,17 +247,14 @@
         },
         "pools": {
           "type": "array",
-          "description": "List of pools for the project.",
           "items": {
             "type": "object",
             "properties": {
               "name": {
-                "type": "string",
-                "description": "The name of the pool."
+                "type": "string"
               },
               "devBoxDefinitionName": {
-                "type": "string",
-                "description": "The name of the dev box definition."
+                "type": "string"
               }
             },
             "required": [
@@ -287,8 +265,7 @@
         },
         "tags": {
           "type": "object",
-          "additionalProperties": true,
-          "title": "The tags to automatically apply to deployed environments"
+          "additionalProperties": true
         }
       },
       "required": [
@@ -311,7 +288,11 @@
           "type": "string",
           "description": "The principal ID."
         }
-      }
+      },
+      "required": [
+        "name",
+        "id"
+      ]
     }
   }
 }
