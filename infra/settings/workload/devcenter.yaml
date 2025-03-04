@@ -67,6 +67,11 @@ projects:
         uri: https://github.com/Evilazaro/identityProvider.git
         branch: main
         path: .configuration/devcenter/environments/dev
+      - name: imageDefinitions
+        type: gitHub
+        uri: https://github.com/Evilazaro/identityProvider.git
+        branch: main
+        path: .configuration/devcenter/imageDefinitions
     tags:
       environment: dev
       division: Platforms
