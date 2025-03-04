@@ -161,7 +161,7 @@ output networkConnectionNames array = [
 @description('Dev Center Catalogs')
 module catalogs 'core/catalog.bicep' = [
   for catalog in devCenterCatalogs: {
-    name: 'devCenterCatalogs-${catalog.name}'
+    name: 'catalogs-${catalog.name}'
     params: {
       devCenterName: devcenter.name
       catalogConfig: catalog
