@@ -13,6 +13,9 @@ param devCenterProjects Project[]
 @description('Log Analytics Workspace')
 param logAnalyticsWorkspaceName string
 
+@description('DevBox definitions')
+param devCenterDevBoxDefinitions DevBoxDefinition[]
+
 @description('Subnets')
 param subnets NetWorkConection[]
 
@@ -62,6 +65,20 @@ type NetWorkConection = {
   id: string
 }
 
+type DevBoxDefinition = {
+  name: string
+  image: string
+  osStorageType: StorageType
+  imageVersion: string
+  sku: string
+  hibernateSupport: HibernateSupport
+  default: bool
+}
+
+type HibernateSupport = 'Enabled' | 'Disabled'
+
+type StorageType = 'ssd_128gb' | 'ssd_256gb' | 'ssd_512gb' | 'ssd_1tb'
+
 resource devcenter 'Microsoft.DevCenter/devcenters@2024-10-01-preview' = {
   name: '${config.name}-${uniqueString(resourceGroup().id)}'
   location: resourceGroup().location
@@ -81,7 +98,7 @@ resource devcenter 'Microsoft.DevCenter/devcenters@2024-10-01-preview' = {
   }
 }
 
-resource logAnalytics  'Microsoft.OperationalInsights/workspaces@2020-10-01' existing = {
+resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2020-10-01' existing = {
   name: logAnalyticsWorkspaceName
 }
 
@@ -142,18 +159,21 @@ module catalogs 'core/catalog.bicep' = [
   }
 ]
 
-// @description('Dev Center Compute Galleries')
-// module computeGallery 'core/computeGallery.bicep' = {
-//   name: 'devCenter-computeGallery'
-//   params: {
-//     computeGalleryId: compute.outputs.computeGalleryId
-//     computeGalleryName: compute.outputs.computeGalleryName
-//     devCenterName: devcenter.name
-//   }
-//   dependsOn: [
-//     roleAssignments
-//   ]
-// }
+@description('Dev Center DevBox Definitions')
+module devBoxDefinitions 'core/devBoxDefinition.bicep' = [
+  for devBoxDefinition in devCenterDevBoxDefinitions: {
+    name: devBoxDefinition.name
+    params: {
+      name: devBoxDefinition.name
+      location: resourceGroup().location
+      devCenterName: devcenter.name
+      hibernateSupport: devBoxDefinition.hibernateSupport
+      imageName: devBoxDefinition.image
+      osStorageType: devBoxDefinition.osStorageType
+      sku: devBoxDefinition.sku
+    }
+  }
+]
 
 @description('Dev Center Environments')
 module environments 'core/environmentType.bicep' = [

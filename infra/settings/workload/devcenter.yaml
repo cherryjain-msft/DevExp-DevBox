@@ -18,6 +18,24 @@ identity:
     - "85a2d0d9-2eba-4c9c-b355-11c2cc0788ab"
     - "1ef6a3be-d0ac-425d-8c01-acb62866290b"
 
+devBoxDefinitions:
+  - name: backEndEngineer
+    image: microsoftvisualstudio_visualstudioplustools_vs-2022-ent-general-win11-m365-gen2
+    osStorageType: ssd_512gb
+    imageVersion: latest
+    sku: general_i_32c128gb512ssd_v2
+    hibernateSupport: Disabled
+    default: true
+      
+  - name: frontEndEngineer
+    image: microsoftwindowsdesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365
+    osStorageType: ssd_256gb
+    imageVersion: latest
+    sku: general_i_16c64gb256ssd_v2
+    hibernateSupport: Enabled
+    default: true
+      
+
 catalogs:
   - name: customTasks
     type: gitHub

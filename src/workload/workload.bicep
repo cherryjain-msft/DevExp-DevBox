@@ -28,5 +28,6 @@ module workload 'devCenter.bicep' = {
     devCenterProjects: devCenterConfig.projects
     logAnalyticsWorkspaceName: logAnalyticsWorkspaceName
     subnets: subnets
+    devCenterDevBoxDefinitions: devCenterConfig.devBoxDefinitions
   }
 }

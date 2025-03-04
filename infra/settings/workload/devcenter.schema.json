@@ -47,6 +47,14 @@
         "type": "SystemAssigned"
       }
     },
+    "devBoxDefinitions": {
+      "type": "array",
+      "description": "List of dev box definitions.",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/devBoxDefinition"
+      }
+    },
     "catalogs": {
       "type": "array",
       "description": "List of catalogs.",
@@ -150,6 +158,63 @@
         "uri",
         "branch",
         "path"
+      ]
+    },
+    "devBoxDefinition": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the dev box definition.",
+          "default": "DevExP-DevBox"
+        },
+        "image": {
+          "type": "string",
+          "description": "The description of the dev box definition.",
+          "default": "DevExP-DevBox"
+        },
+        "imageVersion": {
+          "type": "string",
+          "description": "The version of the image.",
+          "default": "latest"
+        },
+        "sku": {
+          "type": "string",
+          "description": "The name of the environment type."
+        },
+        "hibernateSupport": {
+          "type": "string",
+          "description": "The hibernate support for the dev box definition.",
+          "default": "Enabled",
+          "enum": [
+            "Enabled",
+            "Disabled"
+          ]
+        },
+        "osStorageType": {
+          "type": "string",
+          "description": "Storage Type for the OS disk.",
+          "default": "ssd_512gb",
+          "enum": [
+            "ssd_128gb",
+            "ssd_256gb",
+            "ssd_512gb",
+            "ssd_1tb"
+          ]
+        },
+        "default": {
+          "type": "boolean",
+          "description": "The default dev box definition.",
+          "default": true
+        }
+      },
+      "required": [
+        "name",
+        "image",
+        "imageVersion",
+        "sku",
+        "hibernateSupport",
+        "osStorageType"
       ]
     },
     "projectCatalog": {
