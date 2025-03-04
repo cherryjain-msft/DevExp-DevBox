@@ -3,7 +3,7 @@
   
 workload:
   create: true
-  name: DevExP-Workload-prod
+  name: DevExP-Workload-RG
   description: prodExp
   tags:
     environment: dev

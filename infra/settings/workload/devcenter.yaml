@@ -1,10 +1,11 @@
 # yaml-language-server: $schema=./devcenter.schema.json
 
-name: DevExP-dev
+name: DevExP
 location: eastus2
 catalogItemSyncEnableStatus: Enabled
 microsoftHostedNetworkEnableStatus: Enabled
 installAzureMonitorAgentEnableStatus: Enabled
+
 identity:
   type: SystemAssigned
   roleAssignments:
@@ -41,9 +42,11 @@ catalogs:
     uri: https://github.com/Evilazaro/DevExP-DevBox.git
     branch: main
     path: .configuration/devcenter/tasks
+
 environmentTypes:
   - name: dev
   - name: staging
+
 projects:
   - name: identityProvider
     description: identityProvider
@@ -68,7 +71,7 @@ projects:
       project: DevExP-DevBox
       costCenter: IT
       owner: Evilazaro
-      resources: DevCenter
+      resources: Project
 
 tags:
   environment: dev
