@@ -5,12 +5,14 @@ param devCenterName string
 param catalogConfig Catalog
 
 type Catalog = {
-  type: string
   name: string
+  type: CatalogType
   uri: string
   branch: string
   path: string
 }
+
+type CatalogType = 'gitHub' | 'adoGit'
 
 @description('Dev Center')
 resource devCenter 'Microsoft.DevCenter/devcenters@2024-10-01-preview' existing = {

@@ -22,10 +22,12 @@ param subnets NetWorkConection[]
 type DevCenterconfig = {
   name: string
   identity: Identity
-  catalogItemSyncEnableStatus: string
-  microsoftHostedNetworkEnableStatus: string
-  installAzureMonitorAgentEnableStatus: string
+  catalogItemSyncEnableStatus: Status
+  microsoftHostedNetworkEnableStatus: Status
+  installAzureMonitorAgentEnableStatus: Status
 }
+
+type Status = 'Enabled' | 'Disabled'
 
 type Identity = {
   type: string
@@ -34,11 +36,13 @@ type Identity = {
 
 type Catalog = {
   name: string
-  type: string
+  type: CatalogType
   uri: string
   branch: string
   path: string
 }
+
+type CatalogType = 'gitHub' | 'adoGit'
 
 type EnvironmentType = {
   name: string

@@ -4,7 +4,6 @@ param logAnalyticsWorkspaceName string
 @description('Compute Gallery Name')
 param computeGalleryName string
 
-
 @description('Subnets')
 param subnets NetWorkConection[]
 
@@ -24,7 +23,7 @@ var devCenterConfig = loadYamlContent('../../infra/settings/workload/devcenter.y
 
 module workload 'devCenter.bicep' = {
   scope: resourceGroup()
-  name: 'workload'
+  name: 'devCenter'
   params: {
     computeGalleryName: computeGalleryName
     config: devCenterConfig

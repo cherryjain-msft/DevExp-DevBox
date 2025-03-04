@@ -22,12 +22,13 @@ type Project = {
 
 type Catalog = {
   name: string
-  type: string
+  type: CatalogType
   uri: string
   branch: string
   path: string
 }
 
+type CatalogType = 'gitHub' | 'adoGit'
 
 type ProjectEnvironmentType = {
   name: string
