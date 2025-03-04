@@ -13,6 +13,12 @@ param projectCatalogs Catalog[]
 @description('Project Environment Types')
 param projectEnvironmentTypes ProjectEnvironmentType[]
 
+@description('Project Pools')
+param projectPools Pool[]
+
+@description('Network Connection Name')
+param networkConnectionName string = 'Default'
+
 type Project = {
   name: string
   description: string
@@ -33,6 +39,11 @@ type CatalogType = 'gitHub' | 'adoGit'
 type ProjectEnvironmentType = {
   name: string
   deploymentTargetId: string
+}
+
+type Pool = {
+  name: string
+  devBoxDefinitionName: string
 }
 
 @description('Dev Center')
@@ -69,6 +80,19 @@ module environmentTypes 'projectEnvironmentType.bicep' = [
     params: {
       projectName: project.name
       environmentConfig: environmentType
+    }
+  }
+]
+
+@description('Project Pools')
+module pools 'projectPool.bicep' = [
+  for pool in projectPools: {
+    name: pool.name
+    params: {
+      name: pool.name
+      projectName: project.name
+      devBoxDefinitionName: pool.devBoxDefinitionName
+      networkConnectionName: networkConnectionName
     }
   }
 ]

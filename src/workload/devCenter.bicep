@@ -58,6 +58,7 @@ type Project = {
   description: string
   environmentTypes: ProjectEnvironmentType[]
   catalogs: Catalog[]
+  pools: array
 }
 
 type NetWorkConection = {
@@ -142,9 +143,15 @@ module networkConnections 'core/networkConnection.bicep' = [
     name: '${config.name}-${subnet.name}'
     params: {
       name: subnet.name
-      devcenterNae: devcenter.name
+      devCenterName: devcenter.name
       subnetId: subnet.id
     }
+  }
+]
+
+output networkConnectionNames array = [
+  for subnet in subnets: {
+    name: networkConnections[0].outputs.vnetAttachmentName
   }
 ]
 
@@ -196,6 +203,8 @@ module projects 'core/project.bicep' = [
       devCenterName: devcenter.name
       projectCatalogs: project.catalogs
       projectEnvironmentTypes: project.environmentTypes
+      projectPools: project.pools
+      networkConnectionName: networkConnections[0].outputs.vnetAttachmentName
     }
   }
 ]

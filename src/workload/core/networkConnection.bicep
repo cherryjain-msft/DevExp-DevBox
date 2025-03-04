@@ -2,14 +2,14 @@
 param name string
 
 @description('DevCenter Resource')
-param devcenterNae string
+param devCenterName string
 
 @description('Network Connection for the Virtual Network Subnet')
 param subnetId string
 
 @description('DevCenter Resource')
 resource devcenter 'Microsoft.DevCenter/devcenters@2024-10-01-preview' existing = {
-  name: devcenterNae
+  name: devCenterName
 }
 
 @description('Network Connections for the Virtual Network Subnets')
@@ -30,3 +30,5 @@ resource vnetAttachment 'Microsoft.DevCenter/devcenters/attachednetworks@2024-10
     networkConnectionId: netConnection.id
   }
 }
+
+output vnetAttachmentName string = vnetAttachment.name

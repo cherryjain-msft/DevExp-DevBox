@@ -285,6 +285,14 @@
           "minItems": 1,
           "items": {
             "$ref": "#/definitions/projectCatalog"
+          },
+          "pools": {
+            "type": "array",
+            "description": "List of pools for the project.",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/definitions/projectPool"
+            }
           }
         }
       },
@@ -292,7 +300,8 @@
         "name",
         "description",
         "environmentTypes",
-        "catalogs"
+        "catalogs",
+        "pools"
       ]
     },
     "environmentType": {
@@ -330,6 +339,23 @@
           "default": "00000000-0000-0000-0000-000000000000"
         }
       }
+    },
+    "projectPool": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the pool."
+        },
+        "devBoxDefinitionName": {
+          "type": "string",
+          "description": "The description of the pool."
+        }
+      },
+      "required": [
+        "name",
+        "devBoxDefinitionName"
+      ]
     }
   }
 }
