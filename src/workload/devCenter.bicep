@@ -16,9 +16,6 @@ param logAnalyticsWorkspaceName string
 @description('Compute Gallery Name')
 param computeGalleryName string
 
-@description('Compute Gallery Resource Group Name')
-param computeGalleryResourceGroupName string
-
 @description('Subnets')
 param subnets NetWorkConection[]
 
@@ -147,7 +144,7 @@ module catalogs 'core/catalog.bicep' = [
 
 resource gallery 'Microsoft.Compute/galleries@2024-03-03' existing = {
   name: computeGalleryName
-  scope: resourceGroup(computeGalleryResourceGroupName)
+  scope: resourceGroup()
 }
 
 @description('Dev Center Compute Galleries')

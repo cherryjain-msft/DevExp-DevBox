@@ -4,58 +4,46 @@ targetScope = 'subscription'
 param location string = 'eastus2'
 
 @description('Landing Zone Information')
-var landingZones = loadYamlContent('settings/resourceOrganization/azureResources.yaml')
+var landingZone = loadYamlContent('settings/resourceOrganization/azureResources.yaml')
 
-module landingZone '../src/resourcesOrganization/resourceGroup.bicep' = {
-  name: 'landingZones'
-  params: {
-    landingZone: landingZones
-  }
-}
-
-resource managemetRg 'Microsoft.Resources/resourceGroups@2024-11-01' = {
-  name: landingZones.management.name
+@description('Workload Resource Group')
+resource workloadRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZone.workload.create) {
+  name: landingZone.workload.name
   location: location
+  tags: landingZone.workload.tags
 }
 
+@description('Deploy Monitoring Module')
 module monitoring '../src/management/logAnalytics.bicep' = {
-  scope: managemetRg
-  name: landingZones.management.logAnalyticsName
+  scope: workloadRg
+  name: 'monitoring'
   params: {
-    name: landingZones.management.logAnalyticsName
+    name: 'logAnalytics'
   }
 }
 
 @description('Deploy Connectivity Module')
 module connectivity '../src/connectivity/connectivity.bicep' = {
   name: 'connectivity'
+  scope: workloadRg
   params: {
-    location: location
-    landingZone: landingZones.connectivity
     workspaceId: monitoring.outputs.logAnalyticsId
   }
 }
 
-resource computeRg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: landingZones.compute.name
-  location: location
-}
-
-@description('Compute Gallery')
+@description('Deploy Compute Module')
 module compute '../src/compute/computeGalleryModule.bicep' = {
   name: 'compute'
-  scope: computeRg
+  scope: workloadRg
 }
 
+@description('Deploy Workload Module')
 module workload '../src/workload/workload.bicep' = {
   name: 'workload'
-  scope: subscription()
+  scope: workloadRg
   params: {
-    location: location
-    landingZone: landingZones.workload
     logAnalyticsWorkspaceName: monitoring.outputs.logAnalyticsName
     computeGalleryName: compute.outputs.computeGalleryName
-    computeGalleryResourceGroupName: computeRg.name
     subnets: connectivity.outputs.virtualNetworkSubnets
   }
 }
