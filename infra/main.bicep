@@ -64,6 +64,7 @@ module workload '../src/workload/devCenter.bicep' = {
     location: location
     logAnalyticsWorkspaceName: monitoring.outputs.logAnalyticsName
     computeGalleryName: compute.outputs.computeGalleryName
+    computeGalleryResourceGroupName: computeRg.name
   }
 }
 

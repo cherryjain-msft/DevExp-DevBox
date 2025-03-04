@@ -7,6 +7,8 @@ param logAnalyticsWorkspaceName string
 @description('Compute Gallery Name')
 param computeGalleryName string
 
+@description('Compute Gallery Resource Group Name')
+param computeGalleryResourceGroupName string
 
 @description('Dev Center Settings')
 var devCenterConfig = loadYamlContent('../../infra/settings/workload/devcenter.yaml')
@@ -70,11 +72,12 @@ module catalogs 'core/catalog.bicep' = [
 
 resource gallery 'Microsoft.Compute/galleries@2024-03-03' existing = {
   name: computeGalleryName
+  scope: resourceGroup(computeGalleryResourceGroupName)
 }
 
 @description('Dev Center Compute Galleries')
-module computeGallery 'core/computeGallery.bicep'= {
-  name: 'computeGallery'
+module computeGallery 'core/computeGallery.bicep' = {
+  name: 'devCenter-computeGallery'
   params: {
     computeGalleryId: gallery.name
     computeGalleryName: gallery.id
