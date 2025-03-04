@@ -4,6 +4,9 @@ param logAnalyticsWorkspaceName string
 @description('Subnets')
 param subnets NetWorkConection[]
 
+@description('Key Vault Name')
+param keyVaultName string
+
 type LandingZone = {
   name: string
   create: bool
@@ -29,5 +32,6 @@ module workload 'devCenter.bicep' = {
     logAnalyticsWorkspaceName: logAnalyticsWorkspaceName
     subnets: subnets
     devCenterDevBoxDefinitions: devCenterConfig.devBoxDefinitions
+    keyVaultName: keyVaultName
   }
 }

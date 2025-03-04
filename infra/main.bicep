@@ -3,8 +3,30 @@ targetScope = 'subscription'
 @description('Location for the deployment')
 param location string = 'eastus2'
 
+@description('Key Vault Secret')
+@secure()
+param secretValue string
+
 @description('Landing Zone Information')
 var landingZone = loadYamlContent('settings/resourceOrganization/azureResources.yaml')
+
+@description('Workload Resource Group')
+resource securityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZone.workload.create) {
+  name: landingZone.security.name
+  location: location
+  tags: landingZone.security.tags
+}
+
+@description('Deploy Security Module')
+module security '../src/security/security.bicep' = {
+  scope: securityRg
+  name: 'security'
+  params: {
+    name: 'devexp-kv'
+    secretValue: secretValue
+    tags: landingZone.security.tags
+  }
+}
 
 @description('Workload Resource Group')
 resource workloadRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZone.workload.create) {
@@ -15,7 +37,7 @@ resource workloadRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landin
 
 @description('Deploy Monitoring Module')
 module monitoring '../src/management/logAnalytics.bicep' = {
-  scope: workloadRg
+  scope: securityRg
   name: 'monitoring'
   params: {
     name: 'logAnalytics'
@@ -25,7 +47,7 @@ module monitoring '../src/management/logAnalytics.bicep' = {
 @description('Deploy Connectivity Module')
 module connectivity '../src/connectivity/connectivity.bicep' = {
   name: 'connectivity'
-  scope: workloadRg
+  scope: securityRg
   params: {
     workspaceId: monitoring.outputs.logAnalyticsId
   }
@@ -34,9 +56,10 @@ module connectivity '../src/connectivity/connectivity.bicep' = {
 @description('Deploy Workload Module')
 module workload '../src/workload/workload.bicep' = {
   name: 'workload'
-  scope: workloadRg
+  scope: securityRg
   params: {
     logAnalyticsWorkspaceName: monitoring.outputs.logAnalyticsName
     subnets: connectivity.outputs.virtualNetworkSubnets
+    keyVaultName: security.outputs.keyVaultName
   }
 }

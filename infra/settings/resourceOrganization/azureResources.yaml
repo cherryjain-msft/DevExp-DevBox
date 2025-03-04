@@ -14,3 +14,17 @@ workload:
     owner: Evilazaro
     landingZone: Workload
     resources: ResourceGroup
+
+security:
+  create: true
+  name: DevExP-Security-RG
+  description: prodExp
+  tags:
+    environment: dev
+    division: Platforms
+    team: DevExP
+    project: DevExP-DevBox
+    costCenter: IT
+    owner: Evilazaro
+    landingZone: Workload
+    resources: ResourceGroup

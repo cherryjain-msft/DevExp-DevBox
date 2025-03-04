@@ -7,9 +7,6 @@ param catalogConfig Catalog
 @description('Key Vault Name')
 param keyVaultName string
 
-@description('Personal Access Token')
-@secure()
-param patToken string
 
 type Catalog = {
   name: string
@@ -42,7 +39,7 @@ resource catalog 'Microsoft.DevCenter/devcenters/catalogs@2024-10-01-preview' = 
           uri: catalogConfig.uri
           branch: catalogConfig.branch
           path: catalogConfig.path
-          secretIdentifier: '${keyvault.properties.vaultUri}/secrets/${devCenter.name}-pat-token'
+          secretIdentifier: '${keyvault.properties.vaultUri}/secrets/ghToken'
         }
       : null
     adoGit: catalogConfig.type == 'adoGit'
@@ -50,7 +47,7 @@ resource catalog 'Microsoft.DevCenter/devcenters/catalogs@2024-10-01-preview' = 
           uri: catalogConfig.uri
           branch: catalogConfig.branch
           path: catalogConfig.path
-          secretIdentifier: '${keyvault.properties.vaultUri}/secrets/${devCenter.name}-pat-token'
+          secretIdentifier: '${keyvault.properties.vaultUri}/secrets/ghToken'
         }
       : null
   }
