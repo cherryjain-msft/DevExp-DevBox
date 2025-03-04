@@ -26,16 +26,12 @@ module monitoring '../src/management/logAnalytics.bicep' = {
   }
 }
 
-resource connectiviryRg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: landingZones.connectivity.name
-  location: location
-}
-
 @description('Deploy Connectivity Module')
-module connectivity '../src/connectivity/connectivityModule.bicep' = {
+module connectivity '../src/connectivity/connectivity.bicep' = {
   name: 'connectivity'
-  scope: connectiviryRg
   params: {
+    location: location
+    landingZone: landingZones.connectivity
     workspaceId: monitoring.outputs.logAnalyticsId
   }
 }

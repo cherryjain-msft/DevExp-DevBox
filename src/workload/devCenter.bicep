@@ -179,8 +179,11 @@ module projects 'core/project.bicep' = [
   for project in devCenterProjects: {
     name: project.name
     params: {
+      name: project.name
+      projectDescription: project.name
       devCenterName: devcenter.name
-      projectConfig: project
+      projectCatalogs: project.catalogs
+      projectEnvironmentTypes: project.environmentTypes
     }
   }
 ]
