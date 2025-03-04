@@ -81,15 +81,8 @@ resource devcenter 'Microsoft.DevCenter/devcenters@2024-10-01-preview' = {
   }
 }
 
-// @description('Deploy Compute Module')
-// module compute '../compute/computeGalleryModule.bicep' = {
-//   name: 'compute'
-//   scope: resourceGroup()
-// }
-
-resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
+resource logAnalytics  'Microsoft.OperationalInsights/workspaces@2020-10-01' existing = {
   name: logAnalyticsWorkspaceName
-  location: resourceGroup().location
 }
 
 @description('Log Analytics Diagnostic Settings')
