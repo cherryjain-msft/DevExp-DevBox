@@ -70,7 +70,7 @@ resource project 'Microsoft.DevCenter/projects@2024-10-01-preview' = {
 @description('Project Catalogs')
 module catalogs 'projectCatalog.bicep' = [
   for catalog in projectCatalogs: {
-    name: catalog.name
+    name: 'catalogs-${catalog.name}'
     params: {
       projectName: project.name
       catalogConfig: catalog
@@ -81,7 +81,7 @@ module catalogs 'projectCatalog.bicep' = [
 @description('Project Environment Types')
 module environmentTypes 'projectEnvironmentType.bicep' = [
   for environmentType in projectEnvironmentTypes: {
-    name: environmentType.name
+    name: 'environmentTypes-${environmentType.name}'
     params: {
       projectName: project.name
       environmentConfig: environmentType
@@ -92,7 +92,7 @@ module environmentTypes 'projectEnvironmentType.bicep' = [
 @description('Project Pools')
 module pools 'projectPool.bicep' = [
   for pool in projectPools: {
-    name: pool.name
+    name: 'pools-${pool.name}'
     params: {
       name: pool.name
       projectName: project.name
