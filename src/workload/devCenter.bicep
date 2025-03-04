@@ -136,7 +136,7 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
 @description('Dev Center Identity Role Assignments')
 module roleAssignments '../identity/devCenterRoleAssignment.bicep' = [
   for role in config.identity.roleAssignments: {
-    name: 'roleAssignments-${role}'
+    name: 'roleAssignments-${replace(role.name, ' ', '-')}'
     scope: subscription()
     params: {
       id: role.id
