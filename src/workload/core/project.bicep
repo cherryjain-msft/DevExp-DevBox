@@ -63,6 +63,12 @@ resource project 'Microsoft.DevCenter/projects@2024-10-01-preview' = {
     description: projectDescription
     devCenterId: devCenter.id
     displayName: name
+    catalogSettings: {
+      catalogItemSyncTypes: [
+        'EnvironmentDefinition'
+        'ImageDefinition'
+      ]
+    }
   }
   tags: tags
 }
