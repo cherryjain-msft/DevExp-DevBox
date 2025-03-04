@@ -78,6 +78,11 @@
       "items": {
         "$ref": "#/definitions/project"
       }
+    },
+    "tags": {
+      "type": "object",
+      "additionalProperties": true,
+      "title": "The tags to automatically apply to deployed environments"
     }
   },
   "required": [
@@ -89,7 +94,9 @@
     "identity",
     "catalogs",
     "environmentTypes",
-    "projects"
+    "projects",
+    "devBoxDefinitions",
+    "tags"
   ],
   "definitions": {
     "identity": {

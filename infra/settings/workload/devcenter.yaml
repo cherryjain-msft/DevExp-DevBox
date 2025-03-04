@@ -62,3 +62,11 @@ projects:
         uri: https://github.com/Evilazaro/identityProvider.git
         branch: main
         path: .configuration/devcenter/environments/dev
+tags:
+  environment: dev
+  division: Platforms
+  team: DevExP
+  project: DevExP-DevBox
+  costCenter: IT
+  owner: Evilazaro
+  resources: ResourceGroup
