@@ -26,7 +26,7 @@ devBoxDefinitions:
     sku: general_i_32c128gb512ssd_v2
     hibernateSupport: Disabled
     default: true
-      
+
   - name: frontEndEngineer
     image: microsoftwindowsdesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365
     osStorageType: ssd_256gb
@@ -34,7 +34,6 @@ devBoxDefinitions:
     sku: general_i_16c64gb256ssd_v2
     hibernateSupport: Enabled
     default: true
-      
 
 catalogs:
   - name: customTasks
