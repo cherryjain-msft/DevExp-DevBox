@@ -36,6 +36,6 @@ resource pool 'Microsoft.DevCenter/projects/pools@2024-10-01-preview' = {
     networkConnectionName: networkConnectionName
     singleSignOnStatus: 'Enabled'
     virtualNetworkType: 'Unmanaged'
-    displayName: devBoxDefinition.properties.sku.name
+    displayName: devBoxDefinition.properties.imageReference.id
   }
 }

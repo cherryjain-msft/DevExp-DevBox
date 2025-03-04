@@ -114,7 +114,7 @@
           "description": "List of role assignments.",
           "minItems": 1,
           "items": {
-            "type": "string"
+            "$ref": "#/definitions/roleDefinition"
           }
         }
       },
@@ -261,14 +261,92 @@
           "items": {
             "$ref": "#/definitions/catalog"
           }
+        },
+        "pools": {
+          "type": "array",
+          "description": "List of pools for the project.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "The name of the pool."
+              },
+              "devBoxDefinitionName": {
+                "type": "string",
+                "description": "The name of the dev box definition."
+              }
+            },
+            "required": [
+              "name",
+              "devBoxDefinitionName"
+            ]
+          }
+        },
+        "tags": {
+          "type": "object",
+          "properties": {
+            "environment": {
+              "type": "string",
+              "description": "Environment tag"
+            },
+            "division": {
+              "type": "string",
+              "description": "Division tag"
+            },
+            "team": {
+              "type": "string",
+              "description": "Team tag"
+            },
+            "project": {
+              "type": "string",
+              "description": "Project tag"
+            },
+            "costCenter": {
+              "type": "string",
+              "description": "Cost center tag"
+            },
+            "owner": {
+              "type": "string",
+              "description": "Owner tag"
+            },
+            "resources": {
+              "type": "string",
+              "description": "Resources tag"
+            }
+          },
+          "required": [
+            "environment",
+            "division",
+            "team",
+            "project",
+            "costCenter",
+            "owner",
+            "resources"
+          ]
         }
       },
       "required": [
         "name",
         "description",
         "environmentTypes",
-        "catalogs"
+        "catalogs",
+        "pools",
+        "tags"
       ]
+    },
+    "roleDefinition": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The role definition ID."
+        },
+        "id": {
+          "type": "string",
+          "description": "The principal ID."
+        }
+      }
     }
   }
 }
