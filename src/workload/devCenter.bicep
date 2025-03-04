@@ -131,7 +131,7 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
 @description('Dev Center Identity Role Assignments')
 module roleAssignments '../identity/devCenterRoleAssignment.bicep' = [
   for role in config.identity.roleAssignments: {
-    name: '${role}-roleAssignments'
+    name: 'roleAssignments-${role}'
     scope: subscription()
     params: {
       roleName: role
@@ -143,7 +143,7 @@ module roleAssignments '../identity/devCenterRoleAssignment.bicep' = [
 @description('Network Connections')
 module networkConnections 'core/networkConnection.bicep' = [
   for subnet in subnets: {
-    name: '${config.name}-${subnet.name}'
+    name: 'networkConnections-${subnet.name}'
     params: {
       name: subnet.name
       devCenterName: devcenter.name
@@ -161,7 +161,7 @@ output networkConnectionNames array = [
 @description('Dev Center Catalogs')
 module catalogs 'core/catalog.bicep' = [
   for catalog in devCenterCatalogs: {
-    name: catalog.name
+    name: 'devCenterCatalogs-${catalog.name}'
     params: {
       devCenterName: devcenter.name
       catalogConfig: catalog
@@ -172,7 +172,7 @@ module catalogs 'core/catalog.bicep' = [
 @description('Dev Center DevBox Definitions')
 module devBoxDefinitions 'core/devBoxDefinition.bicep' = [
   for devBoxDefinition in devCenterDevBoxDefinitions: {
-    name: devBoxDefinition.name
+    name: 'devBoxDefinitions-${devBoxDefinition.name}'
     params: {
       name: devBoxDefinition.name
       location: resourceGroup().location
@@ -188,7 +188,7 @@ module devBoxDefinitions 'core/devBoxDefinition.bicep' = [
 @description('Dev Center Environments')
 module environments 'core/environmentType.bicep' = [
   for environment in devCenterEnvironmentTypes: {
-    name: environment.name
+    name: 'environmentTypes-${environment.name}'
     params: {
       devCenterName: devcenter.name
       environmentConfig: environment
@@ -199,7 +199,7 @@ module environments 'core/environmentType.bicep' = [
 @description('Dev Center Projects')
 module projects 'core/project.bicep' = [
   for project in devCenterProjects: {
-    name: project.name
+    name: 'Projects-${project.name}'
     params: {
       name: project.name
       projectDescription: project.name
