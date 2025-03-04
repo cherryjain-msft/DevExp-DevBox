@@ -229,6 +229,7 @@ module projects 'core/project.bicep' = [
       projectEnvironmentTypes: project.environmentTypes
       projectPools: project.pools
       networkConnectionName: networkConnections[0].outputs.vnetAttachmentName
+      secretIdentifier: secretIdentifier
       tags: project.tags
     }
   }
