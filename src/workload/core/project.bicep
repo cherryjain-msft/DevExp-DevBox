@@ -19,11 +19,15 @@ param projectPools Pool[]
 @description('Network Connection Name')
 param networkConnectionName string = 'Default'
 
+@description('Tags')
+param tags object 
+
 type Project = {
   name: string
   description: string
   catalogs: array
   environmentTypes: ProjectEnvironmentType[]
+  tags: object
 }
 
 type Catalog = {
@@ -60,6 +64,7 @@ resource project 'Microsoft.DevCenter/projects@2024-10-01-preview' = {
     devCenterId: devCenter.id
     displayName: name
   }
+  tags: tags
 }
 
 @description('Project Catalogs')

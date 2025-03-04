@@ -300,6 +300,11 @@
             "items": {
               "$ref": "#/definitions/projectPool"
             }
+          },
+          "tags": {
+            "type": "object",
+            "additionalProperties": true,
+            "title": "The tags to automatically apply to deployed environments"
           }
         }
       },
@@ -308,7 +313,8 @@
         "description",
         "environmentTypes",
         "catalogs",
-        "pools"
+        "pools",
+        "tags"
       ]
     },
     "environmentType": {
