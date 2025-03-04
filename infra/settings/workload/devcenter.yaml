@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=./devcenter.schema.json
 
-name: DevExP
+name: DevExP-devcenter
 location: eastus2
 catalogItemSyncEnableStatus: Enabled
 microsoftHostedNetworkEnableStatus: Enabled

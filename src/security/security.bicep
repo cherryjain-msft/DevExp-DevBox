@@ -13,6 +13,7 @@ module keyVault '../security/keyvault.bicep' = {
   scope: resourceGroup()
   params: {
     name: name
+    principalId: deployer().objectId
     location: resourceGroup().location
     tags: tags
   }
@@ -22,9 +23,11 @@ module secret 'keyvault-secret.bicep' = {
   name: 'secret'
   params: {
     name: 'ghToken'
-    keyVaultName: keyVault.name
+    keyVaultName: keyVault.outputs.name
     secretValue: secretValue
   }
 }
 
-output keyVaultName string = keyVault.name
+output keyVaultName string = keyVault.outputs.name
+output secretIdentifier string = secret.outputs.secretUri
+output endpoint string = keyVault.outputs.endpoint

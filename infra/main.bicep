@@ -72,8 +72,10 @@ module workload '../src/workload/workload.bicep' = {
   name: 'workload'
   scope: workloadRg
   params: {
-    logAnalyticsWorkspaceName: monitoring.outputs.logAnalyticsName
+    logAnalyticsId: monitoring.outputs.logAnalyticsId
     subnets: connectivity.outputs.virtualNetworkSubnets
+    secretIdentifier: security.outputs.secretIdentifier
     keyVaultName: security.outputs.keyVaultName
+    securityResourceGroupName: securityRg.name
   }
 }

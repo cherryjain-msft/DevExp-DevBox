@@ -8,7 +8,7 @@
     "location": {
       "value": "${AZURE_LOCATION}"
     },
-    "KEY_VAULT_SECRET": {
+    "secretValue": {
       "value": "${KEY_VAULT_SECRET}"
     }
   }
