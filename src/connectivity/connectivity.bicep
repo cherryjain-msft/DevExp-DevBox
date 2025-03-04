@@ -2,12 +2,6 @@
 @description('Log Analytics Workspace')
 param workspaceId string
 
-type LandingZone = {
-  name: string
-  create: bool
-  tags: object
-}
-
 var networkSettings = loadYamlContent('../../infra/settings/connectivity/newtork.yaml')
 
 module virtualNetwork 'vnet.bicep' = {
