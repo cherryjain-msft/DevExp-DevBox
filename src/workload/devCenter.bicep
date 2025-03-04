@@ -10,14 +10,23 @@ param devCenterEnvironmentTypes EnvironmentType[]
 @description('Projects')
 param devCenterProjects Project[]
 
-@description('Log Analytics Workspace')
-param logAnalyticsWorkspaceName string
-
 @description('DevBox definitions')
 param devCenterDevBoxDefinitions DevBoxDefinition[]
 
 @description('Subnets')
 param subnets NetWorkConection[]
+
+@description('Log Analytics Workspace Id')
+param logAnalyticsId string
+
+@description('Secret Identifier')
+param secretIdentifier string
+
+@description('Key Vault Name')
+param keyVaultName string
+
+@description('Security Resouce Group Name')
+param securityResourceGroupName string
 
 type DevCenterconfig = {
   name: string
@@ -107,8 +116,14 @@ resource devcenter 'Microsoft.DevCenter/devcenters@2024-10-01-preview' = {
   tags: config.tags
 }
 
-resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2020-10-01' existing = {
-  name: logAnalyticsWorkspaceName
+@description('Key Vault Access Policies')
+module keyVaultAccessPolicies '../security/keyvault-access.bicep' = {
+  name: 'keyVaultAccessPolicies'
+  scope: resourceGroup(securityResourceGroupName)
+  params: {
+    keyVaultName: keyVaultName
+    principalId: devcenter.identity.principalId
+  }
 }
 
 @description('Log Analytics Diagnostic Settings')
@@ -129,7 +144,7 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
         enabled: true
       }
     ]
-    workspaceId: logAnalytics.id
+    workspaceId: logAnalyticsId
   }
 }
 
@@ -170,6 +185,7 @@ module catalogs 'core/catalog.bicep' = [
     params: {
       devCenterName: devcenter.name
       catalogConfig: catalog
+      secretIdentifier: secretIdentifier
     }
   }
 ]
@@ -213,6 +229,7 @@ module projects 'core/project.bicep' = [
       projectEnvironmentTypes: project.environmentTypes
       projectPools: project.pools
       networkConnectionName: networkConnections[0].outputs.vnetAttachmentName
+      secretIdentifier: secretIdentifier
       tags: project.tags
     }
   }

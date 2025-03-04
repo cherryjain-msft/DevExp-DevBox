@@ -1,8 +1,17 @@
 @description('Log Analytics Workspace')
-param logAnalyticsWorkspaceName string
+param logAnalyticsId string
 
 @description('Subnets')
 param subnets NetWorkConection[]
+
+@description('Secret Identifier')
+param secretIdentifier string
+
+@description('Key Vault Name')
+param keyVaultName string
+
+@description('Security Resouce Group Name')
+param securityResourceGroupName string
 
 type LandingZone = {
   name: string
@@ -26,8 +35,11 @@ module workload 'devCenter.bicep' = {
     devCenterCatalogs: devCenterConfig.catalogs
     devCenterEnvironmentTypes: devCenterConfig.environmentTypes
     devCenterProjects: devCenterConfig.projects
-    logAnalyticsWorkspaceName: logAnalyticsWorkspaceName
+    logAnalyticsId: logAnalyticsId
     subnets: subnets
     devCenterDevBoxDefinitions: devCenterConfig.devBoxDefinitions
+    secretIdentifier: secretIdentifier
+    keyVaultName: keyVaultName
+    securityResourceGroupName: securityResourceGroupName
   }
 }

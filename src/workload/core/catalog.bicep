@@ -4,6 +4,10 @@ param devCenterName string
 @description('Catalog')
 param catalogConfig Catalog
 
+@description('Secret Identifier')
+param secretIdentifier string
+
+
 type Catalog = {
   name: string
   type: CatalogType
@@ -30,6 +34,7 @@ resource catalog 'Microsoft.DevCenter/devcenters/catalogs@2024-10-01-preview' = 
           uri: catalogConfig.uri
           branch: catalogConfig.branch
           path: catalogConfig.path
+          secretIdentifier: secretIdentifier
         }
       : null
     adoGit: catalogConfig.type == 'adoGit'
@@ -37,6 +42,7 @@ resource catalog 'Microsoft.DevCenter/devcenters/catalogs@2024-10-01-preview' = 
           uri: catalogConfig.uri
           branch: catalogConfig.branch
           path: catalogConfig.path
+          secretIdentifier: secretIdentifier
         }
       : null
   }

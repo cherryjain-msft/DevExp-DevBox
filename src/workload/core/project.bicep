@@ -19,6 +19,9 @@ param projectPools Pool[]
 @description('Network Connection Name')
 param networkConnectionName string = 'Default'
 
+@description('Secret Identifier')
+param secretIdentifier string
+
 @description('Tags')
 param tags object 
 
@@ -80,6 +83,7 @@ module catalogs 'projectCatalog.bicep' = [
     params: {
       projectName: project.name
       catalogConfig: catalog
+      secretIdentifier: secretIdentifier
     }
   }
 ]
