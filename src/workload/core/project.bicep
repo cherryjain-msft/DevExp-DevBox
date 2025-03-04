@@ -95,15 +95,15 @@ module environmentTypes 'projectEnvironmentType.bicep' = [
   }
 ]
 
-@description('Project Pools')
-module pools 'projectPool.bicep' = [
-  for pool in projectPools: {
-    name: 'pools-${pool.name}'
-    params: {
-      name: pool.name
-      projectName: project.name
-      devBoxDefinitionName: pool.devBoxDefinitionName
-      networkConnectionName: networkConnectionName
-    }
-  }
-]
+// @description('Project Pools')
+// module pools 'projectPool.bicep' = [
+//   for pool in projectPools: {
+//     name: 'pools-${pool.name}'
+//     params: {
+//       name: pool.name
+//       projectName: project.name
+//       devBoxDefinitionName: pool.devBoxDefinitionName
+//       networkConnectionName: networkConnectionName
+//     }
+//   }
+// ]
