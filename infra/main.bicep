@@ -29,28 +29,42 @@ module security '../src/security/security.bicep' = {
 }
 
 @description('Workload Resource Group')
-resource workloadRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZone.workload.create) {
-  name: landingZone.workload.name
+resource monitoringRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZone.monitoring.create) {
+  name: landingZone.monitoring.name
   location: location
-  tags: landingZone.workload.tags
+  tags: landingZone.monitoring.tags
 }
 
 @description('Deploy Monitoring Module')
 module monitoring '../src/management/logAnalytics.bicep' = {
-  scope: workloadRg
+  scope: monitoringRg
   name: 'monitoring'
   params: {
     name: 'logAnalytics'
   }
 }
 
+@description('Workload Resource Group')
+resource connectivityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZone.connectivity.create) {
+  name: landingZone.connectivity.name
+  location: location
+  tags: landingZone.connectivity.tags
+}
+
 @description('Deploy Connectivity Module')
 module connectivity '../src/connectivity/connectivity.bicep' = {
   name: 'connectivity'
-  scope: workloadRg
+  scope: connectivityRg
   params: {
     workspaceId: monitoring.outputs.logAnalyticsId
   }
+}
+
+@description('Workload Resource Group')
+resource workloadRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZone.workload.create) {
+  name: landingZone.workload.name
+  location: location
+  tags: landingZone.workload.tags
 }
 
 @description('Deploy Workload Module')

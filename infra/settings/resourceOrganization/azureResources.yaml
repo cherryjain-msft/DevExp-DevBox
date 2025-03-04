@@ -28,3 +28,31 @@ security:
     owner: Evilazaro
     landingZone: Workload
     resources: ResourceGroup
+
+monitoring:
+  create: true
+  name: DevExP-Monitoring-RG
+  description: prodExp
+  tags:
+    environment: dev
+    division: Platforms
+    team: DevExP
+    project: DevExP-DevBox
+    costCenter: IT
+    owner: Evilazaro
+    landingZone: Workload
+    resources: ResourceGroup
+
+connectivity:
+  create: true
+  name: DevExP-Connectivity-RG
+  description: prodExp
+  tags:
+    environment: dev
+    division: Platforms
+    team: DevExP
+    project: DevExP-DevBox
+    costCenter: IT
+    owner: Evilazaro
+    landingZone: Workload
+    resources: ResourceGroup
