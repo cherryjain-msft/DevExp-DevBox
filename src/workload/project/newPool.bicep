@@ -24,11 +24,21 @@ resource pool 'Microsoft.DevCenter/projects/pools@2024-10-01-preview' = {
   location: location
   parent: project
   properties: {
-    devBoxDefinitionName: imageDefinitionName
+    devBoxDefinitionType: 'Value'
+    devBoxDefinitionName: '~Catalog~imageDefinitions~${imageDefinitionName}'
+    devBoxDefinition: {
+      imageReference: {
+        id: '${project.id}/images/~Catalog~imageDefinitions~backend-Engineer'
+      }
+      sku: {
+        name: 'general_i_32c128gb512ssd_v2'
+      }
+    }
+    networkConnectionName: networkConnectionName
     licenseType: 'Windows_Client'
     localAdministrator: 'Enabled'
-    networkConnectionName: networkConnectionName
     singleSignOnStatus: 'Enabled'
+    displayName: 'backend'
     virtualNetworkType: 'Unmanaged'
   }
 }
