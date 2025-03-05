@@ -29,9 +29,9 @@ module workload 'devCenter.bicep' = {
   scope: resourceGroup()
   params: {
     config: devCenterSettings
-    devCenterCatalogs: devCenterSettings.catalogs
-    devCenterEnvironmentTypes: devCenterSettings.environmentTypes
-    devCenterProjects: devCenterSettings.projects
+    catalogs: devCenterSettings.catalogs
+    environmentTypes: devCenterSettings.environmentTypes
+    projects: devCenterSettings.projects
     logAnalyticsId: logAnalyticsId
     subnets: subnets
     secretIdentifier: secretIdentifier
