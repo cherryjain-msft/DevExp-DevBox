@@ -4,6 +4,9 @@ param name string
 @description('Location for the deployment')
 param location string = resourceGroup().location
 
+@description('The name of the catalog to use for the pool')
+param catalogName string
+
 @description('The name of the dev box definition to use for the pool')
 param imageDefinitionName string
 
@@ -25,10 +28,10 @@ resource pool 'Microsoft.DevCenter/projects/pools@2024-10-01-preview' = {
   parent: project
   properties: {
     devBoxDefinitionType: 'Value'
-    devBoxDefinitionName: '~Catalog~imageDefinitions~${imageDefinitionName}'
+    devBoxDefinitionName: '~Catalog~${catalogName}~${imageDefinitionName}'
     devBoxDefinition: {
       imageReference: {
-        id: '${project.id}/images/~Catalog~imageDefinitions~${imageDefinitionName}'
+        id: '${project.id}/images/~Catalog~${catalogName}~${imageDefinitionName}'
       }
       sku: {
         name: 'general_i_32c128gb512ssd_v2'

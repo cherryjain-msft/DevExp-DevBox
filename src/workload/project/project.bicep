@@ -99,7 +99,7 @@ module environmentTypes 'projectEnvironmentType.bicep' = [
 ]
 
 @description('Project Pools')
-module pools 'newPool.bicep' = [
+module pools 'projectPool.bicep' = [
   for pool in projectPools: {
     name: 'pools-${pool.name}'
     params: {
