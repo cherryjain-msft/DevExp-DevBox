@@ -22,8 +22,11 @@ param networkConnectionName string = 'Default'
 @description('Secret Identifier')
 param secretIdentifier string
 
+@description('Key Vault Name')
+param keyVaultName string
+
 @description('Tags')
-param tags object 
+param tags object
 
 type Project = {
   name: string
@@ -77,6 +80,15 @@ resource project 'Microsoft.DevCenter/projects@2024-10-01-preview' = {
     }
   }
   tags: tags
+}
+
+@description('Key Vault Access Policies')
+module keyVaultAccessPolicies '../../security/keyvault-access.bicep' = {
+  name: 'keyvaultAccess'
+  params: {
+    keyVaultName: keyVaultName
+    principalId: project.identity.principalId
+  }
 }
 
 @description('Project Catalogs')
