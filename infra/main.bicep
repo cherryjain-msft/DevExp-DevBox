@@ -22,7 +22,7 @@ module securityResources '../src/security/security.bicep' = {
   name: 'security'
   scope: securityRg
   params: {
-    name: 'devexp-kv'
+    name: 'devexp'
     secretValue: secretValue
     tags: landingZones.security.tags
   }

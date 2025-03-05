@@ -13,7 +13,7 @@ param tags object = {}
 param principalId string
 
 resource keyVault 'Microsoft.KeyVault/vaults@2024-04-01-preview' = {
-  name: '${name}-${uniqueString(resourceGroup().id, name, resourceGroup().name, subscription().id)}'
+  name: '${name}-${uniqueString(resourceGroup().id, name, resourceGroup().name, subscription().id)}-kv'
   location: location
   tags: tags
   properties: {
