@@ -6,7 +6,7 @@ param tags object = {}
 param principalId string
 
 resource keyVault 'Microsoft.KeyVault/vaults@2024-04-01-preview' = {
-  name: '${name}${uniqueString(resourceGroup().id)}'
+  name: '${name}${uniqueString(resourceGroup().id,name,resourceGroup().location)}'
   location: location
   tags: tags
   properties: {

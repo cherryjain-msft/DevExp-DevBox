@@ -29,7 +29,7 @@ resource pool 'Microsoft.DevCenter/projects/pools@2024-10-01-preview' = {
   location: location
   parent: project
   properties: {
-    imageDefinitionName: devBoxDefinition.name
+    devBoxDefinitionName: devBoxDefinition.name
     licenseType: 'Windows_Client'
     localAdministrator: 'Enabled'
     networkConnectionName: networkConnectionName
