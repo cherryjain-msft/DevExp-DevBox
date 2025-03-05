@@ -41,9 +41,9 @@ projects:
         imageDefinitionName: frontEnd-Engineer
     environmentTypes:
       - name: dev
-        deploymentTargetId: "e2f3b0a4-5c7d-4a1b-8f9c-6d1e0f3b2c5d"
+        deploymentTargetId: ""
       - name: staging
-        deploymentTargetId: "b4a1c6e2-8f9c-4d7d-5c7e-0f3b2c5d1e0f"
+        deploymentTargetId: ""
     catalogs:
       - name: environments
         type: gitHub
