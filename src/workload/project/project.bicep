@@ -78,21 +78,11 @@ module keyVaultAccessPolicies '../../security/keyvault-access.bicep' = {
 }
 
 @description('Environment Definition Catalog')
-module environmentDefinitionCatalog 'projectCatalog.bicep' = {
+module catalogs 'projectCatalog.bicep' = {
   name: 'catalogs-${projectCatalogs.environmentDefinition.name}'
   params: {
     projectName: project.name
-    catalogConfig: projectCatalogs.environmentDefinition
-    secretIdentifier: secretIdentifier
-  }
-}
-
-@description('Image Definition Catalog')
-module imageDefinitionCatalog 'projectCatalog.bicep' = {
-  name: 'catalogs-${projectCatalogs.imageDefinition.name}'
-  params: {
-    projectName: project.name
-    catalogConfig: projectCatalogs.imageDefinition
+    catalogConfig: projectCatalogs
     secretIdentifier: secretIdentifier
   }
 }
