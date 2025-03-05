@@ -25,6 +25,9 @@ param secretIdentifier string
 @description('Key Vault Name')
 param keyVaultName string
 
+@description('Security Resouce Group Name')
+param securityResourceGroupName string
+
 @description('Tags')
 param tags object
 
@@ -85,6 +88,7 @@ resource project 'Microsoft.DevCenter/projects@2024-10-01-preview' = {
 @description('Key Vault Access Policies')
 module keyVaultAccessPolicies '../../security/keyvault-access.bicep' = {
   name: 'keyvaultAccess'
+  scope: resourceGroup(securityResourceGroupName)
   params: {
     keyVaultName: keyVaultName
     principalId: project.identity.principalId
