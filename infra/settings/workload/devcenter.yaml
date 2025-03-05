@@ -63,13 +63,6 @@ projects:
       costCenter: IT
       owner: Evilazaro
       resources: Project
-
-imageDefinitions:
-  - name: frontEnd-Engineer
-    uri: https://github.com/Evilazaro/identityProvider.git
-    branch: main
-    path: .configuration/devcenter/imageDefinitions
-
 tags:
   environment: dev
   division: Platforms
