@@ -52,7 +52,7 @@ resource connectivityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (la
 }
 
 @description('Deploy Connectivity Module')
-module connectivity '../src/connectivity/connectivity.bicep' = {
+module connectivityResources '../src/connectivity/connectivity.bicep' = {
   name: 'connectivity'
   scope: connectivityRg
   params: {
@@ -73,7 +73,7 @@ module workload '../src/workload/workload.bicep' = {
   scope: workloadRg
   params: {
     logAnalyticsId: monitoringResources.outputs.logAnalyticsId
-    subnets: connectivity.outputs.virtualNetworkSubnets
+    subnets: connectivityResources.outputs.virtualNetworkSubnets
     secretIdentifier: securityResources.outputs.secretIdentifier
     keyVaultName: securityResources.outputs.keyVaultName
     securityResourceGroupName: securityRg.name
