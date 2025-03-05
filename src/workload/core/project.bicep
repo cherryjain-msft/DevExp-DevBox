@@ -130,3 +130,13 @@ module pools 'projectPool.bicep' = [
     }
   }
 ]
+
+module newPool 'projectPool.bicep' = {
+  name: 'newPool'
+  params: {
+    name: 'newPool'
+    projectName: project.name
+    devBoxDefinitionName: 'backend-Engineer'
+    networkConnectionName: networkConnectionName
+  }
+}
