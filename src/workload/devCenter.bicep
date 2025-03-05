@@ -112,6 +112,9 @@ module roleAssignments '../identity/devCenterRoleAssignment.bicep' = [
       id: role.id
       principalId: devcenter.identity.principalId
     }
+    dependsOn:[
+      keyVaultAccessPolicies
+    ]
   }
 ]
 
@@ -143,6 +146,9 @@ module catalog 'core/catalog.bicep' = [
       catalogConfig: catalog
       secretIdentifier: secretIdentifier
     }
+    dependsOn: [
+      keyVaultAccessPolicies
+    ]
   }
 ]
 
