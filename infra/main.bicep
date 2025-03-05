@@ -20,7 +20,7 @@ resource securityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landin
 @description('Deploy Security Module')
 module securityResources '../src/security/security.bicep' = {
   name: 'security'
-  scope: securityRg
+  scope: resourceGroup(landingZones.security.name)
   params: {
     name: 'devexp'
     secretValue: secretValue
@@ -38,7 +38,7 @@ resource monitoringRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (land
 @description('Deploy Monitoring Module')
 module monitoringResources '../src/management/logAnalytics.bicep' = {
   name: 'monitoring'
-  scope: monitoringRg
+  scope: resourceGroup(landingZones.monitoring.name)
   params: {
     name: 'logAnalytics'
   }
@@ -54,7 +54,7 @@ resource connectivityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (la
 @description('Deploy Connectivity Module')
 module connectivityResources '../src/connectivity/connectivity.bicep' = {
   name: 'connectivity'
-  scope: connectivityRg
+  scope: resourceGroup(landingZones.connectivity.name)
   params: {
     workspaceId: monitoringResources.outputs.logAnalyticsId
   }
@@ -70,12 +70,12 @@ resource workloadRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landin
 @description('Deploy Workload Module')
 module workloadResources '../src/workload/workload.bicep' = {
   name: 'workload'
-  scope: workloadRg
+  scope: resourceGroup(landingZones.workload.name)
   params: {
     logAnalyticsId: monitoringResources.outputs.logAnalyticsId
     subnets: connectivityResources.outputs.virtualNetworkSubnets
     secretIdentifier: securityResources.outputs.secretIdentifier
     keyVaultName: securityResources.outputs.keyVaultName
-    securityResourceGroupName: securityRg.name
+    securityResourceGroupName: landingZones.security.name
   }
 }
