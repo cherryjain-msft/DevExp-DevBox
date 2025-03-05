@@ -38,14 +38,19 @@ environmentTypes:
 projects:
   - name: "identityProvider"
     description: "Identity Provider project."
+    
     pools:
       - name: "backEnd-Engineer"
         imageDefinitionName: "backEnd-Engineer"
+      - name: "frontEnd-Engineer"
+        imageDefinitionName: "frontEnd-Engineer"
+    
     environmentTypes:
       - name: "dev"
         deploymentTargetId: ""
       - name: "staging"
         deploymentTargetId: ""
+    
     catalogs:
       environmentDefinition:
         name: "environments"
@@ -59,6 +64,7 @@ projects:
         uri: "https://github.com/Evilazaro/identityProvider.git"
         branch: "main"
         path: ".configuration/devcenter/imageDefinitions"
+    
     tags:
       environment: "dev"
       division: "Platforms"
