@@ -8,13 +8,13 @@ param name string
 param projectDescription string
 
 @description('Project Catalogs')
-param projectCatalogs ProjectCatalog
+param projectCatalogs object
 
 @description('Project Environment Types')
-param projectEnvironmentTypes ProjectEnvironmentType[]
+param projectEnvironmentTypes object[]
 
 @description('Project Pools')
-param projectPools Pool[]
+param projectPools object[]
 
 @description('Network Connection Name')
 param networkConnectionName string = 'Default'
@@ -35,34 +35,9 @@ param tags object
 type Project = {
   name: string
   description: string
-  catalogs: array
-  environmentTypes: ProjectEnvironmentType[]
+  catalogs: object
+  environmentTypes: object[]
   tags: object
-}
-
-type Catalog = {
-  name: string
-  type: CatalogType
-  uri: string
-  branch: string
-  path: string
-}
-
-type ProjectCatalog = {
-  environmentDefinition: Catalog
-  imageDefinition: Catalog
-}
-
-type CatalogType = 'gitHub' | 'adoGit'
-
-type ProjectEnvironmentType = {
-  name: string
-  deploymentTargetId: string
-}
-
-type Pool = {
-  name: string
-  imageDefinitionName: string
 }
 
 @description('Dev Center')

@@ -2,7 +2,7 @@
 param logAnalyticsId string
 
 @description('Subnets')
-param subnets NetWorkConection[]
+param subnets object[]
 
 @description('Secret Identifier')
 @secure()
@@ -18,11 +18,6 @@ type LandingZone = {
   name: string
   create: bool
   tags: object
-}
-
-type NetWorkConection = {
-  name: string
-  id: string
 }
 
 @description('Dev Center Settings')

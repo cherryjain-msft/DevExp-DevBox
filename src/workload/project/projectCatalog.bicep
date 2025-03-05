@@ -8,12 +8,17 @@ param catalogConfig ProjectCatalog
 @secure()
 param secretIdentifier string
 
-type ProjectCatalog = {
-  type: CatalogType
+type Catalog = {
   name: string
+  type: CatalogType
   uri: string
   branch: string
   path: string
+}
+
+type ProjectCatalog = {
+  environmentDefinition: Catalog
+  imageDefinition: Catalog
 }
 
 type CatalogType = 'gitHub' | 'adoGit'
@@ -24,24 +29,49 @@ resource project 'Microsoft.DevCenter/projects@2024-10-01-preview' existing = {
 }
 
 @description('Dev Center Catalogs')
-resource catalog 'Microsoft.DevCenter/projects/catalogs@2024-10-01-preview' = {
-  name: catalogConfig.name
+resource environmentDefinitionCatalog 'Microsoft.DevCenter/projects/catalogs@2024-10-01-preview' = {
+  name: catalogConfig.environmentDefinition.name
   parent: project
   properties: {
     syncType: 'Scheduled'
-    gitHub: catalogConfig.type == 'gitHub'
+    gitHub: catalogConfig.environmentDefinition.type == 'gitHub'
       ? {
-          uri: catalogConfig.uri
-          branch: catalogConfig.branch
-          path: catalogConfig.path
+          uri: catalogConfig.environmentDefinition.uri
+          branch: catalogConfig.environmentDefinition.branch
+          path: catalogConfig.environmentDefinition.path
           secretIdentifier: secretIdentifier
         }
       : null
-    adoGit: catalogConfig.type == 'adoGit'
+    adoGit: catalogConfig.environmentDefinition.type == 'adoGit'
       ? {
-          uri: catalogConfig.uri
-          branch: catalogConfig.branch
-          path: catalogConfig.path
+          uri: catalogConfig.environmentDefinition.uri
+          branch: catalogConfig.environmentDefinition.branch
+          path: catalogConfig.environmentDefinition.path
+          secretIdentifier: secretIdentifier
+        }
+      : null
+  }
+}
+
+@description('Dev Center Catalogs')
+resource imageDefinitionCatalog 'Microsoft.DevCenter/projects/catalogs@2024-10-01-preview' = {
+  name: catalogConfig.imageDefinition.name
+  parent: project
+  properties: {
+    syncType: 'Scheduled'
+    gitHub: catalogConfig.imageDefinition.type == 'gitHub'
+      ? {
+          uri: catalogConfig.imageDefinition.uri
+          branch: catalogConfig.imageDefinition.branch
+          path: catalogConfig.imageDefinition.path
+          secretIdentifier: secretIdentifier
+        }
+      : null
+    adoGit: catalogConfig.imageDefinition.type == 'adoGit'
+      ? {
+          uri: catalogConfig.imageDefinition.uri
+          branch: catalogConfig.imageDefinition.branch
+          path: catalogConfig.imageDefinition.path
           secretIdentifier: secretIdentifier
         }
       : null

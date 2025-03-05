@@ -61,15 +61,10 @@ type EnvironmentType = {
   name: string
 }
 
-type ProjectEnvironmentType = {
-  name: string
-  deploymentTargetId: string
-}
-
 type Project = {
   name: string
   description: string
-  environmentTypes: ProjectEnvironmentType[]
+  environmentTypes: array
   catalogs: object
   pools: array
   tags: object
@@ -177,22 +172,6 @@ module catalogs 'core/catalog.bicep' = [
     }
   }
 ]
-
-// @description('Dev Center DevBox Definitions')
-// module devBoxDefinitions 'core/devBoxDefinition.bicep' = [
-//   for devBoxDefinition in devCenterDevBoxDefinitions: {
-//     name: 'devBoxDefinitions-${devBoxDefinition.name}'
-//     params: {
-//       name: devBoxDefinition.name
-//       location: resourceGroup().location
-//       devCenterName: devcenter.name
-//       hibernateSupport: devBoxDefinition.hibernateSupport
-//       imageName: devBoxDefinition.image
-//       osStorageType: devBoxDefinition.osStorageType
-//       sku: devBoxDefinition.sku
-//     }
-//   }
-// ]
 
 @description('Dev Center Environments')
 module environments 'core/environmentType.bicep' = [
