@@ -58,8 +58,11 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
     workspaceId: workspaceId
   }
 }
+
+@description('The ID of the Virtual Network')
 output virtualNetworkId string = (settings.create) ? virtualNetwork.id : existingVNet.id
 
+@description('The subnets of the Virtual Network')
 output virtualNetworkSubnets array = [
   for (subnet, i) in settings.subnets: {
     id: (settings.create) ? virtualNetwork.properties.subnets[i].id : existingVNet.properties.subnets[i].id
@@ -67,4 +70,5 @@ output virtualNetworkSubnets array = [
   }
 ]
 
+@description('The name of the Virtual Network')
 output virtualNetworkName string = (settings.create) ? virtualNetwork.name : existingVNet.name
