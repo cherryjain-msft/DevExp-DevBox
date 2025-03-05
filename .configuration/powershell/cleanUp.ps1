@@ -6,10 +6,10 @@ $WarningPreference = "Stop"
 
 # Azure Resource Group Names Constants
 $solutionName = "DevExP"
-$workloadResourceGroup = "DevExP-Workload"
-$connectivityResourceGroup = "DevExP-Connectivity"
-$managemwentResourceGroup = "DevExP-Management"
-$computeResourceGroup = "DevExP-Compute"
+$workloadResourceGroup = "DevExP-Workload-RG"
+$connectivityResourceGroup = "DevExP-Connectivity-RG"
+$managemwentResourceGroup = "DevExP-Monitoring-RG"
+$securityResourceGroup = "DevExP-Security-RG"
 
 # Function to delete a resource group
 function Remove-ResourceGroup {
@@ -51,7 +51,7 @@ function Remove-Resources {
         Remove-ResourceGroup -resourceGroupName $workloadResourceGroup
         Remove-ResourceGroup -resourceGroupName $connectivityResourceGroup
         Remove-ResourceGroup -resourceGroupName $managemwentResourceGroup
-        Remove-ResourceGroup -resourceGroupName $computeResourceGroup
+        Remove-ResourceGroup -resourceGroupName $securityResourceGroup
         Remove-ResourceGroup -resourceGroupName "NetworkWatcherRG"
         Remove-ResourceGroup -resourceGroupName "Default-ActivityLogAlerts"
         Remove-ResourceGroup -resourceGroupName "DefaultResourceGroup-WUS2"
