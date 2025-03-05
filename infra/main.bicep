@@ -36,7 +36,7 @@ resource monitoringRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (land
 }
 
 @description('Deploy Monitoring Module')
-module monitoring '../src/management/logAnalytics.bicep' = {
+module monitoringResources '../src/management/logAnalytics.bicep' = {
   scope: monitoringRg
   name: 'monitoring'
   params: {
@@ -56,7 +56,7 @@ module connectivity '../src/connectivity/connectivity.bicep' = {
   name: 'connectivity'
   scope: connectivityRg
   params: {
-    workspaceId: monitoring.outputs.logAnalyticsId
+    workspaceId: monitoringResources.outputs.logAnalyticsId
   }
 }
 
@@ -72,7 +72,7 @@ module workload '../src/workload/workload.bicep' = {
   name: 'workload'
   scope: workloadRg
   params: {
-    logAnalyticsId: monitoring.outputs.logAnalyticsId
+    logAnalyticsId: monitoringResources.outputs.logAnalyticsId
     subnets: connectivity.outputs.virtualNetworkSubnets
     secretIdentifier: securityResources.outputs.secretIdentifier
     keyVaultName: securityResources.outputs.keyVaultName
