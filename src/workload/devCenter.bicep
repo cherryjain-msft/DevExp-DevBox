@@ -231,6 +231,7 @@ module projects 'core/project.bicep' = [
       networkConnectionName: networkConnections[0].outputs.vnetAttachmentName
       secretIdentifier: secretIdentifier
       keyVaultName: keyVaultName
+      securityResourceGroupName: securityResourceGroupName
       tags: project.tags
     }
   }
