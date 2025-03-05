@@ -19,8 +19,10 @@ module keyVault '../security/keyvault.bicep' = {
   }
 }
 
+@description('Module to create a secret in the Key Vault')
 module secret 'keyvault-secret.bicep' = {
   name: 'secret'
+  scope: resourceGroup()
   params: {
     name: 'ghToken'
     keyVaultName: keyVault.outputs.name
@@ -28,6 +30,11 @@ module secret 'keyvault-secret.bicep' = {
   }
 }
 
+@description('The name of the Key Vault')
 output keyVaultName string = keyVault.outputs.name
+
+@description('The identifier of the secret')
 output secretIdentifier string = secret.outputs.secretUri
+
+@description('The endpoint of the Key Vault')
 output endpoint string = keyVault.outputs.endpoint
