@@ -47,7 +47,6 @@
     },
     "catalogs": {
       "type": "array",
-      "description": "List of catalogs.",
       "minItems": 1,
       "items": {
         "$ref": "#/definitions/catalog"
@@ -55,7 +54,6 @@
     },
     "environmentTypes": {
       "type": "array",
-      "description": "List of environment types.",
       "minItems": 1,
       "items": {
         "$ref": "#/definitions/environmentType"
@@ -63,7 +61,6 @@
     },
     "projects": {
       "type": "array",
-      "description": "List of projects.",
       "minItems": 1,
       "items": {
         "$ref": "#/definitions/project"
@@ -71,15 +68,13 @@
     },
     "imageDefinitions": {
       "type": "array",
-      "description": "List of image definitions.",
       "minItems": 1,
       "items": {
-        "$ref": "#/definitions/imageDefinition"
+        "$ref": "#/definitions/catalog"
       }
     },
     "tags": {
       "type": "object",
-      "description": "The tags to automatically apply to deployed environments.",
       "additionalProperties": {
         "type": "string"
       }
@@ -95,7 +90,6 @@
     "catalogs",
     "environmentTypes",
     "projects",
-    "imageDefinitions",
     "tags"
   ],
   "definitions": {
@@ -104,8 +98,6 @@
       "properties": {
         "type": {
           "type": "string",
-          "description": "The type of identity.",
-          "default": "SystemAssigned",
           "enum": [
             "None",
             "SystemAssigned",
@@ -115,7 +107,6 @@
         },
         "roleAssignments": {
           "type": "array",
-          "description": "List of role assignments.",
           "minItems": 1,
           "items": {
             "$ref": "#/definitions/roleDefinition"
@@ -133,12 +124,10 @@
       "properties": {
         "name": {
           "type": "string",
-          "default": "customTasks",
           "minLength": 1
         },
         "type": {
           "type": "string",
-          "default": "gitHub",
           "enum": [
             "gitHub",
             "adoGit"
@@ -146,17 +135,14 @@
         },
         "uri": {
           "type": "string",
-          "default": "https://github.com/Evilazaro/DevExP-DevBox.git",
-          "pattern": "^https?://.+$"
+          "format": "uri"
         },
         "branch": {
           "type": "string",
-          "default": "main",
           "minLength": 1
         },
         "path": {
           "type": "string",
-          "default": ".configuration/devcenter/tasks",
           "minLength": 1
         }
       },
@@ -169,80 +155,16 @@
       ],
       "additionalProperties": false
     },
-    "imageDefinition": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "default": "frontEnd-Engineer",
-          "minLength": 1
-        }
-      },
-      "required": [
-        "name"
-      ],
-      "additionalProperties": false
-    },
     "environmentType": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string",
-          "default": "dev",
           "minLength": 1
         }
       },
       "required": [
         "name"
-      ],
-      "additionalProperties": false
-    },
-    "project": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "default": "identityProvider",
-          "minLength": 1
-        },
-        "description": {
-          "type": "string",
-          "default": "identityProvider",
-          "minLength": 1
-        },
-        "environmentTypes": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/environmentType"
-          }
-        },
-        "catalogs": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "$ref": "#/definitions/catalog"
-          }
-        },
-        "pools": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/imageDefinition"
-          }
-        },
-        "tags": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          }
-        }
-      },
-      "required": [
-        "name",
-        "description",
-        "environmentTypes",
-        "catalogs",
-        "pools",
-        "tags"
       ],
       "additionalProperties": false
     },
@@ -251,12 +173,10 @@
       "properties": {
         "name": {
           "type": "string",
-          "description": "The role definition ID.",
           "minLength": 1
         },
         "id": {
           "type": "string",
-          "description": "The principal ID.",
           "minLength": 1
         }
       },

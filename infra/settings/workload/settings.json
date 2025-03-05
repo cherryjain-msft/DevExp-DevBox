@@ -139,12 +139,12 @@
             "pools": [
                 {
                     "name": "backEndEngineer",
-                    "devBoxDefinitionName": "backEndEngineer",
+                    "imageDefinitionName": "backEndEngineer",
                     "networkConnectionName": "identityProvider"
                 },
                 {
                     "name": "frontEndEngineer",
-                    "devBoxDefinitionName": "frontEndEngineer",
+                    "imageDefinitionName": "frontEndEngineer",
                     "networkConnectionName": "identityProvider"
                 }
             ],

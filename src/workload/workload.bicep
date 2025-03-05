@@ -37,7 +37,6 @@ module workload 'devCenter.bicep' = {
     devCenterProjects: devCenterConfig.projects
     logAnalyticsId: logAnalyticsId
     subnets: subnets
-    devCenterDevBoxDefinitions: devCenterConfig.devBoxDefinitions
     secretIdentifier: secretIdentifier
     keyVaultName: keyVaultName
     securityResourceGroupName: securityResourceGroupName

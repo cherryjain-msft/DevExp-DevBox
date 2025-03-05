@@ -10,9 +10,6 @@ param devCenterEnvironmentTypes EnvironmentType[]
 @description('Projects')
 param devCenterProjects Project[]
 
-@description('DevBox definitions')
-param devCenterDevBoxDefinitions DevBoxDefinition[]
-
 @description('Subnets')
 param subnets NetWorkConection[]
 
@@ -80,16 +77,6 @@ type Project = {
 type NetWorkConection = {
   name: string
   id: string
-}
-
-type DevBoxDefinition = {
-  name: string
-  image: string
-  osStorageType: StorageType
-  imageVersion: string
-  sku: string
-  hibernateSupport: HibernateSupport
-  default: bool
 }
 
 type HibernateSupport = 'Enabled' | 'Disabled'

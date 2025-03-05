@@ -22,23 +22,6 @@ identity:
     - name: User Access Administrator
       id: "18d7d88d-d35e-4fb5-a5c3-7773c20a72d9"
 
-devBoxDefinitions:
-  - name: backEndEngineer
-    image: microsoftvisualstudio_visualstudioplustools_vs-2022-ent-general-win11-m365-gen2
-    osStorageType: ssd_512gb
-    imageVersion: latest
-    sku: general_i_32c128gb512ssd_v2
-    hibernateSupport: Disabled
-    default: true
-
-  - name: frontEndEngineer
-    image: microsoftwindowsdesktop_windows-ent-cpc_win11-21h2-ent-cpc-m365
-    osStorageType: ssd_256gb
-    imageVersion: latest
-    sku: general_i_16c64gb256ssd_v2
-    hibernateSupport: Enabled
-    default: true
-
 catalogs:
   - name: customTasks
     type: gitHub
@@ -54,10 +37,13 @@ projects:
   - name: identityProvider
     description: identityProvider
     pools:
-      - name: backEndEngineer
+      - name: frontEnd-Engineer
+        imageDefinitionName: frontEnd-Engineer
     environmentTypes:
       - name: dev
-        deploymentTargetId: ""
+        deploymentTargetId: "e2f3b0a4-5c7d-4a1b-8f9c-6d1e0f3b2c5d"
+      - name: staging
+        deploymentTargetId: "b4a1c6e2-8f9c-4d7d-5c7e-0f3b2c5d1e0f"
     catalogs:
       - name: environments
         type: gitHub
@@ -77,6 +63,12 @@ projects:
       costCenter: IT
       owner: Evilazaro
       resources: Project
+
+imageDefinitions:
+  - name: frontEnd-Engineer
+    uri: https://github.com/Evilazaro/identityProvider.git
+    branch: main
+    path: .configuration/devcenter/imageDefinitions
 
 tags:
   environment: dev

@@ -125,18 +125,8 @@ module pools 'newPool.bicep' = [
     params: {
       name: pool.name
       projectName: project.name
-      imageDefinitionName: pool.imageDefinitionName
+      imageDefinitionName: pool.name
       networkConnectionName: networkConnectionName
     }
   }
 ]
-
-module newPool 'projectPool.bicep' = {
-  name: 'newPool'
-  params: {
-    name: 'newPool'
-    projectName: project.name
-    devBoxDefinitionName: 'backend-Engineer'
-    networkConnectionName: networkConnectionName
-  }
-}
