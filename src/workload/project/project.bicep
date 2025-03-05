@@ -79,7 +79,7 @@ module keyVaultAccessPolicies '../../security/keyvault-access.bicep' = {
 
 @description('Environment Definition Catalog')
 module catalogs 'projectCatalog.bicep' = {
-  name: 'catalogs-${projectCatalogs.environmentDefinition.name}'
+  name: 'catalogs}'
   params: {
     projectName: project.name
     catalogConfig: projectCatalogs
