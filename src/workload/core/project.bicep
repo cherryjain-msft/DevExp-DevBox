@@ -56,7 +56,7 @@ type ProjectEnvironmentType = {
 
 type Pool = {
   name: string
-  devBoxDefinitionName: string
+  imageDefinitionName: string
 }
 
 @description('Dev Center')
@@ -119,13 +119,13 @@ module environmentTypes 'projectEnvironmentType.bicep' = [
 ]
 
 @description('Project Pools')
-module pools 'projectPool.bicep' = [
+module pools 'newPool.bicep' = [
   for pool in projectPools: {
     name: 'pools-${pool.name}'
     params: {
       name: pool.name
       projectName: project.name
-      devBoxDefinitionName: pool.devBoxDefinitionName
+      imageDefinitionName: pool.imageDefinitionName
       networkConnectionName: networkConnectionName
     }
   }

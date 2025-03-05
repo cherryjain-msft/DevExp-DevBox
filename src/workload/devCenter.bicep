@@ -190,21 +190,21 @@ module catalogs 'core/catalog.bicep' = [
   }
 ]
 
-@description('Dev Center DevBox Definitions')
-module devBoxDefinitions 'core/devBoxDefinition.bicep' = [
-  for devBoxDefinition in devCenterDevBoxDefinitions: {
-    name: 'devBoxDefinitions-${devBoxDefinition.name}'
-    params: {
-      name: devBoxDefinition.name
-      location: resourceGroup().location
-      devCenterName: devcenter.name
-      hibernateSupport: devBoxDefinition.hibernateSupport
-      imageName: devBoxDefinition.image
-      osStorageType: devBoxDefinition.osStorageType
-      sku: devBoxDefinition.sku
-    }
-  }
-]
+// @description('Dev Center DevBox Definitions')
+// module devBoxDefinitions 'core/devBoxDefinition.bicep' = [
+//   for devBoxDefinition in devCenterDevBoxDefinitions: {
+//     name: 'devBoxDefinitions-${devBoxDefinition.name}'
+//     params: {
+//       name: devBoxDefinition.name
+//       location: resourceGroup().location
+//       devCenterName: devcenter.name
+//       hibernateSupport: devBoxDefinition.hibernateSupport
+//       imageName: devBoxDefinition.image
+//       osStorageType: devBoxDefinition.osStorageType
+//       sku: devBoxDefinition.sku
+//     }
+//   }
+// ]
 
 @description('Dev Center Environments')
 module environments 'core/environmentType.bicep' = [

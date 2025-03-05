@@ -6,12 +6,14 @@
     "name": {
       "type": "string",
       "description": "The name of the Dev Center.",
-      "default": "DevExP-devcenter"
+      "default": "DevExP-devcenter",
+      "minLength": 1
     },
     "location": {
       "type": "string",
       "description": "The location of the Dev Center.",
-      "default": "eastus2"
+      "default": "eastus2",
+      "minLength": 1
     },
     "catalogItemSyncEnableStatus": {
       "type": "string",
@@ -43,14 +45,6 @@
     "identity": {
       "$ref": "#/definitions/identity"
     },
-    "devBoxDefinitions": {
-      "type": "array",
-      "description": "List of dev box definitions.",
-      "minItems": 1,
-      "items": {
-        "$ref": "#/definitions/devBoxDefinition"
-      }
-    },
     "catalogs": {
       "type": "array",
       "description": "List of catalogs.",
@@ -75,10 +69,20 @@
         "$ref": "#/definitions/project"
       }
     },
+    "imageDefinitions": {
+      "type": "array",
+      "description": "List of image definitions.",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/imageDefinition"
+      }
+    },
     "tags": {
       "type": "object",
-      "additionalProperties": true,
-      "title": "The tags to automatically apply to deployed environments"
+      "description": "The tags to automatically apply to deployed environments.",
+      "additionalProperties": {
+        "type": "string"
+      }
     }
   },
   "required": [
@@ -91,7 +95,7 @@
     "catalogs",
     "environmentTypes",
     "projects",
-    "devBoxDefinitions",
+    "imageDefinitions",
     "tags"
   ],
   "definitions": {
@@ -121,14 +125,16 @@
       "required": [
         "type",
         "roleAssignments"
-      ]
+      ],
+      "additionalProperties": false
     },
     "catalog": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string",
-          "default": "customTasks"
+          "default": "customTasks",
+          "minLength": 1
         },
         "type": {
           "type": "string",
@@ -140,15 +146,18 @@
         },
         "uri": {
           "type": "string",
-          "default": "https://github.com/Evilazaro/DevExP-DevBox.git"
+          "default": "https://github.com/Evilazaro/DevExP-DevBox.git",
+          "pattern": "^https?://.+$"
         },
         "branch": {
           "type": "string",
-          "default": "main"
+          "default": "main",
+          "minLength": 1
         },
         "path": {
           "type": "string",
-          "default": ".configuration/devcenter/tasks"
+          "default": ".configuration/devcenter/tasks",
+          "minLength": 1
         }
       },
       "required": [
@@ -157,80 +166,49 @@
         "uri",
         "branch",
         "path"
-      ]
+      ],
+      "additionalProperties": false
     },
-    "devBoxDefinition": {
+    "imageDefinition": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string",
-          "default": "DevExP-DevBox"
-        },
-        "image": {
-          "type": "string",
-          "default": "DevExP-DevBox"
-        },
-        "imageVersion": {
-          "type": "string",
-          "default": "latest"
-        },
-        "sku": {
-          "type": "string"
-        },
-        "hibernateSupport": {
-          "type": "string",
-          "default": "Enabled",
-          "enum": [
-            "Enabled",
-            "Disabled"
-          ]
-        },
-        "osStorageType": {
-          "type": "string",
-          "default": "ssd_512gb",
-          "enum": [
-            "ssd_128gb",
-            "ssd_256gb",
-            "ssd_512gb",
-            "ssd_1tb"
-          ]
-        },
-        "default": {
-          "type": "boolean",
-          "default": true
+          "default": "frontEnd-Engineer",
+          "minLength": 1
         }
       },
       "required": [
-        "name",
-        "image",
-        "imageVersion",
-        "sku",
-        "hibernateSupport",
-        "osStorageType"
-      ]
+        "name"
+      ],
+      "additionalProperties": false
     },
     "environmentType": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string",
-          "default": "dev"
+          "default": "dev",
+          "minLength": 1
         }
       },
       "required": [
         "name"
-      ]
+      ],
+      "additionalProperties": false
     },
     "project": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string",
-          "default": "identityProvider"
+          "default": "identityProvider",
+          "minLength": 1
         },
         "description": {
           "type": "string",
-          "default": "identityProvider"
+          "default": "identityProvider",
+          "minLength": 1
         },
         "environmentTypes": {
           "type": "array",
@@ -248,24 +226,14 @@
         "pools": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string"
-              },
-              "devBoxDefinitionName": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "name",
-              "devBoxDefinitionName"
-            ]
+            "$ref": "#/definitions/imageDefinition"
           }
         },
         "tags": {
           "type": "object",
-          "additionalProperties": true
+          "additionalProperties": {
+            "type": "string"
+          }
         }
       },
       "required": [
@@ -275,24 +243,28 @@
         "catalogs",
         "pools",
         "tags"
-      ]
+      ],
+      "additionalProperties": false
     },
     "roleDefinition": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string",
-          "description": "The role definition ID."
+          "description": "The role definition ID.",
+          "minLength": 1
         },
         "id": {
           "type": "string",
-          "description": "The principal ID."
+          "description": "The principal ID.",
+          "minLength": 1
         }
       },
       "required": [
         "name",
         "id"
-      ]
+      ],
+      "additionalProperties": false
     }
   }
 }

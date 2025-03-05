@@ -55,9 +55,6 @@ projects:
     description: identityProvider
     pools:
       - name: backEndEngineer
-        devBoxDefinitionName: backEndEngineer
-      - name: frontEndEngineer
-        devBoxDefinitionName: frontEndEngineer
     environmentTypes:
       - name: dev
         deploymentTargetId: ""
