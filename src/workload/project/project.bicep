@@ -109,5 +109,9 @@ module pools 'newPool.bicep' = [
       imageDefinitionName: pool.name
       networkConnectionName: networkConnectionName
     }
+    dependsOn: [
+      catalogs
+    ]
   }
 ]
+
