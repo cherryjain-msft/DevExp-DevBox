@@ -68,7 +68,7 @@ resource workloadRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landin
 }
 
 @description('Deploy Workload Module')
-module workload '../src/workload/workload.bicep' = {
+module workloadResources '../src/workload/workload.bicep' = {
   name: 'workload'
   scope: workloadRg
   params: {
