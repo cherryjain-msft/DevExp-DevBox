@@ -22,8 +22,14 @@ param networkConnectionName string = 'Default'
 @description('Secret Identifier')
 param secretIdentifier string
 
+@description('Key Vault Name')
+param keyVaultName string
+
+@description('Security Resouce Group Name')
+param securityResourceGroupName string
+
 @description('Tags')
-param tags object 
+param tags object
 
 type Project = {
   name: string
@@ -62,6 +68,9 @@ resource devCenter 'Microsoft.DevCenter/devcenters@2024-10-01-preview' existing 
 resource project 'Microsoft.DevCenter/projects@2024-10-01-preview' = {
   name: name
   location: resourceGroup().location
+  identity: {
+    type: 'SystemAssigned'
+  }
   properties: {
     description: projectDescription
     devCenterId: devCenter.id
@@ -74,6 +83,16 @@ resource project 'Microsoft.DevCenter/projects@2024-10-01-preview' = {
     }
   }
   tags: tags
+}
+
+@description('Key Vault Access Policies')
+module keyVaultAccessPolicies '../../security/keyvault-access.bicep' = {
+  name: 'keyvaultAccess'
+  scope: resourceGroup(securityResourceGroupName)
+  params: {
+    keyVaultName: keyVaultName
+    principalId: project.identity.principalId
+  }
 }
 
 @description('Project Catalogs')
@@ -111,3 +130,13 @@ module pools 'projectPool.bicep' = [
     }
   }
 ]
+
+module newPool 'projectPool.bicep' = {
+  name: 'newPool'
+  params: {
+    name: 'newPool'
+    projectName: project.name
+    devBoxDefinitionName: 'backend-Engineer'
+    networkConnectionName: networkConnectionName
+  }
+}

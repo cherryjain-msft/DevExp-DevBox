@@ -230,6 +230,8 @@ module projects 'core/project.bicep' = [
       projectPools: project.pools
       networkConnectionName: networkConnections[0].outputs.vnetAttachmentName
       secretIdentifier: secretIdentifier
+      keyVaultName: keyVaultName
+      securityResourceGroupName: securityResourceGroupName
       tags: project.tags
     }
   }
