@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory = $true)]
+    [Parameter(Mandatory=$true)]
     [string] $Package,
 
     [Parameter()]
@@ -33,31 +33,34 @@ $Choco = "$Env:ProgramData/chocolatey/choco.exe"
 # Functions used in this script.
 #
 
-function Ensure-Chocolatey {
+function Ensure-Chocolatey
+{
     [CmdletBinding()]
     param(
         [string] $ChocoExePath
     )
 
-    if (-not (Test-Path "$ChocoExePath")) {
+    if (-not (Test-Path "$ChocoExePath"))
+    {
         Set-ExecutionPolicy Bypass -Scope Process -Force
         $installScriptPath = [System.IO.Path]::GetTempFileName() + ".ps1"
         Invoke-WebRequest -Uri 'https://chocolatey.org/install.ps1' -OutFile $installScriptPath
 
         try {
             Execute -File $installScriptPath
-        }
-        finally {
+        } finally {
             Remove-Item $installScriptPath
         }
         
-        if ($LastExitCode -eq 3010) {
+        if ($LastExitCode -eq 3010)
+        {
             Write-Host 'The recent changes indicate a reboot is necessary. Please reboot at your earliest convenience.'
         }
     }
 }
 
-function Install-Package {
+function Install-Package
+{
     [CmdletBinding()]
     param(
         [string] $ChocoExePath,
@@ -69,11 +72,11 @@ function Install-Package {
 
     $expression = "$ChocoExePath install $Package"
     
-    if ($Version) {
+    if ($Version){
         $expression = "$expression --version $Version"
     }
 
-    if ($Switches) {
+    if ($Switches){
         $expression = "$expression --params ""'$Switches'"" "
     }
 
@@ -94,7 +97,8 @@ function Install-Package {
     Remove-Item $packageScriptPath
 }
 
-function Execute {
+function Execute
+{
     [CmdletBinding()]
     param(
         $File
@@ -114,14 +118,18 @@ function Execute {
     # In that case, we do want to throw an exception with whatever is in stderr. Normally, when
     # Invoke-Expression throws, the error will come the normal way (i.e. $Error) and pass via the
     # catch below.
-    if ($processExitCode -or $expError) {
-        if ($processExitCode -eq 3010) {
+    if ($processExitCode -or $expError)
+    {
+        if ($processExitCode -eq 3010)
+        {
             # Expected condition. The recent changes indicate a reboot is necessary. Please reboot at your earliest convenience.
         }
-        elseif ($expError) {
+        elseif ($expError)
+        {
             throw $expError
         }
-        else {
+        else
+        {
             throw "Installation failed with exit code: $processExitCode. Please see the Chocolatey logs in %ALLUSERSPROFILE%\chocolatey\logs folder for details."
             break
         }

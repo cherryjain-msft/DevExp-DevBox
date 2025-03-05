@@ -5,9 +5,9 @@
     Markplace Item Name (as used in the URI of a given Visual Studio Extension Maketplace entry)
 #>
 param (
-    [Parameter(Mandatory)]
-    [string]$MarketplaceItemName
-)
+        [Parameter(Mandatory)]
+        [string]$MarketplaceItemName
+    )
 
 <#
 .SYNOPSIS
@@ -16,7 +16,8 @@ param (
     Markplace Item Name (as used in the URI of a given Visual Studio Extension Maketplace entry)
 #>
 
-function Get-VSIXFromMarketplace {
+function Get-VSIXFromMarketplace
+{
     param (
         [Parameter(Mandatory)]
         [string]$MarketplaceItemName
@@ -32,38 +33,38 @@ function Get-VSIXFromMarketplace {
     
     $instanceVersion = $vswhereResult.InstallationVersion
 
-    $isolationInfo = ConvertFrom-StringData((Get-Content "$($vswhereResult.ProductPath -replace ".exe",".isolation.ini")" | Select-Object -Skip 2) -replace "\\", "\\\\" -join "`n")
+    $isolationInfo = ConvertFrom-StringData((Get-Content "$($vswhereResult.ProductPath -replace ".exe",".isolation.ini")" | Select-Object -Skip 2) -replace "\\","\\\\" -join "`n")
     $arch = If ($isolationInfo.ProductArch -eq "x64") { "amd64" } else { $isolationInfo.ProductArch }
 
     $marketplaceQueryBody = 
-    @"
+@"
 {"flags":"673","filters":[{"criteria":[{"filterType":"7","value":"$MarketplaceItemName"},{"filterType":"15","value":"$instanceVersion"},{"filterType":"22","value":"$arch"},{"filterType":"8","value":"Microsoft.VisualStudio.Enterprise"},{"filterType":"8","value":"Microsoft.VisualStudio.Ultimate"},{"filterType":"8","value":"Microsoft.VisualStudio.Pro"},{"filterType":"8","value":"Microsoft.VisualStudio.Community"},{"filterType":"8","value":"Microsoft.VisualStudio.IntegratedShell"}],"sortBy":"4","sortOrder":"2","pageSize":"2","pageNumber":"1"}]}
 "@
 
     $requestParams = @{
-        Uri             = "https://marketplace.visualstudio.com/_apis/public/gallery/extensionquery"
-        Method          = "Post"
-        Headers         = @{"Accept" = 'application/json;api-version=3.2-preview.1' }
-        ContentType     = "application/json"
-        Body            = $marketplaceQueryBody
+        Uri = "https://marketplace.visualstudio.com/_apis/public/gallery/extensionquery"
+        Method = "Post"
+        Headers = @{"Accept" = 'application/json;api-version=3.2-preview.1'}
+        ContentType = "application/json"
+        Body = $marketplaceQueryBody
         UseBasicParsing = $true
     }
 
     $jsonResponse = (Invoke-WebRequest @requestParams).Content | ConvertFrom-Json 
     $extensions = $jsonResponse.results.extensions
 
-    if (-not $extensions -or ($extensions -is [array] -and $extensions.length -le 0)) {
+    if(-not $extensions -or ($extensions -is [array] -and $extensions.length -le 0)) {
         Write-Warning "No extension was found for item: $MarketplaceItemName. Specify a valid extension."
         exit $exitcode
     }
 
-    if ($extensions -is [array] -and $extensions.length -gt 1) {
+    if($extensions -is [array] -and $extensions.length -gt 1) {
         Write-Warning "Multiple extensions ($($extensions.length)) found for the given item name $MarketplaceItemName"
         exit $exitcode
     }
 
     $cdnUrl = "$($extensions.versions[0].fallbackAssetUri)/Microsoft.VisualStudio.IDE.Payload?redirect=true&install=true"
-    $downloadFilePath = Join-Path ([IO.Path]::GetTempPath()) ([IO.Path]::ChangeExtension("VSIX$([IO.Path]::GetRandomFileName())", ".vsix"))
+    $downloadFilePath =  Join-Path ([IO.Path]::GetTempPath()) ([IO.Path]::ChangeExtension("VSIX$([IO.Path]::GetRandomFileName())", ".vsix"))
     $extensionName = $extensions.displayName
     Write-Host "Downloading $extensionName"
 
@@ -86,7 +87,8 @@ function Get-VSIXFromMarketplace {
 .LINK
     https://learn.microsoft.com/en-us/visualstudio/install/tools-for-managing-visual-studio-instances#using-vswhereexe
 #>
-function Invoke-VsWhere {
+function Invoke-VsWhere
+{
     param
     (
         [Parameter(Mandatory)]
@@ -102,7 +104,8 @@ function Invoke-VsWhere {
 .SYNOPSIS
     Returns the default path of Visual Studio Locator (vswhere.exe).
 #>
-function Get-VsWherePath {
+function Get-VsWherePath
+{
     return Join-Path -Path "${env:ProgramFiles(x86)}" -ChildPath "Microsoft Visual Studio\Installer\vswhere.exe"
 }
 
@@ -110,8 +113,10 @@ function Get-VsWherePath {
 .SYNOPSIS
     Throws an exception if Visual Studio Locator (vswhere.exe) is not present in the default location.
 #>
-function Assert-VsWherePresent {
-    if (-not (Test-Path (Get-VsWherePath))) {
+function Assert-VsWherePresent
+{
+    if(-not (Test-Path (Get-VsWherePath)))
+    {
         throw "Visual Studio Locator not found."
         exit $exitcode
     }
@@ -126,7 +131,8 @@ function Assert-VsWherePresent {
 .PARAMETER Arguments
     Arguments to pass onwards to VSIX Installer.
 #>
-function Invoke-VsixInstaller {
+function Invoke-VsixInstaller
+{
     param
     (
         [Parameter(Mandatory)]
@@ -142,7 +148,8 @@ function Invoke-VsixInstaller {
 .SYNOPSIS
     Returns the default path of VSIX Installer.
 #>
-function Get-VsixInstallerPath {
+function Get-VsixInstallerPath
+{
     return Join-Path -Path "${env:ProgramFiles(x86)}" -ChildPath "Microsoft Visual Studio\Installer\resources\app\ServiceHub\Services\Microsoft.VisualStudio.Setup.Service\VSIXInstaller.exe"
 }
 
@@ -150,8 +157,10 @@ function Get-VsixInstallerPath {
 .SYNOPSIS
     Throws an exception if VSIX Installer is not present in the default location.
 #>
-function Assert-VsixInstallerPresent {
-    if (-not (Test-Path (Get-VsixInstallerPath))) {
+function Assert-VsixInstallerPresent
+{
+    if(-not (Test-Path (Get-VsixInstallerPath)))
+    {
         throw "VSIX Installer not found."
         exit $exitcode
     }
@@ -161,7 +170,7 @@ function Assert-VsixInstallerPresent {
 
 $pathToVSIX = Get-VSIXFromMarketplace $MarketplaceItemName
 
-if (-not $pathToVsix -or -not (Test-Path $pathToVSIX -PathType Leaf)) {
+if(-not $pathToVsix -or -not (Test-Path $pathToVSIX -PathType Leaf)) {
     Write-Warning "Issue with VSIX path for item $MarketplaceItemName. No extension downloaded; skipping install."
     exit $exitcode
 }
