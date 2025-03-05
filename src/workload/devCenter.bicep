@@ -2,24 +2,22 @@
 param config DevCenterconfig
 
 @description('Dev Center Catalogs')
-param devCenterCatalogs Catalog[]
+param devCenterCatalogs object[]
 
 @description('Environment Types')
-param devCenterEnvironmentTypes EnvironmentType[]
+param devCenterEnvironmentTypes object[]
 
 @description('Projects')
-param devCenterProjects Project[]
-
-@description('DevBox definitions')
-param devCenterDevBoxDefinitions DevBoxDefinition[]
+param devCenterProjects object[]
 
 @description('Subnets')
-param subnets NetWorkConection[]
+param subnets object[]
 
 @description('Log Analytics Workspace Id')
 param logAnalyticsId string
 
 @description('Secret Identifier')
+@secure()
 param secretIdentifier string
 
 @description('Key Vault Name')
@@ -49,50 +47,7 @@ type RoleAssignment = {
   id: string
 }
 
-type Catalog = {
-  name: string
-  type: CatalogType
-  uri: string
-  branch: string
-  path: string
-}
-
 type CatalogType = 'gitHub' | 'adoGit'
-
-type EnvironmentType = {
-  name: string
-}
-
-type ProjectEnvironmentType = {
-  name: string
-  deploymentTargetId: string
-}
-
-type Project = {
-  name: string
-  description: string
-  environmentTypes: ProjectEnvironmentType[]
-  catalogs: Catalog[]
-  pools: array
-  tags: object
-}
-
-type NetWorkConection = {
-  name: string
-  id: string
-}
-
-type DevBoxDefinition = {
-  name: string
-  image: string
-  osStorageType: StorageType
-  imageVersion: string
-  sku: string
-  hibernateSupport: HibernateSupport
-  default: bool
-}
-
-type HibernateSupport = 'Enabled' | 'Disabled'
 
 type StorageType = 'ssd_128gb' | 'ssd_256gb' | 'ssd_512gb' | 'ssd_1tb'
 
@@ -190,22 +145,6 @@ module catalogs 'core/catalog.bicep' = [
   }
 ]
 
-@description('Dev Center DevBox Definitions')
-module devBoxDefinitions 'core/devBoxDefinition.bicep' = [
-  for devBoxDefinition in devCenterDevBoxDefinitions: {
-    name: 'devBoxDefinitions-${devBoxDefinition.name}'
-    params: {
-      name: devBoxDefinition.name
-      location: resourceGroup().location
-      devCenterName: devcenter.name
-      hibernateSupport: devBoxDefinition.hibernateSupport
-      imageName: devBoxDefinition.image
-      osStorageType: devBoxDefinition.osStorageType
-      sku: devBoxDefinition.sku
-    }
-  }
-]
-
 @description('Dev Center Environments')
 module environments 'core/environmentType.bicep' = [
   for environment in devCenterEnvironmentTypes: {
@@ -218,7 +157,7 @@ module environments 'core/environmentType.bicep' = [
 ]
 
 @description('Dev Center Projects')
-module projects 'core/project.bicep' = [
+module projects 'project/project.bicep' = [
   for project in devCenterProjects: {
     name: 'Projects-${project.name}'
     params: {

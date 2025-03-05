@@ -6,7 +6,7 @@ param tags object = {}
 param principalId string
 
 resource keyVault 'Microsoft.KeyVault/vaults@2024-04-01-preview' = {
-  name: '${name}${uniqueString(resourceGroup().id)}'
+  name: '${name}-${uniqueString(resourceGroup().id,name,resourceGroup().name,subscription().id)}'
   location: location
   tags: tags
   properties: {
@@ -27,4 +27,3 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-04-01-preview' = {
 
 output endpoint string = keyVault.properties.vaultUri
 output name string = keyVault.name
-

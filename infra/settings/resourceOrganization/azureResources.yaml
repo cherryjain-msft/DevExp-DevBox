@@ -1,6 +1,5 @@
 # yaml-language-server: $schema=./azureResources.shema.json
 
-  
 workload:
   create: true
   name: DevExP-Workload-RG

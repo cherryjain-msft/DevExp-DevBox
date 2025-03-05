@@ -11,7 +11,7 @@ param secretValue string
 var landingZone = loadYamlContent('settings/resourceOrganization/azureResources.yaml')
 
 @description('Workload Resource Group')
-resource securityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZone.workload.create) {
+resource securityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZone.security.create) {
   name: landingZone.security.name
   location: location
   tags: landingZone.security.tags

@@ -2,9 +2,10 @@
 param logAnalyticsId string
 
 @description('Subnets')
-param subnets NetWorkConection[]
+param subnets object[]
 
 @description('Secret Identifier')
+@secure()
 param secretIdentifier string
 
 @description('Key Vault Name')
@@ -17,11 +18,6 @@ type LandingZone = {
   name: string
   create: bool
   tags: object
-}
-
-type NetWorkConection = {
-  name: string
-  id: string
 }
 
 @description('Dev Center Settings')
@@ -37,7 +33,6 @@ module workload 'devCenter.bicep' = {
     devCenterProjects: devCenterConfig.projects
     logAnalyticsId: logAnalyticsId
     subnets: subnets
-    devCenterDevBoxDefinitions: devCenterConfig.devBoxDefinitions
     secretIdentifier: secretIdentifier
     keyVaultName: keyVaultName
     securityResourceGroupName: securityResourceGroupName

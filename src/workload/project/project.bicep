@@ -8,18 +8,19 @@ param name string
 param projectDescription string
 
 @description('Project Catalogs')
-param projectCatalogs Catalog[]
+param projectCatalogs object
 
 @description('Project Environment Types')
-param projectEnvironmentTypes ProjectEnvironmentType[]
+param projectEnvironmentTypes object[]
 
 @description('Project Pools')
-param projectPools Pool[]
+param projectPools object[]
 
 @description('Network Connection Name')
-param networkConnectionName string = 'Default'
+param networkConnectionName string
 
 @description('Secret Identifier')
+@secure()
 param secretIdentifier string
 
 @description('Key Vault Name')
@@ -34,29 +35,10 @@ param tags object
 type Project = {
   name: string
   description: string
-  catalogs: array
-  environmentTypes: ProjectEnvironmentType[]
+  environmentTypes: object[]
+  catalogs: object
+  pools: object[]
   tags: object
-}
-
-type Catalog = {
-  name: string
-  type: CatalogType
-  uri: string
-  branch: string
-  path: string
-}
-
-type CatalogType = 'gitHub' | 'adoGit'
-
-type ProjectEnvironmentType = {
-  name: string
-  deploymentTargetId: string
-}
-
-type Pool = {
-  name: string
-  devBoxDefinitionName: string
 }
 
 @description('Dev Center')
@@ -95,17 +77,15 @@ module keyVaultAccessPolicies '../../security/keyvault-access.bicep' = {
   }
 }
 
-@description('Project Catalogs')
-module catalogs 'projectCatalog.bicep' = [
-  for catalog in projectCatalogs: {
-    name: 'catalogs-${catalog.name}'
-    params: {
-      projectName: project.name
-      catalogConfig: catalog
-      secretIdentifier: secretIdentifier
-    }
+@description('Environment Definition Catalog')
+module catalogs 'projectCatalog.bicep' = {
+  name: 'catalogs}'
+  params: {
+    projectName: project.name
+    catalogConfig: projectCatalogs
+    secretIdentifier: secretIdentifier
   }
-]
+}
 
 @description('Project Environment Types')
 module environmentTypes 'projectEnvironmentType.bicep' = [
@@ -119,24 +99,19 @@ module environmentTypes 'projectEnvironmentType.bicep' = [
 ]
 
 @description('Project Pools')
-module pools 'projectPool.bicep' = [
+module pools 'newPool.bicep' = [
   for pool in projectPools: {
     name: 'pools-${pool.name}'
     params: {
       name: pool.name
       projectName: project.name
-      devBoxDefinitionName: pool.devBoxDefinitionName
+      catalogName: projectCatalogs.imageDefinition.name
+      imageDefinitionName: pool.name
       networkConnectionName: networkConnectionName
     }
+    dependsOn: [
+      catalogs
+    ]
   }
 ]
 
-module newPool 'projectPool.bicep' = {
-  name: 'newPool'
-  params: {
-    name: 'newPool'
-    projectName: project.name
-    devBoxDefinitionName: 'backend-Engineer'
-    networkConnectionName: networkConnectionName
-  }
-}
