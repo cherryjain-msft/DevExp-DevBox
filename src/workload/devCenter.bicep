@@ -2,16 +2,16 @@
 param config DevCenterconfig
 
 @description('Dev Center Catalogs')
-param devCenterCatalogs Catalog[]
+param devCenterCatalogs object[]
 
 @description('Environment Types')
-param devCenterEnvironmentTypes EnvironmentType[]
+param devCenterEnvironmentTypes object[]
 
 @description('Projects')
-param devCenterProjects Project[]
+param devCenterProjects object[]
 
 @description('Subnets')
-param subnets NetWorkConection[]
+param subnets object[]
 
 @description('Log Analytics Workspace Id')
 param logAnalyticsId string
@@ -47,35 +47,7 @@ type RoleAssignment = {
   id: string
 }
 
-type Catalog = {
-  name: string
-  type: CatalogType
-  uri: string
-  branch: string
-  path: string
-}
-
 type CatalogType = 'gitHub' | 'adoGit'
-
-type EnvironmentType = {
-  name: string
-}
-
-type Project = {
-  name: string
-  description: string
-  environmentTypes: array
-  catalogs: object
-  pools: array
-  tags: object
-}
-
-type NetWorkConection = {
-  name: string
-  id: string
-}
-
-type HibernateSupport = 'Enabled' | 'Disabled'
 
 type StorageType = 'ssd_128gb' | 'ssd_256gb' | 'ssd_512gb' | 'ssd_1tb'
 

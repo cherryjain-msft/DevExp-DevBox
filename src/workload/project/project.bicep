@@ -17,7 +17,7 @@ param projectEnvironmentTypes object[]
 param projectPools object[]
 
 @description('Network Connection Name')
-param networkConnectionName string = 'Default'
+param networkConnectionName string
 
 @description('Secret Identifier')
 @secure()
@@ -35,8 +35,9 @@ param tags object
 type Project = {
   name: string
   description: string
-  catalogs: object
   environmentTypes: object[]
+  catalogs: object
+  pools: object[]
   tags: object
 }
 
@@ -114,6 +115,7 @@ module pools 'newPool.bicep' = [
     params: {
       name: pool.name
       projectName: project.name
+      catalogName: projectCatalogs.imageDefinition.name
       imageDefinitionName: pool.name
       networkConnectionName: networkConnectionName
     }
