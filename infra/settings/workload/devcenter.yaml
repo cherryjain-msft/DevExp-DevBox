@@ -39,8 +39,8 @@ projects:
   - name: "identityProvider"
     description: "Identity Provider project."
     pools:
-      - name: "frontEnd-Engineer"
-        imageDefinitionName: "frontEnd-Engineer"
+      - name: "backEnd-Engineer"
+        imageDefinitionName: "backEnd-Engineer"
     environmentTypes:
       - name: "dev"
         deploymentTargetId: ""
