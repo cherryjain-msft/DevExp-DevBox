@@ -206,7 +206,7 @@ module environments 'core/environmentType.bicep' = [
 ]
 
 @description('Dev Center Projects')
-module projects 'core/project.bicep' = [
+module projects 'project/project.bicep' = [
   for project in devCenterProjects: {
     name: 'Projects-${project.name}'
     params: {
