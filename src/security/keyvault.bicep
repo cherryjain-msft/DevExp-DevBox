@@ -27,4 +27,3 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-04-01-preview' = {
 
 output endpoint string = keyVault.properties.vaultUri
 output name string = keyVault.name
-

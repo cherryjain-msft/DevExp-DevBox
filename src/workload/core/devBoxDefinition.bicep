@@ -27,7 +27,7 @@ param sku string
   'ssd_512gb'
   'ssd_1tb'
 ])
-param osStorageType string 
+param osStorageType string
 
 @description('DevCenter Resource')
 resource devCenter 'Microsoft.DevCenter/devcenters@2024-10-01-preview' existing = {

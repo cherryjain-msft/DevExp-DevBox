@@ -5,6 +5,7 @@ param projectName string
 param catalogConfig ProjectCatalog
 
 @description('Secret Identifier')
+@secure()
 param secretIdentifier string
 
 type ProjectCatalog = {

@@ -17,6 +17,7 @@ param subnets NetWorkConection[]
 param logAnalyticsId string
 
 @description('Secret Identifier')
+@secure()
 param secretIdentifier string
 
 @description('Key Vault Name')

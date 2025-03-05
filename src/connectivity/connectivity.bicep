@@ -1,4 +1,3 @@
-
 @description('Log Analytics Workspace')
 param workspaceId string
 

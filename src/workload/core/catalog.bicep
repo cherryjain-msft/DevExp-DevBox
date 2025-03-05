@@ -5,8 +5,8 @@ param devCenterName string
 param catalogConfig Catalog
 
 @description('Secret Identifier')
+@secure()
 param secretIdentifier string
-
 
 type Catalog = {
   name: string

@@ -20,6 +20,7 @@ param projectPools Pool[]
 param networkConnectionName string = 'Default'
 
 @description('Secret Identifier')
+@secure()
 param secretIdentifier string
 
 @description('Key Vault Name')
