@@ -18,7 +18,7 @@ resource securityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landin
 }
 
 @description('Deploy Security Module')
-module security '../src/security/security.bicep' = {
+module securityResources '../src/security/security.bicep' = {
   scope: securityRg
   name: 'security'
   params: {
@@ -74,8 +74,8 @@ module workload '../src/workload/workload.bicep' = {
   params: {
     logAnalyticsId: monitoring.outputs.logAnalyticsId
     subnets: connectivity.outputs.virtualNetworkSubnets
-    secretIdentifier: security.outputs.secretIdentifier
-    keyVaultName: security.outputs.keyVaultName
+    secretIdentifier: securityResources.outputs.secretIdentifier
+    keyVaultName: securityResources.outputs.keyVaultName
     securityResourceGroupName: securityRg.name
   }
 }
