@@ -1,14 +1,14 @@
 @description('Configuration')
-param config DevCenterconfig
+param config DevCenterConfig
 
 @description('Dev Center Catalogs')
-param devCenterCatalogs object[]
+param catalogs object[]
 
 @description('Environment Types')
-param devCenterEnvironmentTypes object[]
+param environmentTypes object[]
 
 @description('Projects')
-param devCenterProjects object[]
+param projects object[]
 
 @description('Subnets')
 param subnets object[]
@@ -23,10 +23,10 @@ param secretIdentifier string
 @description('Key Vault Name')
 param keyVaultName string
 
-@description('Security Resouce Group Name')
+@description('Security Resource Group Name')
 param securityResourceGroupName string
 
-type DevCenterconfig = {
+type DevCenterConfig = {
   name: string
   identity: Identity
   catalogItemSyncEnableStatus: Status
@@ -112,11 +112,14 @@ module roleAssignments '../identity/devCenterRoleAssignment.bicep' = [
       id: role.id
       principalId: devcenter.identity.principalId
     }
+    dependsOn:[
+      keyVaultAccessPolicies
+    ]
   }
 ]
 
 @description('Network Connections')
-module networkConnections 'core/networkConnection.bicep' = [
+module networkConnection 'core/networkConnection.bicep' = [
   for subnet in subnets: {
     name: 'networkConnections-${subnet.name}'
     params: {
@@ -127,27 +130,31 @@ module networkConnections 'core/networkConnection.bicep' = [
   }
 ]
 
-output networkConnectionNames array = [
+@description('Network Connections Output')
+output networkConnections array = [
   for subnet in subnets: {
-    name: networkConnections[0].outputs.vnetAttachmentName
+    name: networkConnection[0].outputs.vnetAttachmentName
   }
 ]
 
 @description('Dev Center Catalogs')
-module catalogs 'core/catalog.bicep' = [
-  for catalog in devCenterCatalogs: {
+module catalog 'core/catalog.bicep' = [
+  for catalog in catalogs: {
     name: 'catalogs-${catalog.name}'
     params: {
       devCenterName: devcenter.name
       catalogConfig: catalog
       secretIdentifier: secretIdentifier
     }
+    dependsOn: [
+      keyVaultAccessPolicies
+    ]
   }
 ]
 
 @description('Dev Center Environments')
-module environments 'core/environmentType.bicep' = [
-  for environment in devCenterEnvironmentTypes: {
+module environment 'core/environmentType.bicep' = [
+  for environment in environmentTypes: {
     name: 'environmentTypes-${environment.name}'
     params: {
       devCenterName: devcenter.name
@@ -157,8 +164,8 @@ module environments 'core/environmentType.bicep' = [
 ]
 
 @description('Dev Center Projects')
-module projects 'project/project.bicep' = [
-  for project in devCenterProjects: {
+module project 'project/project.bicep' = [
+  for project in projects: {
     name: 'Projects-${project.name}'
     params: {
       name: project.name
@@ -167,7 +174,7 @@ module projects 'project/project.bicep' = [
       projectCatalogs: project.catalogs
       projectEnvironmentTypes: project.environmentTypes
       projectPools: project.pools
-      networkConnectionName: networkConnections[0].outputs.vnetAttachmentName
+      networkConnectionName: networkConnection[0].outputs.vnetAttachmentName
       secretIdentifier: secretIdentifier
       keyVaultName: keyVaultName
       securityResourceGroupName: securityResourceGroupName

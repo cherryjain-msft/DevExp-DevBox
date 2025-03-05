@@ -8,74 +8,74 @@ param location string = 'eastus2'
 param secretValue string
 
 @description('Landing Zone Information')
-var landingZone = loadYamlContent('settings/resourceOrganization/azureResources.yaml')
+var landingZones = loadYamlContent('settings/resourceOrganization/azureResources.yaml')
 
-@description('Workload Resource Group')
-resource securityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZone.security.create) {
-  name: landingZone.security.name
+@description('Security Resource Group')
+resource securityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZones.security.create) {
+  name: landingZones.security.name
   location: location
-  tags: landingZone.security.tags
+  tags: landingZones.security.tags
 }
 
 @description('Deploy Security Module')
-module security '../src/security/security.bicep' = {
-  scope: securityRg
+module securityResources '../src/security/security.bicep' = {
   name: 'security'
+  scope: resourceGroup(landingZones.security.name)
   params: {
-    name: 'devexp-kv'
+    name: 'devexp'
     secretValue: secretValue
-    tags: landingZone.security.tags
+    tags: landingZones.security.tags
   }
 }
 
-@description('Workload Resource Group')
-resource monitoringRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZone.monitoring.create) {
-  name: landingZone.monitoring.name
+@description('Monitoring Resource Group')
+resource monitoringRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZones.monitoring.create) {
+  name: landingZones.monitoring.name
   location: location
-  tags: landingZone.monitoring.tags
+  tags: landingZones.monitoring.tags
 }
 
 @description('Deploy Monitoring Module')
-module monitoring '../src/management/logAnalytics.bicep' = {
-  scope: monitoringRg
+module monitoringResources '../src/management/logAnalytics.bicep' = {
   name: 'monitoring'
+  scope: resourceGroup(landingZones.monitoring.name)
   params: {
     name: 'logAnalytics'
   }
 }
 
-@description('Workload Resource Group')
-resource connectivityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZone.connectivity.create) {
-  name: landingZone.connectivity.name
+@description('Connectivity Resource Group')
+resource connectivityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZones.connectivity.create) {
+  name: landingZones.connectivity.name
   location: location
-  tags: landingZone.connectivity.tags
+  tags: landingZones.connectivity.tags
 }
 
 @description('Deploy Connectivity Module')
-module connectivity '../src/connectivity/connectivity.bicep' = {
+module connectivityResources '../src/connectivity/connectivity.bicep' = {
   name: 'connectivity'
-  scope: connectivityRg
+  scope: resourceGroup(landingZones.connectivity.name)
   params: {
-    workspaceId: monitoring.outputs.logAnalyticsId
+    workspaceId: monitoringResources.outputs.logAnalyticsId
   }
 }
 
 @description('Workload Resource Group')
-resource workloadRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZone.workload.create) {
-  name: landingZone.workload.name
+resource workloadRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZones.workload.create) {
+  name: landingZones.workload.name
   location: location
-  tags: landingZone.workload.tags
+  tags: landingZones.workload.tags
 }
 
 @description('Deploy Workload Module')
-module workload '../src/workload/workload.bicep' = {
+module workloadResources '../src/workload/workload.bicep' = {
   name: 'workload'
-  scope: workloadRg
+  scope: resourceGroup(landingZones.workload.name)
   params: {
-    logAnalyticsId: monitoring.outputs.logAnalyticsId
-    subnets: connectivity.outputs.virtualNetworkSubnets
-    secretIdentifier: security.outputs.secretIdentifier
-    keyVaultName: security.outputs.keyVaultName
-    securityResourceGroupName: securityRg.name
+    logAnalyticsId: monitoringResources.outputs.logAnalyticsId
+    subnets: connectivityResources.outputs.virtualNetworkSubnets
+    secretIdentifier: securityResources.outputs.secretIdentifier
+    keyVaultName: securityResources.outputs.keyVaultName
+    securityResourceGroupName: landingZones.security.name
   }
 }

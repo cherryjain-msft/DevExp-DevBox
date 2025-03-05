@@ -79,12 +79,15 @@ module keyVaultAccessPolicies '../../security/keyvault-access.bicep' = {
 
 @description('Environment Definition Catalog')
 module catalogs 'projectCatalog.bicep' = {
-  name: 'catalogs}'
+  name: 'catalogs'
   params: {
     projectName: project.name
     catalogConfig: projectCatalogs
     secretIdentifier: secretIdentifier
   }
+  dependsOn:[
+    keyVaultAccessPolicies
+  ]
 }
 
 @description('Project Environment Types')

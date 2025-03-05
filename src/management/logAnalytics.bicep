@@ -1,3 +1,4 @@
+@description('The name of the Log Analytics Workspace')
 param name string
 
 @description('Log Analytics Workspace')
@@ -11,8 +12,13 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-10
   }
 }
 
+@description('The ID of the Log Analytics Workspace')
 output workspaceId string = logAnalyticsWorkspace.id
+
+@description('The ID of the Log Analytics Workspace')
 output logAnalyticsId string = logAnalyticsWorkspace.id
+
+@description('The name of the Log Analytics Workspace')
 output logAnalyticsName string = logAnalyticsWorkspace.name
 
 @description('Log Analytics Diagnostic Settings')

@@ -11,7 +11,7 @@ param secretIdentifier string
 @description('Key Vault Name')
 param keyVaultName string
 
-@description('Security Resouce Group Name')
+@description('Security Resource Group Name')
 param securityResourceGroupName string
 
 type LandingZone = {
@@ -21,16 +21,17 @@ type LandingZone = {
 }
 
 @description('Dev Center Settings')
-var devCenterConfig = loadYamlContent('../../infra/settings/workload/devcenter.yaml')
+var devCenterSettings = loadYamlContent('../../infra/settings/workload/devcenter.yaml')
 
+@description('Deploy Dev Center Module')
 module workload 'devCenter.bicep' = {
-  scope: resourceGroup()
   name: 'devCenter'
+  scope: resourceGroup()
   params: {
-    config: devCenterConfig
-    devCenterCatalogs: devCenterConfig.catalogs
-    devCenterEnvironmentTypes: devCenterConfig.environmentTypes
-    devCenterProjects: devCenterConfig.projects
+    config: devCenterSettings
+    catalogs: devCenterSettings.catalogs
+    environmentTypes: devCenterSettings.environmentTypes
+    projects: devCenterSettings.projects
     logAnalyticsId: logAnalyticsId
     subnets: subnets
     secretIdentifier: secretIdentifier
