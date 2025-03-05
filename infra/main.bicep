@@ -10,7 +10,7 @@ param secretValue string
 @description('Landing Zone Information')
 var landingZones = loadYamlContent('settings/resourceOrganization/azureResources.yaml')
 
-@description('Workload Resource Group')
+@description('Security Resource Group')
 resource securityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZones.security.create) {
   name: landingZones.security.name
   location: location
@@ -19,8 +19,8 @@ resource securityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landin
 
 @description('Deploy Security Module')
 module securityResources '../src/security/security.bicep' = {
-  scope: securityRg
   name: 'security'
+  scope: securityRg
   params: {
     name: 'devexp-kv'
     secretValue: secretValue
@@ -28,7 +28,7 @@ module securityResources '../src/security/security.bicep' = {
   }
 }
 
-@description('Workload Resource Group')
+@description('Monitoring Resource Group')
 resource monitoringRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZones.monitoring.create) {
   name: landingZones.monitoring.name
   location: location
@@ -37,14 +37,14 @@ resource monitoringRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (land
 
 @description('Deploy Monitoring Module')
 module monitoringResources '../src/management/logAnalytics.bicep' = {
-  scope: monitoringRg
   name: 'monitoring'
+  scope: monitoringRg
   params: {
     name: 'logAnalytics'
   }
 }
 
-@description('Workload Resource Group')
+@description('Connectivity Resource Group')
 resource connectivityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZones.connectivity.create) {
   name: landingZones.connectivity.name
   location: location
