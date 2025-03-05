@@ -12,8 +12,10 @@ param tags object = {}
 @description('The principal ID to be granted access to the Key Vault.')
 param principalId string
 
+var uniqueName = guid(name)
+
 resource keyVault 'Microsoft.KeyVault/vaults@2024-04-01-preview' = {
-  name: '${name}-${uniqueString(resourceGroup().id, name, resourceGroup().name, subscription().id)}-kv'
+  name: '${name}-${uniqueString(resourceGroup().id, name, resourceGroup().name, uniqueName)}-kv'
   location: location
   tags: tags
   properties: {
