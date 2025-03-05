@@ -8,13 +8,13 @@ param location string = 'eastus2'
 param secretValue string
 
 @description('Landing Zone Information')
-var landingZone = loadYamlContent('settings/resourceOrganization/azureResources.yaml')
+var landingZones = loadYamlContent('settings/resourceOrganization/azureResources.yaml')
 
 @description('Workload Resource Group')
-resource securityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZone.security.create) {
-  name: landingZone.security.name
+resource securityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZones.security.create) {
+  name: landingZones.security.name
   location: location
-  tags: landingZone.security.tags
+  tags: landingZones.security.tags
 }
 
 @description('Deploy Security Module')
@@ -24,15 +24,15 @@ module security '../src/security/security.bicep' = {
   params: {
     name: 'devexp-kv'
     secretValue: secretValue
-    tags: landingZone.security.tags
+    tags: landingZones.security.tags
   }
 }
 
 @description('Workload Resource Group')
-resource monitoringRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZone.monitoring.create) {
-  name: landingZone.monitoring.name
+resource monitoringRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZones.monitoring.create) {
+  name: landingZones.monitoring.name
   location: location
-  tags: landingZone.monitoring.tags
+  tags: landingZones.monitoring.tags
 }
 
 @description('Deploy Monitoring Module')
@@ -45,10 +45,10 @@ module monitoring '../src/management/logAnalytics.bicep' = {
 }
 
 @description('Workload Resource Group')
-resource connectivityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZone.connectivity.create) {
-  name: landingZone.connectivity.name
+resource connectivityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZones.connectivity.create) {
+  name: landingZones.connectivity.name
   location: location
-  tags: landingZone.connectivity.tags
+  tags: landingZones.connectivity.tags
 }
 
 @description('Deploy Connectivity Module')
@@ -61,10 +61,10 @@ module connectivity '../src/connectivity/connectivity.bicep' = {
 }
 
 @description('Workload Resource Group')
-resource workloadRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZone.workload.create) {
-  name: landingZone.workload.name
+resource workloadRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZones.workload.create) {
+  name: landingZones.workload.name
   location: location
-  tags: landingZone.workload.tags
+  tags: landingZones.workload.tags
 }
 
 @description('Deploy Workload Module')
