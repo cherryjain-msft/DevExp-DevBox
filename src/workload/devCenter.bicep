@@ -70,7 +70,7 @@ type Project = {
   name: string
   description: string
   environmentTypes: ProjectEnvironmentType[]
-  catalogs: Catalog[]
+  catalogs: object
   pools: array
   tags: object
 }

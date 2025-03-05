@@ -5,20 +5,14 @@
   "properties": {
     "name": {
       "type": "string",
-      "description": "The name of the Dev Center.",
-      "default": "DevExP-devcenter",
       "minLength": 1
     },
     "location": {
       "type": "string",
-      "description": "The location of the Dev Center.",
-      "default": "eastus2",
       "minLength": 1
     },
     "catalogItemSyncEnableStatus": {
       "type": "string",
-      "description": "Enable catalogs per project.",
-      "default": "Enabled",
       "enum": [
         "Enabled",
         "Disabled"
@@ -26,8 +20,6 @@
     },
     "microsoftHostedNetworkEnableStatus": {
       "type": "string",
-      "description": "Enable Microsoft hosted network.",
-      "default": "Enabled",
       "enum": [
         "Enabled",
         "Disabled"
@@ -35,8 +27,6 @@
     },
     "installAzureMonitorAgentEnableStatus": {
       "type": "string",
-      "description": "Enable installation of Azure Monitor Agent.",
-      "default": "Enabled",
       "enum": [
         "Enabled",
         "Disabled"
@@ -66,13 +56,6 @@
         "$ref": "#/definitions/project"
       }
     },
-    "imageDefinitions": {
-      "type": "array",
-      "minItems": 1,
-      "items": {
-        "$ref": "#/definitions/catalog"
-      }
-    },
     "tags": {
       "type": "object",
       "additionalProperties": {
@@ -93,109 +76,6 @@
     "tags"
   ],
   "definitions": {
-    "project": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "minLength": 1
-        },
-        "description": {
-          "type": "string",
-          "minLength": 1
-        },
-        "environmentTypes": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/projectEnvironmentType"
-          }
-        },
-        "catalogs": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "$ref": "#/definitions/catalog"
-          }
-        },
-        "pools": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string",
-                "minLength": 1
-              },
-              "imageDefinitionName": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "name",
-              "imageDefinitionName"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "tags": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          }
-        }
-      },
-      "required": [
-        "name",
-        "description",
-        "environmentTypes",
-        "catalogs",
-        "pools"
-      ],
-      "additionalProperties": false
-    },
-    "projectEnvironmentType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "minLength": 1
-        },
-        "deploymentTargetId": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "name",
-        "deploymentTargetId"
-      ],
-      "additionalProperties": false
-    },
-    "identity": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "enum": [
-            "None",
-            "SystemAssigned",
-            "UserAssigned",
-            "SystemAssigned, UserAssigned"
-          ]
-        },
-        "roleAssignments": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "$ref": "#/definitions/roleDefinition"
-          }
-        }
-      },
-      "required": [
-        "type",
-        "roleAssignments"
-      ],
-      "additionalProperties": false
-    },
     "catalog": {
       "type": "object",
       "properties": {
@@ -229,21 +109,32 @@
         "uri",
         "branch",
         "path"
-      ],
-      "additionalProperties": false
+      ]
     },
-    "environmentType": {
+    "identity": {
       "type": "object",
       "properties": {
-        "name": {
+        "type": {
           "type": "string",
-          "minLength": 1
+          "enum": [
+            "None",
+            "SystemAssigned",
+            "UserAssigned",
+            "SystemAssigned, UserAssigned"
+          ]
+        },
+        "roleAssignments": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/roleDefinition"
+          }
         }
       },
       "required": [
-        "name"
-      ],
-      "additionalProperties": false
+        "type",
+        "roleAssignments"
+      ]
     },
     "roleDefinition": {
       "type": "object",
@@ -260,8 +151,92 @@
       "required": [
         "name",
         "id"
-      ],
-      "additionalProperties": false
+      ]
+    },
+    "environmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "project": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "environmentTypes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/projectEnvironmentType"
+          }
+        },
+        "catalogs": {
+          "type": "object",
+          "properties": {
+            "environmentDefinition": {
+              "$ref": "#/definitions/catalog"
+            },
+            "imageDefinition": {
+              "$ref": "#/definitions/catalog"
+            }
+          }
+        },
+        "pools": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "imageDefinitionName": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "name",
+              "imageDefinitionName"
+            ]
+          }
+        }
+      },
+      "required": [
+        "name",
+        "description",
+        "environmentTypes",
+        "catalogs",
+        "pools"
+      ]
+    },
+    "projectEnvironmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "deploymentTargetId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "deploymentTargetId"
+      ]
     }
   }
 }

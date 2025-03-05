@@ -8,7 +8,7 @@ param name string
 param projectDescription string
 
 @description('Project Catalogs')
-param projectCatalogs Catalog[]
+param projectCatalogs ProjectCatalog
 
 @description('Project Environment Types')
 param projectEnvironmentTypes ProjectEnvironmentType[]
@@ -46,6 +46,11 @@ type Catalog = {
   uri: string
   branch: string
   path: string
+}
+
+type ProjectCatalog = {
+  environmentDefinition: Catalog
+  imageDefinition: Catalog
 }
 
 type CatalogType = 'gitHub' | 'adoGit'
@@ -96,17 +101,25 @@ module keyVaultAccessPolicies '../../security/keyvault-access.bicep' = {
   }
 }
 
-@description('Project Catalogs')
-module catalogs 'projectCatalog.bicep' = [
-  for catalog in projectCatalogs: {
-    name: 'catalogs-${catalog.name}'
-    params: {
-      projectName: project.name
-      catalogConfig: catalog
-      secretIdentifier: secretIdentifier
-    }
+@description('Environment Definition Catalog')
+module environmentDefinitionCatalog 'projectCatalog.bicep' = {
+  name: 'catalogs-${projectCatalogs.environmentDefinition.name}'
+  params: {
+    projectName: project.name
+    catalogConfig: projectCatalogs.environmentDefinition
+    secretIdentifier: secretIdentifier
   }
-]
+}
+
+@description('Image Definition Catalog')
+module imageDefinitionCatalog 'projectCatalog.bicep' = {
+  name: 'catalogs-${projectCatalogs.imageDefinition.name}'
+  params: {
+    projectName: project.name
+    catalogConfig: projectCatalogs.imageDefinition
+    secretIdentifier: secretIdentifier
+  }
+}
 
 @description('Project Environment Types')
 module environmentTypes 'projectEnvironmentType.bicep' = [
