@@ -1,7 +1,7 @@
 @description('Dev Center Name')
 param devCenterName string
 
-@description('Catalog')
+@description('Catalog Configuration')
 param catalogConfig Catalog
 
 @description('Secret Identifier')
@@ -29,21 +29,20 @@ resource catalog 'Microsoft.DevCenter/devcenters/catalogs@2024-10-01-preview' = 
   parent: devCenter
   properties: {
     syncType: 'Scheduled'
-    gitHub: catalogConfig.type == 'gitHub'
-      ? {
-          uri: catalogConfig.uri
-          branch: catalogConfig.branch
-          path: catalogConfig.path
-          secretIdentifier: secretIdentifier
-        }
-      : null
-    adoGit: catalogConfig.type == 'adoGit'
-      ? {
-          uri: catalogConfig.uri
-          branch: catalogConfig.branch
-          path: catalogConfig.path
-          secretIdentifier: secretIdentifier
-        }
-      : null
+    gitHub: catalogConfig.type == 'gitHub' ? {
+      uri: catalogConfig.uri
+      branch: catalogConfig.branch
+      path: catalogConfig.path
+      secretIdentifier: secretIdentifier
+    } : null
+    adoGit: catalogConfig.type == 'adoGit' ? {
+      uri: catalogConfig.uri
+      branch: catalogConfig.branch
+      path: catalogConfig.path
+      secretIdentifier: secretIdentifier
+    } : null
   }
 }
+
+@description('The name of the catalog')
+output catalogName string = catalog.name

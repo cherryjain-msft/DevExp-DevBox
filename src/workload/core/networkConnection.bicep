@@ -31,4 +31,5 @@ resource vnetAttachment 'Microsoft.DevCenter/devcenters/attachednetworks@2024-10
   }
 }
 
+@description('The name of the Virtual Network Attachment')
 output vnetAttachmentName string = vnetAttachment.name

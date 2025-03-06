@@ -26,7 +26,7 @@ param secretIdentifier string
 @description('Key Vault Name')
 param keyVaultName string
 
-@description('Security Resouce Group Name')
+@description('Security Resource Group Name')
 param securityResourceGroupName string
 
 @description('Tags')
@@ -85,7 +85,7 @@ module catalogs 'projectCatalog.bicep' = {
     catalogConfig: projectCatalogs
     secretIdentifier: secretIdentifier
   }
-  dependsOn:[
+  dependsOn: [
     keyVaultAccessPolicies
   ]
 }
@@ -117,4 +117,3 @@ module pools 'projectPool.bicep' = [
     ]
   }
 ]
-
