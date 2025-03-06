@@ -98,39 +98,6 @@ properties:
       dependsOn:
         - Microsoft.DevHome
       id: 9NZCC27PR6N6
-      ### Install Git
-      ### -------------------------------------
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: Git.Git
-      directives:
-        description: Installing Git
-        allowPrerelease: true
-      settings:
-        id: Git.Git
-        source: winget
-      ### Install GitHub.CLI
-      ### -------------------------------------
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: GitHub.cli
-      directives:
-        description: Installing GitHub.cli
-        allowPrerelease: true
-      settings:
-        id: GitHub.cli
-        source: winget
-      dependsOn:
-        - Git.Git
-      ### Install GitHub.GitHubDesktop
-      ### -------------------------------------
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      directives:
-        description: Installing GitHub.GitHubDesktop
-        allowPrerelease: true
-      settings:
-        id: GitHub.GitHubDesktop
-        source: winget
-      dependsOn:
-        - GitHub.cli
       ### Enable Developer Mode
       ### -------------------------------------
     - resource: Microsoft.Windows.Developer/DeveloperMode
@@ -139,12 +106,3 @@ properties:
         allowPrerelease: true
       settings:
         Ensure: Present
-      ### Install Windows Terminal
-      ### -------------------------------------
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      directives:
-        description: Installing Microsoft.WindowsTerminal
-        allowPrerelease: true
-      settings:
-        id: Microsoft.WindowsTerminal
-        source: winget
