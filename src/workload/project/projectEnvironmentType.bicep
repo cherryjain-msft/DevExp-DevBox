@@ -1,15 +1,15 @@
-@description('Dev Center Name')
+@description('Project Name')
 param projectName string
 
-@description('Environment')
-param environmentConfig ProjectEnvironMentType
+@description('Environment Configuration')
+param environmentConfig ProjectEnvironmentType
 
-type ProjectEnvironMentType = {
+type ProjectEnvironmentType = {
   name: string
   deploymentTargetId: string
 }
 
-@description('Dev Center')
+@description('Project')
 resource project 'Microsoft.DevCenter/projects@2024-10-01-preview' existing = {
   name: projectName
 }
@@ -29,3 +29,6 @@ resource environmentType 'Microsoft.DevCenter/projects/environmentTypes@2024-10-
     status: 'Enabled'
   }
 }
+
+@description('The name of the environment type')
+output environmentTypeName string = environmentType.name

@@ -1,7 +1,7 @@
-@description('Dev Center Name')
+@description('Project Name')
 param projectName string
 
-@description('Catalog')
+@description('Catalog Configuration')
 param catalogConfig ProjectCatalog
 
 @description('Secret Identifier')
@@ -23,12 +23,12 @@ type ProjectCatalog = {
 
 type CatalogType = 'gitHub' | 'adoGit'
 
-@description('Dev Center')
+@description('Project')
 resource project 'Microsoft.DevCenter/projects@2024-10-01-preview' existing = {
   name: projectName
 }
 
-@description('Dev Center Catalogs')
+@description('Environment Definition Catalog')
 resource environmentDefinitionCatalog 'Microsoft.DevCenter/projects/catalogs@2024-10-01-preview' = {
   name: catalogConfig.environmentDefinition.name
   parent: project
@@ -53,7 +53,7 @@ resource environmentDefinitionCatalog 'Microsoft.DevCenter/projects/catalogs@202
   }
 }
 
-@description('Dev Center Catalogs')
+@description('Image Definition Catalog')
 resource imageDefinitionCatalog 'Microsoft.DevCenter/projects/catalogs@2024-10-01-preview' = {
   name: catalogConfig.imageDefinition.name
   parent: project
@@ -77,3 +77,9 @@ resource imageDefinitionCatalog 'Microsoft.DevCenter/projects/catalogs@2024-10-0
       : null
   }
 }
+
+@description('The name of the environment definition catalog')
+output environmentDefinitionCatalogName string = environmentDefinitionCatalog.name
+
+@description('The name of the image definition catalog')
+output imageDefinitionCatalogName string = imageDefinitionCatalog.name

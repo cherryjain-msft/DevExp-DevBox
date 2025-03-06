@@ -1,10 +1,10 @@
 @description('Dev Center Name')
 param devCenterName string
 
-@description('Environment')
-param environmentConfig EnvironMentType
+@description('Environment Configuration')
+param environmentConfig EnvironmentType
 
-type EnvironMentType = {
+type EnvironmentType = {
   name: string
 }
 
@@ -21,3 +21,6 @@ resource environmentType 'Microsoft.DevCenter/devcenters/environmentTypes@2024-1
     displayName: environmentConfig.name
   }
 }
+
+@description('The name of the Environment Type')
+output environmentTypeName string = environmentType.name

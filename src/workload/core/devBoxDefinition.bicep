@@ -42,7 +42,7 @@ resource devBoxDefinition 'Microsoft.DevCenter/devcenters/devboxdefinitions@2024
   properties: {
     hibernateSupport: hibernateSupport
     imageReference: {
-      id: '${resourceId('Microsoft.DevCenter/devcenters/galleries',devCenter.name,'Default')}/images/${imageName}'
+      id: '${resourceId('Microsoft.DevCenter/devcenters/galleries', devCenter.name, 'Default')}/images/${imageName}'
     }
     sku: {
       name: sku
@@ -50,3 +50,6 @@ resource devBoxDefinition 'Microsoft.DevCenter/devcenters/devboxdefinitions@2024
     osStorageType: osStorageType
   }
 }
+
+@description('The name of the DevBox Definition')
+output devBoxDefinitionName string = devBoxDefinition.name

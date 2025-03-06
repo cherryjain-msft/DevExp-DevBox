@@ -47,10 +47,6 @@ type RoleAssignment = {
   id: string
 }
 
-type CatalogType = 'gitHub' | 'adoGit'
-
-type StorageType = 'ssd_128gb' | 'ssd_256gb' | 'ssd_512gb' | 'ssd_1tb'
-
 resource devcenter 'Microsoft.DevCenter/devcenters@2024-10-01-preview' = {
   name: config.name
   location: resourceGroup().location
@@ -112,7 +108,7 @@ module roleAssignments '../identity/devCenterRoleAssignment.bicep' = [
       id: role.id
       principalId: devcenter.identity.principalId
     }
-    dependsOn:[
+    dependsOn: [
       keyVaultAccessPolicies
     ]
   }

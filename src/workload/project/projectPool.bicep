@@ -45,3 +45,6 @@ resource pool 'Microsoft.DevCenter/projects/pools@2024-10-01-preview' = {
     virtualNetworkType: 'Unmanaged'
   }
 }
+
+@description('The name of the pool')
+output poolName string = pool.name
