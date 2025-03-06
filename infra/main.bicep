@@ -35,10 +35,14 @@ resource monitoringRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (land
   tags: landingZones.monitoring.tags
 }
 
+resource existingMonitoringRg 'Microsoft.Resources/resourceGroups@2024-11-01' existing = {
+  name: landingZones.monitoring.name
+}
+
 @description('Deploy Monitoring Module')
 module monitoringResources '../src/management/logAnalytics.bicep' = {
   name: 'monitoring'
-  scope: resourceGroup(landingZones.monitoring.name)
+  scope: existingMonitoringRg
   params: {
     name: 'logAnalytics'
   }
@@ -51,10 +55,14 @@ resource connectivityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (la
   tags: landingZones.connectivity.tags
 }
 
+resource existingconnectivityRg 'Microsoft.Resources/resourceGroups@2024-11-01' existing = {
+  name: landingZones.connectivity.name
+}
+
 @description('Deploy Connectivity Module')
 module connectivityResources '../src/connectivity/connectivity.bicep' = {
   name: 'connectivity'
-  scope: resourceGroup(landingZones.connectivity.name)
+  scope: existingconnectivityRg
   params: {
     workspaceId: monitoringResources.outputs.logAnalyticsId
   }
