@@ -1,20 +1,13 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/microsoft/winget-cli/refs/heads/master/schemas/JSON/configuration/configuration.schema.0.2.json
+
 properties:
   configurationVersion: 0.2.0
+
   ########################################
   ### RESOURCES: System Configuration
   ########################################
   resources:
-    ### Install Microsoft Visual Studio Code
-    ### -------------------------------------
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: Microsoft.VisualStudioCode
-      directives:
-        description: Install Microsoft Visual Studio Code
-        allowPrerelease: true
-      settings:
-        id: Microsoft.VisualStudioCode
-        ensure: Present
-    ### Install VS Code Extension
+    ### Install VS Code Extensions
     ### -------------------------------------
     - resource: PSDscResources/Script
       id: Microsoft.VisualStudioCode.Extensions
@@ -22,7 +15,7 @@ properties:
         description: Install VS Code Extensions
       settings:
         SetScript: |
-          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
+          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
           $extensions = @(
               "azps-tools.azps-tools",
               "azurite.azurite",
@@ -78,10 +71,12 @@ properties:
               "visualstudioonlineapplicationinsights.application-insights"
           )
           foreach ($extension in $extensions) {
-              code --install-extension $extension
-              Write-Host "Installed: $extension"
+              try {
+                  code --install-extension $extension
+                  Write-Host "Installed: $extension"
+              } catch {
+                  Write-Host "Failed to install: $extension"
+              }
           }
         GetScript: return $false
         TestScript: return $false
-      dependsOn:
-        - Microsoft.VisualStudioCode
