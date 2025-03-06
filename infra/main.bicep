@@ -26,6 +26,9 @@ module securityResources '../src/security/security.bicep' = {
     secretValue: secretValue
     tags: landingZones.security.tags
   }
+  dependsOn: [
+    securityRg
+  ]
 }
 
 @description('Monitoring Resource Group')
@@ -35,17 +38,16 @@ resource monitoringRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (land
   tags: landingZones.monitoring.tags
 }
 
-resource existingMonitoringRg 'Microsoft.Resources/resourceGroups@2024-11-01' existing = {
-  name: landingZones.monitoring.name
-}
-
 @description('Deploy Monitoring Module')
 module monitoringResources '../src/management/logAnalytics.bicep' = {
   name: 'monitoring'
-  scope: existingMonitoringRg
+  scope: resourceGroup(landingZones.monitoring.name)
   params: {
     name: 'logAnalytics'
   }
+  dependsOn: [
+    monitoringRg
+  ]
 }
 
 @description('Connectivity Resource Group')
@@ -55,17 +57,16 @@ resource connectivityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (la
   tags: landingZones.connectivity.tags
 }
 
-resource existingconnectivityRg 'Microsoft.Resources/resourceGroups@2024-11-01' existing = {
-  name: landingZones.connectivity.name
-}
-
 @description('Deploy Connectivity Module')
 module connectivityResources '../src/connectivity/connectivity.bicep' = {
   name: 'connectivity'
-  scope: existingconnectivityRg
+  scope: resourceGroup(landingZones.connectivity.name)
   params: {
     workspaceId: monitoringResources.outputs.logAnalyticsId
   }
+  dependsOn: [
+    connectivityRg
+  ]
 }
 
 @description('Workload Resource Group')
@@ -86,4 +87,7 @@ module workloadResources '../src/workload/workload.bicep' = {
     keyVaultName: securityResources.outputs.keyVaultName
     securityResourceGroupName: landingZones.security.name
   }
+  dependsOn: [
+    workloadRg
+  ]
 }
