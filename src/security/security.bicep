@@ -1,5 +1,11 @@
 @description('Key Vault Name')
-param name string
+param keyVaultName string
+
+@description('Secret Name')
+param secretName string
+
+@description('Key Vault Location')
+param location string = resourceGroup().location
 
 @description('Key Vault Tags')
 param tags object
@@ -8,33 +14,51 @@ param tags object
 @secure()
 param secretValue string
 
-module keyVault '../security/keyvault.bicep' = {
-  name: 'keyvault'
-  scope: resourceGroup()
-  params: {
-    name: name
-    principalId: deployer().objectId
-    location: resourceGroup().location
-    tags: tags
+var uniqueName = guid(keyVaultName, secretName, location, resourceGroup().id)
+
+resource keyVault 'Microsoft.KeyVault/vaults@2024-04-01-preview' = {
+  name: '${keyVaultName}-${uniqueString(resourceGroup().id, keyVaultName, resourceGroup().name, uniqueName)}-kv'
+  location: location
+  tags: tags
+  properties: {
+    tenantId: subscription().tenantId
+    sku: {
+      family: 'A'
+      name: 'standard'
+    }
+    accessPolicies: [
+      {
+        objectId: deployer().objectId
+        permissions: {
+          secrets: ['all']
+          keys: ['all']
+        }
+        tenantId: subscription().tenantId
+      }
+    ]
   }
 }
 
-@description('Module to create a secret in the Key Vault')
-module secret 'keyvault-secret.bicep' = {
-  name: 'secret'
-  scope: resourceGroup()
-  params: {
-    name: 'ghToken'
-    keyVaultName: keyVault.outputs.name
-    secretValue: secretValue
+resource secret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
+  name: secretName
+  tags: tags
+  parent: keyVault
+  properties: {
+    attributes: {
+      enabled: true
+      exp: 0
+      nbf: 0
+    }
+    contentType: 'string'
+    value: secretValue
   }
 }
 
 @description('The name of the Key Vault')
-output keyVaultName string = keyVault.outputs.name
+output keyVaultName string = keyVault.name
 
 @description('The identifier of the secret')
-output secretIdentifier string = secret.outputs.secretUri
+output secretIdentifier string = secret.properties.secretUri
 
-@description('The endpoint of the Key Vault')
-output endpoint string = keyVault.outputs.endpoint
+@description('The endpoint URI of the Key Vault.')
+output endpoint string = keyVault.properties.vaultUri
