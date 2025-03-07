@@ -15,7 +15,7 @@ param tags object
 param secretValue string
 
 resource keyVault 'Microsoft.KeyVault/vaults@2024-04-01-preview' = {
-  name: 'komatsu${uniqueString(resourceGroup().id)}-kv'
+  name: '${keyVaultName}${uniqueString(resourceGroup().id,guid(tenant().tenantId,subscription().id,keyVaultName))}-kv'
   location: location
   tags: tags
   properties: {

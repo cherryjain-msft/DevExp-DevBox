@@ -6,10 +6,10 @@ $WarningPreference = "Stop"
 
 # Azure Resource Group Names Constants
 $solutionName = "DevExP"
-$workloadResourceGroup = "DevExP-Workload-RG"
-$connectivityResourceGroup = "DevExP-Connectivity-RG"
-$managemwentResourceGroup = "DevExP-Monitoring-RG"
-$securityResourceGroup = "DevExP-Security-RG"
+$workloadResourceGroup = "kac_digitaloffice_devbox_eus_dev_rg"
+$connectivityResourceGroup = "kac_digitaloffice_devbox_eus_dev_rg"
+$managemwentResourceGroup = "kac_digitaloffice_devbox_eus_dev_rg"
+$securityResourceGroup = "kac_digitaloffice_devbox_eus_dev_rg"
 
 # Function to delete a resource group
 function Remove-ResourceGroup {
