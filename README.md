@@ -5,6 +5,7 @@ Example templates and customization configurations for Dev Box and Azure Deploym
 ## Table of Contents
 
 - [Solution Architecture](#solution-architecture)
+  - [Azure Resources Deployed](#azure-resources-deployed)
 - [Pre-requisites](#pre-requisites)
   - [Install Git](#install-git)
   - [Install Visual Studio Code](#install-visual-studio-code)
@@ -27,6 +28,10 @@ Example templates and customization configurations for Dev Box and Azure Deploym
 ## Solution Architecture
 
 ![Solution Architecture](./images/ContosoDevBox.png)
+
+## Azure Resources Deployed
+
+![Azure Resources Deployed](./images/azureResourcesDeployed.png)
 
 ## Pre-requisites
 
