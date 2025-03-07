@@ -67,7 +67,7 @@ userTasks:
   - name: winget
     description: Install workload baseline prerequisites
     parameters:
-      downloadUrl: "https://raw.githubusercontent.com/Evilazaro/identityProvider/refs/heads/main/.configuration/devcenter/workloads/baseline.dsc.yaml"
+      downloadUrl: "https://raw.githubusercontent.com/Evilazaro/DevExp-DevBox/refs/heads/main/.configuration/devcenter/workloads/baseline.dsc.yaml"
       configurationFile: 'C:\WinGetConfig\baseline.dsc.yaml'
 
   - name: winget
