@@ -1,8 +1,8 @@
 # yaml-language-server: $schema=./azureResources.shema.json
 
 workload:
-  create: false
-  name: kac_digitaloffice_devbox_eus_dev_rg
+  create: true
+  name: DevExP-Workload-RG
   description: prodExp
   tags:
     environment: dev
@@ -15,8 +15,8 @@ workload:
     resources: ResourceGroup
 
 security:
-  create: false
-  name: kac_digitaloffice_devbox_eus_dev_rg
+  create: true
+  name: DevExP-Security-RG
   description: prodExp
   tags:
     environment: dev
@@ -29,8 +29,8 @@ security:
     resources: ResourceGroup
 
 monitoring:
-  create: false
-  name: kac_digitaloffice_devbox_eus_dev_rg
+  create: true
+  name: DevExP-Monitoring-RG
   description: prodExp
   tags:
     environment: dev
@@ -43,8 +43,8 @@ monitoring:
     resources: ResourceGroup
 
 connectivity:
-  create: false
-  name: kac_digitaloffice_devbox_network_eus_dev_rg
+  create: true
+  name: DevExP-Connectivity-RG
   description: prodExp
   tags:
     environment: dev

@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=./network.schema.json
 
 create: false
-name: okn-eus-prd-okn-dev-box-spoke-vnet
+name: devExp-vnet
 addressPrefixes:
   - 10.168.109.0/24
 subnets:
