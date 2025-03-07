@@ -1,13 +1,13 @@
 # yaml-language-server: $schema=./network.schema.json
 
-create: true
-name: devexp
+create: false
+name: okn-eus-prd-okn-dev-box-spoke-vnet
 addressPrefixes:
-  - 10.0.0.0/16
+  - 10.168.109.0/24
 subnets:
-  - name: devexp-subnet
+  - name: identityProvider
     properties:
-      addressPrefix: 10.0.1.0/24
+      addressPrefix: 10.168.109.0/25
 tags:
   environment: dev
   division: Platforms
