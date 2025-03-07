@@ -33,9 +33,13 @@ resource pool 'Microsoft.DevCenter/projects/pools@2024-10-01-preview' = {
       imageReference: {
         id: '${project.id}/images/~Catalog~${catalogName}~${imageDefinitionName}'
       }
-      sku: {
-        name: 'general_i_32c128gb512ssd_v2'
-      }
+      sku: (imageDefinitionName == 'backend-engineer')
+        ? {
+            name: 'general_i_32c128gb512ssd_v2'
+          }
+        : {
+            name: 'general_i_16c64gb256ssd_v2'
+          }
     }
     networkConnectionName: networkConnectionName
     licenseType: 'Windows_Client'
