@@ -32,7 +32,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = if (set
   }
 }
 
-resource existingVNet 'Microsoft.Network/virtualNetworks@2024-05-01' existing = if (!settings.create) {
+resource existingVNetRg 'Microsoft.Network/virtualNetworks@2024-05-01' existing = if (!settings.create) {
   name: settings.name
   scope: resourceGroup()
 }
@@ -40,7 +40,7 @@ resource existingVNet 'Microsoft.Network/virtualNetworks@2024-05-01' existing = 
 @description('Network Diagnostic Settings')
 resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (settings.create) {
   name: virtualNetwork.name
-  scope: virtualNetwork
+  scope: existingVNetRg
   properties: {
     logAnalyticsDestinationType: 'AzureDiagnostics'
     logs: [
@@ -60,15 +60,15 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
 }
 
 @description('The ID of the Virtual Network')
-output virtualNetworkId string = (settings.create) ? virtualNetwork.id : existingVNet.id
+output virtualNetworkId string = (settings.create) ? virtualNetwork.id : existingVNetRg.id
 
 @description('The subnets of the Virtual Network')
 output virtualNetworkSubnets array = [
   for (subnet, i) in settings.subnets: {
-    id: (settings.create) ? virtualNetwork.properties.subnets[i].id : existingVNet.properties.subnets[i].id
-    name: (settings.create) ? subnet.name : existingVNet.properties.subnets[i].name
+    id: (settings.create) ? virtualNetwork.properties.subnets[i].id : existingVNetRg.properties.subnets[i].id
+    name: (settings.create) ? subnet.name : existingVNetRg.properties.subnets[i].name
   }
 ]
 
 @description('The name of the Virtual Network')
-output virtualNetworkName string = (settings.create) ? virtualNetwork.name : existingVNet.name
+output virtualNetworkName string = (settings.create) ? virtualNetwork.name : existingVNetRg.name
