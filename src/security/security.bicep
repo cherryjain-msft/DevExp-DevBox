@@ -15,7 +15,7 @@ param tags object
 param secretValue string
 
 resource keyVault 'Microsoft.KeyVault/vaults@2024-04-01-preview' = {
-  name: 'contosodevexp-kv'
+  name: 'komatsu-kv'
   location: location
   tags: tags
   properties: {
