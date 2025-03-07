@@ -109,7 +109,7 @@ module pools 'projectPool.bicep' = [
       name: pool.name
       projectName: project.name
       catalogName: projectCatalogs.imageDefinition.name
-      imageDefinitionName: pool.name
+      imageDefinitionName: pool.imageDefinitionName
       networkConnectionName: networkConnectionName
     }
     dependsOn: [
