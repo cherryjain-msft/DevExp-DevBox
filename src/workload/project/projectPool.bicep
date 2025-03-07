@@ -45,7 +45,7 @@ resource pool 'Microsoft.DevCenter/projects/pools@2024-10-01-preview' = {
     licenseType: 'Windows_Client'
     localAdministrator: 'Enabled'
     singleSignOnStatus: 'Enabled'
-    displayName: 'backend'
+    displayName: name
     virtualNetworkType: 'Unmanaged'
   }
 }
