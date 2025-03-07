@@ -48,15 +48,15 @@ parameters:
 documentation:
   notes: This task allows installing packages via winget, or applying a winget configuration file.
   examples:
-    - name: winget
+    - name: ~/winget
       description: Install a package via winget
       parameters:
         package: git
-    - name: winget
+    - name: ~/winget
       description: Apply a winget configuration file that's already present on the machine
       parameters:
         configurationFile: 'C:\WinGetConfig\winget.yaml'
-    - name: winget
+    - name: ~/winget
       description: Apply a winget configuration file, downloading from a public URL to the specified path, running as the user
       parameters:
         downloadUrl: 'https://raw.githubusercontent.com/microsoft/devhome/main/sampleConfigurations/microsoft/vscode/configuration.dsc.yaml'
