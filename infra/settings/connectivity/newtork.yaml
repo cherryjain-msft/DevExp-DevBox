@@ -5,7 +5,7 @@ name: devExp-vnet
 addressPrefixes:
   - 10.168.109.0/24
 subnets:
-  - name: identityProvider
+  - name: app-subnet
     properties:
       addressPrefix: 10.168.109.0/25
 tags:
