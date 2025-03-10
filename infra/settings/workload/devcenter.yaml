@@ -78,9 +78,9 @@ projects:
     description: "eShop project."
     
     pools:
-      - name: "backend-engineer"
+      - name: "eShop-backend-engineer"
         imageDefinitionName: "backend-engineer"
-      - name: "frontend-engineer"
+      - name: "eShop-frontend-engineer"
         imageDefinitionName: "frontend-engineer"
     
     environmentTypes:
@@ -93,15 +93,15 @@ projects:
       environmentDefinition:
         name: "environments"
         type: "gitHub"
-        uri: "https://github.com/Evilazaro/identityProvider.git"
+        uri: "https://github.com/Evilazaro/eShop.git"
         branch: "main"
-        path: ".configuration/devcenter/environments/dev"
+        path: ".devcenter/environments/dev"
       imageDefinition:
         name: "imageDefinitions"
         type: "gitHub"
-        uri: "https://github.com/Evilazaro/identityProvider.git"
+        uri: "https://github.com/Evilazaro/eShop.git"
         branch: "main"
-        path: ".configuration/devcenter/imageDefinitions"
+        path: ".devcenter/imageDefinitions"
     
     tags:
       environment: "dev"
