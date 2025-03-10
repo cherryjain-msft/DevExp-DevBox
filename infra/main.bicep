@@ -22,7 +22,7 @@ module securityResources '../src/security/security.bicep' = {
   name: 'security'
   scope: resourceGroup(landingZones.security.name)
   params: {
-    keyVaultName: 'komatsu'
+    keyVaultName: 'contosoDevexp'
     secretValue: secretValue
     secretName: 'gha-token'
     tags: landingZones.security.tags
