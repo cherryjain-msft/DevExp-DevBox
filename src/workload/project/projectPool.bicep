@@ -33,7 +33,7 @@ resource pool 'Microsoft.DevCenter/projects/pools@2024-10-01-preview' = {
       imageReference: {
         id: '${project.id}/images/~Catalog~${catalogName}~${imageDefinitionName}'
       }
-      sku: (imageDefinitionName == 'backend-engineer')
+      sku: (contains(imageDefinitionName, 'backend'))
         ? {
             name: 'general_i_32c128gb512ssd_v2'
           }
