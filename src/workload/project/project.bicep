@@ -93,7 +93,7 @@ module catalogs 'projectCatalog.bicep' = {
 @description('Project Environment Types')
 module environmentTypes 'projectEnvironmentType.bicep' = [
   for environmentType in projectEnvironmentTypes: {
-    name: 'environmentTypes-${environmentType.name}'
+    name: 'environmentType-${environmentType.name}'
     params: {
       projectName: project.name
       environmentConfig: environmentType
@@ -104,7 +104,7 @@ module environmentTypes 'projectEnvironmentType.bicep' = [
 @description('Project Pools')
 module pools 'projectPool.bicep' = [
   for pool in projectPools: {
-    name: 'pools-${pool.name}'
+    name: 'pool-${pool.name}'
     params: {
       name: pool.name
       projectName: project.name

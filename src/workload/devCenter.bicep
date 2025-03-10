@@ -102,7 +102,7 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
 @description('Dev Center Identity Role Assignments')
 module roleAssignments '../identity/devCenterRoleAssignment.bicep' = [
   for role in config.identity.roleAssignments: {
-    name: 'roleAssignments-${replace(role.name, ' ', '-')}'
+    name: 'roleAssignment-${replace(role.name, ' ', '-')}'
     scope: subscription()
     params: {
       id: role.id
@@ -136,7 +136,7 @@ output networkConnections array = [
 @description('Dev Center Catalogs')
 module catalog 'core/catalog.bicep' = [
   for catalog in catalogs: {
-    name: 'catalogs-${catalog.name}'
+    name: 'catalog-${catalog.name}'
     params: {
       devCenterName: devcenter.name
       catalogConfig: catalog
@@ -151,7 +151,7 @@ module catalog 'core/catalog.bicep' = [
 @description('Dev Center Environments')
 module environment 'core/environmentType.bicep' = [
   for environment in environmentTypes: {
-    name: 'environmentTypes-${environment.name}'
+    name: 'environmentType-${environment.name}'
     params: {
       devCenterName: devcenter.name
       environmentConfig: environment
@@ -162,7 +162,7 @@ module environment 'core/environmentType.bicep' = [
 @description('Dev Center Projects')
 module project 'project/project.bicep' = [
   for project in projects: {
-    name: 'Projects-${project.name}'
+    name: 'Project-${project.name}'
     params: {
       name: project.name
       projectDescription: project.name
