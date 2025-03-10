@@ -74,6 +74,44 @@ projects:
       owner: "Evilazaro"
       resources: "Project"
 
+  - name: "eShop"
+    description: "eShop project."
+    
+    pools:
+      - name: "backend-engineer"
+        imageDefinitionName: "backend-engineer"
+      - name: "frontend-engineer"
+        imageDefinitionName: "frontend-engineer"
+    
+    environmentTypes:
+      - name: "dev"
+        deploymentTargetId: ""
+      - name: "staging"
+        deploymentTargetId: ""
+    
+    catalogs:
+      environmentDefinition:
+        name: "environments"
+        type: "gitHub"
+        uri: "https://github.com/Evilazaro/identityProvider.git"
+        branch: "main"
+        path: ".configuration/devcenter/environments/dev"
+      imageDefinition:
+        name: "imageDefinitions"
+        type: "gitHub"
+        uri: "https://github.com/Evilazaro/identityProvider.git"
+        branch: "main"
+        path: ".configuration/devcenter/imageDefinitions"
+    
+    tags:
+      environment: "dev"
+      division: "Platforms"
+      team: "DevExP"
+      project: "DevExP-DevBox"
+      costCenter: "IT"
+      owner: "Evilazaro"
+      resources: "Project"
+
 tags:
   environment: "dev"
   division: "Platforms"
