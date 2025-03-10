@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=./network.schema.json
 
-create: false
+create: true
 name: devExp-vnet
 addressPrefixes:
   - 10.168.109.0/24
