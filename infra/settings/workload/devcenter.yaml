@@ -41,9 +41,9 @@ projects:
     
     pools:
       - name: "backend-engineer"
-        imageDefinitionName: "backend-engineer"
+        imageDefinitionName: "identityProvider-backend-engineer"
       - name: "frontend-engineer"
-        imageDefinitionName: "frontend-engineer"
+        imageDefinitionName: "identityProvider-frontend-engineer"
     
     environmentTypes:
       - name: "dev"
@@ -78,10 +78,10 @@ projects:
     description: "eShop project."
     
     pools:
-      - name: "eShop-backend-engineer"
-        imageDefinitionName: "backend-engineer"
-      - name: "eShop-frontend-engineer"
-        imageDefinitionName: "frontend-engineer"
+      - name: "backend-engineer"
+        imageDefinitionName: "eShop-backend-engineer"
+      - name: "frontend-engineer"
+        imageDefinitionName: "eShop-frontend-engineer"
     
     environmentTypes:
       - name: "dev"
