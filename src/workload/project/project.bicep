@@ -79,7 +79,7 @@ module keyVaultAccessPolicies '../../security/keyvault-access.bicep' = {
 
 @description('Environment Definition Catalog')
 module catalogs 'projectCatalog.bicep' = {
-  name: 'catalogs'
+  name: 'catalogs-${project.name}'
   params: {
     projectName: project.name
     catalogConfig: projectCatalogs
@@ -93,7 +93,7 @@ module catalogs 'projectCatalog.bicep' = {
 @description('Project Environment Types')
 module environmentTypes 'projectEnvironmentType.bicep' = [
   for environmentType in projectEnvironmentTypes: {
-    name: 'environmentType-${environmentType.name}'
+    name: 'environmentType-${project.name}-${environmentType.name}'
     params: {
       projectName: project.name
       environmentConfig: environmentType
@@ -104,7 +104,7 @@ module environmentTypes 'projectEnvironmentType.bicep' = [
 @description('Project Pools')
 module pools 'projectPool.bicep' = [
   for pool in projectPools: {
-    name: 'pool-${pool.name}'
+    name: 'pool-${project.name}-${pool.name}'
     params: {
       name: pool.name
       projectName: project.name
