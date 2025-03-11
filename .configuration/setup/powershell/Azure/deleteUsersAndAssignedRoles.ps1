@@ -1,111 +1,47 @@
-# PowerShell script to delete user assignments and roles
+# PowerShell script to delete deployment credentials
 
 param (
+    [Parameter(Mandatory = $true)]
     [string]$appDisplayName
 )
 
+# Exit immediately if a command exits with a non-zero status, treat unset variables as an error, and propagate errors in pipelines.
+$ErrorActionPreference = "Stop"
+$WarningPreference = "Stop"
 
-# Identity Parameters Constants
-$customRoleName = "ContosoDevCenterDevBoxRole"
-
-# Get the current subscription ID
-$subscriptionId = (az account show --query id --output tsv)
-
-# Function to delete role assignments
-function Remove-RoleAssignments {
-    try {
-        # Deleting role assignments and role definitions
-        $roles = @(
-            'Owner',  
-            $customRoleName, 
-            'ContosoDx-identity-customRole', 
-            'ContosoIpeDx-identity-customRole', 
-            'Deployment Environments Reader', 
-            'Deployment Environments User', 
-            'DevCenter Project Admin', 
-            'DevCenter Dev Box User',
-            'User Access Administrator'
-        )
-        foreach ($roleName in $roles) {
-            Write-Output "Getting the role ID for '$roleName'..."
-            $roleId = az role definition list --name $roleName --query [].name --output tsv
-            if ([string]::IsNullOrEmpty($roleId)) {
-                Write-Output "Role ID for '$roleName' not found. Skipping role assignment deletion."
-                continue
-            }
-            else {
-                Write-Output "Role ID for '$roleName' is '$roleId'."
-                Write-Output "Removing '$roleName' role assignment..."
-            }
-            Remove-RoleAssignment -roleId $roleId -subscription $subscriptionId
-        }
-    }
-    catch {
-        Write-Error "Error deleting role assignments: $_"
-        return 1
-    }
-}
-
-# Function to delete a custom role
-function Remove-CustomRole {
+# Function to delete deployment credentials
+function Remove-DeploymentCredentials {
     param (
         [Parameter(Mandatory = $true)]
-        [string]$roleName
+        [string]$appDisplayName
     )
 
     try {
-        Write-Output "Deleting the '$roleName' role..."
-        $roleExists = az role definition list --name $roleName
+        # Get the application ID using the display name
+        $appId = az ad app list --display-name $appDisplayName --query "[0].appId" -o tsv
 
-        if ([string]::IsNullOrEmpty($roleExists) -or $roleExists -eq "[]") {
-            Write-Output "'$roleName' role does not exist. Skipping deletion."
-            return
+        if (-not $appId) {
+            throw "Application with display name '$appDisplayName' not found."
         }
 
-        az role definition delete --name $roleName
-
-        while ((az role definition list --name $roleName --query [].roleName -o tsv) -eq $roleName) {
-            Write-Output "Waiting for the role to be deleted..."
-            Start-Sleep -Seconds 10
+        # Delete the service principal
+        Write-Output "Deleting service principal with appId: $appId"
+        $spDeleteResult = az ad sp delete --id $appId
+        if ($null -ne $spDeleteResult) {
+            throw "Failed to delete service principal."
         }
-        Write-Output "'$roleName' role successfully deleted."
+
+        # Delete the application registration
+        Write-Output "Deleting application registration with appId: $appId"
+        $appDeleteResult = az ad app delete --id $appId
+        if ($null -ne $appDeleteResult) {
+            throw "Failed to delete application registration."
+        }
+
+        Write-Output "Service principal and App Registration deleted successfully."
     }
     catch {
-        Write-Error "Error deleting custom role $roleName $_"
-        return 1
-    }
-}
-
-# Function to remove a role assignment
-function Remove-RoleAssignment {
-    param (
-        [Parameter(Mandatory = $true)]
-        [string]$roleId,
-
-        [Parameter(Mandatory = $true)]
-        [string]$subscription
-    )
-
-    try {
-        Write-Output "Checking the role assignments for the identity..."
-
-        if ([string]::IsNullOrEmpty($roleId)) {
-            Write-Output "Role not defined. Skipping role assignment deletion."
-            return
-        }
-
-        $assignmentExists = az role assignment list --role $roleId --scope /subscriptions/$subscription
-        if ([string]::IsNullOrEmpty($assignmentExists) -or $assignmentExists -eq "[]") {
-            Write-Output "'$roleId' role assignment does not exist. Skipping deletion."
-        }
-        else {
-            Write-Output "Removing '$roleId' role assignment from the identity..."
-            az role assignment delete --role $roleId
-            Write-Output "'$roleId' role assignment successfully removed."
-        }
-    }
-    catch {
-        Write-Error "Error removing role assignment $roleId $_"
+        Write-Error "Error: $_"
         return 1
     }
 }
@@ -118,8 +54,8 @@ function Test-Input {
     )
 
     if ([string]::IsNullOrEmpty($appDisplayName)) {
-        Write-Output "Error: Missing required parameter."
-        Write-Output "Usage: .\deleteUsersAndAssignedRoles.ps1 -appDisplayName <appDisplayName>"
+        Write-Error "Error: Missing required parameter."
+        Write-Output "Usage: .\deleteDeploymentCredentials.ps1 -appDisplayName <appDisplayName>"
         return 1
     }
 }
@@ -128,10 +64,7 @@ function Test-Input {
 try {
     Test-Input -appDisplayName $appDisplayName
     if ($LASTEXITCODE -eq 0) {
-        Remove-RoleAssignments
-        Remove-CustomRole -roleName $customRoleName
-        Remove-CustomRole -roleName 'ContosoDx-identity-customRole'
-        Remove-CustomRole -roleName 'ContosoIpeDx-identity-customRole'
+        Remove-DeploymentCredentials -appDisplayName $appDisplayName
     }
 }
 catch {

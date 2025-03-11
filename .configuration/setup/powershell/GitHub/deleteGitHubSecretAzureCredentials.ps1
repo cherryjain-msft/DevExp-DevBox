@@ -1,37 +1,13 @@
 # PowerShell script to delete GitHub secret for Azure credentials
 
 param (
+    [Parameter(Mandatory = $true)]
     [string]$ghSecretName
 )
 
-# Function to delete a GitHub secret
-function Remove-GitHubSecret {
-    param (
-        [Parameter(Mandatory = $true)]
-        [string]$ghSecretName
-    )
-
-    try {
-        # Check if required parameter is provided
-        if ([string]::IsNullOrEmpty($ghSecretName)) {
-            throw "Missing required parameter."
-        }
-
-        Write-Output "Deleting GitHub secret: $ghSecretName"
-
-        # Delete the GitHub secret
-        gh secret remove $ghSecretName
-        if ($LASTEXITCODE -ne 0) {
-            throw "Failed to delete GitHub secret: $ghSecretName"
-        }
-
-        Write-Output "GitHub secret: $ghSecretName deleted successfully."
-    }
-    catch {
-        Write-Error "Error: $_"
-        return 1
-    }
-}
+# Exit immediately if a command exits with a non-zero status, treat unset variables as an error, and propagate errors in pipelines.
+$ErrorActionPreference = "Stop"
+$WarningPreference = "Stop"
 
 # Function to validate input parameters
 function Test-Input {
@@ -48,7 +24,7 @@ function Test-Input {
     }
     catch {
         Write-Error "Error: $_"
-        Write-Output "Usage: Test-Input -ghSecretName <ghSecretName>"
+        Write-Output "Usage: .\deleteGitHubSecretAzureCredentials.ps1 -ghSecretName <ghSecretName>"
         return 1
     }
 }
@@ -65,6 +41,30 @@ function Connect-ToGitHub {
         }
 
         Write-Output "Successfully logged in to GitHub."
+    }
+    catch {
+        Write-Error "Error: $_"
+        return 1
+    }
+}
+
+# Function to delete a GitHub secret
+function Remove-GitHubSecret {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$ghSecretName
+    )
+
+    try {
+        Write-Output "Deleting GitHub secret: $ghSecretName"
+
+        # Delete the GitHub secret
+        gh secret remove $ghSecretName
+        if ($LASTEXITCODE -ne 0) {
+            throw "Failed to delete GitHub secret: $ghSecretName"
+        }
+
+        Write-Output "GitHub secret: $ghSecretName deleted successfully."
     }
     catch {
         Write-Error "Error: $_"

@@ -1,5 +1,9 @@
 # PowerShell script to create user assignments and assign roles
 
+# Exit immediately if a command exits with a non-zero status, treat unset variables as an error, and propagate errors in pipelines.
+$ErrorActionPreference = "Stop"
+$WarningPreference = "Stop"
+
 # Get the current subscription ID
 $subscriptionId = (az account show --query id -o tsv)
 
@@ -80,4 +84,10 @@ function New-UserAssignments {
 }
 
 # Main script execution
-New-UserAssignments
+try {
+    New-UserAssignments
+}
+catch {
+    Write-Error "Script execution failed: $_"
+    exit 1
+}

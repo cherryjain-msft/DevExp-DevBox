@@ -1,14 +1,19 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/microsoft/winget-cli/refs/heads/master/schemas/JSON/configuration/configuration.schema.0.2.json
+
 $schema: "1.0"
 name: baseline
 image: microsoftvisualstudio_visualstudioplustools_vs-2022-ent-general-win11-m365-gen2
 
 tasks:
+  # PowerShell setup
   - name: ~/powershell
     parameters:
       command: |
         Set-ExecutionPolicy Bypass -Scope Process -Force
         Install-PackageProvider -Name NuGet -Force
         Install-Module -Name PSDscResources -Force -AllowClobber
+
+  # Git and GitHub tools
   - name: ~/winget
     parameters:
       package: Git.Git
@@ -18,26 +23,16 @@ tasks:
   - name: ~/winget
     parameters:
       package: GitHub.cli
-  ########################################################
-    ### Installs Dotnet SDK and Runtime
-  ########################################################
+
+  # .NET SDK and Runtime
   - name: ~/winget
     parameters:
       package: Microsoft.DotNet.SDK.9
   - name: ~/winget
     parameters:
       package: Microsoft.DotNet.Runtime.9
-  ########################################
-  ### RESOURCES: System Configuration
-  ### Install: Microsoft Azure CLI
-  ### Install: Microsoft Azure Developer CLI
-  ### Install: Microsoft Azure Storage Emulator
-  ### Install: Microsoft Azure Storage Explorer
-  ### Install: Microsoft Azure Functions Core Tools
-  ### Install: Microsoft Azure Cosmos Emulator
-  ### Install: Microsoft Bicep
-  ### Install: Microsoft.VisualStudioCode
-  ########################################
+
+  # Azure tools
   - name: ~/winget
     parameters:
       package: Microsoft.AzureCLI
@@ -101,13 +96,13 @@ userTasks:
       configurationFile: 'C:\WinGetConfig\apis.dsc.yaml'
 
   - name: git-clone
-    description: Clone this repository into C:\Workspaces
+    description: Clone IdentityProvider repository into C:\Workspaces
     parameters:
       repositoryUrl: https://github.com/Evilazaro/IdentityProvider.git
       directory: C:\Workspaces
-  
+
   - name: git-clone
-    description: Clone this repository's feature/winui2.6 branch into C:\Workspaces
+    description: Clone eShop repository's feature/winui2.6 branch into C:\Workspaces
     parameters:
       repositoryUrl: https://github.com/Evilazaro/eShop.git
       directory: C:\Workspaces
@@ -117,4 +112,3 @@ userTasks:
     parameters:
       downloadUrl: "https://raw.githubusercontent.com/Evilazaro/DevExp-DevBox/refs/heads/main/.configuration/devcenter/workloads/customizations/sourceCode/sourcecode.dsc.yaml"
       configurationFile: 'C:\WinGetConfig\sourcecode.dsc.yaml'
-

@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/microsoft/winget-cli/refs/heads/master/schemas/JSON/configuration/configuration.schema.0.2.json
+
 $schema: "1.0"
 name: backend-engineer
 image: microsoftvisualstudio_visualstudioplustools_vs-2022-ent-general-win11-m365-gen2

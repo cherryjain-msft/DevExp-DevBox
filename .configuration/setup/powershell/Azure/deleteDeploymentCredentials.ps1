@@ -1,8 +1,13 @@
 # PowerShell script to delete deployment credentials
 
 param (
+    [Parameter(Mandatory = $true)]
     [string]$appDisplayName
 )
+
+# Exit immediately if a command exits with a non-zero status, treat unset variables as an error, and propagate errors in pipelines.
+$ErrorActionPreference = "Stop"
+$WarningPreference = "Stop"
 
 # Function to delete deployment credentials
 function Remove-DeploymentCredentials {
@@ -49,7 +54,7 @@ function Test-Input {
     )
 
     if ([string]::IsNullOrEmpty($appDisplayName)) {
-        Write-Output "Error: Missing required parameter."
+        Write-Error "Error: Missing required parameter."
         Write-Output "Usage: .\deleteDeploymentCredentials.ps1 -appDisplayName <appDisplayName>"
         return 1
     }

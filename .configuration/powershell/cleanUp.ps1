@@ -5,10 +5,9 @@ $ErrorActionPreference = "Stop"
 $WarningPreference = "Stop"
 
 # Azure Resource Group Names Constants
-$solutionName = "DevExP"
-$workloadResourceGroup = "Contoso-DevExp-Workload-RG"
+$workloadResourceGroup = "Contoso-DevExp-Workload3-RG"
 $connectivityResourceGroup = "Contoso-DevExp-Connectivity-RG"
-$managemwentResourceGroup = "Contoso-DevExp-Monitoring-RG"
+$managementResourceGroup = "Contoso-DevExp-Monitoring-RG"
 $securityResourceGroup = "Contoso-DevExp-Security-RG"
 
 # Function to delete a resource group
@@ -39,7 +38,7 @@ function Remove-ResourceGroup {
         }
     }
     catch {
-        Write-Error "Error deleting resource group $resourceGroupName $_"
+        Write-Error "Error deleting resource group ${resourceGroupName}: $_"
         return 1
     }
 }
@@ -50,7 +49,7 @@ function Remove-Resources {
         Clear-Host
         Remove-ResourceGroup -resourceGroupName $workloadResourceGroup
         Remove-ResourceGroup -resourceGroupName $connectivityResourceGroup
-        Remove-ResourceGroup -resourceGroupName $managemwentResourceGroup
+        Remove-ResourceGroup -resourceGroupName $managementResourceGroup
         Remove-ResourceGroup -resourceGroupName $securityResourceGroup
         Remove-ResourceGroup -resourceGroupName "NetworkWatcherRG"
         Remove-ResourceGroup -resourceGroupName "Default-ActivityLogAlerts"

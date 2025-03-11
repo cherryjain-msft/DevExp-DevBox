@@ -1,5 +1,13 @@
 # PowerShell script to create GitHub secret for Azure credentials
 
+param (
+    [Parameter(Mandatory = $true)]
+    [string]$ghSecretBody
+)
+
+# Exit immediately if a command exits with a non-zero status, treat unset variables as an error, and propagate errors in pipelines.
+$ErrorActionPreference = "Stop"
+$WarningPreference = "Stop"
 
 # Function to log in to GitHub using the GitHub CLI
 function Connect-ToGitHub {
@@ -23,17 +31,13 @@ function Connect-ToGitHub {
 # Function to set up GitHub secret authentication
 function Set-GitHubSecretAuthentication {
     param (
+        [Parameter(Mandatory = $true)]
         [string]$ghSecretBody
     )
 
     $ghSecretName = "AZURE_CREDENTIALS"
     
     try {
-        # Check if required parameter is provided
-        if ([string]::IsNullOrEmpty($ghSecretBody)) {
-            throw "Missing required parameter."
-        }
-
         Write-Output "Setting up GitHub secret authentication..."
 
         # Log in to GitHub
@@ -60,6 +64,7 @@ function Set-GitHubSecretAuthentication {
 # Function to validate input parameters
 function Test-Input {
     param (
+        [Parameter(Mandatory = $true)]
         [string]$ghSecretBody
     )
 
@@ -71,7 +76,7 @@ function Test-Input {
     }
     catch {
         Write-Error "Error: $_"
-        Write-Output "Usage: Test-Input -ghSecretBody <ghSecretBody>"
+        Write-Output "Usage: .\createGitHubSecretAzureCredentials.ps1 -ghSecretBody <ghSecretBody>"
         return 1
     }
 }

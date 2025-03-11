@@ -1,20 +1,30 @@
 # PowerShell script to generate deployment credentials
 
 param (
+    [Parameter(Mandatory = $true)]
     [string]$appName,
+
+    [Parameter(Mandatory = $true)]
     [string]$displayName
 )
+
+# Exit immediately if a command exits with a non-zero status, treat unset variables as an error, and propagate errors in pipelines.
+$ErrorActionPreference = "Stop"
+$WarningPreference = "Stop"
 
 # Function to validate input parameters
 function Test-Input {
     param (
+        [Parameter(Mandatory = $true)]
         [string]$appName,
+
+        [Parameter(Mandatory = $true)]
         [string]$displayName
     )
 
     if ([string]::IsNullOrEmpty($appName) -or [string]::IsNullOrEmpty($displayName)) {
         Write-Error "Error: Missing required parameters."
-        Write-Output "Usage: Validate-Input -appName <appName> -displayName <displayName>"
+        Write-Output "Usage: .\generateDeploymentCredentials.ps1 -appName <appName> -displayName <displayName>"
         throw "Validation failed"
     }
 }
@@ -22,7 +32,10 @@ function Test-Input {
 # Function to generate deployment credentials
 function New-DeploymentCredentials {
     param (
+        [Parameter(Mandatory = $true)]
         [string]$appName,
+
+        [Parameter(Mandatory = $true)]
         [string]$displayName
     )
 
@@ -77,6 +90,7 @@ function New-DeploymentCredentials {
 # Function to create users and assign roles
 function New-UsersAndAssignRole {
     param (
+        [Parameter(Mandatory = $true)]
         [string]$appId
     )
 
@@ -100,13 +114,14 @@ function New-UsersAndAssignRole {
 # Function to create a GitHub secret for Azure credentials
 function New-GitHubSecretAzureCredentials {
     param (
+        [Parameter(Mandatory = $true)]
         [string]$ghSecretBody
     )
 
     try {
         if ([string]::IsNullOrEmpty($ghSecretBody)) {
             Write-Error "Error: Missing required parameter."
-            Write-Output "Usage: Create-GitHubSecretAzureCredentials -ghSecretBody <ghSecretBody>"
+            Write-Output "Usage: .\generateDeploymentCredentials.ps1 -ghSecretBody <ghSecretBody>"
             throw "Validation failed"
         }
 

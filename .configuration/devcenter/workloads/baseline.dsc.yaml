@@ -1,11 +1,12 @@
 properties:
   configurationVersion: 0.2.0
+
   ########################################
   ### RESOURCES: System Configuration
   ########################################
   resources:
     ########################################################
-    ### Updates required before apply configurations
+    ### Updates required before applying configurations
     ########################################################
     ### Install PSDscResources
     ### Enable: WinGet
@@ -21,88 +22,147 @@ properties:
     ### Install: Windows Terminal
     ### Install: Microsoft.Office
     ########################################################
+
+    ### Install PSDscResources
+    ### -------------------------------------
     - resource: PSDscResources/Script
       id: PSDscResources
       directives:
         description: Install PSDscResources
         allowPrerelease: true
-        module: PSDscResources
       settings:
         SetScript: |
           Install-Module -Name PSDscResources -Force -AllowClobber
         GetScript: return $false
         TestScript: return $false
-      # Enable WinGet
-      ### -------------------------------------
+
+    ### Enable WinGet
+    ### -------------------------------------
     - resource: PSDscResources/Script
       id: Microsoft.AppInstaller
       directives:
         description: Install Microsoft.AppInstaller
       settings:
         SetScript: |
-          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
-          winget install Microsoft.AppInstaller --accept-package-agreements --accept-source-agreements  --verbose --force
+          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+          winget install Microsoft.AppInstaller --accept-package-agreements --accept-source-agreements --verbose --force
         GetScript: return $false
         TestScript: return $false
       dependsOn:
         - PSDscResources
-      ### Enable AppInstaller
-      ### -------------------------------------
+
+    ### Enable AppInstaller
+    ### -------------------------------------
     - resource: PSDscResources/Script
       id: Microsoft.AppInstallerFileBuilder
       directives:
         description: Install Microsoft.AppInstallerFileBuilder
       settings:
         SetScript: |
-          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
-          winget install Microsoft.AppInstallerFileBuilder --accept-package-agreements --accept-source-agreements  --verbose --force
+          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+          winget install Microsoft.AppInstallerFileBuilder --accept-package-agreements --accept-source-agreements --verbose --force
         GetScript: return $false
         TestScript: return $false
       dependsOn:
         - Microsoft.AppInstaller
-      ### Enable DevHome
-      ### -------------------------------------
+
+    ### Enable DevHome
+    ### -------------------------------------
     - resource: PSDscResources/Script
       id: Microsoft.DevHome
       directives:
         description: Install Microsoft.DevHome
       settings:
         SetScript: |
-          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
-          winget install Microsoft.DevHome --accept-package-agreements --accept-source-agreements  --verbose --force
+          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+          winget install Microsoft.DevHome --accept-package-agreements --accept-source-agreements --verbose --force
         GetScript: return $false
         TestScript: return $false
       dependsOn:
         - Microsoft.AppInstaller
-      ### Enable DevHome Azure Extension
-      ### -------------------------------------
+
+    ### Enable DevHome Azure Extension
+    ### -------------------------------------
     - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Microsoft.DevHome.AzureExtension
       directives:
-        description: Installing Microsoft.DevHome Azure Extension
+        description: Install Microsoft.DevHome Azure Extension
         allowPrerelease: true
       settings:
         id: "9MV8F79FGXTR"
         source: msstore
       dependsOn:
         - Microsoft.DevHome
-      id: 9MV8F79FGXTR
-      ### Enable DevHome GitHub Extension
-      ### -------------------------------------
+
+    ### Enable DevHome GitHub Extension
+    ### -------------------------------------
     - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Microsoft.DevHome.GitHubExtension
       directives:
-        description: Installing Microsoft.DevHome GitHub Extension
+        description: Install Microsoft.DevHome GitHub Extension
         allowPrerelease: true
       settings:
         id: "9NZCC27PR6N6"
         source: msstore
       dependsOn:
         - Microsoft.DevHome
-      id: 9NZCC27PR6N6
-      ### Enable Developer Mode
-      ### -------------------------------------
+
+    ### Enable Developer Mode
+    ### -------------------------------------
     - resource: Microsoft.Windows.Developer/DeveloperMode
+      id: DeveloperMode
       directives:
         description: Enable Developer Mode
         allowPrerelease: true
       settings:
         Ensure: Present
+
+    ### Install Git
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Git.Git
+      directives:
+        description: Install Git
+        allowPrerelease: true
+      settings:
+        id: Git.Git
+
+    ### Install GitHub CLI
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: GitHub.CLI
+      directives:
+        description: Install GitHub CLI
+        allowPrerelease: true
+      settings:
+        id: GitHub.CLI
+
+    ### Install GitHub Desktop
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: GitHub.GitHubDesktop
+      directives:
+        description: Install GitHub Desktop
+        allowPrerelease: true
+      settings:
+        id: GitHub.GitHubDesktop
+
+    ### Install Windows Terminal
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Microsoft.WindowsTerminal
+      directives:
+        description: Install Windows Terminal
+        allowPrerelease: true
+      settings:
+        id: Microsoft.WindowsTerminal
+
+    ### Install Microsoft Office
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Microsoft.Office
+      directives:
+        description: Install Microsoft Office
+        allowPrerelease: true
+      settings:
+        id: Microsoft.Office
