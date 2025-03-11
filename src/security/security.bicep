@@ -17,6 +17,9 @@ param secretValue string
 @description('Unique string for resource naming')
 param unique string = utcNow('yyyyMMddHH')
 
+@description('Log Analytics Workspace ID')
+param logAnalyticsId string
+
 @description('Azure Key Vault')
 resource keyVault 'Microsoft.KeyVault/vaults@2024-04-01-preview' = {
   name: '${keyVaultName}-${uniqueString(deployer().tenantId, location, unique, subscription().subscriptionId)}-kv'
@@ -52,6 +55,29 @@ resource secret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
     }
     contentType: 'string'
     value: secretValue
+  }
+}
+
+
+@description('Log Analytics Diagnostic Settings')
+resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' =  {
+  name: '${keyVault.name}-diagnostic-settings'
+  scope: keyVault
+  properties: {
+    logAnalyticsDestinationType: 'AzureDiagnostics'
+    logs: [
+      {
+        categoryGroup: 'allLogs'
+        enabled: true
+      }
+    ]
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+      }
+    ]
+    workspaceId: logAnalyticsId
   }
 }
 

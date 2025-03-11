@@ -25,6 +25,7 @@ module securityResources '../src/security/security.bicep' = {
     keyVaultName: 'devexp'
     secretValue: secretValue
     secretName: 'gha-token'
+    logAnalyticsId: monitoringResources.outputs.logAnalyticsId
     tags: landingZones.security.tags
   }
   dependsOn: [
