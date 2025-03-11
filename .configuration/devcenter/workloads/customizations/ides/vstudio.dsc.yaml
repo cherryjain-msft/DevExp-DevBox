@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/microsoft/winget-cli/refs/heads/master/schemas/JSON/configuration/configuration.schema.0.2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/microsoft/winget-cli/master/schemas/JSON/configuration/configuration.schema.0.2.json
 
 properties:
   configurationVersion: 0.2.0
@@ -14,6 +14,7 @@ properties:
       directives:
         description: Install Visual Studio 2022 Enterprise
         allowPrerelease: true
+        elevated: true
       settings:
         id: Microsoft.VisualStudio.2022.Enterprise
 
@@ -23,7 +24,7 @@ properties:
       id: Microsoft.VisualStudio.Workloads
       directives:
         description: Install required VS workloads from vsconfig file
-        allowPrerelease: true
+        elevated: true  # Ensure workloads install with proper permissions
       settings:
         productId: Microsoft.VisualStudio.Product.Enterprise
         channelId: VisualStudio.17.Release

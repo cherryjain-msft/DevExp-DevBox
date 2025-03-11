@@ -14,6 +14,7 @@ properties:
       id: Microsoft-Windows-Subsystem-Linux
       directives:
         description: Enable Windows Features and Install Ubuntu for WSL
+        elevated: true
       settings:
         SetScript: |
           try {
@@ -23,29 +24,52 @@ properties:
               wsl --install --no-launch
               Write-Host "WSL installed successfully."
           } catch {
-              Write-Host "Failed to install WSL: $_"
+              Write-Error "Failed to install WSL: $_"
           }
-        GetScript: return $false
-        TestScript: return $false
+        GetScript: |
+          try {
+              $wslInstalled = (wsl --list) -match "Windows Subsystem for Linux"
+              return @{ Installed = $wslInstalled }
+          } catch {
+              return @{ Installed = $false }
+          }
+        TestScript: |
+          try {
+              return (wsl --list) -match "Windows Subsystem for Linux"
+          } catch {
+              return $false
+          }
 
     ### Install Ubuntu for WSL
     ### -------------------------------------
     - resource: PSDscResources/Script
       id: Ubuntu
       directives:
-        description: Enable Windows Features and Install Ubuntu for WSL
+        description: Install Ubuntu for WSL
+        elevated: true
       settings:
         SetScript: |
           try {
               Write-Verbose "Setting environment path"
               $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
               Write-Verbose "Installing Ubuntu for WSL"
-              wsl --install -d Ubuntu --no-launch
+              wsl --install -d Ubuntu
               Write-Host "Ubuntu installed successfully."
           } catch {
-              Write-Host "Failed to install Ubuntu: $_"
+              Write-Error "Failed to install Ubuntu: $_"
           }
-        GetScript: return $false
-        TestScript: return $false
+        GetScript: |
+          try {
+              $ubuntuInstalled = (wsl --list) -match "Ubuntu"
+              return @{ Installed = $ubuntuInstalled }
+          } catch {
+              return @{ Installed = $false }
+          }
+        TestScript: |
+          try {
+              return (wsl --list) -match "Ubuntu"
+          } catch {
+              return $false
+          }
       dependsOn:
         - Microsoft-Windows-Subsystem-Linux
