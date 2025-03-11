@@ -1,11 +1,11 @@
 # yaml-language-server: $schema=./network.schema.json
 
 create: true
-name: devExp-vnet
+name: devexp-vnet
 addressPrefixes:
   - 10.0.0.0/16
 subnets:
-  - name: app-subnet
+  - name: devexp-subnet
     properties:
       addressPrefix: 10.0.0.0/24
 tags:

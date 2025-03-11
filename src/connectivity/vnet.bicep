@@ -1,6 +1,3 @@
-@description('Log Analytics Workspace')
-param workspaceId string
-
 @description('Network Settings')
 param settings NetworkSettings
 
@@ -39,28 +36,6 @@ resource existingVNetRg 'Microsoft.Network/virtualNetworks@2024-05-01' existing 
   dependsOn: [
     virtualNetwork
   ]
-}
-
-@description('Network Diagnostic Settings')
-resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (settings.create) {
-  name: '${virtualNetwork.name}-diagnostic'
-  scope: existingVNetRg
-  properties: {
-    logAnalyticsDestinationType: 'AzureDiagnostics'
-    logs: [
-      {
-        categoryGroup: 'allLogs'
-        enabled: true
-      }
-    ]
-    metrics: [
-      {
-        category: 'AllMetrics'
-        enabled: true
-      }
-    ]
-    workspaceId: workspaceId
-  }
 }
 
 @description('The ID of the Virtual Network')

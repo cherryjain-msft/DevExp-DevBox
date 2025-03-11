@@ -1,6 +1,3 @@
-@description('Log Analytics Workspace ID')
-param workspaceId string
-
 @description('Network settings loaded from YAML file')
 var networkSettings = loadYamlContent('../../infra/settings/connectivity/newtork.yaml')
 
@@ -10,7 +7,6 @@ module virtualNetwork 'vnet.bicep' = {
   scope: resourceGroup()
   params: {
     settings: networkSettings
-    workspaceId: workspaceId
   }
 }
 

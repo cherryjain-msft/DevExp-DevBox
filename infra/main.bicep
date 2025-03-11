@@ -62,9 +62,6 @@ resource connectivityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (la
 module connectivityResources '../src/connectivity/connectivity.bicep' = {
   name: 'connectivity'
   scope: resourceGroup(landingZones.connectivity.name)
-  params: {
-    workspaceId: monitoringResources.outputs.logAnalyticsId
-  }
   dependsOn: [
     connectivityRg
   ]
