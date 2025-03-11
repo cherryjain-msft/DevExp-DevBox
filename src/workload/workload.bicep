@@ -31,7 +31,6 @@ module devcenter 'devCenter.bicep' = {
     config: devCenterSettings
     catalogs: devCenterSettings.catalogs
     environmentTypes: devCenterSettings.environmentTypes
-    projects: devCenterSettings.projects
     logAnalyticsId: logAnalyticsId
     subnets: subnets
     secretIdentifier: secretIdentifier
@@ -39,3 +38,24 @@ module devcenter 'devCenter.bicep' = {
     securityResourceGroupName: securityResourceGroupName
   }
 }
+
+@description('Dev Center Projects')
+module project 'project/project.bicep' = [
+  for project in devCenterSettings.projects: {
+    name: 'Project-${project.name}'
+    scope: resourceGroup()
+    params: {
+      name: project.name
+      projectDescription: project.name
+      devCenterName: devcenter.outputs.devcCenterName
+      projectCatalogs: project.catalogs
+      projectEnvironmentTypes: project.environmentTypes
+      projectPools: project.pools
+      networkConnectionName: devcenter.outputs.networkConnections[0].outputs.vnetAttachmentName
+      secretIdentifier: secretIdentifier
+      keyVaultName: keyVaultName
+      securityResourceGroupName: securityResourceGroupName
+      tags: project.tags
+    }
+  }
+]
