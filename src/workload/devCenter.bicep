@@ -7,9 +7,6 @@ param catalogs object[]
 @description('Environment Types')
 param environmentTypes object[]
 
-@description('Projects')
-param projects object[]
-
 @description('Subnets')
 param subnets object[]
 
@@ -67,6 +64,8 @@ resource devcenter 'Microsoft.DevCenter/devcenters@2024-10-01-preview' = {
   tags: config.tags
 }
 
+output devcCenterName string = devcenter.name
+
 @description('Key Vault Access Policies')
 module keyVaultAccessPolicies '../security/keyvault-access.bicep' = {
   name: 'keyVaultAccessPolicies'
@@ -118,6 +117,7 @@ module roleAssignments '../identity/devCenterRoleAssignment.bicep' = [
 module networkConnection 'core/networkConnection.bicep' = [
   for subnet in subnets: {
     name: 'networkConnections-${subnet.name}'
+    scope: resourceGroup()
     params: {
       name: subnet.name
       devCenterName: devcenter.name
@@ -137,6 +137,7 @@ output networkConnections array = [
 module catalog 'core/catalog.bicep' = [
   for catalog in catalogs: {
     name: 'catalog-${catalog.name}'
+    scope: resourceGroup()
     params: {
       devCenterName: devcenter.name
       catalogConfig: catalog
@@ -152,6 +153,7 @@ module catalog 'core/catalog.bicep' = [
 module environment 'core/environmentType.bicep' = [
   for environment in environmentTypes: {
     name: 'environmentType-${environment.name}'
+    scope: resourceGroup()
     params: {
       devCenterName: devcenter.name
       environmentConfig: environment
@@ -159,22 +161,4 @@ module environment 'core/environmentType.bicep' = [
   }
 ]
 
-@description('Dev Center Projects')
-module project 'project/project.bicep' = [
-  for project in projects: {
-    name: 'Project-${project.name}'
-    params: {
-      name: project.name
-      projectDescription: project.name
-      devCenterName: devcenter.name
-      projectCatalogs: project.catalogs
-      projectEnvironmentTypes: project.environmentTypes
-      projectPools: project.pools
-      networkConnectionName: networkConnection[0].outputs.vnetAttachmentName
-      secretIdentifier: secretIdentifier
-      keyVaultName: keyVaultName
-      securityResourceGroupName: securityResourceGroupName
-      tags: project.tags
-    }
-  }
-]
+
