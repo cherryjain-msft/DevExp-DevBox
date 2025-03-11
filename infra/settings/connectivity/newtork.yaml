@@ -3,7 +3,7 @@
 create: true
 name: devExp-vnet
 addressPrefixes:
-  - 110.0.0.0/16
+  - 10.0.0.0/16
 subnets:
   - name: app-subnet
     properties:
