@@ -40,7 +40,7 @@ module devcenter 'devCenter.bicep' = {
 }
 
 @description('Dev Center Projects')
-module project 'project/project.bicep' = [
+module projects 'project/project.bicep' = [
   for project in devCenterSettings.projects: {
     name: 'Project-${project.name}'
     scope: resourceGroup()
@@ -51,7 +51,7 @@ module project 'project/project.bicep' = [
       projectCatalogs: project.catalogs
       projectEnvironmentTypes: project.environmentTypes
       projectPools: project.pools
-      networkConnectionName: devcenter.outputs.networkConnections[0].outputs.vnetAttachmentName
+      networkConnectionName: devcenter.outputs.networkConnections[0]
       secretIdentifier: secretIdentifier
       keyVaultName: keyVaultName
       securityResourceGroupName: securityResourceGroupName

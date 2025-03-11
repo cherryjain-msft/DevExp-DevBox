@@ -127,11 +127,7 @@ module networkConnection 'core/networkConnection.bicep' = [
 ]
 
 @description('Network Connections Output')
-output networkConnections array = [
-  for subnet in subnets: {
-    name: networkConnection[0].outputs.vnetAttachmentName
-  }
-]
+output networkConnections array = [for subnet in subnets: networkConnection[0].outputs.vnetAttachmentName]
 
 @description('Dev Center Catalogs')
 module catalog 'core/catalog.bicep' = [
@@ -160,5 +156,3 @@ module environment 'core/environmentType.bicep' = [
     }
   }
 ]
-
-
