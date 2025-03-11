@@ -14,7 +14,6 @@ properties:
       id: Microsoft-Windows-Subsystem-Linux
       directives:
         description: Enable Windows Features and Install Ubuntu for WSL
-        elevated: true
       settings:
         SetScript: |
           try {
@@ -46,7 +45,6 @@ properties:
       id: Ubuntu
       directives:
         description: Install Ubuntu for WSL
-        elevated: true
       settings:
         SetScript: |
           try {

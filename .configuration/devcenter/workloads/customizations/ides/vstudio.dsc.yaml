@@ -14,31 +14,5 @@ properties:
       directives:
         description: Install Visual Studio 2022 Enterprise
         allowPrerelease: true
-        elevated: true
       settings:
         id: Microsoft.VisualStudio.2022.Enterprise
-
-    ### Install VS Workloads
-    ### -------------------------------------
-    - resource: Microsoft.VisualStudio.DSC/VSComponents
-      id: Microsoft.VisualStudio.Workloads
-      directives:
-        description: Install required VS workloads from vsconfig file
-        elevated: true  # Ensure workloads install with proper permissions
-      settings:
-        productId: Microsoft.VisualStudio.Product.Enterprise
-        channelId: VisualStudio.17.Release
-        components:
-          - Microsoft.VisualStudio.Workload.Azure
-          - Microsoft.VisualStudio.Workload.Data
-          - Microsoft.VisualStudio.Workload.DataScience
-          - Microsoft.VisualStudio.Workload.ManagedDesktop
-          - Microsoft.VisualStudio.Workload.NativeCrossPlat
-          - Microsoft.VisualStudio.Workload.NativeDesktop
-          - Microsoft.VisualStudio.Workload.NetCrossPlat
-          - Microsoft.VisualStudio.Workload.NetWeb
-          - Microsoft.VisualStudio.Workload.Node
-          - Microsoft.VisualStudio.Workload.Python
-          - Microsoft.VisualStudio.Workload.Universal
-          - Microsoft.VisualStudio.Workload.VisualStudioExtension
-        includeRecommended: true
