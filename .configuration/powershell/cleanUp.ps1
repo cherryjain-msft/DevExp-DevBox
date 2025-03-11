@@ -5,7 +5,7 @@ $ErrorActionPreference = "Stop"
 $WarningPreference = "Stop"
 
 # Azure Resource Group Names Constants
-$workloadResourceGroup = "Contoso-DevExp-Workload3-RG"
+$workloadResourceGroup = "Contoso-DevExp-Workload-RG"
 $connectivityResourceGroup = "Contoso-DevExp-Connectivity-RG"
 $managementResourceGroup = "Contoso-DevExp-Monitoring-RG"
 $securityResourceGroup = "Contoso-DevExp-Security-RG"
