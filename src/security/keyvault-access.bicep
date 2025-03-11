@@ -7,11 +7,22 @@ param name string = 'add'
 param keyVaultName string
 
 @description('The permissions to be assigned to the access policy.')
-param permissions object = { secrets: ['get', 'list'] }
+param permissions object = {
+  secrets: [
+    'get'
+    'list'
+  ]
+}
 
 @description('The principal ID to be granted access to the Key Vault.')
 param principalId string
 
+@description('Existing Key Vault')
+resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
+  name: keyVaultName
+}
+
+@description('Key Vault Access Policies')
 resource keyVaultAccessPolicies 'Microsoft.KeyVault/vaults/accessPolicies@2022-07-01' = {
   parent: keyVault
   name: name
@@ -26,6 +37,5 @@ resource keyVaultAccessPolicies 'Microsoft.KeyVault/vaults/accessPolicies@2022-0
   }
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
-  name: keyVaultName
-}
+@description('The ID of the Key Vault')
+output keyVaultId string = keyVault.id

@@ -32,6 +32,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = if (set
   }
 }
 
+@description('Existing Virtual Network')
 resource existingVNetRg 'Microsoft.Network/virtualNetworks@2024-05-01' existing = if (!settings.create) {
   name: settings.name
   scope: resourceGroup()
@@ -39,8 +40,8 @@ resource existingVNetRg 'Microsoft.Network/virtualNetworks@2024-05-01' existing 
 
 @description('Network Diagnostic Settings')
 resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (settings.create) {
-  name: virtualNetwork.name
-  scope: existingVNetRg
+  name: '${virtualNetwork.name}-diagnostic'
+  scope: virtualNetwork
   properties: {
     logAnalyticsDestinationType: 'AzureDiagnostics'
     logs: [

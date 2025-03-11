@@ -14,10 +14,12 @@ param tags object
 @secure()
 param secretValue string
 
+@description('Unique string for resource naming')
 param unique string = utcNow('yyyyMMddHH')
 
+@description('Azure Key Vault')
 resource keyVault 'Microsoft.KeyVault/vaults@2024-04-01-preview' = {
-  name: '${keyVaultName}-${uniqueString(deployer().tenantId, location,unique,subscription().subscriptionId)}-kv'
+  name: '${keyVaultName}-${uniqueString(deployer().tenantId, location, unique, subscription().subscriptionId)}-kv'
   location: location
   tags: tags
   properties: {
@@ -39,6 +41,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-04-01-preview' = {
   }
 }
 
+@description('Azure Key Vault Secret')
 resource secret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
   name: secretName
   tags: tags
@@ -46,8 +49,6 @@ resource secret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
   properties: {
     attributes: {
       enabled: true
-      exp: 0
-      nbf: 0
     }
     contentType: 'string'
     value: secretValue
@@ -60,5 +61,5 @@ output keyVaultName string = keyVault.name
 @description('The identifier of the secret')
 output secretIdentifier string = secret.properties.secretUri
 
-@description('The endpoint URI of the Key Vault.')
+@description('The endpoint URI of the Key Vault')
 output endpoint string = keyVault.properties.vaultUri
