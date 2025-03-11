@@ -18,14 +18,14 @@ resource securityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landin
 }
 
 @description('Deploy Security Module')
-module securityResources '../src/security/security.bicep' = {
+module security '../src/security/security.bicep' = {
   name: 'security'
   scope: resourceGroup(landingZones.security.name)
   params: {
     keyVaultName: 'devexp'
     secretValue: secretValue
     secretName: 'gha-token'
-    logAnalyticsId: monitoringResources.outputs.logAnalyticsId
+    logAnalyticsId: monitoring.outputs.logAnalyticsId
     tags: landingZones.security.tags
   }
   dependsOn: [
@@ -41,7 +41,7 @@ resource monitoringRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (land
 }
 
 @description('Deploy Monitoring Module')
-module monitoringResources '../src/management/logAnalytics.bicep' = {
+module monitoring '../src/management/logAnalytics.bicep' = {
   name: 'monitoring'
   scope: resourceGroup(landingZones.monitoring.name)
   params: {
@@ -60,11 +60,11 @@ resource connectivityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (la
 }
 
 @description('Deploy Connectivity Module')
-module connectivityResources '../src/connectivity/connectivity.bicep' = {
+module connectivity '../src/connectivity/connectivity.bicep' = {
   name: 'connectivity'
   scope: resourceGroup(landingZones.connectivity.name)
   params: {
-    logAnalyticsId: monitoringResources.outputs.logAnalyticsId
+    logAnalyticsId: monitoring.outputs.logAnalyticsId
   }
   dependsOn: [
     connectivityRg
@@ -79,14 +79,14 @@ resource workloadRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landin
 }
 
 @description('Deploy Workload Module')
-module workloadResources '../src/workload/workload.bicep' = {
+module workload '../src/workload/workload.bicep' = {
   name: 'workload'
   scope: resourceGroup(landingZones.workload.name)
   params: {
-    logAnalyticsId: monitoringResources.outputs.logAnalyticsId
-    subnets: connectivityResources.outputs.virtualNetworkSubnets
-    secretIdentifier: securityResources.outputs.secretIdentifier
-    keyVaultName: securityResources.outputs.keyVaultName
+    logAnalyticsId: monitoring.outputs.logAnalyticsId
+    subnets: connectivity.outputs.virtualNetworkSubnets
+    secretIdentifier: security.outputs.secretIdentifier
+    keyVaultName: security.outputs.keyVaultName
     securityResourceGroupName: landingZones.security.name
   }
   dependsOn: [

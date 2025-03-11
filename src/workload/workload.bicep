@@ -24,7 +24,7 @@ type LandingZone = {
 var devCenterSettings = loadYamlContent('../../infra/settings/workload/devcenter.yaml')
 
 @description('Deploy Dev Center Module')
-module workload 'devCenter.bicep' = {
+module devcenter 'devCenter.bicep' = {
   name: 'devCenter'
   scope: resourceGroup()
   params: {
