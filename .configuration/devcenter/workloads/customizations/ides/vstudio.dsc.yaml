@@ -41,5 +41,3 @@ properties:
           - Microsoft.VisualStudio.Workload.Universal
           - Microsoft.VisualStudio.Workload.VisualStudioExtension
         includeRecommended: true
-      dependsOn:
-        - Microsoft.VisualStudio.2022.Enterprise
