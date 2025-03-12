@@ -1,22 +1,26 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "DevCenter Configuration",
+  "description": "Schema for defining DevCenter configuration settings.",
   "type": "object",
   "properties": {
     "name": {
       "type": "string",
+      "description": "Name of the DevCenter.",
       "minLength": 1,
       "maxLength": 64,
       "default": "DevExP-devcenter"
     },
     "location": {
       "type": "string",
+      "description": "Location of the DevCenter.",
       "minLength": 1,
       "maxLength": 64,
       "default": "eastus2"
     },
     "catalogItemSyncEnableStatus": {
       "type": "string",
+      "description": "Status to enable or disable catalog item synchronization.",
       "enum": [
         "Enabled",
         "Disabled"
@@ -25,6 +29,7 @@
     },
     "microsoftHostedNetworkEnableStatus": {
       "type": "string",
+      "description": "Status to enable or disable Microsoft hosted network.",
       "enum": [
         "Enabled",
         "Disabled"
@@ -33,6 +38,7 @@
     },
     "installAzureMonitorAgentEnableStatus": {
       "type": "string",
+      "description": "Status to enable or disable Azure Monitor Agent installation.",
       "enum": [
         "Enabled",
         "Disabled"
@@ -40,10 +46,12 @@
       "default": "Enabled"
     },
     "identity": {
-      "$ref": "#/definitions/identity"
+      "$ref": "#/definitions/identity",
+      "description": "Identity configuration for the DevCenter."
     },
     "catalogs": {
       "type": "array",
+      "description": "List of catalogs associated with the DevCenter.",
       "minItems": 1,
       "items": {
         "$ref": "#/definitions/catalog"
@@ -51,6 +59,7 @@
     },
     "environmentTypes": {
       "type": "array",
+      "description": "List of environment types associated with the DevCenter.",
       "minItems": 1,
       "items": {
         "$ref": "#/definitions/environmentType"
@@ -58,6 +67,7 @@
     },
     "projects": {
       "type": "array",
+      "description": "List of projects associated with the DevCenter.",
       "minItems": 1,
       "items": {
         "$ref": "#/definitions/project"
@@ -65,6 +75,7 @@
     },
     "tags": {
       "type": "object",
+      "description": "Tags associated with the DevCenter.",
       "additionalProperties": {
         "type": "string"
       }
@@ -85,13 +96,16 @@
   "definitions": {
     "catalog": {
       "type": "object",
+      "description": "Catalog configuration.",
       "properties": {
         "name": {
           "type": "string",
+          "description": "Name of the catalog.",
           "minLength": 1
         },
         "type": {
           "type": "string",
+          "description": "Type of the catalog.",
           "enum": [
             "gitHub",
             "adoGit"
@@ -99,14 +113,17 @@
         },
         "uri": {
           "type": "string",
+          "description": "URI of the catalog.",
           "format": "uri"
         },
         "branch": {
           "type": "string",
+          "description": "Branch of the catalog.",
           "minLength": 1
         },
         "path": {
           "type": "string",
+          "description": "Path of the catalog.",
           "minLength": 1
         }
       },
@@ -120,9 +137,11 @@
     },
     "identity": {
       "type": "object",
+      "description": "Identity configuration.",
       "properties": {
         "type": {
           "type": "string",
+          "description": "Type of identity.",
           "enum": [
             "None",
             "SystemAssigned",
@@ -133,6 +152,7 @@
         },
         "roleAssignments": {
           "type": "array",
+          "description": "List of role assignments.",
           "minItems": 1,
           "items": {
             "$ref": "#/definitions/roleDefinition"
@@ -146,13 +166,16 @@
     },
     "roleDefinition": {
       "type": "object",
+      "description": "Role definition.",
       "properties": {
         "name": {
           "type": "string",
+          "description": "Name of the role.",
           "minLength": 1
         },
         "id": {
           "type": "string",
+          "description": "ID of the role.",
           "minLength": 1
         }
       },
@@ -163,9 +186,11 @@
     },
     "environmentType": {
       "type": "object",
+      "description": "Environment type configuration.",
       "properties": {
         "name": {
           "type": "string",
+          "description": "Name of the environment type.",
           "minLength": 1
         }
       },
@@ -175,23 +200,28 @@
     },
     "project": {
       "type": "object",
+      "description": "Project configuration.",
       "properties": {
         "name": {
           "type": "string",
+          "description": "Name of the project.",
           "minLength": 1
         },
         "description": {
           "type": "string",
+          "description": "Description of the project.",
           "minLength": 1
         },
         "environmentTypes": {
           "type": "array",
+          "description": "List of environment types associated with the project.",
           "items": {
             "$ref": "#/definitions/projectEnvironmentType"
           }
         },
         "catalogs": {
           "type": "object",
+          "description": "Catalogs associated with the project.",
           "properties": {
             "environmentDefinition": {
               "$ref": "#/definitions/catalog"
@@ -203,15 +233,18 @@
         },
         "pools": {
           "type": "array",
+          "description": "List of pools associated with the project.",
           "items": {
             "type": "object",
             "properties": {
               "name": {
                 "type": "string",
+                "description": "Name of the pool.",
                 "minLength": 1
               },
               "imageDefinitionName": {
                 "type": "string",
+                "description": "Name of the image definition.",
                 "minLength": 1
               }
             },
@@ -232,13 +265,16 @@
     },
     "projectEnvironmentType": {
       "type": "object",
+      "description": "Project environment type configuration.",
       "properties": {
         "name": {
           "type": "string",
+          "description": "Name of the project environment type.",
           "minLength": 1
         },
         "deploymentTargetId": {
-          "type": "string"
+          "type": "string",
+          "description": "Deployment target ID of the project environment type."
         }
       },
       "required": [
