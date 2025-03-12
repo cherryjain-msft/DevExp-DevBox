@@ -1,6 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Network settings",
+  "description": "Schema for defining network settings including virtual networks and subnets.",
   "type": "object",
   "properties": {
     "create": {
@@ -11,27 +12,31 @@
     "name": {
       "type": "string",
       "description": "Name of the virtual network",
-      "default": "devExp-vnet"
+      "default": "devexp-vnet"
     },
     "addressPrefixes": {
       "type": "array",
+      "description": "List of address prefixes for the virtual network",
       "items": {
         "$ref": "#/definitions/addressPrefix"
       },
-      "description": "List of address prefixes for the virtual network"
+      "default": ["10.0.0.0/16"]
     },
     "subnets": {
       "type": "array",
+      "description": "List of subnets within the virtual network",
       "items": {
         "type": "object",
+        "description": "Subnet configuration",
         "properties": {
           "name": {
             "type": "string",
             "description": "Name of the subnet",
-            "default": "identityProvider"
+            "default": "devexp-subnet"
           },
           "properties": {
             "type": "object",
+            "description": "Properties of the subnet",
             "properties": {
               "addressPrefix": {
                 "type": "string",
@@ -49,15 +54,21 @@
           "name",
           "properties"
         ]
-      },
-      "description": "List of subnets within the virtual network"
+      }
     },
     "tags": {
       "type": "object",
+      "description": "Tags associated with the virtual network",
       "additionalProperties": {
         "type": "string"
       },
-      "description": "Tags associated with the virtual network"
+      "default": {
+        "division": "Platforms",
+        "team": "devexp-team",
+        "project": "devexp",
+        "costCenter": "IT",
+        "owner": "devexp-team"
+      }
     }
   },
   "required": [
@@ -71,8 +82,7 @@
     "addressPrefix": {
       "type": "string",
       "pattern": "^([0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$",
-      "description": "Address prefix for the virtual network",
-      "default": "10.0.0.0/16"
+      "description": "Address prefix for the virtual network"
     }
   }
 }
