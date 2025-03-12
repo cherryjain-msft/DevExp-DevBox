@@ -15,7 +15,7 @@ param tags object
 param secretValue string
 
 @description('Unique string for resource naming')
-param unique string = utcNow('yyyyMMddHH')
+param unique string = utcNow('yyyyMMddHHmm')
 
 @description('Log Analytics Workspace ID')
 param logAnalyticsId string
