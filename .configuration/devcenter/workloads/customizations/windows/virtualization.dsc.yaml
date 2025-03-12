@@ -52,7 +52,7 @@ properties:
       dependsOn:
         - Microsoft-Windows-Subsystem-Linux
 
-    ### Install Adding Current User as Administrator
+    ### Add Current User as Administrator
     ### -------------------------------------
     - resource: PSDscResources/Script
       id: Ubuntu.User
@@ -86,9 +86,73 @@ properties:
               # Run the command in WSL and ensure it runs silently
               wsl.exe -d Ubuntu -u root -- bash -c "$wslCommand" 2>$null
           } catch {
-              Write-Error "Failed to install Ubuntu: $_"
+              Write-Error "Failed to add user as administrator: $_"
           }
         GetScript: return $false
         TestScript: return $false
       dependsOn:
         - Ubuntu
+
+    ### Install Azure CLI
+    ### -------------------------------------
+    - resource: PSDscResources/Script
+      id: Ubuntu.AzureCli
+      directives:
+        description: Install Azure CLI on Ubuntu
+      settings:
+        SetScript: |
+          try {
+              Set-ExecutionPolicy Bypass -Scope Process -Force
+              Write-Verbose "Setting environment path"
+              $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+
+              # Construct the WSL command as a single-line string
+              $wslCommand = @(
+                  "curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash",
+                  "curl -fsSL https://aka.ms/install-azd.sh | bash"
+              ) -join "; "
+
+              # Run the command in WSL and ensure it runs silently
+              wsl.exe -d Ubuntu -u root -- bash -c "$wslCommand" 2>$null
+          } catch {
+              Write-Error "Failed to install Azure CLI: $_"
+          }
+        GetScript: return $false
+        TestScript: return $false
+      dependsOn:
+        - Ubuntu.User
+
+    ### Install GitHub CLI
+    ### -------------------------------------
+    - resource: PSDscResources/Script
+      id: Ubuntu.GitHubCli
+      directives:
+        description: Install GitHub CLI on Ubuntu
+      settings:
+        SetScript: |
+          try {
+              Set-ExecutionPolicy Bypass -Scope Process -Force
+              Write-Verbose "Setting environment path"
+              $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+
+              # Construct the WSL command as a single-line string
+              $wslCommand = @(
+                  "(type -p wget >/dev/null || (sudo apt update && sudo apt-get install wget -y))",
+                  "sudo mkdir -p -m 755 /etc/apt/keyrings",
+                  "&& out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg",
+                  "&& cat $out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null",
+                  "&& sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg",
+                  "&& echo 'deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main' | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null",
+                  "&& sudo apt update ",
+                  "&& sudo apt install gh -y"
+              ) -join "; "
+
+              # Run the command in WSL and ensure it runs silently
+              wsl.exe -d Ubuntu -u root -- bash -c "$wslCommand" 2>$null
+          } catch {
+              Write-Error "Failed to install GitHub CLI: $_"
+          }
+        GetScript: return $false
+        TestScript: return $false
+      dependsOn:
+        - Ubuntu.AzureCli
