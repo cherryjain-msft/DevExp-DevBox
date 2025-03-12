@@ -55,7 +55,7 @@ properties:
     ### Install Adding Current User as Administrator
     ### -------------------------------------
     - resource: PSDscResources/Script
-      id: Ubuntu
+      id: Ubuntu.User
       directives:
         description: Add the current user as an administrator to Ubuntu
       settings:
