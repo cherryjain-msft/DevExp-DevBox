@@ -51,11 +51,14 @@ module projects 'project/project.bicep' = [
       projectCatalogs: project.catalogs
       projectEnvironmentTypes: project.environmentTypes
       projectPools: project.pools
-      networkConnectionName: devcenter.outputs.networkConnections[0]
+      networkConnectionName: devcenter.outputs.networkConnectionName
       secretIdentifier: secretIdentifier
       keyVaultName: keyVaultName
       securityResourceGroupName: securityResourceGroupName
       tags: project.tags
     }
+    dependsOn: [
+      devcenter
+    ]
   }
 ]

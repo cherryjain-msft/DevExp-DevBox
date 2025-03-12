@@ -127,7 +127,7 @@ module networkConnection 'core/networkConnection.bicep' = [
 ]
 
 @description('Network Connections Output')
-output networkConnections array = [for subnet in subnets: networkConnection[0].outputs.vnetAttachmentName]
+output networkConnectionName string = networkConnection[0].outputs.vnetAttachmentName
 
 @description('Dev Center Catalogs')
 module catalog 'core/catalog.bicep' = [
