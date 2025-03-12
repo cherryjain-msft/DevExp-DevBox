@@ -17,6 +17,7 @@ properties:
       settings:
         SetScript: |
           try {
+              Set-ExecutionPolicy Bypass -Scope Process -Force
               Write-Verbose "Setting environment path"
               $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
               Write-Verbose "Installing Windows Subsystem for Linux (WSL)"
@@ -37,6 +38,7 @@ properties:
       settings:
         SetScript: |
           try {
+              Set-ExecutionPolicy Bypass -Scope Process -Force
               Write-Verbose "Setting environment path"
               $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
               Write-Verbose "Installing Ubuntu for WSL"
