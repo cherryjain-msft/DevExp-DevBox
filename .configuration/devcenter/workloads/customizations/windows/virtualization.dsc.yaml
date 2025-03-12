@@ -25,19 +25,8 @@ properties:
           } catch {
               Write-Error "Failed to install WSL: $_"
           }
-        GetScript: |
-          try {
-              $wslInstalled = (wsl --list) -match "Windows Subsystem for Linux"
-              return @{ Installed = $wslInstalled }
-          } catch {
-              return @{ Installed = $false }
-          }
-        TestScript: |
-          try {
-              return (wsl --list) -match "Windows Subsystem for Linux"
-          } catch {
-              return $false
-          }
+        GetScript: return $false
+        TestScript: return $false
 
     ### Install Ubuntu for WSL
     ### -------------------------------------
@@ -56,18 +45,7 @@ properties:
           } catch {
               Write-Error "Failed to install Ubuntu: $_"
           }
-        GetScript: |
-          try {
-              $ubuntuInstalled = (wsl --list) -match "Ubuntu"
-              return @{ Installed = $ubuntuInstalled }
-          } catch {
-              return @{ Installed = $false }
-          }
-        TestScript: |
-          try {
-              return (wsl --list) -match "Ubuntu"
-          } catch {
-              return $false
-          }
+        GetScript: return $false
+        TestScript: return $false
       dependsOn:
         - Microsoft-Windows-Subsystem-Linux
