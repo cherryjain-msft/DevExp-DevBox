@@ -78,6 +78,14 @@
       "description": "Tags associated with the DevCenter.",
       "additionalProperties": {
         "type": "string"
+      },
+      "default": {
+        "environment": "dev",
+        "division": "Platforms",
+        "team": "DevEx",
+        "project": "DevExP-DevBox",
+        "costCenter": "IT",
+        "owner": "Evilazaro"
       }
     }
   },
@@ -253,6 +261,21 @@
               "imageDefinitionName"
             ]
           }
+        },
+        "tags": {
+          "type": "object",
+          "description": "Tags associated with the DevCenter.",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {
+            "environment": "dev",
+            "division": "Platforms",
+            "team": "DevEx",
+            "project": "DevExP-DevBox",
+            "costCenter": "IT",
+            "owner": "Evilazaro"
+          }
         }
       },
       "required": [
@@ -260,7 +283,8 @@
         "description",
         "environmentTypes",
         "catalogs",
-        "pools"
+        "pools",
+        "tags"
       ]
     },
     "projectEnvironmentType": {
