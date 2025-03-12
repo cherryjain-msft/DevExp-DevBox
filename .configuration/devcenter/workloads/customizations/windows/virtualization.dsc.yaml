@@ -51,3 +51,44 @@ properties:
         TestScript: return $false
       dependsOn:
         - Microsoft-Windows-Subsystem-Linux
+
+    ### Install Adding Current User as Administrator
+    ### -------------------------------------
+    - resource: PSDscResources/Script
+      id: Ubuntu
+      directives:
+        description: Add the current user as an administrator to Ubuntu
+      settings:
+        SetScript: |
+          try {
+              Set-ExecutionPolicy Bypass -Scope Process -Force
+              Write-Verbose "Setting environment path"
+              $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+              # Get the current Windows username (converted to lowercase for Linux)
+              $newUser = $env:USERNAME.ToLower()
+
+              # Define a fixed password for the new WSL user
+              $password = "SecureP@ssw0rd"
+
+              # Escape special characters in the password for Bash
+              $passwordBash = $password -replace '(["\$`])', '\\$1'
+
+              # Construct the WSL command as a single-line string
+              $wslCommand = @(
+                  "sudo adduser --quiet --disabled-password --gecos '' $newUser",  # Fixed escaping issue
+                  "echo '$newUser : $passwordBash' | sudo chpasswd",
+                  "sudo usermod -aG sudo $newUser",
+                  "echo '$newUser ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/$newUser",
+                  "sudo apt-get update",
+                  "sudo apt-get upgrade -y"
+              ) -join "; "
+
+              # Run the command in WSL and ensure it runs silently
+              wsl.exe -d Ubuntu -u root -- bash -c "$wslCommand" 2>$null
+          } catch {
+              Write-Error "Failed to install Ubuntu: $_"
+          }
+        GetScript: return $false
+        TestScript: return $false
+      dependsOn:
+        - Ubuntu
