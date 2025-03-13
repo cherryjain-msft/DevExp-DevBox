@@ -100,6 +100,9 @@ module environmentTypes 'projectEnvironmentType.bicep' = [
       projectName: project.name
       environmentConfig: environmentType
     }
+    dependsOn: [
+      keyVaultAccessPolicies
+    ]
   }
 ]
 
@@ -116,6 +119,7 @@ module pools 'projectPool.bicep' = [
       networkConnectionName: networkConnectionName
     }
     dependsOn: [
+      keyVaultAccessPolicies
       catalogs
     ]
   }
