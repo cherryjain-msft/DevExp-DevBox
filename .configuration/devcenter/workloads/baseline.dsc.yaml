@@ -44,6 +44,7 @@ properties:
         description: Install Microsoft.AppInstaller
       settings:
         SetScript: |
+          Set-ExecutionPolicy Bypass -Scope Process -Force
           $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
           winget install Microsoft.AppInstaller --accept-package-agreements --accept-source-agreements --verbose --force
         GetScript: return $false
@@ -59,6 +60,7 @@ properties:
         description: Install Microsoft.AppInstallerFileBuilder
       settings:
         SetScript: |
+          Set-ExecutionPolicy Bypass -Scope Process -Force
           $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
           winget install Microsoft.AppInstallerFileBuilder --accept-package-agreements --accept-source-agreements --verbose --force
         GetScript: return $false
@@ -74,6 +76,7 @@ properties:
         description: Install Microsoft.DevHome
       settings:
         SetScript: |
+          Set-ExecutionPolicy Bypass -Scope Process -Force
           $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
           winget install Microsoft.DevHome --accept-package-agreements --accept-source-agreements --verbose --force
         GetScript: return $false
@@ -166,3 +169,19 @@ properties:
         allowPrerelease: true
       settings:
         id: Microsoft.Office
+
+    ### Enable WinGet
+    ### -------------------------------------
+    - resource: PSDscResources/Script
+      id: Winget.Update
+      directives:
+        description: Update all packages using WinGet
+      settings:
+        SetScript: |
+          Set-ExecutionPolicy Bypass -Scope Process -Force
+          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+          winget upgrade --all --accept-package-agreements --accept-source-agreements --silent --force
+        GetScript: return $false
+        TestScript: return $false
+      dependsOn:
+        - Microsoft.Office
