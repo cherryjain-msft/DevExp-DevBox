@@ -21,7 +21,7 @@ properties:
               Write-Verbose "Setting environment path"
               $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
               Write-Verbose "Installing Windows Subsystem for Linux (WSL)"
-              wsl --install 
+              wsl --install --no-launch
               Write-Host "WSL installed successfully."
           } catch {
               Write-Error "Failed to install WSL: $_"
@@ -42,7 +42,7 @@ properties:
               Write-Verbose "Setting environment path"
               $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
               Write-Verbose "Installing Ubuntu for WSL"
-              wsl --install -d Ubuntu
+              wsl --install -d Ubuntu --no-launch
               Write-Host "Ubuntu installed successfully."
           } catch {
               Write-Error "Failed to install Ubuntu: $_"
