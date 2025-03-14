@@ -159,17 +159,3 @@ properties:
         allowPrerelease: true
       settings:
         id: Microsoft.WindowsTerminal
-
-    ### Enable WinGet
-    ### -------------------------------------
-    - resource: PSDscResources/Script
-      id: Winget.Update
-      directives:
-        description: Update all packages using WinGet
-      settings:
-        SetScript: |
-          Set-ExecutionPolicy Bypass -Scope Process -Force
-          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-          winget upgrade --all --accept-package-agreements --accept-source-agreements 
-        GetScript: return $false
-        TestScript: return $false
