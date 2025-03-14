@@ -139,8 +139,11 @@ properties:
               # Construct the WSL command as a single-line string
               $wslCommand = @(
                   "sudo apt-get update",
+                  "sudo add-apt-repository ppa:dotnet/backports -y",
+                  "sudo apt-get update",
                   "sudo apt-get install -y dotnet-sdk-9.0",
-                  "sudo apt-get install -y aspnetcore-runtime-9.0"
+                  "sudo apt-get update",
+                  "apt-get install -y aspnetcore-runtime-9.0"
               ) -join "; "
 
               # Run the command in WSL and ensure it runs silently
