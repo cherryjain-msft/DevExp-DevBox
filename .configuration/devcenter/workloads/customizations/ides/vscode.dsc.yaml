@@ -58,7 +58,6 @@ properties:
               "ms-toolsai.vscode-jupyter-slideshow",
               "ms-vscode-remote.remote-containers",
               "ms-vscode-remote.remote-wsl",
-              "ms-vscode.azure-account",
               "ms-vscode.azure-repos",
               "ms-vscode.azurecli",
               "ms-vscode.powershell",
