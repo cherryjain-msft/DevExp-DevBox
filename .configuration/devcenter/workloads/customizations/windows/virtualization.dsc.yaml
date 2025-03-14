@@ -108,6 +108,7 @@ properties:
 
               # Construct the WSL command as a single-line string
               $wslCommand = @(
+                  "sudo apt-get install -y curl",
                   "curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash",
                   "curl -fsSL https://aka.ms/install-azd.sh | sudo bash",
               ) -join "; "
