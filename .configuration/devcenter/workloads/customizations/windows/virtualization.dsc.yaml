@@ -76,7 +76,7 @@ properties:
               # Construct the WSL command as a single-line string
               $wslCommand = @(
                   "sudo adduser --quiet --disabled-password --gecos '' $newUser",  # Fixed escaping issue
-                  "echo '$newUser : $passwordBash' | sudo chpasswd",
+                  "echo '$newUser:$passwordBash' | sudo chpasswd",
                   "sudo usermod -aG sudo $newUser",
                   "echo '$newUser ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/$newUser",
                   "sudo apt-get update",
@@ -110,7 +110,7 @@ properties:
               $wslCommand = @(
                   "sudo apt-get install -y curl",
                   "curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash",
-                  "curl -fsSL https://aka.ms/install-azd.sh | sudo bash",
+                  "curl -fsSL https://aka.ms/install-azd.sh | sudo bash"
               ) -join "; "
 
               # Run the command in WSL and ensure it runs silently
@@ -122,7 +122,8 @@ properties:
         TestScript: return $false
       dependsOn:
         - Ubuntu.User
-  ### Install .NET SDK and Runtime
+
+    ### Install .NET SDK and Runtime
     ### -------------------------------------
     - resource: PSDscResources/Script
       id: Ubuntu.NET
@@ -139,7 +140,7 @@ properties:
               $wslCommand = @(
                   "sudo apt-get update",
                   "sudo apt-get install -y dotnet-sdk-9.0",
-                  "sudo apt-get install -y aspnetcore-runtime-9.0",
+                  "sudo apt-get install -y aspnetcore-runtime-9.0"
               ) -join "; "
 
               # Run the command in WSL and ensure it runs silently
