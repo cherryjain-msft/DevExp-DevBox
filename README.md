@@ -17,7 +17,7 @@ Welcome to the Contoso Dev Box repository! This project showcases how Contoso, a
   - [Workflow Summary](#workflow-summary)
 - [Deploying Contoso Dev Box Solution to Azure](#deploying-contoso-dev-box-solution-to-azure)
   - [Step-by-Step Deployment Guide](#step-by-step-deployment-guide)
-    - [Step 1: Fork this repo and the other repos used for Demo](#step-1-fork-this-repo-and-the-other-repos-used-for-demo)
+    - [Step 1: Fork this repo and the other repos used for Demo](#step-1-fork-the-following-github-repositories-used-for-demo)
     - [Step 2: Create your GitHub Access Token](#step-2-create-your-github-access-token)
     - [Step 3: Create your local Environment Configuration using AZD](#step-3-create-your-local-environment-configuration-using-azd)
     - [Step 4: Update the .env file of your environment adding the KEY_VAULT_SECRET variable](#step-4-update-the-env-file-of-your-environment-adding-the-key_vault_secret-variable)
@@ -157,9 +157,12 @@ The Contoso Dev Box solution is designed to streamline the Engineer onboarding p
 
 ## Step-by-Step Deployment Guide
 
-### Step 1: Fork this repo and the other repos used for Demo
+### Step 1: Fork the following GitHub Repositories used for Demo
+#### Dev Box Solution
 - [DevExp-DevBox](https://github.com/evilazaro/devexp-devbox/)
+#### Identity Provider Project
 - [IdentityProvider](https://github.com/evilazaro/identityprovider/)
+#### eShop Project
 - [eShop](https://github.com/evilazaro/eshop)
 
 ### Step 2: Create your GitHub Access Token
