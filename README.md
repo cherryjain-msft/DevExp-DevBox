@@ -2,6 +2,31 @@
 
 Welcome to the Contoso Dev Box repository! This project showcases how Contoso, a fictitious company with developers located worldwide, leverages Microsoft Dev Box to streamline its engineer onboarding and deployment environment automation processes.
 
+## Table of Contents
+- [Overview](#overview)
+- [Key Benefits](#key-benefits)
+- [Microsoft Dev Box](#microsoft-dev-box)
+  - [Overview](#overview-1)
+  - [Key Features](#key-features)
+  - [Benefits for Developers](#benefits-for-developers)
+  - [Enhancing Developer Experience](#enhancing-developer-experience)
+  - [Adding Platform Capabilities](#adding-platform-capabilities)
+  - [Pre-Requisites](#pre-requisites)
+- [Contoso Dev Box Solution Architecture](#contoso-dev-box-solution-architecture)
+  - [Step-by-Step Workflow](#step-by-step-workflow)
+  - [Workflow Summary](#workflow-summary)
+- [Deploying Contoso Dev Box Solution to Azure](#deploying-contoso-dev-box-solution-to-azure)
+  - [Step-by-Step Deployment Guide](#step-by-step-deployment-guide)
+    - [Step 1: Fork this repo and the other repos used for Demo](#step-1-fork-this-repo-and-the-other-repos-used-for-demo)
+    - [Step 2: Create your GitHub Access Token](#step-2-create-your-github-access-token)
+    - [Step 3: Create your local Environment Configuration using AZD](#step-3-create-your-local-environment-configuration-using-azd)
+    - [Step 4: Update the .env file of your environment adding the KEY_VAULT_SECRET variable](#step-4-update-the-env-file-of-your-environment-adding-the-key_vault_secret-variable)
+    - [Step 5: Run the setUp.ps1 PowerShell script](#step-5-run-the-setup.ps1-powershell-script)
+    - [Step 6: Deploy the solution to Azure with AZD](#step-6-deploy-the-solution-to-azure-with-azd)
+    - [Step 7: Follow the deployment steps until its completed](#step-7-follow-the-deployment-steps-until-its-completed)
+    - [Step 8: Test the solution](#step-8-test-the-solution)
+  - [Conclusion](#conclusion)
+
 ## Overview
 
 Contoso aims to enhance its engineering efficiency by adopting Microsoft Dev Box. This repository demonstrates how Contoso designed and deployed its solution, enabling remote engineers to quickly and effectively set up their development environments.
@@ -35,21 +60,21 @@ Microsoft Dev Box is a cloud-based service that provides developers with self-se
 - **Cost Management**: Control costs with auto-stop schedules and efficient resource allocation.
 
 ## Enhancing Developer Experience
-Microsoft Dev Box significantly enhances the developer experience by providing a seamless, responsive, and efficient environment that feels like working on a local machine [more...](https://developer.microsoft.com/en-us/developer-experience). Developers benefit from:
+Microsoft Dev Box significantly enhances the developer experience by providing a seamless, responsive, and efficient environment that feels like working on a local machine. Developers benefit from:
 - **Optimized Workflows**: Preconfigured environments reduce setup time and allow developers to focus on coding.
 - **Improved Onboarding**: New developers can quickly get up to speed with ready-to-code workstations.
 - **Consistent Environments**: Ensures all team members work in identical environments, reducing "it works on my machine" issues.
 
 ## Adding Platform Capabilities
 For companies, Microsoft Dev Box adds robust platform capabilities by:
-- **Centralized Management**: IT admins can manage dev boxes like any other device on the network, ensuring security and compliance [more...](https://devblogs.microsoft.com/develop-from-the-cloud/whats-new-in-microsoft-dev-box/).
+- **Centralized Management**: IT admins can manage dev boxes like any other device on the network, ensuring security and compliance.
 - **Scalability**: Easily scale development environments up or down based on project needs.
-- **Cost Efficiency**: Optimize resource usage and control costs with auto-stop schedules and efficient resource allocation [more...](https://devblogs.microsoft.com/develop-from-the-cloud/whats-new-in-microsoft-dev-box/).
-- **Enhanced Security**: Built-in security features and compliance with industry standards ensure that development environments are secure [more...](https://devblogs.microsoft.com/develop-from-the-cloud/whats-new-in-microsoft-dev-box/).
+- **Cost Efficiency**: Optimize resource usage and control costs with auto-stop schedules and efficient resource allocation.
+- **Enhanced Security**: Built-in security features and compliance with industry standards ensure that development environments are secure.
 
 Microsoft Dev Box bridges the gap between development teams and IT, bringing control of project resources closer to the development team and enhancing overall productivity.
 
-For more information, visit the [Microsoft Dev Box documentation](https://learn.microsoft.com/en-us/azure/dev-box/overview-what-is-microsoft-dev-box) [more...](https://devblogs.microsoft.com/develop-from-the-cloud/whats-new-in-microsoft-dev-box/).
+For more information, visit the [Microsoft Dev Box documentation](https://learn.microsoft.com/en-us/azure/dev-box/overview-what-is-microsoft-dev-box).
 
 ## Pre-Requisites
 
@@ -59,7 +84,7 @@ Before deploying the Microsoft Dev Box solution to your Azure subscription, ensu
 
 2. **Azure CLI**: Install the Azure CLI. You can download and install it from [here](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli).
 
-3. **Azure Developer CLI**: Install the Azure Developer CLI. You can find the installation instructions [here](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/install-azd?tabs=winget-windows%2Cbrew-mac%2Cscript-linux&pivots=os-windows) 
+3. **Azure Developer CLI**: Install the Azure Developer CLI. You can find the installation instructions [here](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/install-azd?tabs=winget-windows%2Cbrew-mac%2Cscript-linux&pivots=os-windows).
 
 4. **Bicep**: Install Bicep, a domain-specific language (DSL) for deploying Azure resources. Installation instructions are available [here](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/install).
 
@@ -69,7 +94,7 @@ Before deploying the Microsoft Dev Box solution to your Azure subscription, ensu
 
 6. **Microsoft Entra ID**: Your organization must use Microsoft Entra ID (formerly Azure Active Directory) for identity and access management. More information can be found [here](https://learn.microsoft.com/en-us/azure/dev-box/).
 
-7. **Microsoft Intune**: Your organization must use Microsoft Intune for device management. More details are available here.
+7. **Microsoft Intune**: Your organization must use Microsoft Intune for device management. More details are available [here](https://learn.microsoft.com/en-us/mem/intune/fundamentals/what-is-intune).
 
 8. **User Licenses**: Ensure each user has the necessary licenses:
    - [Windows 11 Enterprise or Windows 10 Enterprise](https://learn.microsoft.com/en-us/azure/dev-box/quickstart-configure-dev-box-service)
@@ -101,7 +126,7 @@ The Contoso Dev Box solution is designed to streamline the Engineer onboarding p
    - There are multiple instances of Contoso Product Teams shown in separate boxes within Azure.
    - Each product team has its own set of resources including:
      - **PR Pipelines/Repos**: These are repositories and pipelines for managing code and continuous integration/continuous deployment (CI/CD) processes.
-     - **Visual Machines**: Virtual machines that provide isolated development environments for engineers.
+     - **Virtual Machines**: Virtual machines that provide isolated development environments for engineers.
      - **Dev Boxes**: Specific development environments tailored for each engineer's needs.
 
 4. **Contoso Dev Box Service**
@@ -127,3 +152,38 @@ The Contoso Dev Box solution is designed to streamline the Engineer onboarding p
 2. The Contoso Dev Box Service manages the allocation and configuration of Dev Boxes based on project requirements.
 3. Engineers connect to their assigned Dev Boxes through the Connections Layer.
 4. Additional Azure services ensure security, cost management, and automation within the environment.
+
+# Deploying Contoso Dev Box Solution to Azure
+
+## Step-by-Step Deployment Guide
+
+### Step 1: Fork this repo and the other repos used for Demo
+- [DevExp-DevBox](https://github.com/evilazaro/devexp-devbox/)
+- [IdentityProvider](https://github.com/evilazaro/identityprovider/)
+- [eShop](https://github.com/evilazaro/eshop)
+
+### Step 2: Create your GitHub Access Token
+[Managing your personal access tokens - GitHub Docs](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)
+
+### Step 3: Create your local Environment Configuration using AZD
+```powershell
+azd env new prod
+```
+### Step 4: Update the .env file of your environment adding the KEY_VAULT_SECRET variable
+```file
+KEY_VAULT_SECRET="<YOUR GITHUB ACCESS TOKEN>"
+```
+### Step 5: Run the setUp.ps1 PowerShell script
+```powershell
+.\setUp.ps1
+```
+### Step 6: Deploy the solution to Azure with AZD
+```powershell
+azd provision -e prod
+```
+
+### Step 7: Follow the deployment steps until its completed
+### Step 8: Test the solution 
+
+# Conclusion
+By following these steps, you will have successfully deployed the Contoso Dev Box solution to Azure. Ensure to monitor and manage the Dev Boxes regularly to optimize performance and security.
