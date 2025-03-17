@@ -215,5 +215,7 @@ After the deployment is completed, you must see the azd output as demonstrated i
 
 Access the https://devbox.microsoft.com Dev Portal and login to Azure with your credentials. You must see the Microsoft Dev Box and Deployment Environments Features as demonstrated int he image below:
 
+![alt text](./images/testsolution.png)
+
 # Conclusion
 By following these steps, you will have successfully deployed the Contoso Dev Box solution to Azure. Ensure to monitor and manage the Dev Boxes regularly to optimize performance and security.
