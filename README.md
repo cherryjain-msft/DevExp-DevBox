@@ -1,156 +1,129 @@
-# Dev Experience with Microsoft DevBox
+# Contoso Dev Box Use Case
 
-Example templates and customization configurations for Dev Box and Azure Deployment Environments.
+Welcome to the Contoso Dev Box repository! This project showcases how Contoso, a fictitious company with developers located worldwide, leverages Microsoft Dev Box to streamline its engineer onboarding and deployment environment automation processes.
 
-## Table of Contents
+## Overview
 
-- [Solution Architecture](#solution-architecture)
-  - [Azure Resources Deployed](#azure-resources-deployed)
-- [Pre-requisites](#pre-requisites)
-  - [Install Git](#install-git)
-  - [Install Visual Studio Code](#install-visual-studio-code)
-  - [Install Azure Developer CLI](#install-azure-developer-cli)
-- [Deploy Solution](#deploy-solution)
-  - [Clone this Repo](#clone-this-repo)
-  - [Open VS Code](#open-vs-code)
-  - [Open a new Terminal](#open-a-new-terminal)
-  - [Login to Azure](#login-to-azure)
-    - [Add the current user to the Dev Center Groups](#rbac---assign-the-current-user-to-the-dev-center-rbac-roles)
-  - [Create your environment](#create-your-environment)
-  - [Deploy solution to Azure](#deploy-solution-to-azure)
-    - [Checking the deployment](#checking-deployment)
-- [Create a DevBox](#comingsoon)
-- [Create a Deployment Environment](#comingsoon)
-- [Contributing](#contributing)
-- [Trademarks](#trademarks)
-- [License](#license)
+Contoso aims to enhance its engineering efficiency by adopting Microsoft Dev Box. This repository demonstrates how Contoso designed and deployed its solution, enabling remote engineers to quickly and effectively set up their development environments.
 
-## Solution Architecture
+## Key Benefits
 
-![Solution Architecture](./images/ContosoDevBox.png)
+- **Streamlined Onboarding**: New engineers can get started quickly with pre-configured development environments.
+- **Automated Deployment**: Simplifies the process of setting up and managing deployment environments.
+- **Global Accessibility**: Ensures that developers from any location can access the necessary tools and resources.
+- **Platform Engineering Capabilities**: Platform engineers can create dev box pools, manage security settings, network configurations, and organizational policies to ensure secure access to resources [here](https://learn.microsoft.com/en-us/azure/dev-box/overview-what-is-microsoft-dev-box).
 
-## Azure Resources Deployed
+Explore the repository to learn more about how Contoso utilizes Microsoft Dev Box to achieve these goals.
 
-![Azure Resources Deployed](./images/azureResourcesDeployed.png)
+# Microsoft Dev Box
 
-## Pre-requisites
+## Overview
+Microsoft Dev Box is a cloud-based service that provides developers with self-service access to high-performance, preconfigured, and ready-to-code workstations. These dev boxes are designed to streamline development workflows by offering customizable environments tailored to specific project needs.
 
-Before getting started, ensure you have the following tools installed on your Windows machine. You can use `winget` to install them quickly.
+## Key Features
+- **Self-Service Access**: Developers can quickly provision dev boxes on demand, reducing setup time and increasing productivity.
+- **High-Performance Workstations**: Dev boxes are equipped with powerful hardware and software configurations to handle demanding development tasks.
+- **Preconfigured Environments**: Dev boxes come with tools, source code, and prebuilt binaries specific to a project, allowing developers to start coding immediately.
+- **Customizable Images**: Use preconfigured images from Azure Marketplace or create custom images with specific tools and configurations.
+- **Integration with Azure**: Seamlessly integrates with Azure services, enabling secure access to resources and efficient management of development environments.
+- **Multi-Project Support**: Developers can create multiple dev boxes to work on different projects or tasks simultaneously.
 
-### Install Git
+## Benefits for Developers
+- **Increased Productivity**: Reduce setup time and start coding faster with ready-to-use environments.
+- **Flexibility**: Easily switch between projects and tasks by provisioning multiple dev boxes.
+- **Enhanced Collaboration**: Share dev boxes with team members to ensure consistent development environments.
+- **Cost Management**: Control costs with auto-stop schedules and efficient resource allocation.
 
-Git is required for cloning the repository.
+## Enhancing Developer Experience
+Microsoft Dev Box significantly enhances the developer experience by providing a seamless, responsive, and efficient environment that feels like working on a local machine[1](https://developer.microsoft.com/en-us/developer-experience). Developers benefit from:
+- **Optimized Workflows**: Preconfigured environments reduce setup time and allow developers to focus on coding.
+- **Improved Onboarding**: New developers can quickly get up to speed with ready-to-code workstations.
+- **Consistent Environments**: Ensures all team members work in identical environments, reducing "it works on my machine" issues.
 
-```powershell
-winget install --id Git.Git -e --source winget
-```
+## Adding Platform Capabilities
+For companies, Microsoft Dev Box adds robust platform capabilities by:
+- **Centralized Management**: IT admins can manage dev boxes like any other device on the network, ensuring security and compliance[2](https://devblogs.microsoft.com/develop-from-the-cloud/whats-new-in-microsoft-dev-box/).
+- **Scalability**: Easily scale development environments up or down based on project needs.
+- **Cost Efficiency**: Optimize resource usage and control costs with auto-stop schedules and efficient resource allocation[2](https://devblogs.microsoft.com/develop-from-the-cloud/whats-new-in-microsoft-dev-box/).
+- **Enhanced Security**: Built-in security features and compliance with industry standards ensure that development environments are secure[2](https://devblogs.microsoft.com/develop-from-the-cloud/whats-new-in-microsoft-dev-box/).
 
-### Install Visual Studio Code
-VS Code is used for editing and running scripts.
+Microsoft Dev Box bridges the gap between development teams and IT, bringing control of project resources closer to the development team and enhancing overall productivity.
 
-```powershell
-winget install --id Microsoft.VisualStudioCode -e --source winget
-```
+For more information, visit the [Microsoft Dev Box documentation](https://learn.microsoft.com/en-us/azure/dev-box/overview-what-is-microsoft-dev-box)[2](https://devblogs.microsoft.com/develop-from-the-cloud/whats-new-in-microsoft-dev-box/).
 
-### Install Azure Developer CLI
-Azure Developer CLI (azd) is required to interact with Azure services.
+## Pre-Requisites
 
-```powershell
-winget install --id Microsoft.AzureCLI -e --source winget
-```
+Before deploying the Microsoft Dev Box solution to your Azure subscription, ensure you have the following prerequisites in place:
 
-## Deploy Solution
+1. **Azure Subscription**: An active Azure subscription. If you don't have one, you can create a free account [here](https://learn.microsoft.com/en-us/microsoft-365/enterprise/subscriptions-licenses-accounts-and-tenants-for-microsoft-cloud-offerings?view=o365-worldwide).
 
-### Clone this Repo
+2. **Azure CLI**: Install the Azure CLI. You can download and install it from [here](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli).
 
-```powershell
-git clone https://github.com/Evilazaro/DevExp-DevBox.git
-```
+3. **Azure Developer CLI**: Install the Azure Developer CLI. You can find the installation instructions [here](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/install-azd?tabs=winget-windows%2Cbrew-mac%2Cscript-linux&pivots=os-windows) 
 
-### Open VS Code
-```powershell
-cd DevExp-DevBox
-```
-```powershell
-code .
-```
+4. **Bicep**: Install Bicep, a domain-specific language (DSL) for deploying Azure resources. Installation instructions are available [here](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/install).
 
-You are going to see VS Code with all the content of this repo
+5. **RBAC Roles**: Ensure you have the following roles assigned in your Azure subscription. For more details click [here](https://learn.microsoft.com/en-us/azure/dev-box/concept-dev-box-role-based-access-control):
 
-![VS Code](./images/vscode.png)
+![Azure Dev Box RBAC Roles](./images/devboxrbacroles.png)
 
-### Open a new Terminal
+6. **Microsoft Entra ID**: Your organization must use Microsoft Entra ID (formerly Azure Active Directory) for identity and access management. More information can be found [here](https://learn.microsoft.com/en-us/azure/dev-box/).
 
-Click on Terminal Menu >> New Terminal
+7. **Microsoft Intune**: Your organization must use Microsoft Intune for device management. More details are available here.
 
-![New Terminal](./images/terminalmenu.png)
+8. **User Licenses**: Ensure each user has the necessary licenses:
+   - [Windows 11 Enterprise or Windows 10 Enterprise](https://learn.microsoft.com/en-us/azure/dev-box/quickstart-configure-dev-box-service)
+   - [Microsoft Intune](https://learn.microsoft.com/en-us/azure/dev-box/quickstart-configure-dev-box-service)
+   - [Microsoft Entra ID P1](https://learn.microsoft.com/en-us/azure/dev-box/quickstart-configure-dev-box-service)
 
-Your Visual Studio Code must be like the image below
+   These licenses are included in subscriptions like Microsoft 365 F3, E3, E5, A3, A5, Business Premium, and Education Student Use Benefit. More details can be found [here](https://azure.microsoft.com/en-us/pricing/details/dev-box/).
 
-![VS Code Terminal](./images/vscodeterminal.png)
+9. **Register Resource Provider**: Register the `Microsoft.DevCenter` resource provider in your Azure subscription. Instructions can be found [here](https://learn.microsoft.com/en-us/azure/dev-box/).
 
-### Login to Azure
+By ensuring these prerequisites are met, you'll be ready to deploy the Microsoft Dev Box solution to your Azure subscription.
 
-Type the command below into the Terminal Window and press enter
-```
-azd auth login
-```
-Provide your Azure Credentials.
+# Contoso Dev Box Solution Architecture
 
-After the login to Azure has been completed, you must see the following message below:
+The Contoso Dev Box solution is designed to streamline the Engineer onboarding process for various projects using Microsoft Dev Box. Below is a detailed step-by-step description of the solution architecture, accompanied by the provided Solution Architecture Picture.
 
-![Logint to Azure Completed](./images/azureloggedin.png)
+![Contoso Solution Architecture](./images/ContosoDevBox.png)
 
-### Create your environment
-```powershell
-azd env new dev
-```
-You are going to see a new *.azure* folder with the *dev environment* configuration that will be used by Azure Developer CLI.
+## Step-by-Step Workflow
 
-![new dev environment](./images/newdevenv.png)
+1. **Contoso Engineering Teams (Developers, QA, SRE, Operations)**
+   - Engineers from different teams such as Developers, QA, SRE (Site Reliability Engineering), and Operations are depicted at the top left of the diagram.
+   - These engineers need access to development environments to work on their respective projects.
 
-### RBAC - Assign the Current User to the Dev Center RBAC Roles
+2. **Azure Environment**
+   - The entire solution is hosted within Azure.
 
- This script will assign the current user to the DevCenter Project Admin, Dev Box User, Deployment Environments Reader, and Deployment Environments User RBAC roles. You can see more details on the [Azure role-based access control in Microsoft Dev Box](https://learn.microsoft.com/en-us/azure/dev-box/concept-dev-box-role-based-access-control), and [Azure role-based access control in Azure Deployment Environments](https://learn.microsoft.com/en-us/azure/deployment-environments/concept-deployment-environments-role-based-access-control#built-in-roles).
+3. **Contoso Product Team**
+   - There are multiple instances of Contoso Product Teams shown in separate boxes within Azure.
+   - Each product team has its own set of resources including:
+     - **PR Pipelines/Repos**: These are repositories and pipelines for managing code and continuous integration/continuous deployment (CI/CD) processes.
+     - **Visual Machines**: Virtual machines that provide isolated development environments for engineers.
+     - **Dev Boxes**: Specific development environments tailored for each engineer's needs.
 
-```powershell
-.\setup.ps1
-```
-You will see the following output in the Terminal Window.
+4. **Contoso Dev Box Service**
+   - This service acts as a central hub for managing all Dev Boxes across different product teams.
+   - Key components include:
+     - **Projects**: Different projects that engineers are working on.
+     - **Dev box definition**: Templates or configurations defining what a Dev Box should contain.
+     - **Dev box pool**: A collection of available Dev Boxes ready to be assigned to engineers.
 
-![setup](./images/setup.png)
+5. **Connections Layer (Onboarding Layer)**
+   - This layer facilitates connections between various components:
+     - Engineers connect through this layer to access their assigned Dev Boxes based on project requirements.
 
+6. **Additional Azure Services**
+   - Several additional services support the overall infrastructure:
+     - **Azure Active Directory (AAD)**: Manages user identities and access control.
+     - **Billing & Cost Management**: Tracks usage and costs associated with running virtual machines and other resources.
+     - **Security Center**: Ensures security compliance and monitors potential threats within the environment.
+     - **Automation Accounts**: Automates repetitive tasks such as provisioning new Dev Boxes or scaling resources up/down based on demand.
 
-### Deploy solution to Azure
-```powershell
-azd provision -e dev
-```
-Select the Azure Subscription you want to deploy the workload to and press Enter.
-
-![Azure Subscription](./images/azureSubscription.png)
-
-Select the Azure Region you want to deploy the workload to and press Enter.
-
-![Azure Region](./images/azureRegion.png)
-
-Azure Develper CLI will start the deployment to your Azure Subscription. When the deployment is finished, you must see the following message:
-
-![Azure Deployment Finished](./images/azuredeploymentfinished.png)
-
-### Checking deployment
-
-## Contributing
-
-This project welcomes contributions and suggestions. Most contributions require you to agree to a Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us the rights to use your contribution. For details, visit [https://cla.opensource.microsoft.com](https://cla.opensource.microsoft.com).
-
-When you submit a pull request, a CLA bot will automatically determine whether you need to provide a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions provided by the bot. You will only need to do this once across all repos using our CLA.
-
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
-
-## Trademarks
-
-This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft trademarks or logos is subject to and must follow [Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general). Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship. Any use of third-party trademarks or logos are subject to those third-party's policies.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
+## Workflow Summary
+1. Engineers from various teams request access to development environments through Contoso's onboarding process facilitated by Azure.
+2. The Contoso Dev Box Service manages the allocation and configuration of Dev Boxes based on project requirements.
+3. Engineers connect to their assigned Dev Boxes through the Connections Layer.
+4. Additional Azure services ensure security, cost management, and automation within the environment.
