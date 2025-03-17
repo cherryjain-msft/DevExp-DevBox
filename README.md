@@ -19,10 +19,10 @@ Welcome to the Contoso Dev Box repository! This project showcases how Contoso, a
   - [Step-by-Step Deployment Guide](#step-by-step-deployment-guide)
     - [Step 1: Fork this repo and the other repos used for Demo](#step-1-fork-the-following-github-repositories-used-for-demo)
     - [Step 2: Create your GitHub Access Token](#step-2-create-your-github-access-token)
-    - [Step 3: Create your local Environment Configuration using AZD](#step-3-create-your-local-environment-configuration-using-azd)
+    - [Step 3: Create your local Environment Configuration using azd](#step-3-create-your-local-environment-configuration-using-azd)
     - [Step 4: Update the .env file of your environment adding the KEY_VAULT_SECRET variable](#step-4-update-the-env-file-of-your-environment-adding-the-key_vault_secret-variable)
     - [Step 5: Run the setUp.ps1 PowerShell script](#step-5-run-the-setup.ps1-powershell-script)
-    - [Step 6: Deploy the solution to Azure with AZD](#step-6-deploy-the-solution-to-azure-with-azd)
+    - [Step 6: Deploy the solution to Azure with azd](#step-6-deploy-the-solution-to-azure-with-azd)
     - [Step 7: Follow the deployment steps until its completed](#step-7-follow-the-deployment-steps-until-its-completed)
     - [Step 8: Test the solution](#step-8-test-the-solution)
   - [Conclusion](#conclusion)
@@ -165,7 +165,13 @@ The Contoso Dev Box solution is designed to streamline the Engineer onboarding p
 ### Step 2: Create your GitHub Access Token
 [Managing your personal access tokens - GitHub Docs](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)
 
-### Step 3: Create your local Environment Configuration using AZD
+### Step 3: Create your local Environment Configuration using azd
+
+Login to Azure using the auth login azd command
+```powershell
+azd auth login
+```
+Create your local Environment Configuration using azd
 ```powershell
 azd env new dev
 ```
@@ -187,7 +193,7 @@ Your .env file must be like the image below.
 You should see a similar output as below:
 
 ![setup](./images/setup.png)
-### Step 6: Deploy the solution to Azure with AZD
+### Step 6: Deploy the solution to Azure with azd
 ```powershell
 azd provision -e dev
 ```
@@ -201,7 +207,7 @@ You must inform the Azure Region you want to deploy the soltution.
 
 ### Step 7: Follow the deployment steps until its completed
 
-After the deployment is completed, you must see the AZD output as demonstrated in the image below:
+After the deployment is completed, you must see the azd output as demonstrated in the image below:
 
 ![finished](./images/azuredeploymentfinished.png)
 
