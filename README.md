@@ -35,21 +35,21 @@ Microsoft Dev Box is a cloud-based service that provides developers with self-se
 - **Cost Management**: Control costs with auto-stop schedules and efficient resource allocation.
 
 ## Enhancing Developer Experience
-Microsoft Dev Box significantly enhances the developer experience by providing a seamless, responsive, and efficient environment that feels like working on a local machine[1](https://developer.microsoft.com/en-us/developer-experience). Developers benefit from:
+Microsoft Dev Box significantly enhances the developer experience by providing a seamless, responsive, and efficient environment that feels like working on a local machine [more...](https://developer.microsoft.com/en-us/developer-experience). Developers benefit from:
 - **Optimized Workflows**: Preconfigured environments reduce setup time and allow developers to focus on coding.
 - **Improved Onboarding**: New developers can quickly get up to speed with ready-to-code workstations.
 - **Consistent Environments**: Ensures all team members work in identical environments, reducing "it works on my machine" issues.
 
 ## Adding Platform Capabilities
 For companies, Microsoft Dev Box adds robust platform capabilities by:
-- **Centralized Management**: IT admins can manage dev boxes like any other device on the network, ensuring security and compliance[2](https://devblogs.microsoft.com/develop-from-the-cloud/whats-new-in-microsoft-dev-box/).
+- **Centralized Management**: IT admins can manage dev boxes like any other device on the network, ensuring security and compliance [more...](https://devblogs.microsoft.com/develop-from-the-cloud/whats-new-in-microsoft-dev-box/).
 - **Scalability**: Easily scale development environments up or down based on project needs.
-- **Cost Efficiency**: Optimize resource usage and control costs with auto-stop schedules and efficient resource allocation[2](https://devblogs.microsoft.com/develop-from-the-cloud/whats-new-in-microsoft-dev-box/).
-- **Enhanced Security**: Built-in security features and compliance with industry standards ensure that development environments are secure[2](https://devblogs.microsoft.com/develop-from-the-cloud/whats-new-in-microsoft-dev-box/).
+- **Cost Efficiency**: Optimize resource usage and control costs with auto-stop schedules and efficient resource allocation [more...](https://devblogs.microsoft.com/develop-from-the-cloud/whats-new-in-microsoft-dev-box/).
+- **Enhanced Security**: Built-in security features and compliance with industry standards ensure that development environments are secure [more...](https://devblogs.microsoft.com/develop-from-the-cloud/whats-new-in-microsoft-dev-box/).
 
 Microsoft Dev Box bridges the gap between development teams and IT, bringing control of project resources closer to the development team and enhancing overall productivity.
 
-For more information, visit the [Microsoft Dev Box documentation](https://learn.microsoft.com/en-us/azure/dev-box/overview-what-is-microsoft-dev-box)[2](https://devblogs.microsoft.com/develop-from-the-cloud/whats-new-in-microsoft-dev-box/).
+For more information, visit the [Microsoft Dev Box documentation](https://learn.microsoft.com/en-us/azure/dev-box/overview-what-is-microsoft-dev-box) [more...](https://devblogs.microsoft.com/develop-from-the-cloud/whats-new-in-microsoft-dev-box/).
 
 ## Pre-Requisites
 
