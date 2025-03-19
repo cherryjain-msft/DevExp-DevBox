@@ -1,13 +1,13 @@
 # yaml-language-server: $schema=./network.schema.json
 
-create: false
-name: okn-eus-prd-okn-dev-box-spoke-vnet
+create: true
+name: contoso-vnet
 addressPrefixes:
-  - 10.168.109.0/24
+  - 10.0.0.0/16
 subnets:
-  - name: eShop
+  - name: contoso-subnet
     properties:
-      addressPrefix: 10.168.109.0/25
+      addressPrefix: 10.0.0.1/24
 tags:
   environment: dev
   division: Platforms

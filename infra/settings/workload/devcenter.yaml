@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=./devcenter.schema.json
 
-name: "kac-digitaloffice-devctrr"
+name: "contoso-devcenter"
 location: "eastus2"
 catalogItemSyncEnableStatus: "Enabled"
 microsoftHostedNetworkEnableStatus: "Enabled"
