@@ -11,6 +11,7 @@ param (
     [Parameter(Mandatory = $true)]
     [string]$environment = "prod"
 )
+
 # Azure Resource Group Names Constants
 $workloadResourceGroup = "${workloadname}-workload-${environment}-rg"
 $connectivityResourceGroup = "${workloadname}-connectivity-${environment}-rg"
