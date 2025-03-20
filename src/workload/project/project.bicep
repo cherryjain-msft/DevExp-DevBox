@@ -32,15 +32,6 @@ param securityResourceGroupName string
 @description('Tags')
 param tags object
 
-type Project = {
-  name: string
-  description: string
-  environmentTypes: object[]
-  catalogs: object
-  pools: object[]
-  tags: object
-}
-
 @description('Dev Center')
 resource devCenter 'Microsoft.DevCenter/devcenters@2024-10-01-preview' existing = {
   name: devCenterName
@@ -69,7 +60,7 @@ resource project 'Microsoft.DevCenter/projects@2024-10-01-preview' = {
 
 @description('Key Vault Access Policies')
 module keyVaultAccessPolicies '../../security/keyvault-access.bicep' = {
-  name: 'keyvaultAccess'
+  name: '${project.name}-keyvaultAccess'
   scope: resourceGroup(securityResourceGroupName)
   params: {
     keyVaultName: keyVaultName

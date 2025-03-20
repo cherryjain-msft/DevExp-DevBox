@@ -2,7 +2,7 @@
 
 workload:
   create: true
-  name: workload_rg
+  name: devexp-workload
   description: prodExp
   tags:
     environment: dev
@@ -16,7 +16,7 @@ workload:
 
 security:
   create: true
-  name: security_rg
+  name: devexp-security
   description: prodExp
   tags:
     environment: dev
@@ -30,7 +30,7 @@ security:
 
 monitoring:
   create: true
-  name: monitoring_rg
+  name: devexp-monitoring
   description: prodExp
   tags:
     environment: dev
@@ -44,7 +44,7 @@ monitoring:
 
 connectivity:
   create: true
-  name: connectivity_rg
+  name: devexp-connectivity
   description: prodExp
   tags:
     environment: dev

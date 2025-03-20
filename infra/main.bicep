@@ -7,6 +7,8 @@ param location string = 'eastus2'
 @secure()
 param secretValue string
 
+param environmentName string
+
 @description('Landing Zone Information')
 var landingZones = loadYamlContent('settings/resourceOrganization/azureResources.yaml')
 
@@ -33,9 +35,13 @@ module security '../src/security/security.bicep' = {
   ]
 }
 
+var monitoringRgName = (landingZones.monitoring.create)
+  ? '${landingZones.monitoring.name}-${environmentName}-rg'
+  : landingZones.monitoring.name
+
 @description('Monitoring Resource Group')
 resource monitoringRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZones.monitoring.create) {
-  name: landingZones.monitoring.name
+  name: monitoringRgName
   location: location
   tags: landingZones.monitoring.tags
 }
@@ -43,7 +49,7 @@ resource monitoringRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (land
 @description('Deploy Monitoring Module')
 module monitoring '../src/management/logAnalytics.bicep' = {
   name: 'monitoring'
-  scope: resourceGroup(landingZones.monitoring.name)
+  scope: resourceGroup(monitoringRgName)
   params: {
     name: 'logAnalytics'
   }
@@ -52,9 +58,13 @@ module monitoring '../src/management/logAnalytics.bicep' = {
   ]
 }
 
+var connectivityRgName = (landingZones.connectivity.create)
+  ? '${landingZones.connectivity.name}-${environmentName}-rg'
+  : landingZones.connectivity.name
+
 @description('Connectivity Resource Group')
 resource connectivityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZones.connectivity.create) {
-  name: landingZones.connectivity.name
+  name: connectivityRgName
   location: location
   tags: landingZones.connectivity.tags
 }
@@ -62,7 +72,7 @@ resource connectivityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (la
 @description('Deploy Connectivity Module')
 module connectivity '../src/connectivity/connectivity.bicep' = {
   name: 'connectivity'
-  scope: resourceGroup(landingZones.connectivity.name)
+  scope: resourceGroup(connectivityRgName)
   params: {
     logAnalyticsId: monitoring.outputs.logAnalyticsId
   }
@@ -71,9 +81,13 @@ module connectivity '../src/connectivity/connectivity.bicep' = {
   ]
 }
 
+var workloadRgName = (landingZones.workload.create)
+  ? '${landingZones.workload.name}-${environmentName}-rg'
+  : landingZones.workload.name
+
 @description('Workload Resource Group')
 resource workloadRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZones.workload.create) {
-  name: landingZones.workload.name
+  name: workloadRgName
   location: location
   tags: landingZones.workload.tags
 }
@@ -81,7 +95,7 @@ resource workloadRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landin
 @description('Deploy Workload Module')
 module workload '../src/workload/workload.bicep' = {
   name: 'workload'
-  scope: resourceGroup(landingZones.workload.name)
+  scope: resourceGroup(workloadRgName)
   params: {
     logAnalyticsId: monitoring.outputs.logAnalyticsId
     subnets: connectivity.outputs.virtualNetworkSubnets
