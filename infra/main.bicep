@@ -105,7 +105,7 @@ module workload '../src/workload/workload.bicep' = {
     subnets: connectivity.outputs.virtualNetworkSubnets
     secretIdentifier: security.outputs.secretIdentifier
     keyVaultName: security.outputs.keyVaultName
-    securityResourceGroupName: landingZones.security.name
+    securityResourceGroupName: securityRgName
   }
   dependsOn: [
     workloadRg
