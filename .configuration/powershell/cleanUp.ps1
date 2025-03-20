@@ -4,14 +4,8 @@
 $ErrorActionPreference = "Stop"
 $WarningPreference = "Stop"
 
-param (
-    [Parameter(Mandatory = $true)]
-    [string]$workloadname = "devexp",
-
-    [Parameter(Mandatory = $true)]
-    [string]$environment = "prod"
-)
-
+$workloadname = "devexp"  # Replace with your workload name
+$environment = "prod"          # Replace with your environment (e.g., dev, prod)
 # Azure Resource Group Names Constants
 $workloadResourceGroup = "${workloadname}-workload-${environment}-rg"
 $connectivityResourceGroup = "${workloadname}-connectivity-${environment}-rg"
