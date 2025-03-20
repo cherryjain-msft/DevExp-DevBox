@@ -12,9 +12,13 @@ param environmentName string
 @description('Landing Zone Information')
 var landingZones = loadYamlContent('settings/resourceOrganization/azureResources.yaml')
 
+var securityRgName = (landingZones.security.create)
+  ? '${landingZones.security.name}-${environmentName}-rg'
+  : landingZones.security.name
+
 @description('Security Resource Group')
 resource securityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZones.security.create) {
-  name: landingZones.security.name
+  name: securityRgName
   location: location
   tags: landingZones.security.tags
 }
@@ -22,7 +26,7 @@ resource securityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landin
 @description('Deploy Security Module')
 module security '../src/security/security.bicep' = {
   name: 'security'
-  scope: resourceGroup(landingZones.security.name)
+  scope: resourceGroup(securityRgName)
   params: {
     keyVaultName: 'devexp'
     secretValue: secretValue

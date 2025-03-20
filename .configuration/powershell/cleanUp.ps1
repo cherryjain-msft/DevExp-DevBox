@@ -4,11 +4,18 @@
 $ErrorActionPreference = "Stop"
 $WarningPreference = "Stop"
 
+param (
+    [Parameter(Mandatory = $true)]
+    [string]$workloadname = "devexp",
+
+    [Parameter(Mandatory = $true)]
+    [string]$environment = "prod"
+)
 # Azure Resource Group Names Constants
-$workloadResourceGroup = "workload_rg"
-$connectivityResourceGroup = "connectivity_rg"
-$managementResourceGroup = "monitoring_rg"
-$securityResourceGroup = "security_rg"
+$workloadResourceGroup = "${workloadname}-workload-${environment}-rg"
+$connectivityResourceGroup = "${workloadname}-connectivity-${environment}-rg"
+$managementResourceGroup = "${workloadname}-monitoring-${environment}-rg"
+$securityResourceGroup = "${workloadname}-security-${environment}-rg"
 
 # Function to delete a resource group
 function Remove-ResourceGroup {
