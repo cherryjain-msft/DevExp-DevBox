@@ -5,10 +5,10 @@ $ErrorActionPreference = "Stop"
 $WarningPreference = "Stop"
 
 # Azure Resource Group Names Constants
-$workloadResourceGroup = "Contoso-DevExp-Workload-RG"
-$connectivityResourceGroup = "Contoso-DevExp-Connectivity-RG"
-$managementResourceGroup = "Contoso-DevExp-Monitoring-RG"
-$securityResourceGroup = "Contoso-DevExp-Security-RG"
+$workloadResourceGroup = "workload_rg"
+$connectivityResourceGroup = "connectivity_rg"
+$managementResourceGroup = "monitoring_rg"
+$securityResourceGroup = "security_rg"
 
 # Function to delete a resource group
 function Remove-ResourceGroup {

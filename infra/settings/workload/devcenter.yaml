@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=./devcenter.schema.json
 
-name: "contoso-devcenter"
+name: "devexp-devcenter"
 location: "eastus2"
 catalogItemSyncEnableStatus: "Enabled"
 microsoftHostedNetworkEnableStatus: "Enabled"
