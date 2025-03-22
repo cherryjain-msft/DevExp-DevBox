@@ -13,7 +13,7 @@ param environmentName string
 var landingZones = loadYamlContent('settings/resourceOrganization/azureResources.yaml')
 
 var securityRgName = (landingZones.security.create)
-  ? '${landingZones.security.name}-${environmentName}-rg'
+  ? '${landingZones.security.name}-${environmentName}-${location}-rg'
   : landingZones.security.name
 
 @description('Security Resource Group')
@@ -40,7 +40,7 @@ module security '../src/security/security.bicep' = {
 }
 
 var monitoringRgName = (landingZones.monitoring.create)
-  ? '${landingZones.monitoring.name}-${environmentName}-rg'
+  ? '${landingZones.monitoring.name}-${environmentName}-${location}-rg'
   : landingZones.monitoring.name
 
 @description('Monitoring Resource Group')
@@ -63,7 +63,7 @@ module monitoring '../src/management/logAnalytics.bicep' = {
 }
 
 var connectivityRgName = (landingZones.connectivity.create)
-  ? '${landingZones.connectivity.name}-${environmentName}-rg'
+  ? '${landingZones.connectivity.name}-${environmentName}-${location}-rg'
   : landingZones.connectivity.name
 
 @description('Connectivity Resource Group')
@@ -86,7 +86,7 @@ module connectivity '../src/connectivity/connectivity.bicep' = {
 }
 
 var workloadRgName = (landingZones.workload.create)
-  ? '${landingZones.workload.name}-${environmentName}-rg'
+  ? '${landingZones.workload.name}-${environmentName}-${location}-rg'
   : landingZones.workload.name
 
 @description('Workload Resource Group')
