@@ -111,3 +111,5 @@ module workload '../src/workload/workload.bicep' = {
     workloadRg
   ]
 }
+
+output devCenterName string = workload.outputs.devCenterName

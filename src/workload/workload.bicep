@@ -62,3 +62,5 @@ module projects 'project/project.bicep' = [
     ]
   }
 ]
+
+output devCenterName string = devcenter.outputs.devcCenterName
