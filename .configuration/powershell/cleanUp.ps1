@@ -5,12 +5,13 @@ $ErrorActionPreference = "Stop"
 $WarningPreference = "Stop"
 
 $workloadname = "devexp"  # Replace with your workload name
-$environment = "prod"          # Replace with your environment (e.g., dev, prod)
+$environment = "dev"
+$location = "eastus2"          # Replace with your environment (e.g., dev, prod)
 # Azure Resource Group Names Constants
-$workloadResourceGroup = "${workloadname}-workload-${environment}-rg"
-$connectivityResourceGroup = "${workloadname}-connectivity-${environment}-rg"
-$managementResourceGroup = "${workloadname}-monitoring-${environment}-rg"
-$securityResourceGroup = "${workloadname}-security-${environment}-rg"
+$workloadResourceGroup = "${workloadname}-workload-${environment}-${location}-rg"
+$connectivityResourceGroup = "${workloadname}-connectivity-${environment}-${location}-rg"
+$managementResourceGroup = "${workloadname}-monitoring-${environment}-${location}-rg"
+$securityResourceGroup = "${workloadname}-security-${environment}-${location}-rg"
 
 # Function to delete a resource group
 function Remove-ResourceGroup {
