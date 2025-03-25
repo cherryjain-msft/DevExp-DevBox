@@ -28,7 +28,7 @@ jobs:
           curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
       - name: Install Azure Dev CLI
         run: |
-          curl -sL https://aka.ms/installazd | sudo bash
+          curl -fsSL https://aka.ms/install-azd.sh | bash
       - name: Checkout
         uses: actions/checkout@v4
       - name: Log in with Azure (Federated Credentials)
