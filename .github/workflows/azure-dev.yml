@@ -11,7 +11,7 @@ permissions:
 
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     env:
       AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
@@ -21,10 +21,24 @@ jobs:
       AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
       KEY_VAULT_SECRET: ${{ secrets.KEY_VAULT_SECRET }}
     steps:
+
+      - name: Update Packages
+        run: sudo apt-get update && sudo apt-get upgrade -y
+        shell: bash
+
+      - name: Install Azure CLI
+        run: |
+          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+        shell: bash
+
+      - name: Install Azure Developer CLI
+        run: |
+          curl -fsSL https://aka.ms/install-azd.sh | bash
+        shell: bash
+
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Install azd
-        uses: Azure/setup-azd@v2
+
       - name: Log in with Azure (Federated Credentials)
         run: |
           azd auth login `
@@ -33,11 +47,7 @@ jobs:
             --tenant-id "$Env:AZURE_TENANT_ID"
         shell: pwsh
 
-
-      - name: Provision Infrastructure
-        run: azd provision --no-prompt
+      - name: Provision Dev Box Infrastructure
+        run: azd provision -e ${{ env.AZURE_ENV_NAME }} --no-prompt
         env:
           AZD_INITIAL_ENVIRONMENT_CONFIG: ${{ secrets.AZD_INITIAL_ENVIRONMENT_CONFIG }}
-
-      - name: Deploy Application
-        run: azd deploy --no-prompt
