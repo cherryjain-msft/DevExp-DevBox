@@ -29,6 +29,9 @@ resource environmentType 'Microsoft.DevCenter/projects/environmentTypes@2024-10-
     type: 'SystemAssigned'
   }
   properties: {
+    userRoleAssignments: {
+      roles: toObject(roles, role => role.id, role => role.properties)
+    }
     displayName: environmentConfig.name
     deploymentTargetId: subscription().id
     status: 'Enabled'
