@@ -13,6 +13,3 @@ infra:
   provider: bicep
   path: /infra/main.bicep
   mode: complete
-
-pipeline:
-  provider: github

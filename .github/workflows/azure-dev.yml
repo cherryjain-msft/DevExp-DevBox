@@ -23,14 +23,21 @@ jobs:
     steps:
       - name: Update Packages
         run: sudo apt-get update && sudo apt-get upgrade -y
+        shell: bash
+
       - name: Install Azure CLI
         run: |
           curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+        shell: bash
+
       - name: Install Azure Dev CLI
         run: |
           curl -fsSL https://aka.ms/install-azd.sh | bash
+        shell: bash
+
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Log in with Azure (Federated Credentials)
         run: |
           azd auth login `
@@ -39,10 +46,10 @@ jobs:
             --tenant-id "$Env:AZURE_TENANT_ID"
         shell: pwsh
 
-
       - name: Provision Infrastructure
         run: |
           azd config reset --force
-          azd provision -e ${{ env.AZURE_ENV_NAME }}
+          azd provision -e ${{ env.AZURE_ENV_NAME }} --no-prompt
+        shell: pwsh
         env:
           AZD_INITIAL_ENVIRONMENT_CONFIG: ${{ secrets.AZD_INITIAL_ENVIRONMENT_CONFIG }}
