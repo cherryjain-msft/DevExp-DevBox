@@ -30,7 +30,7 @@ resource environmentType 'Microsoft.DevCenter/projects/environmentTypes@2024-10-
   }
   properties: {
     displayName: environmentConfig.name
-    deploymentTargetId: subscription().id
+    deploymentTargetId: subscriptionResourceId('Microsoft.Subscription/subscriptions',subscription().subscriptionId)
     status: 'Enabled'
     creatorRoleAssignment: {
       roles: toObject(roles, role => role.id, role => role.properties)
