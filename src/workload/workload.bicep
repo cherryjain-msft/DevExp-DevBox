@@ -55,6 +55,7 @@ module projects 'project/project.bicep' = [
       secretIdentifier: secretIdentifier
       keyVaultName: keyVaultName
       securityResourceGroupName: securityResourceGroupName
+      identity: devCenterSettings.identity
       tags: project.tags
     }
     dependsOn: [

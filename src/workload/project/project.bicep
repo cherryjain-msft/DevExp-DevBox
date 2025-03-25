@@ -29,8 +29,21 @@ param keyVaultName string
 @description('Security Resource Group Name')
 param securityResourceGroupName string
 
+@description('Project Identity')
+param identity Identity
+
 @description('Tags')
 param tags object
+
+type Identity = {
+  type: string
+  roleAssignments: RoleAssignment[]
+}
+
+type RoleAssignment = {
+  name: string
+  id: string
+}
 
 @description('Dev Center')
 resource devCenter 'Microsoft.DevCenter/devcenters@2024-10-01-preview' existing = {
@@ -42,7 +55,7 @@ resource project 'Microsoft.DevCenter/projects@2024-10-01-preview' = {
   name: name
   location: resourceGroup().location
   identity: {
-    type: 'SystemAssigned'
+    type: identity.type
   }
   properties: {
     description: projectDescription
@@ -57,6 +70,19 @@ resource project 'Microsoft.DevCenter/projects@2024-10-01-preview' = {
   }
   tags: tags
 }
+
+@description('Project Identity Role Assignments')
+resource roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for roleAssignment in identity.roleAssignments: {
+    name: guid(roleAssignment.name, project.id)
+    scope: project
+    properties: {
+      principalId: project.identity.principalId
+      roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.id)
+      principalType: 'ServicePrincipal'
+    }
+  }
+]
 
 @description('Key Vault Access Policies')
 module keyVaultAccessPolicies '../../security/keyvault-access.bicep' = {
