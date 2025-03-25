@@ -40,16 +40,16 @@ jobs:
 
       - name: Log in with Azure (Federated Credentials)
         run: |
-          azd auth login `
-            --client-id "$Env:AZURE_CLIENT_ID" `
-            --federated-credential-provider "github" `
+          azd auth login \
+            --client-id "$Env:AZURE_CLIENT_ID" \
+            --federated-credential-provider "github" \
             --tenant-id "$Env:AZURE_TENANT_ID"
-        shell: pwsh
+        shell: bash
 
       - name: Provision Infrastructure
         run: |
           azd config reset --force
           azd provision -e ${{ env.AZURE_ENV_NAME }} --no-prompt
-        shell: pwsh
+        shell: bash
         env:
           AZD_INITIAL_ENVIRONMENT_CONFIG: ${{ secrets.AZD_INITIAL_ENVIRONMENT_CONFIG }}
