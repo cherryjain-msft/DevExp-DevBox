@@ -71,6 +71,18 @@ resource project 'Microsoft.DevCenter/projects@2024-10-01-preview' = {
   tags: tags
 }
 
+@description('Project Identity Role Assignments')
+resource projectIdentityRoleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for roleAssignment in identity.roleAssignments: {
+    name: guid(project.id, roleAssignment.name)
+    scope: project
+    properties: {
+      principalId: project.identity.principalId
+      roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.id)
+    }
+  }
+]
+
 @description('Key Vault Access Policies')
 module keyVaultAccessPolicies '../../security/keyvault-access.bicep' = {
   name: '${project.name}-keyvaultAccess'

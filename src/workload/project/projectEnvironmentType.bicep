@@ -25,9 +25,12 @@ resource project 'Microsoft.DevCenter/projects@2024-10-01-preview' existing = {
 resource environmentType 'Microsoft.DevCenter/projects/environmentTypes@2024-10-01-preview' = {
   name: environmentConfig.name
   parent: project
+  identity: {
+    type: 'SystemAssigned'
+  }
   properties: {
     displayName: environmentConfig.name
-    deploymentTargetId: resourceId('Microsoft.Subscriptions','subscriptions',subscription().subscriptionId)
+    deploymentTargetId: subscription().id
     status: 'Enabled'
     creatorRoleAssignment: {
       roles: toObject(roles, role => role.id, role => role.properties)
