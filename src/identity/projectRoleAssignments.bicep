@@ -13,7 +13,7 @@ param principalId string
 @description('Role assignment resource.')
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for role in roles: {
-    name: guid(role, scope, principalId)
+    name: guid(role.name, scope, principalId)
     scope: (scope == 'subscription') ? subscription() : tenant()
     properties: {
       principalId: principalId
