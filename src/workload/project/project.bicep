@@ -103,6 +103,7 @@ module catalogs 'projectCatalog.bicep' = {
     secretIdentifier: secretIdentifier
   }
   dependsOn: [
+    projectIdentityRoleAssignments
     keyVaultAccessPolicies
   ]
 }
@@ -117,6 +118,7 @@ module environmentTypes 'projectEnvironmentType.bicep' = [
       environmentConfig: environmentType
     }
     dependsOn: [
+      projectIdentityRoleAssignments
       keyVaultAccessPolicies
     ]
   }
@@ -135,6 +137,7 @@ module pools 'projectPool.bicep' = [
       networkConnectionName: networkConnectionName
     }
     dependsOn: [
+      projectIdentityRoleAssignments
       keyVaultAccessPolicies
       catalogs
     ]
