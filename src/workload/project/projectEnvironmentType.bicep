@@ -11,7 +11,7 @@ type ProjectEnvironmentType = {
 
 var roles = [
   {
-    id: '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+    id: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
     properties: {}
   }
 ]
@@ -29,9 +29,6 @@ resource environmentType 'Microsoft.DevCenter/projects/environmentTypes@2024-10-
     type: 'SystemAssigned'
   }
   properties: {
-    userRoleAssignments: {
-      roles: toObject(roles, role => role.id, role => role.properties)
-    }
     displayName: environmentConfig.name
     deploymentTargetId: subscription().id
     status: 'Enabled'
