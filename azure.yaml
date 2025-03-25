@@ -11,7 +11,7 @@ cloud:
 
 infra:
   provider: bicep
-  path: ./infra/main.bicep
+  path: /infra/main.bicep
   mode: complete
 
 pipeline:
