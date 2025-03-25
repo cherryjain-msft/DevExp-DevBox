@@ -17,7 +17,7 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
     scope: (scope == 'subscription') ? subscription() : tenant()
     properties: {
       principalId: principalId
-      roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', role)
+      roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', role.id)
       principalType: 'ServicePrincipal'
     }
   }
