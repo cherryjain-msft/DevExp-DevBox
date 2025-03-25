@@ -1,3 +1,5 @@
+targetScope = 'subscription'
+
 @description('Roles to assign to the identity.')
 param roles array
 
@@ -12,7 +14,7 @@ param principalId string
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for role in roles: {
     name: guid(role, scope, principalId)
-    scope: (scope == 'subscription') ? subscription() : (scope == 'resourceGroup') ? resourceGroup() : tenant()
+    scope: (scope == 'subscription') ? subscription() : tenant()
     properties: {
       principalId: principalId
       roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', role)

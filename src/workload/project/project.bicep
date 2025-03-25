@@ -74,7 +74,7 @@ resource project 'Microsoft.DevCenter/projects@2024-10-01-preview' = {
 @description('Project Identity Role Assignments')
 module roleAssignments '../../identity/projectRoleAssignments.bicep' = {
   name: 'roleAssignments-${project.name}'
-  scope: resourceGroup()
+  scope: subscription()
   params: {
     roles: identity.roleAssignments
     scope: 'subscription'
