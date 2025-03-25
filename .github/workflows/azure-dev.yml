@@ -1,4 +1,4 @@
-name: Microsoft Dev Box Deployment
+name: Microsoft Dev Box Deployment V2
 # Run when commits are pushed to main
 on:
   workflow_dispatch:
@@ -11,7 +11,7 @@ permissions:
 
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     env:
       AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
@@ -21,14 +21,10 @@ jobs:
       AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
       KEY_VAULT_SECRET: ${{ secrets.KEY_VAULT_SECRET }}
     steps:
-      - name: Install Azure CLI
-        run: |
-          az upgrade
-        shell: pwsh
-
       - name: Checkout
         uses: actions/checkout@v4
-
+      - name: Install azd
+        uses: Azure/setup-azd@v2
       - name: Log in with Azure (Federated Credentials)
         run: |
           azd auth login `
@@ -37,10 +33,11 @@ jobs:
             --tenant-id "$Env:AZURE_TENANT_ID"
         shell: pwsh
 
+
       - name: Provision Infrastructure
-        run: |
-          azd config reset --force
-          azd provision -e ${{ env.AZURE_ENV_NAME }} --no-prompt
-        shell: pwsh
+        run: azd provision --no-prompt
         env:
           AZD_INITIAL_ENVIRONMENT_CONFIG: ${{ secrets.AZD_INITIAL_ENVIRONMENT_CONFIG }}
+
+      - name: Deploy Application
+        run: azd deploy --no-prompt
