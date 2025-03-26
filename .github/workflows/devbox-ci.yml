@@ -53,5 +53,5 @@ jobs:
 
       - name: Build Solution
         run: |
-          az bicep build --file ./infrastructure/main.bicep --outdir ./infrastructure/bin
+          az bicep build --file ./infra/main.bicep --outdir ./infra/bin
         shell: bash
