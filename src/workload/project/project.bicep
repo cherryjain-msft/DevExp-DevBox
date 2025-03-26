@@ -72,13 +72,13 @@ resource project 'Microsoft.DevCenter/projects@2024-10-01-preview' = {
 }
 
 @description('Project Identity Role Assignments')
-module projectIdentityRoleAssignments '../../identity/projectRoleAssignments.bicep' = [
+resource projectIdentityRoleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for roleAssignment in identity.roleAssignments: {
     name: guid(roleAssignment.id, project.name)
-    scope: subscription()
-    params: {
-      roleAssignmentId: roleAssignment.id
+    scope: project
+    properties: {
       principalId: project.identity.principalId
+      roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.id)
     }
   }
 ]
