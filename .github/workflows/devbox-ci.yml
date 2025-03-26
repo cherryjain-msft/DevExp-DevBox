@@ -53,5 +53,6 @@ jobs:
 
       - name: Build Solution
         run: |
+          sudo mkdir ./infra/bin
           az bicep build --file ./infra/main.bicep --outdir ./infra/bin
         shell: bash
