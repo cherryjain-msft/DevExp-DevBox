@@ -2,6 +2,15 @@ name: Microsoft Dev Box Deployment V2
 # Run when commits are pushed to main
 on:
   workflow_dispatch:
+    inputs:
+      AZURE_ENV_NAME:
+        description: 'Azure environment name'
+        required: true
+        default: 'dev'
+      AZURE_LOCATION:
+        description: 'Azure location'
+        required: true
+        default: 'eastus2'
 
 # Set up permissions for deploying with secretless Azure federated credentials
 # https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Clinux#set-up-azure-login-with-openid-connect-authentication
@@ -17,8 +26,8 @@ jobs:
       AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-      AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
-      AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
+      AZURE_ENV_NAME: ${{ inputs.AZURE_ENV_NAME }}
+      AZURE_LOCATION: ${{ inputs.AZURE_LOCATION }}
       KEY_VAULT_SECRET: ${{ secrets.KEY_VAULT_SECRET }}
     steps:
 
