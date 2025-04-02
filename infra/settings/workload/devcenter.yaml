@@ -9,6 +9,8 @@ installAzureMonitorAgentEnableStatus: "Enabled"
 identity:
   type: "SystemAssigned"
   roleAssignments:
+    - name: "Owner"
+      id: "8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
     - name: "Contributor"
       id: "b24988ac-6180-42a0-ab88-20f7382dd24c"
     - name: "DevCenter Dev Box User"
