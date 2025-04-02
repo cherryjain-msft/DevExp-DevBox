@@ -59,7 +59,7 @@ projects:
         type: "gitHub"
         uri: "https://github.com/Evilazaro/identityProvider.git"
         branch: "main"
-        path: ".configuration/devcenter/environments/dev"
+        path: ".configuration/devcenter/environments"
       imageDefinition:
         name: "imageDefinitions"
         type: "gitHub"
