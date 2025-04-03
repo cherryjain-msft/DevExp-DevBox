@@ -97,7 +97,7 @@ projects:
         type: "gitHub"
         uri: "https://github.com/Evilazaro/eShop.git"
         branch: "main"
-        path: ".devcenter/environments/dev"
+        path: ".devcenter/environments"
       imageDefinition:
         name: "imageDefinitions"
         type: "gitHub"
