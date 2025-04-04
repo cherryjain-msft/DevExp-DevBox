@@ -74,7 +74,7 @@ resource project 'Microsoft.DevCenter/projects@2024-10-01-preview' = {
 @description('Dev Center Identity Role Assignments')
 module projectIdentityRoleAssignments '../../identity/devCenterRoleAssignment.bicep'= [
   for roleAssignment in identity.roleAssignments: {
-    name: 'roleAssignment-${replace(roleAssignment.name, ' ', '-')}'
+    name: 'roleAssignment-${project.name}-${replace(roleAssignment.name, ' ', '-')}'
     scope: subscription()
     params: {
       id: roleAssignment.id
