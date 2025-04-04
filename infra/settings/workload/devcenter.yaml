@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=./devcenter.schema.json
 
-name: "devexp-devcenter"
+name: "corteva-devcenter"
 location: "eastus2"
 catalogItemSyncEnableStatus: "Enabled"
 microsoftHostedNetworkEnableStatus: "Enabled"
