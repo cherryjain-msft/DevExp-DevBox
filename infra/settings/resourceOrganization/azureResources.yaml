@@ -1,8 +1,8 @@
 # yaml-language-server: $schema=./azureResources.shema.json
 
 workload:
-  create: true
-  name: devexp-workload
+  create: false
+  name: IT-MSDevBox-POC
   description: prodExp
   tags:
     environment: dev
@@ -15,8 +15,8 @@ workload:
     resources: ResourceGroup
 
 security:
-  create: true
-  name: devexp-security
+  create: false
+  name: IT-MSDevBox-POC
   description: prodExp
   tags:
     environment: dev
@@ -29,8 +29,8 @@ security:
     resources: ResourceGroup
 
 monitoring:
-  create: true
-  name: devexp-monitoring
+  create: false
+  name: IT-MSDevBox-POC
   description: prodExp
   tags:
     environment: dev
@@ -43,8 +43,8 @@ monitoring:
     resources: ResourceGroup
 
 connectivity:
-  create: true
-  name: devexp-connectivity
+  create: false
+  name: AG_Windows365_PRD_01_NRG
   description: prodExp
   tags:
     environment: dev
