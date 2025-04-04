@@ -71,15 +71,18 @@ resource project 'Microsoft.DevCenter/projects@2024-10-01-preview' = {
   tags: tags
 }
 
-@description('Project Identity Role Assignments')
-resource projectIdentityRoleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+@description('Dev Center Identity Role Assignments')
+module projectIdentityRoleAssignments '../../identity/devCenterRoleAssignment.bicep'= [
   for roleAssignment in identity.roleAssignments: {
-    name: guid(roleAssignment.id, project.name)
-    scope: project
-    properties: {
+    name: 'roleAssignment-${replace(roleAssignment.name, ' ', '-')}'
+    scope: subscription()
+    params: {
+      id: roleAssignment.id
       principalId: project.identity.principalId
-      roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.id)
     }
+    dependsOn: [
+      keyVaultAccessPolicies
+    ]
   }
 ]
 
