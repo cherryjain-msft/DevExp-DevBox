@@ -1,13 +1,13 @@
 # yaml-language-server: $schema=./network.schema.json
 
-create: false
-name: AG_Windows365_PRD_01_EASTUS2_01_VNET
+create: true
+name: contoso-vnet
 addressPrefixes:
-  - 10.232.96.0/19
+  - 10.0.0.0/16
 subnets:
-  - name: Subnet_10.232.96.0_19
+  - name: contoso-subnet
     properties:
-      addressPrefix: 10.232.96.0/19
+      addressPrefix: 10.0.1.0/24
 tags:
   environment: dev
   division: Platforms
