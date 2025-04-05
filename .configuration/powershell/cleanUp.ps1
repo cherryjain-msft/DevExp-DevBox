@@ -5,7 +5,7 @@ $ErrorActionPreference = "Stop"
 $WarningPreference = "Stop"
 
 $workloadname = "devexp"  # Replace with your workload name
-$environment = "dev"
+$environment = "prod"
 $location = "eastus2"          # Replace with your environment (e.g., dev, prod)
 # Azure Resource Group Names Constants
 $workloadResourceGroup = "${workloadname}-workload-${environment}-${location}-rg"
