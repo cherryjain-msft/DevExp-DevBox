@@ -91,35 +91,6 @@ properties:
       dependsOn:
         - Ubuntu
 
-    ### Update Ubuntu Package List
-    ### -------------------------------------
-    - resource: PSDscResources/Script
-      id: Ubuntu.Update
-      directives:
-        description: Upgrade Ubuntu packages
-      settings:
-        SetScript: |
-          try {
-              Set-ExecutionPolicy Bypass -Scope Process -Force
-              Write-Verbose "Setting environment path"
-              $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-
-              # Construct the WSL command as a single-line string
-              $wslCommand = @(
-                  "sudo apt-get update",
-                  "sudo apt-get upgrade -y"
-              ) -join "; "
-
-              # Run the command in WSL and ensure it runs silently
-              wsl.exe -d Ubuntu -u root -- bash -c "$wslCommand" 2>$null
-          } catch {
-              Write-Error "Failed to install Azure CLI: $_"
-          }
-        GetScript: return $false
-        TestScript: return $false
-      dependsOn:
-        - Ubuntu.User
-
     ### Install Azure CLI
     ### -------------------------------------
     - resource: PSDscResources/Script
@@ -135,6 +106,8 @@ properties:
 
               # Construct the WSL command as a single-line string
               $wslCommand = @(
+                  "sudo apt-get update",
+                  "sudo apt-get upgrade -y"
                   "sudo apt-get install -y curl",
                   "curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash",
                   "curl -fsSL https://aka.ms/install-azd.sh | sudo bash"
