@@ -32,3 +32,30 @@ properties:
       settings:
         id: Microsoft.DotNet.Runtime.9
         source: winget
+      dependsOn:
+        - Microsoft.DotNet.SDK.9
+
+    ### Install ASPIRE and Update Workloads
+    ### -------------------------------------
+    - resource: PSDscResources/Script
+      id: dotnet.workloads
+      directives:
+        description: Install Ubuntu for WSL
+      settings:
+        SetScript: |
+          try {
+              Set-ExecutionPolicy Bypass -Scope Process -Force
+              Write-Verbose "Setting environment path"
+              $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+              Write-Verbose "Installing .NET ASPiRE and updating workloads"
+              dotnet workload install aspire
+              dotnet workload install maui
+              dotnet workload update
+              Write-Host "Workloads Installed and Updated successfully."
+          } catch {
+              Write-Error "Failed to install and update dotnet workloads: $_"
+          }
+        GetScript: return $false
+        TestScript: return $false
+      dependsOn:
+        - Microsoft.DotNet.Runtime.9
