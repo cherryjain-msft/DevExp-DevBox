@@ -107,7 +107,7 @@ properties:
               # Construct the WSL command as a single-line string
               $wslCommand = @(
                   "sudo apt-get update",
-                  "sudo apt-get upgrade -y"
+                  "sudo apt-get upgrade -y",
                   "sudo apt-get install -y curl",
                   "curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash",
                   "curl -fsSL https://aka.ms/install-azd.sh | sudo bash"
@@ -146,7 +146,9 @@ properties:
                   "apt-get install -y aspnetcore-runtime-9.0",
                   "sudo dotnet workload install aspire",
                   "sudo dotnet workload install maui",
-                  "sudo dotnet workload update"
+                  "sudo dotnet workload update",
+                  "sudo apt-get update",
+                  "sudo apt-get upgrade -y"
               ) -join "; "
 
               # Run the command in WSL and ensure it runs silently
