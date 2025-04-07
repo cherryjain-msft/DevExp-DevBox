@@ -159,3 +159,13 @@ properties:
         allowPrerelease: true
       settings:
         id: Microsoft.WindowsTerminal
+
+    ### Install PowerToys
+    ### -------------------------------------
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Microsoft.PowerToys
+      directives:
+        description: Install PowerToys
+        allowPrerelease: true
+      settings:
+        id: Microsoft.PowerToys
