@@ -101,6 +101,9 @@ resource userGroupRoleAssingments 'Microsoft.Authorization/roleAssignments@2022-
       roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.name)
       principalType: 'Group'
     }
+    dependsOn: [
+      projectIdentityRoleAssignments
+    ]
   }
 ]
 
