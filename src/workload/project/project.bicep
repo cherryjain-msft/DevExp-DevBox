@@ -94,7 +94,7 @@ module projectIdentityRoleAssignments '../../identity/devCenterRoleAssignment.bi
 @description('Dev Center Identity Role Assignments')
 module userGroupRoleAssingments '../../identity/devCenterRoleAssignment.bicep'= [
   for roleAssignment in identity.roleAssignments: {
-    name: 'roleAssignment-${identity.usergroup.name}-${replace(roleAssignment.name, ' ', '-')}'
+    name: 'roleAssignment-${project.name}-${identity.usergroup.name}-${replace(roleAssignment.name, ' ', '-')}'
     scope: subscription()
     params: {
       id: roleAssignment.id
