@@ -79,7 +79,7 @@ resource project 'Microsoft.DevCenter/projects@2024-10-01-preview' = {
 @description('Dev Center Identity Role Assignments')
 resource projectIdentityRoleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for roleAssignment in identity.roleAssignments: {
-    name: 'RBAC-${project.name}-${replace(roleAssignment.name, ' ', '-')}'
+    name: guid(project.name, roleAssignment.name, replace(roleAssignment.name, ' ', '-'))
     scope: resourceGroup()
     properties: {
       principalId: project.identity.principalId
