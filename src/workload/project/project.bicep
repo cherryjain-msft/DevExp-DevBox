@@ -76,22 +76,6 @@ resource project 'Microsoft.DevCenter/projects@2024-10-01-preview' = {
   tags: tags
 }
 
-@description('Project Identity')
-module userGroupIdentity '../../identity/devCenterRoleAssignment.bicep' = [
-  for roleAssignment in identity.roleAssignments: {
-    name: 'RBAC-${guid(roleAssignment.id,project.name)}'
-    scope: subscription()
-    params: {
-      id: roleAssignment.id
-      principalId: identity.usergroup.id
-      principalType: 'Group'
-    }
-    dependsOn: [
-      keyVaultAccessPolicies
-    ]
-  }
-]
-
 @description('Key Vault Access Policies')
 module keyVaultAccessPolicies '../../security/keyvault-access.bicep' = {
   name: '${project.name}-keyvaultAccess'
@@ -101,6 +85,22 @@ module keyVaultAccessPolicies '../../security/keyvault-access.bicep' = {
     principalId: project.identity.principalId
   }
 }
+
+@description('Project Identity')
+module projectIdentity '../../identity/devCenterRoleAssignment.bicep' = [
+  for roleAssignment in identity.roleAssignments: {
+    name: 'RBAC-${project.name}-${guid(roleAssignment.id,roleAssignment.name)}'
+    scope: subscription()
+    params: {
+      id: roleAssignment.id
+      principalId: project.identity.principalId
+      principalType: 'ServicePrincipal'
+    }
+    dependsOn: [
+      keyVaultAccessPolicies
+    ]
+  }
+]
 
 @description('Environment Definition Catalog')
 module catalogs 'projectCatalog.bicep' = {
@@ -112,8 +112,7 @@ module catalogs 'projectCatalog.bicep' = {
     secretIdentifier: secretIdentifier
   }
   dependsOn: [
-    userGroupIdentity
-    keyVaultAccessPolicies
+    projectIdentity
   ]
 }
 
@@ -127,8 +126,7 @@ module environmentTypes 'projectEnvironmentType.bicep' = [
       environmentConfig: environmentType
     }
     dependsOn: [
-      userGroupIdentity
-      keyVaultAccessPolicies
+      projectIdentity
     ]
   }
 ]
@@ -146,8 +144,7 @@ module pools 'projectPool.bicep' = [
       networkConnectionName: networkConnectionName
     }
     dependsOn: [
-      userGroupIdentity
-      keyVaultAccessPolicies
+      projectIdentity
       catalogs
     ]
   }

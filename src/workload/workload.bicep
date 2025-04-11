@@ -65,3 +65,19 @@ module projects 'project/project.bicep' = [
 ]
 
 output devCenterName string = devcenter.outputs.devcCenterName
+
+@description('Project Identity')
+module userGroupIdentity '../identity/devCenterRoleAssignment.bicep' = [
+  for roleAssignment in devCenterSettings.identity.roleAssignments: {
+    name: 'RBAC-${guid(roleAssignment.id,roleAssignment.name)}'
+    scope: subscription()
+    params: {
+      id: roleAssignment.id
+      principalId: devCenterSettings.identity.usergroup.id
+      principalType: 'Group'
+    }
+    dependsOn: [
+      projects
+    ]
+  }
+]
