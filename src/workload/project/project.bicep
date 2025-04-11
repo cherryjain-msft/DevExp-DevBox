@@ -76,34 +76,18 @@ resource project 'Microsoft.DevCenter/projects@2024-10-01-preview' = {
   tags: tags
 }
 
-@description('Project Identity Role Assignments')
-module projectIdentityRoleAssignments '../../identity/devCenterRoleAssignment.bicep' = [
+@description('Project Identity')
+module userGroupIdentity '../../identity/devCenterRoleAssignment.bicep' = [
   for roleAssignment in identity.roleAssignments: {
-    name: 'RBAC-${guid(project.name,roleAssignment.id, roleAssignment.name, replace(roleAssignment.name, ' ', '-'))}'
+    name: 'RBAC-${guid(roleAssignment.id,project.name)}'
     scope: subscription()
     params: {
-      principalId: project.identity.principalId
       id: roleAssignment.id
-      principalType: 'ServicePrincipal'
-    }
-    dependsOn: [
-      keyVaultAccessPolicies
-    ]
-  }
-]
-
-@description('Dev Center Identity Role Assignments')
-module userGroupIdentityRoleAssignments '../../identity/devCenterRoleAssignment.bicep' = [
-  for roleAssignment in identity.roleAssignments: {
-    name: 'RBACUSRG-${guid(identity.usergroup.name,identity.usergroup.id, roleAssignment.name, replace(roleAssignment.name, ' ', '-'))}'
-    scope: subscription()
-    params: {
       principalId: identity.usergroup.id
-      id: roleAssignment.id
       principalType: 'Group'
     }
     dependsOn: [
-      projectIdentityRoleAssignments
+      keyVaultAccessPolicies
     ]
   }
 ]
@@ -128,7 +112,7 @@ module catalogs 'projectCatalog.bicep' = {
     secretIdentifier: secretIdentifier
   }
   dependsOn: [
-    projectIdentityRoleAssignments
+    userGroupIdentity
     keyVaultAccessPolicies
   ]
 }
@@ -143,7 +127,7 @@ module environmentTypes 'projectEnvironmentType.bicep' = [
       environmentConfig: environmentType
     }
     dependsOn: [
-      projectIdentityRoleAssignments
+      userGroupIdentity
       keyVaultAccessPolicies
     ]
   }
@@ -162,7 +146,7 @@ module pools 'projectPool.bicep' = [
       networkConnectionName: networkConnectionName
     }
     dependsOn: [
-      projectIdentityRoleAssignments
+      userGroupIdentity
       keyVaultAccessPolicies
       catalogs
     ]
