@@ -99,6 +99,7 @@ module userGroupRoleAssingments '../../identity/devCenterRoleAssignment.bicep'= 
     params: {
       id: roleAssignment.id
       principalId: identity.usergroup.id
+      principalType: 'Group'
     }
     dependsOn: [
       projectIdentityRoleAssignments
