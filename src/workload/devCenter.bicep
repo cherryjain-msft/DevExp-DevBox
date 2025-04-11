@@ -36,9 +36,14 @@ type Status = 'Enabled' | 'Disabled'
 
 type Identity = {
   type: string
+  usergroup: UserGroup
   roleAssignments: RoleAssignment[]
 }
 
+type UserGroup = {
+  id: string
+  name: string
+}
 type RoleAssignment = {
   name: string
   id: string

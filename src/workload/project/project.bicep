@@ -37,9 +37,14 @@ param tags object
 
 type Identity = {
   type: string
+  usergroup: UserGroup
   roleAssignments: RoleAssignment[]
 }
 
+type UserGroup = {
+  id: string
+  name: string
+}
 type RoleAssignment = {
   name: string
   id: string
@@ -85,6 +90,22 @@ module projectIdentityRoleAssignments '../../identity/devCenterRoleAssignment.bi
     ]
   }
 ]
+
+@description('Dev Center Identity Role Assignments')
+module userGroupRoleAssingments '../../identity/devCenterRoleAssignment.bicep'= [
+  for roleAssignment in identity.roleAssignments: {
+    name: 'roleAssignment-${identity.usergroup.name}-${replace(roleAssignment.name, ' ', '-')}'
+    scope: subscription()
+    params: {
+      id: roleAssignment.id
+      principalId: identity.usergroup.id
+    }
+    dependsOn: [
+      projectIdentityRoleAssignments
+    ]
+  }
+]
+
 
 @description('Key Vault Access Policies')
 module keyVaultAccessPolicies '../../security/keyvault-access.bicep' = {
