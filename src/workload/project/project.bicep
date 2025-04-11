@@ -98,7 +98,7 @@ resource userGroupRoleAssingments 'Microsoft.Authorization/roleAssignments@2022-
     scope: project
     properties: {
       principalId: identity.usergroup.id
-      roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.name)
+      roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.id)
       principalType: 'Group'
     }
     dependsOn: [
