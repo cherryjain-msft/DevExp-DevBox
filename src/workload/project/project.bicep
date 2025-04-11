@@ -77,7 +77,7 @@ resource project 'Microsoft.DevCenter/projects@2024-10-01-preview' = {
 }
 
 @description('Dev Center Identity Role Assignments')
-module projectIdentityRoleAssignments '../../identity/devCenterRoleAssignment.bicep'= [
+module projectIdentityRoleAssignments '../../identity/devCenterRoleAssignment.bicep' = [
   for roleAssignment in identity.roleAssignments: {
     name: 'RBAC-${project.name}-${replace(roleAssignment.name, ' ', '-')}'
     scope: subscription()
@@ -92,21 +92,17 @@ module projectIdentityRoleAssignments '../../identity/devCenterRoleAssignment.bi
 ]
 
 @description('Dev Center Identity Role Assignments')
-module userGroupRoleAssingments '../../identity/devCenterRoleAssignment.bicep'= [
+resource userGroupRoleAssingments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for roleAssignment in identity.roleAssignments: {
-    name: 'RBAC-${guid(project.name,identity.usergroup.name,replace(roleAssignment.name, ' ', '-'))}'
-    scope: subscription()
-    params: {
-      id: roleAssignment.id
+    name: guid(project.name, identity.usergroup.name, replace(roleAssignment.name, ' ', '-'))
+    scope: project
+    properties: {
       principalId: identity.usergroup.id
+      roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.name)
       principalType: 'Group'
     }
-    dependsOn: [
-      projectIdentityRoleAssignments
-    ]
   }
 ]
-
 
 @description('Key Vault Access Policies')
 module keyVaultAccessPolicies '../../security/keyvault-access.bicep' = {
