@@ -76,14 +76,14 @@ resource project 'Microsoft.DevCenter/projects@2024-10-01-preview' = {
   tags: tags
 }
 
-@description('Dev Center Identity Role Assignments')
-module projectIdentityRoleAssignments '../../identity/devCenterRoleAssignment.bicep' = [
+@description('Project Identity Role Assignments')
+resource projectIdentityRoleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for roleAssignment in identity.roleAssignments: {
     name: guid(project.name, roleAssignment.name, replace(roleAssignment.name, ' ', '-'))
-    scope: subscription()
-    params: {
+    scope: project
+    properties: {
       principalId: project.identity.principalId
-      id: roleAssignment.id
+      roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.id)
       principalType: 'ServicePrincipal'
     }
     dependsOn: [
@@ -93,13 +93,13 @@ module projectIdentityRoleAssignments '../../identity/devCenterRoleAssignment.bi
 ]
 
 @description('Dev Center Identity Role Assignments')
-resource userGroupRoleAssingments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+module userGroupIdentityRoleAssignments '../../identity/devCenterRoleAssignment.bicep' = [
   for roleAssignment in identity.roleAssignments: {
-    name: guid(project.name, identity.usergroup.name, replace(roleAssignment.name, ' ', '-'))
-    scope: project
-    properties: {
+    name: 'RBAC-${guid(identity.usergroup.name,identity.usergroup.id, roleAssignment.name, replace(roleAssignment.name, ' ', '-'))}'
+    scope: subscription()
+    params: {
       principalId: identity.usergroup.id
-      roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.id)
+      id: roleAssignment.id
       principalType: 'Group'
     }
     dependsOn: [
