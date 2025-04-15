@@ -8,7 +8,7 @@ installAzureMonitorAgentEnableStatus: "Enabled"
 
 identity:
   type: "SystemAssigned"
- 
+
   roleAssignments:
     devCenter:
       - id: "8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
@@ -17,7 +17,7 @@ identity:
         name: "Contributor"
       - id: "18d7d88d-d35e-4fb5-a5c3-7773c20a72d9"
         name: "User Access Administrator"
-    
+
     orgRoleType:
       - type: DevManager
         azureADGroupId: "8dae87fa-87b2-460b-b972-a4239fbd4a96"
@@ -46,12 +46,15 @@ projects:
     identity:
       type: SystemAssigned
       roleAssignments:
-        - azureADGroupId: "331c37c6-af14-46d9-b9f4-e1909e1b95a0"
-          azureADGroupName: "ddd "
-          azureRBACRoles: 
-            - name: "DevCenter Project Admin"
-              id: "331c37c6-af14-46d9-b9f4-e1909e1b95a0"
-
+        - azureADGroupId: "74e97f40-4b75-470f-8f19-3f1ef4253895"
+          azureADGroupName: "Developers"
+          azureRBACRoles:
+            - name: "Contributor"
+              id: "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            - name: "Dev Box User"
+              id: "45d50f46-0b78-4001-a660-4198cbe8cd05"
+            - name: "Deployment Environment User"
+              id: "18e40d4e-8d2e-438d-97e1-9528336e149c"
     pools:
       - name: "backend-engineer"
         imageDefinitionName: "identityProvider-backend-engineer"
@@ -93,11 +96,15 @@ projects:
     identity:
       type: SystemAssigned
       roleAssignments:
-        - azureADGroupId: "331c37c6-af14-46d9-b9f4-e1909e1b95a0"
-          azureADGroupName: "ddd "
-          azureRBACRoles: 
-            - name: "DevCenter Project Admin"
-              id: "331c37c6-af14-46d9-b9f4-e1909e1b95a0"
+        - azureADGroupId: "74e97f40-4b75-470f-8f19-3f1ef4253895"
+          azureADGroupName: "Developers"
+          azureRBACRoles:
+            - name: "Contributor"
+              id: "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            - name: "Dev Box User"
+              id: "45d50f46-0b78-4001-a660-4198cbe8cd05"
+            - name: "Deployment Environment User"
+              id: "18e40d4e-8d2e-438d-97e1-9528336e149c"
 
     pools:
       - name: "backend-engineer"
