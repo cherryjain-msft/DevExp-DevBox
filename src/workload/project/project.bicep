@@ -87,18 +87,15 @@ module keyVaultAccessPolicies '../../security/keyvault-access.bicep' = {
 }
 
 @description('Project Identity')
-module projectIdentity '../../identity/devCenterRoleAssignment.bicep' = [
+resource projectIdentity 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for roleAssignment in identity.roleAssignments: {
-    name: 'RBAC-${project.name}-${guid(roleAssignment.id,roleAssignment.name)}'
-    scope: subscription()
-    params: {
-      id: roleAssignment.id
-      principalId: project.identity.principalId
-      principalType: 'ServicePrincipal'
+    name: guid(project.name, roleAssignment.id, roleAssignment.name)
+    scope: project
+    properties: {
+      principalId: identity.usergroup.id
+      roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.id)
+      principalType: 'Group'
     }
-    dependsOn: [
-      keyVaultAccessPolicies
-    ]
   }
 ]
 

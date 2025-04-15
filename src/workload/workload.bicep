@@ -55,7 +55,7 @@ module projects 'project/project.bicep' = [
       secretIdentifier: secretIdentifier
       keyVaultName: keyVaultName
       securityResourceGroupName: securityResourceGroupName
-      identity: devCenterSettings.identity
+      identity: project.identity
       tags: project.tags
     }
     dependsOn: [
@@ -64,20 +64,5 @@ module projects 'project/project.bicep' = [
   }
 ]
 
-output devCenterName string = devcenter.outputs.devcCenterName
+output AZURE_DEV_CENTER_NAME string = devcenter.outputs.devcCenterName
 
-@description('Project Identity')
-module userGroupIdentity '../identity/devCenterRoleAssignment.bicep' = [
-  for roleAssignment in devCenterSettings.identity.roleAssignments: {
-    name: 'RBAC-${guid(roleAssignment.id,roleAssignment.name)}'
-    scope: subscription()
-    params: {
-      id: roleAssignment.id
-      principalId: devCenterSettings.identity.usergroup.id
-      principalType: 'Group'
-    }
-    dependsOn: [
-      projects
-    ]
-  }
-]
