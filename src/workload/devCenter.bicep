@@ -124,7 +124,7 @@ module networkConnection 'core/networkConnection.bicep' = [
     name: 'networkConnections-${subnet.name}'
     scope: resourceGroup()
     params: {
-      name: subnet.name
+      name: 'nc-${subnet.name}'
       devCenterName: devcenter.name
       subnetId: subnet.id
     }
