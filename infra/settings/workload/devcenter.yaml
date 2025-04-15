@@ -46,8 +46,8 @@ projects:
     identity:
       type: SystemAssigned
       roleAssignments:
-        - azureADGroupId: "74e97f40-4b75-470f-8f19-3f1ef4253895"
-          azureADGroupName: "Developers"
+        - azureADGroupId: "331f48d7-4a23-4ec4-b03a-4af29c9c6f34"
+          azureADGroupName: "identityProvider Developers"
           azureRBACRoles:
             - name: "Contributor"
               id: "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -96,8 +96,8 @@ projects:
     identity:
       type: SystemAssigned
       roleAssignments:
-        - azureADGroupId: "74e97f40-4b75-470f-8f19-3f1ef4253895"
-          azureADGroupName: "Developers"
+        - azureADGroupId: "19d12c65-509f-491d-bb38-49297e1c56a0"
+          azureADGroupName: "eShop Developers"
           azureRBACRoles:
             - name: "Contributor"
               id: "b24988ac-6180-42a0-ab88-20f7382dd24c"
