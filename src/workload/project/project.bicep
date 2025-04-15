@@ -37,17 +37,20 @@ param tags object
 
 type Identity = {
   type: string
-  usergroup: UserGroup
   roleAssignments: RoleAssignment[]
 }
 
-type UserGroup = {
+
+type AzureRBACRole = {
   id: string
   name: string
 }
+
 type RoleAssignment = {
-  name: string
-  id: string
+  type: string
+  azureADGroupId: string
+  azureADGroupName: string
+  azureRBACRoles: AzureRBACRole[]
 }
 
 @description('Dev Center')

@@ -20,8 +20,8 @@ identity:
     
     orgRoleType:
       - type: DevManager
-        azureADGroupId: "8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
-        azureADGroupName: "DevExP-DevBox"
+        azureADGroupId: "8dae87fa-87b2-460b-b972-a4239fbd4a96"
+        azureADGroupName: "Dev Manager"
         azureRBACRoles:
           - name: "DevCenter Project Admin"
             id: "331c37c6-af14-46d9-b9f4-e1909e1b95a0"
