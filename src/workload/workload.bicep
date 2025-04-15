@@ -66,5 +66,6 @@ module projects 'project/project.bicep' = [
   }
 ]
 
-
-
+output AZURE_DEV_CENTER_PROJECTS array = [
+  for (project, i) in devCenterSettings.projects: projects[i].outputs.AZURE_PROJECT_NAME
+]

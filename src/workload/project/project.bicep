@@ -147,3 +147,6 @@ module pools 'projectPool.bicep' = [
     ]
   }
 ]
+
+output AZURE_PROJECT_NAME string = project.name
+
