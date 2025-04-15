@@ -1,6 +1,6 @@
 [![Microsoft Dev Box CI](https://github.com/Evilazaro/DevExp-DevBox/actions/workflows/devbox-ci.yml/badge.svg)](https://github.com/Evilazaro/DevExp-DevBox/actions/workflows/devbox-ci.yml)  [![Microsoft Dev Box Deployment V2](https://github.com/Evilazaro/DevExp-DevBox/actions/workflows/azure-dev.yml/badge.svg)](https://github.com/Evilazaro/DevExp-DevBox/actions/workflows/azure-dev.yml)
 
-# Contoso Dev Box Use Case
+# Microsoft Dev Box Accelerator
 
 Welcome to the Contoso Dev Box repository! This project showcases how Contoso, a fictitious company with developers located worldwide, leverages Microsoft Dev Box to streamline its engineer onboarding and deployment environment automation processes.
 
