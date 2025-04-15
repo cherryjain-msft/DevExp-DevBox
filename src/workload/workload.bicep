@@ -47,7 +47,7 @@ module projects 'project/project.bicep' = [
     params: {
       name: project.name
       projectDescription: project.name
-      devCenterName: devcenter.outputs.devcCenterName
+      devCenterName: devcenter.outputs.AZURE_DEV_CENTER_NAME
       projectCatalogs: project.catalogs
       projectEnvironmentTypes: project.environmentTypes
       projectPools: project.pools
@@ -64,5 +64,5 @@ module projects 'project/project.bicep' = [
   }
 ]
 
-output AZURE_DEV_CENTER_NAME string = devcenter.outputs.devcCenterName
+output AZURE_DEV_CENTER_NAME string = devcenter.outputs.AZURE_DEV_CENTER_NAME
 

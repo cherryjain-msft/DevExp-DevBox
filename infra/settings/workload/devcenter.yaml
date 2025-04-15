@@ -8,17 +8,17 @@ installAzureMonitorAgentEnableStatus: "Enabled"
 
 identity:
   type: "SystemAssigned"
-  usergroup:
-    id: "87d1a1df-38cf-416f-b5f7-a5e115de66ad"
-    name: "devexp-devbox"
-  
+ 
   roleAssignments:
-    - name: "Owner"
-      id: "8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
-    - name: "Contributor"
-      id: "b24988ac-6180-42a0-ab88-20f7382dd24c"
-    - name: "Managed Identity Contributor"
-      id: "e40ec5ca-96e0-45a2-b4ff-59039f2c2b59"
+    - id: "b3c0f1a2-4e5b-4f8c-9a7d-6e1f2c3b4d5e"
+      name: "DevCenter Admin"
+      orgRoleType:
+        - type: DevManager
+          azureADGroupId: "8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
+          azureADGroupName: "DevExP-DevBox"
+          azureRBACRoles:
+            - name: "DevCenter Project Admin"
+              id: "331c37c6-af14-46d9-b9f4-e1909e1b95a0"
 
 catalogs:
   - name: "customTasks"
@@ -38,22 +38,13 @@ projects:
     description: "Identity Provider project."
 
     identity:
-      type: "SystemAssigned"
-      usergroup:
-        id: "87d1a1df-38cf-416f-b5f7-a5e115de66ad"
-        name: "devexp-devbox"
-      
+      type: SystemAssigned
       roleAssignments:
-        - name: "Contributor"
-          id: "b24988ac-6180-42a0-ab88-20f7382dd24c"
-        - name: "DevCenter Dev Box User"
-          id: "45d50f46-0b78-4001-a660-4198cbe8cd05"
-        - name: "DevCenter Project Admin"
-          id: "331c37c6-af14-46d9-b9f4-e1909e1b95a0"
-        - name: "Deployment Environments User"
-          id: "18e40d4e-8d2e-438d-97e1-9528336e149c"
-        - name: "Deployment Environments Reader"
-          id: "eb960402-bf75-4cc3-8d68-35b34f960f72"
+        - azureADGroupId: "331c37c6-af14-46d9-b9f4-e1909e1b95a0"
+          azureADGroupName: "ddd "
+          azureRBACRoles: 
+            - name: "DevCenter Project Admin"
+              id: "331c37c6-af14-46d9-b9f4-e1909e1b95a0"
 
     pools:
       - name: "backend-engineer"
@@ -94,22 +85,13 @@ projects:
     description: "eShop project."
 
     identity:
-      type: "SystemAssigned"
-      usergroup:
-        id: "87d1a1df-38cf-416f-b5f7-a5e115de66ad"
-        name: "devexp-devbox"
-      
+      type: SystemAssigned
       roleAssignments:
-        - name: "Contributor"
-          id: "b24988ac-6180-42a0-ab88-20f7382dd24c"
-        - name: "DevCenter Dev Box User"
-          id: "45d50f46-0b78-4001-a660-4198cbe8cd05"
-        - name: "DevCenter Project Admin"
-          id: "331c37c6-af14-46d9-b9f4-e1909e1b95a0"
-        - name: "Deployment Environments User"
-          id: "18e40d4e-8d2e-438d-97e1-9528336e149c"
-        - name: "Deployment Environments Reader"
-          id: "eb960402-bf75-4cc3-8d68-35b34f960f72"
+        - azureADGroupId: "331c37c6-af14-46d9-b9f4-e1909e1b95a0"
+          azureADGroupName: "ddd "
+          azureRBACRoles: 
+            - name: "DevCenter Project Admin"
+              id: "331c37c6-af14-46d9-b9f4-e1909e1b95a0"
 
     pools:
       - name: "backend-engineer"

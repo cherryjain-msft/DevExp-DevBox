@@ -9,14 +9,20 @@
       "description": "Name of the DevCenter.",
       "minLength": 1,
       "maxLength": 64,
-      "default": "devexp-devcenter"
+      "default": "contoso-devexp-devcenter",
+      "examples": [
+        "contoso-devexp-devcenter"
+      ]
     },
     "location": {
       "type": "string",
       "description": "Azure region where the DevCenter is deployed.",
       "minLength": 1,
       "maxLength": 64,
-      "default": "eastus2"
+      "default": "eastus2",
+      "examples": [
+        "eastus2"
+      ]
     },
     "catalogItemSyncEnableStatus": {
       "type": "string",
@@ -51,48 +57,85 @@
       "properties": {
         "type": {
           "type": "string",
-          "description": "Type of identity.",
           "enum": [
-            "None",
-            "SystemAssigned",
-            "UserAssigned",
-            "SystemAssigned, UserAssigned"
+            "SystemAssigned"
           ],
           "default": "SystemAssigned"
         },
-        "usergroup": {
-          "type": "object",
-          "description": "User group configuration.",
-          "properties": {
-            "id": {
-              "type": "string",
-              "description": "ID of the user group.",
-              "minLength": 1
-            },
-            "name": {
-              "type": "string",
-              "description": "Name of the user group.",
-              "minLength": 1
-            }
-          },
-          "required": [
-            "id",
-            "name"
-          ],
-          "additionalProperties": false
-        },
         "roleAssignments": {
           "type": "array",
-          "description": "List of role assignments.",
-          "minItems": 1,
           "items": {
-            "$ref": "#/definitions/roleDefinition"
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-fA-F0-9\\-]{36}$",
+                "description": "Role ID"
+              },
+              "name": {
+                "type": "string",
+                "description": "Role name"
+              },
+              "orgRoleType": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "DevManager"
+                      ]
+                    },
+                    "azureADGroupId": {
+                      "type": "string",
+                      "pattern": "^[a-fA-F0-9\\-]{36}$"
+                    },
+                    "azureADGroupName": {
+                      "type": "string"
+                    },
+                    "azureRBACRoles": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "type": "string",
+                            "pattern": "^[a-fA-F0-9\\-]{36}$"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "id"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "azureADGroupId",
+                    "azureADGroupName",
+                    "azureRBACRoles"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "orgRoleType"
+            ],
+            "additionalProperties": false
           }
         }
       },
       "required": [
         "type",
-        "usergroup",
         "roleAssignments"
       ],
       "additionalProperties": false
@@ -102,7 +145,36 @@
       "description": "List of catalogs associated with the DevCenter.",
       "minItems": 1,
       "items": {
-        "$ref": "#/definitions/catalog"
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "gitHub"
+            ]
+          },
+          "uri": {
+            "type": "string",
+            "format": "uri"
+          },
+          "branch": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "type",
+          "uri",
+          "branch",
+          "path"
+        ],
+        "additionalProperties": false
       }
     },
     "environmentTypes": {
@@ -110,7 +182,20 @@
       "description": "List of environment types associated with the DevCenter.",
       "minItems": 1,
       "items": {
-        "$ref": "#/definitions/environmentType"
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "deploymentTargetId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "deploymentTargetId"
+        ],
+        "additionalProperties": false
       }
     },
     "projects": {
@@ -118,7 +203,69 @@
       "description": "List of projects associated with the DevCenter.",
       "minItems": 1,
       "items": {
-        "$ref": "#/definitions/project"
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "identity": {
+            "$ref": "#/definitions/projectIdentity"
+          },
+          "pools": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "imageDefinitionName": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "name",
+                "imageDefinitionName"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "environmentTypes": {
+            "$ref": "#/properties/environmentTypes"
+          },
+          "catalogs": {
+            "type": "object",
+            "properties": {
+              "environmentDefinition": {
+                "$ref": "#/properties/catalogs/items"
+              },
+              "imageDefinition": {
+                "$ref": "#/properties/catalogs/items"
+              }
+            },
+            "required": [
+              "environmentDefinition",
+              "imageDefinition"
+            ],
+            "additionalProperties": false
+          },
+          "tags": {
+            "$ref": "#/properties/tags"
+          }
+        },
+        "required": [
+          "name",
+          "description",
+          "identity",
+          "pools",
+          "environmentTypes",
+          "catalogs",
+          "tags"
+        ],
+        "additionalProperties": false
       }
     },
     "tags": {
@@ -138,243 +285,62 @@
       }
     }
   },
-  "required": [
-    "name",
-    "location",
-    "catalogItemSyncEnableStatus",
-    "microsoftHostedNetworkEnableStatus",
-    "installAzureMonitorAgentEnableStatus",
-    "identity",
-    "catalogs",
-    "environmentTypes",
-    "projects",
-    "tags"
-  ],
   "definitions": {
-    "catalog": {
+    "projectIdentity": {
       "type": "object",
-      "description": "Catalog configuration.",
+      "description": "Identity configuration for the DevCenter.",
       "properties": {
-        "name": {
-          "type": "string",
-          "description": "Name of the catalog.",
-          "minLength": 1
-        },
         "type": {
           "type": "string",
-          "description": "Type of the catalog.",
           "enum": [
-            "gitHub",
-            "adoGit"
-          ]
-        },
-        "uri": {
-          "type": "string",
-          "description": "URI of the catalog.",
-          "format": "uri"
-        },
-        "branch": {
-          "type": "string",
-          "description": "Branch of the catalog.",
-          "minLength": 1
-        },
-        "path": {
-          "type": "string",
-          "description": "Path of the catalog.",
-          "minLength": 1
-        }
-      },
-      "required": [
-        "name",
-        "type",
-        "uri",
-        "branch",
-        "path"
-      ],
-      "additionalProperties": false
-    },
-    "roleDefinition": {
-      "type": "object",
-      "description": "Role definition.",
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "Name of the role.",
-          "minLength": 1
-        },
-        "id": {
-          "type": "string",
-          "description": "ID of the role.",
-          "minLength": 1
-        }
-      },
-      "required": [
-        "name",
-        "id"
-      ],
-      "additionalProperties": false
-    },
-    "environmentType": {
-      "type": "object",
-      "description": "Environment type configuration.",
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "Name of the environment type.",
-          "minLength": 1
-        },
-        "deploymentTargetId": {
-          "type": "string",
-          "description": "Deployment target ID of the environment type.",
-          "default": ""
-        }
-      },
-      "required": [
-        "name",
-        "deploymentTargetId"
-      ],
-      "additionalProperties": false
-    },
-    "project": {
-      "type": "object",
-      "description": "Project configuration.",
-      "properties": {
-        "name": {
-          "type": "string",
-          "description": "Name of the project.",
-          "minLength": 1
-        },
-        "description": {
-          "type": "string",
-          "description": "Description of the project.",
-          "minLength": 1
-        },
-        "identity": {
-          "type": "object",
-          "description": "Identity configuration for the DevCenter.",
-          "properties": {
-            "type": {
-              "type": "string",
-              "description": "Type of identity.",
-              "enum": [
-                "None",
-                "SystemAssigned",
-                "UserAssigned",
-                "SystemAssigned, UserAssigned"
-              ],
-              "default": "SystemAssigned"
-            },
-            "usergroup": {
-              "type": "object",
-              "description": "User group configuration.",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "description": "ID of the user group.",
-                  "minLength": 1
-                },
-                "name": {
-                  "type": "string",
-                  "description": "Name of the user group.",
-                  "minLength": 1
-                }
-              },
-              "required": [
-                "id",
-                "name"
-              ],
-              "additionalProperties": false
-            },
-            "roleAssignments": {
-              "type": "array",
-              "description": "List of role assignments.",
-              "minItems": 1,
-              "items": {
-                "$ref": "#/definitions/roleDefinition"
-              }
-            }
-          },
-          "required": [
-            "type",
-            "usergroup",
-            "roleAssignments"
+            "SystemAssigned",
+            "UserAssigned",
+            "None",
+            "UserAssigned,SystemAssigned"
           ],
-          "additionalProperties": false
+          "default": "SystemAssigned"
         },
-        "pools": {
+        "roleAssignments": {
           "type": "array",
-          "description": "List of pools associated with the project.",
           "items": {
             "type": "object",
             "properties": {
-              "name": {
+              "azureADGroupId": {
                 "type": "string",
-                "description": "Name of the pool.",
-                "minLength": 1
+                "pattern": "^[a-fA-F0-9\\-]{36}$"
               },
-              "imageDefinitionName": {
-                "type": "string",
-                "description": "Name of the image definition.",
-                "minLength": 1
+              "azureADGroupName": {
+                "type": "string"
+              },
+              "azureRBACRoles": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "id": {
+                      "type": "string",
+                      "pattern": "^[a-fA-F0-9\\-]{36}$"
+                    }
+                  },
+                  "additionalProperties": false
+                }
               }
             },
             "required": [
-              "name",
-              "imageDefinitionName"
+              "azureADGroupId",
+              "azureADGroupName",
+              "azureRBACRoles"
             ],
             "additionalProperties": false
           }
-        },
-        "environmentTypes": {
-          "type": "array",
-          "description": "List of environment types associated with the project.",
-          "items": {
-            "$ref": "#/definitions/environmentType"
-          }
-        },
-        "catalogs": {
-          "type": "object",
-          "description": "Catalogs associated with the project.",
-          "properties": {
-            "environmentDefinition": {
-              "$ref": "#/definitions/catalog"
-            },
-            "imageDefinition": {
-              "$ref": "#/definitions/catalog"
-            }
-          },
-          "required": [
-            "environmentDefinition",
-            "imageDefinition"
-          ],
-          "additionalProperties": false
-        },
-        "tags": {
-          "type": "object",
-          "description": "Tags associated with the project.",
-          "additionalProperties": {
-            "type": "string"
-          },
-          "default": {
-            "environment": "dev",
-            "division": "Platforms",
-            "team": "DevExP",
-            "project": "DevExP-DevBox",
-            "costCenter": "IT",
-            "owner": "Evilazaro",
-            "resources": "Project"
-          }
         }
       },
-      "required": [
-        "name",
-        "description",
-        "pools",
-        "environmentTypes",
-        "catalogs",
-        "tags"
-      ],
       "additionalProperties": false
     }
-  }
+  },
+  "additionalProperties": false
 }
+
