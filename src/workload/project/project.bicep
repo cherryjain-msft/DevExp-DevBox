@@ -37,17 +37,19 @@ param tags object
 
 type Identity = {
   type: string
-  usergroup: UserGroup
   roleAssignments: RoleAssignment[]
 }
 
-type UserGroup = {
+type AzureRBACRole = {
   id: string
   name: string
 }
+
 type RoleAssignment = {
-  name: string
-  id: string
+  type: string
+  azureADGroupId: string
+  azureADGroupName: string
+  azureRBACRoles: AzureRBACRole[]
 }
 
 @description('Dev Center')
@@ -87,14 +89,14 @@ module keyVaultAccessPolicies '../../security/keyvault-access.bicep' = {
 }
 
 @description('Project Identity')
-resource projectIdentity 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for roleAssignment in identity.roleAssignments: {
-    name: guid(project.name, roleAssignment.id, roleAssignment.name)
-    scope: project
-    properties: {
-      principalId: identity.usergroup.id
-      roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.id)
-      principalType: 'Group'
+module projectIdentity '../../identity/projectIdentityRoleAssignment.bicep' = [
+  for identity in identity.roleAssignments: {
+    name: 'projectIdentity-${identity.azureADGroupName}'
+    scope: resourceGroup()
+    params: {
+      projectName: project.name
+      principalId: identity.azureADGroupId
+      roles: identity.azureRBACRoles
     }
   }
 ]

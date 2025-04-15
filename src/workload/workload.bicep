@@ -39,6 +39,8 @@ module devcenter 'devCenter.bicep' = {
   }
 }
 
+output AZURE_DEV_CENTER_NAME string = devcenter.outputs.AZURE_DEV_CENTER_NAME
+
 @description('Dev Center Projects')
 module projects 'project/project.bicep' = [
   for project in devCenterSettings.projects: {
@@ -47,7 +49,7 @@ module projects 'project/project.bicep' = [
     params: {
       name: project.name
       projectDescription: project.name
-      devCenterName: devcenter.outputs.devcCenterName
+      devCenterName: devcenter.outputs.AZURE_DEV_CENTER_NAME
       projectCatalogs: project.catalogs
       projectEnvironmentTypes: project.environmentTypes
       projectPools: project.pools
@@ -64,5 +66,5 @@ module projects 'project/project.bicep' = [
   }
 ]
 
-output AZURE_DEV_CENTER_NAME string = devcenter.outputs.devcCenterName
+
 

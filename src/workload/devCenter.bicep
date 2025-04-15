@@ -36,19 +36,27 @@ type Status = 'Enabled' | 'Disabled'
 
 type Identity = {
   type: string
-  usergroup: UserGroup
-  roleAssignments: RoleAssignment[]
+  roleAssignments: RoleAssignment
 }
 
-type UserGroup = {
-  id: string
-  name: string
-}
 type RoleAssignment = {
-  name: string
-  id: string
+  devCenter: AzureRBACRole[]
+  orgRoleType: OrgRoleType[]
 }
 
+type AzureRBACRole = {
+  id: string
+  name: string
+}
+
+type OrgRoleType = {
+  type: string
+  azureADGroupId: string
+  azureADGroupName: string
+  azureRBACRoles: AzureRBACRole[]
+}
+
+@description('Dev Center Resource')
 resource devcenter 'Microsoft.DevCenter/devcenters@2024-10-01-preview' = {
   name: config.name
   location: resourceGroup().location
@@ -69,7 +77,7 @@ resource devcenter 'Microsoft.DevCenter/devcenters@2024-10-01-preview' = {
   tags: config.tags
 }
 
-output devcCenterName string = devcenter.name
+output AZURE_DEV_CENTER_NAME string = devcenter.name
 
 @description('Key Vault Access Policies')
 module keyVaultAccessPolicies '../security/keyvault-access.bicep' = {
@@ -104,9 +112,9 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
 }
 
 @description('Dev Center Identity Role Assignments')
-module roleAssignments '../identity/devCenterRoleAssignment.bicep' = [
-  for role in config.identity.roleAssignments: {
-    name: 'RBAC-${replace(role.name, ' ', '-')}'
+module devCenterIdentityRoleAssignment '../identity/devCenterRoleAssignment.bicep' = [
+  for role in config.identity.roleAssignments.devCenter: {
+    name: 'RBAC-${guid(role.id, role.name,resourceGroup().id)}'
     scope: subscription()
     params: {
       id: role.id
@@ -114,6 +122,22 @@ module roleAssignments '../identity/devCenterRoleAssignment.bicep' = [
     }
     dependsOn: [
       keyVaultAccessPolicies
+    ]
+  }
+]
+
+@description('Dev Center Identity User Groups role assignments')
+module devCenterIdentityUserGroupsRoleAssignment '../identity/orgRoleAssignment.bicep' = [
+  for role in config.identity.roleAssignments.orgRoleType: {
+    name: 'RBAC-${guid(role.azureADGroupId, role.azureADGroupName,role.azureRBACRoles[0].id,resourceGroup().id)}'
+    scope: resourceGroup()
+    params: {
+      devCenterName: devcenter.name
+      principalId: role.azureADGroupId
+      roles: role.azureRBACRoles
+    }
+    dependsOn: [
+      devCenterIdentityRoleAssignment
     ]
   }
 ]
