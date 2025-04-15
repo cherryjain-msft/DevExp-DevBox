@@ -39,30 +39,32 @@ module devcenter 'devCenter.bicep' = {
   }
 }
 
-@description('Dev Center Projects')
-module projects 'project/project.bicep' = [
-  for project in devCenterSettings.projects: {
-    name: 'Project-${project.name}'
-    scope: resourceGroup()
-    params: {
-      name: project.name
-      projectDescription: project.name
-      devCenterName: devcenter.outputs.AZURE_DEV_CENTER_NAME
-      projectCatalogs: project.catalogs
-      projectEnvironmentTypes: project.environmentTypes
-      projectPools: project.pools
-      networkConnectionName: devcenter.outputs.networkConnectionName
-      secretIdentifier: secretIdentifier
-      keyVaultName: keyVaultName
-      securityResourceGroupName: securityResourceGroupName
-      identity: project.identity
-      tags: project.tags
-    }
-    dependsOn: [
-      devcenter
-    ]
-  }
-]
-
 output AZURE_DEV_CENTER_NAME string = devcenter.outputs.AZURE_DEV_CENTER_NAME
+
+// @description('Dev Center Projects')
+// module projects 'project/project.bicep' = [
+//   for project in devCenterSettings.projects: {
+//     name: 'Project-${project.name}'
+//     scope: resourceGroup()
+//     params: {
+//       name: project.name
+//       projectDescription: project.name
+//       devCenterName: devcenter.outputs.AZURE_DEV_CENTER_NAME
+//       projectCatalogs: project.catalogs
+//       projectEnvironmentTypes: project.environmentTypes
+//       projectPools: project.pools
+//       networkConnectionName: devcenter.outputs.networkConnectionName
+//       secretIdentifier: secretIdentifier
+//       keyVaultName: keyVaultName
+//       securityResourceGroupName: securityResourceGroupName
+//       identity: project.identity
+//       tags: project.tags
+//     }
+//     dependsOn: [
+//       devcenter
+//     ]
+//   }
+// ]
+
+
 

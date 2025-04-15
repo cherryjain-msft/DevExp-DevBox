@@ -36,19 +36,24 @@ type Status = 'Enabled' | 'Disabled'
 
 type Identity = {
   type: string
-  roleAssignments: RoleAssignment[]
+  roleAssignments: RoleAssignment
 }
 
 type RoleAssignment = {
-  type: string
-  azureADGroupId: string
-  azureADGroupName: string
-  azureRBACRoles: AzureRBACRole[]
+  devCenter: AzureRBACRole[]
+  orgRoleType: OrgRoleType[]
 }
 
 type AzureRBACRole = {
   id: string
   name: string
+}
+
+type OrgRoleType = {
+  type: string
+  azureADGroupId: string
+  azureADGroupName: string
+  azureRBACRoles: AzureRBACRole[]
 }
 
 @description('Dev Center Resource')
@@ -108,8 +113,8 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
 
 @description('Dev Center Identity Role Assignments')
 module devCenterIdentityRoleAssignment '../identity/devCenterRoleAssignment.bicep' = [
-  for role in config.identity.roleAssignments: {
-    name: 'RBAC-${replace(role.name, ' ', '-')}'
+  for role in config.identity.roleAssignments.devCenter: {
+    name: 'RBAC-${guid(role.id, role.name,resourceGroup().id)}'
     scope: subscription()
     params: {
       id: role.id
@@ -122,15 +127,18 @@ module devCenterIdentityRoleAssignment '../identity/devCenterRoleAssignment.bice
 ]
 
 @description('Dev Center Identity User Groups role assignments')
-resource devCenterIdentityUserGroupsRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [
-  for userGroup in config.identity.userGroups: {
-    name: guid(userGroup.name, userGroup.id, devcenter.name)
-    scope: devcenter
-    properties: {
-      roleDefinitionId: userGroup.id
-      principalId: userGroup.id
-      principalType: 'Group'
+module devCenterIdentityUserGroupsRoleAssignment '../identity/orgRoleAssignment.bicep' = [
+  for role in config.identity.roleAssignments.orgRoleType: {
+    name: 'RBAC-${guid(role.azureADGroupId, role.azureADGroupName,role.azureRBACRoles[0].id,resourceGroup().id)}'
+    scope: resourceGroup()
+    params: {
+      devCenterName: devcenter.name
+      principalId: role.azureADGroupId
+      roles: role.azureRBACRoles
     }
+    dependsOn: [
+      devCenterIdentityRoleAssignment
+    ]
   }
 ]
 

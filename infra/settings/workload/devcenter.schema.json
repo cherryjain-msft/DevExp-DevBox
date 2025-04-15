@@ -1,379 +1,406 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "DevCenter Configuration",
-  "description": "Schema for defining DevCenter configuration settings.",
+  "description": "Schema for validating DevCenter configuration settings.",
   "type": "object",
+  "required": [
+    "name",
+    "location",
+    "identity",
+    "catalogs",
+    "environmentTypes",
+    "projects",
+    "tags"
+  ],
   "properties": {
     "name": {
       "type": "string",
-      "minLength": 1,
-      "maxLength": 64,
       "description": "Name of the DevCenter.",
-      "default": "contoso-devexp-devcenter",
-      "examples": [
-        "contoso-devexp-devcenter"
-      ]
+      "minLength": 1
     },
     "location": {
       "type": "string",
-      "minLength": 1,
-      "maxLength": 64,
-      "description": "Azure region where the DevCenter is deployed.",
-      "default": "eastus2",
-      "examples": [
-        "eastus2"
-      ]
+      "description": "Azure region for the DevCenter deployment.",
+      "minLength": 1
     },
     "catalogItemSyncEnableStatus": {
       "type": "string",
       "enum": [
         "Enabled",
         "Disabled"
-      ],
-      "description": "Enable or disable catalog item synchronization.",
-      "default": "Enabled"
+      ]
     },
     "microsoftHostedNetworkEnableStatus": {
       "type": "string",
       "enum": [
         "Enabled",
         "Disabled"
-      ],
-      "description": "Enable or disable Microsoft hosted network.",
-      "default": "Enabled"
+      ]
     },
     "installAzureMonitorAgentEnableStatus": {
       "type": "string",
       "enum": [
         "Enabled",
         "Disabled"
+      ]
+    },
+    "identity": {
+      "type": "object",
+      "required": [
+        "type",
+        "roleAssignments"
       ],
-      "description": "Enable or disable Azure Monitor Agent installation.",
-      "default": "Enabled"
-    },
-    "identity": {
-      "$ref": "#/definitions/identity"
-    },
-    "catalogs": {
-      "type": "array",
-      "minItems": 1,
-      "description": "List of catalogs associated with the DevCenter.",
-      "items": {
-        "$ref": "#/definitions/catalog"
-      }
-    },
-    "environmentTypes": {
-      "type": "array",
-      "minItems": 1,
-      "description": "List of environment types associated with the DevCenter.",
-      "items": {
-        "$ref": "#/definitions/environmentType"
-      }
-    },
-    "projects": {
-      "type": "array",
-      "minItems": 1,
-      "description": "List of projects associated with the DevCenter.",
-      "items": {
-        "$ref": "#/definitions/project"
-      }
-    },
-    "tags": {
-      "type": "object",
-      "description": "Tags associated with the DevCenter.",
-      "additionalProperties": {
-        "type": "string"
-      },
-      "default": {
-        "environment": "dev",
-        "division": "Platforms",
-        "team": "DevExP",
-        "project": "DevExP-DevBox",
-        "costCenter": "IT",
-        "owner": "Evilazaro",
-        "resources": "DevCenter"
-      }
-    }
-  },
-  "required": [
-    "name",
-    "location",
-    "catalogs",
-    "environmentTypes",
-    "projects",
-    "identity"
-  ],
-  "additionalProperties": false,
-  "definitions": {
-    "identity": {
-      "type": "object",
-      "description": "Identity configuration for the DevCenter.",
       "properties": {
         "type": {
           "type": "string",
           "enum": [
             "SystemAssigned"
-          ],
-          "default": "SystemAssigned"
+          ]
         },
         "roleAssignments": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/roleAssignment"
-          }
-        }
-      },
-      "required": [
-        "type",
-        "roleAssignments"
-      ],
-      "additionalProperties": false
-    },
-    "roleAssignment": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "format": "uuid",
-          "description": "Role ID"
-        },
-        "name": {
-          "type": "string",
-          "description": "Role name"
-        },
-        "orgRoleType": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/orgRole"
-          }
-        }
-      },
-      "required": [
-        "id",
-        "name",
-        "orgRoleType"
-      ],
-      "additionalProperties": false
-    },
-    "orgRole": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "enum": [
-            "DevManager"
-          ]
-        },
-        "azureADGroupId": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "azureADGroupName": {
-          "type": "string"
-        },
-        "azureRBACRoles": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string"
-              },
-              "id": {
-                "type": "string",
-                "format": "uuid"
-              }
-            },
-            "required": [
-              "name",
-              "id"
-            ],
-            "additionalProperties": false
-          }
-        }
-      },
-      "required": [
-        "type",
-        "azureADGroupId",
-        "azureADGroupName",
-        "azureRBACRoles"
-      ],
-      "additionalProperties": false
-    },
-    "catalog": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "type": {
-          "type": "string",
-          "enum": [
-            "gitHub"
-          ]
-        },
-        "uri": {
-          "type": "string",
-          "format": "uri"
-        },
-        "branch": {
-          "type": "string"
-        },
-        "path": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "name",
-        "type",
-        "uri",
-        "branch",
-        "path"
-      ],
-      "additionalProperties": false
-    },
-    "environmentType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "deploymentTargetId": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "name",
-        "deploymentTargetId"
-      ],
-      "additionalProperties": false
-    },
-    "project": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "identity": {
-          "type": "object",
-          "$ref": "#/definitions/projectIdentity"
-        },
-        "pools": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string"
-              },
-              "imageDefinitionName": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "name",
-              "imageDefinitionName"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "environmentTypes": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/environmentType"
-          }
-        },
-        "catalogs": {
           "type": "object",
           "properties": {
-            "environmentDefinition": {
-              "$ref": "#/definitions/catalog"
-            },
-            "imageDefinition": {
-              "$ref": "#/definitions/catalog"
-            }
-          },
-          "required": [
-            "environmentDefinition",
-            "imageDefinition"
-          ],
-          "additionalProperties": false
-        },
-        "tags": {
-          "$ref": "#/properties/tags"
-        }
-      },
-      "required": [
-        "name",
-        "description",
-        "identity",
-        "pools",
-        "environmentTypes",
-        "catalogs",
-        "tags"
-      ],
-      "additionalProperties": false
-    },
-    "projectIdentity": {
-      "type": "object",
-      "description": "Identity configuration for the project.",
-      "properties": {
-        "type": {
-          "type": "string",
-          "enum": [
-            "SystemAssigned",
-            "UserAssigned",
-            "None",
-            "UserAssigned,SystemAssigned"
-          ],
-          "default": "SystemAssigned"
-        },
-        "roleAssignments": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "azureADGroupId": {
-                "type": "string",
-                "format": "uuid"
-              },
-              "azureADGroupName": {
-                "type": "string"
-              },
-              "azureRBACRoles": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "name": {
-                      "type": "string"
-                    },
-                    "id": {
-                      "type": "string",
-                      "format": "uuid"
-                    }
+            "devCenter": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "id",
+                  "name"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
                   },
-                  "required": [
-                    "name",
-                    "id"
-                  ],
-                  "additionalProperties": false
+                  "name": {
+                    "type": "string"
+                  }
                 }
               }
             },
-            "required": [
-              "azureADGroupId",
-              "azureADGroupName",
-              "azureRBACRoles"
-            ],
-            "additionalProperties": false
+            "orgRoleType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "type",
+                  "azureADGroupId",
+                  "azureADGroupName",
+                  "azureRBACRoles"
+                ],
+                "properties": {
+                  "type": {
+                    "type": "string"
+                  },
+                  "azureADGroupId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "azureADGroupName": {
+                    "type": "string"
+                  },
+                  "azureRBACRoles": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "name",
+                        "id"
+                      ],
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
-      },
-      "additionalProperties": false
+      }
+    },
+    "catalogs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "type",
+          "uri",
+          "branch",
+          "path"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "uri": {
+            "type": "string",
+            "format": "uri"
+          },
+          "branch": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "environmentTypes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "deploymentTargetId"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "deploymentTargetId": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "projects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "description",
+          "identity",
+          "pools",
+          "environmentTypes",
+          "catalogs",
+          "tags"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "identity": {
+            "type": "object",
+            "required": [
+              "type",
+              "roleAssignments"
+            ],
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "roleAssignments": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "azureADGroupId",
+                    "azureADGroupName",
+                    "azureRBACRoles"
+                  ],
+                  "properties": {
+                    "azureADGroupId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "azureADGroupName": {
+                      "type": "string"
+                    },
+                    "azureRBACRoles": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "name",
+                          "id"
+                        ],
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "pools": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "imageDefinitionName"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "imageDefinitionName": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "environmentTypes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "deploymentTargetId"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "deploymentTargetId": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "catalogs": {
+            "type": "object",
+            "required": [
+              "environmentDefinition",
+              "imageDefinition"
+            ],
+            "properties": {
+              "environmentDefinition": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "type",
+                  "uri",
+                  "branch",
+                  "path"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  },
+                  "uri": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "branch": {
+                    "type": "string"
+                  },
+                  "path": {
+                    "type": "string"
+                  }
+                }
+              },
+              "imageDefinition": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "type",
+                  "uri",
+                  "branch",
+                  "path"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  },
+                  "uri": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "branch": {
+                    "type": "string"
+                  },
+                  "path": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "tags": {
+            "type": "object",
+            "properties": {
+              "environment": {
+                "type": "string"
+              },
+              "division": {
+                "type": "string"
+              },
+              "team": {
+                "type": "string"
+              },
+              "project": {
+                "type": "string"
+              },
+              "costCenter": {
+                "type": "string"
+              },
+              "owner": {
+                "type": "string"
+              },
+              "resources": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "tags": {
+      "type": "object",
+      "properties": {
+        "environment": {
+          "type": "string"
+        },
+        "division": {
+          "type": "string"
+        },
+        "team": {
+          "type": "string"
+        },
+        "project": {
+          "type": "string"
+        },
+        "costCenter": {
+          "type": "string"
+        },
+        "owner": {
+          "type": "string"
+        },
+        "resources": {
+          "type": "string"
+        }
+      }
     }
   }
 }
