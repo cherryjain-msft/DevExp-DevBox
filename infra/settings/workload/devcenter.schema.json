@@ -1,470 +1,358 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "DevCenter Configuration",
-  "description": "Schema for validating DevCenter configuration settings.",
   "type": "object",
+  "required": [
+    "name",
+    "location",
+    "projects"
+  ],
   "properties": {
     "name": {
-      "default": "contoso-devexp-devcenter",
-      "examples": [
-        "contoso-devexp-devcenter"
-      ]
+      "type": "string"
     },
     "location": {
-      "default": "eastus2",
-      "examples": [
-        "eastus2"
-      ]
+      "type": "string"
     },
     "catalogItemSyncEnableStatus": {
-      "default": "Enabled",
-      "examples": [
-        "Enabled"
+      "type": "string",
+      "enum": [
+        "Enabled",
+        "Disabled"
       ]
     },
     "microsoftHostedNetworkEnableStatus": {
-      "default": "Enabled",
-      "examples": [
-        "Enabled"
+      "type": "string",
+      "enum": [
+        "Enabled",
+        "Disabled"
       ]
     },
     "installAzureMonitorAgentEnableStatus": {
-      "default": "Enabled",
-      "examples": [
-        "Enabled"
+      "type": "string",
+      "enum": [
+        "Enabled",
+        "Disabled"
       ]
     },
     "identity": {
-      "default": {
-        "type": "SystemAssigned",
-        "roleAssignments": {
-          "devCenter": [
-            {
-              "id": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635",
-              "name": "Owner"
-            },
-            {
-              "id": "b24988ac-6180-42a0-ab88-20f7382dd24c",
-              "name": "Contributor"
-            },
-            {
-              "id": "18d7d88d-d35e-4fb5-a5c3-7773c20a72d9",
-              "name": "User Access Administrator"
-            }
-          ],
-          "orgRoleType": [
-            {
-              "type": "DevManager",
-              "azureADGroupId": "8dae87fa-87b2-460b-b972-a4239fbd4a96",
-              "azureADGroupName": "Dev Manager",
-              "azureRBACRoles": [
-                {
-                  "name": "DevCenter Project Admin",
-                  "id": "331c37c6-af14-46d9-b9f4-e1909e1b95a0"
-                }
-              ]
-            }
+      "type": "object",
+      "required": [
+        "type",
+        "roleAssignments"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "SystemAssigned"
           ]
-        }
-      },
-      "examples": [
-        {
-          "type": "SystemAssigned",
-          "roleAssignments": {
-            "devCenter": [
-              {
-                "id": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635",
-                "name": "Owner"
-              },
-              {
-                "id": "b24988ac-6180-42a0-ab88-20f7382dd24c",
-                "name": "Contributor"
-              },
-              {
-                "id": "18d7d88d-d35e-4fb5-a5c3-7773c20a72d9",
-                "name": "User Access Administrator"
-              }
-            ],
-            "orgRoleType": [
-              {
-                "type": "DevManager",
-                "azureADGroupId": "8dae87fa-87b2-460b-b972-a4239fbd4a96",
-                "azureADGroupName": "Dev Manager",
-                "azureRBACRoles": [
-                  {
-                    "name": "DevCenter Project Admin",
-                    "id": "331c37c6-af14-46d9-b9f4-e1909e1b95a0"
+        },
+        "roleAssignments": {
+          "type": "object",
+          "properties": {
+            "devCenter": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "id",
+                  "name"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "name": {
+                    "type": "string"
                   }
-                ]
+                }
               }
-            ]
+            },
+            "orgRoleType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "type",
+                  "azureADGroupId",
+                  "azureADGroupName",
+                  "azureRBACRoles"
+                ],
+                "properties": {
+                  "type": {
+                    "type": "string"
+                  },
+                  "azureADGroupId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "azureADGroupName": {
+                    "type": "string"
+                  },
+                  "azureRBACRoles": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "name",
+                        "id"
+                      ],
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
-      ]
+      }
     },
     "catalogs": {
-      "default": [
-        {
-          "name": "customTasks",
-          "type": "gitHub",
-          "uri": "https://github.com/Evilazaro/DevExP-DevBox.git",
-          "branch": "main",
-          "path": ".configuration/devcenter/tasks"
-        }
-      ],
-      "examples": [
-        [
-          {
-            "name": "customTasks",
-            "type": "gitHub",
-            "uri": "https://github.com/Evilazaro/DevExP-DevBox.git",
-            "branch": "main",
-            "path": ".configuration/devcenter/tasks"
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "type",
+          "uri",
+          "branch",
+          "path"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "uri": {
+            "type": "string",
+            "format": "uri"
+          },
+          "branch": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
           }
-        ]
-      ]
+        }
+      }
     },
     "environmentTypes": {
-      "default": [
-        {
-          "name": "dev",
-          "deploymentTargetId": ""
-        },
-        {
-          "name": "staging",
-          "deploymentTargetId": ""
-        }
-      ],
-      "examples": [
-        [
-          {
-            "name": "dev",
-            "deploymentTargetId": ""
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "deploymentTargetId"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
           },
-          {
-            "name": "staging",
-            "deploymentTargetId": ""
+          "deploymentTargetId": {
+            "type": "string"
           }
-        ]
-      ]
+        }
+      }
     },
     "projects": {
-      "default": [
-        {
-          "name": "identityProvider",
-          "description": "Identity Provider project.",
-          "identity": {
-            "type": "SystemAssigned",
-            "roleAssignments": [
-              {
-                "azureADGroupId": "74e97f40-4b75-470f-8f19-3f1ef4253895",
-                "azureADGroupName": "Developers",
-                "azureRBACRoles": [
-                  {
-                    "name": "Contributor",
-                    "id": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-                  },
-                  {
-                    "name": "Dev Box User",
-                    "id": "45d50f46-0b78-4001-a660-4198cbe8cd05"
-                  },
-                  {
-                    "name": "Deployment Environment User",
-                    "id": "18e40d4e-8d2e-438d-97e1-9528336e149c"
-                  }
-                ]
-              }
-            ]
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "identity",
+          "pools",
+          "environmentTypes",
+          "catalogs"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
           },
-          "pools": [
-            {
-              "name": "backend-engineer",
-              "imageDefinitionName": "identityProvider-backend-engineer"
-            },
-            {
-              "name": "frontend-engineer",
-              "imageDefinitionName": "identityProvider-frontend-engineer"
+          "description": {
+            "type": "string"
+          },
+          "identity": {
+            "type": "object",
+            "required": [
+              "type",
+              "roleAssignments"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "SystemAssigned"
+                ]
+              },
+              "roleAssignments": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "azureADGroupId",
+                    "azureADGroupName",
+                    "azureRBACRoles"
+                  ],
+                  "properties": {
+                    "azureADGroupId": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "azureADGroupName": {
+                      "type": "string"
+                    },
+                    "azureRBACRoles": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "name",
+                          "id"
+                        ],
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
             }
-          ],
-          "environmentTypes": [
-            {
-              "name": "dev",
-              "deploymentTargetId": ""
-            },
-            {
-              "name": "staging",
-              "deploymentTargetId": ""
+          },
+          "pools": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "imageDefinitionName"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "imageDefinitionName": {
+                  "type": "string"
+                }
+              }
             }
-          ],
+          },
+          "environmentTypes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "deploymentTargetId"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "deploymentTargetId": {
+                  "type": "string"
+                }
+              }
+            }
+          },
           "catalogs": {
-            "environmentDefinition": {
-              "name": "environments",
-              "type": "gitHub",
-              "uri": "https://github.com/Evilazaro/identityProvider.git",
-              "branch": "main",
-              "path": ".configuration/devcenter/environments"
-            },
-            "imageDefinition": {
-              "name": "imageDefinitions",
-              "type": "gitHub",
-              "uri": "https://github.com/Evilazaro/identityProvider.git",
-              "branch": "main",
-              "path": ".configuration/devcenter/imageDefinitions"
+            "type": "object",
+            "required": [
+              "environmentDefinition",
+              "imageDefinition"
+            ],
+            "properties": {
+              "environmentDefinition": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "type",
+                  "uri",
+                  "branch",
+                  "path"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  },
+                  "uri": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "branch": {
+                    "type": "string"
+                  },
+                  "path": {
+                    "type": "string"
+                  }
+                }
+              },
+              "imageDefinition": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "type",
+                  "uri",
+                  "branch",
+                  "path"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  },
+                  "uri": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "branch": {
+                    "type": "string"
+                  },
+                  "path": {
+                    "type": "string"
+                  }
+                }
+              }
             }
           },
           "tags": {
-            "environment": "dev",
-            "division": "Platforms",
-            "team": "DevExP",
-            "project": "DevExP-DevBox",
-            "costCenter": "IT",
-            "owner": "Evilazaro",
-            "resources": "Project"
-          }
-        },
-        {
-          "name": "eShop",
-          "description": "eShop project.",
-          "identity": {
-            "type": "SystemAssigned",
-            "roleAssignments": [
-              {
-                "azureADGroupId": "74e97f40-4b75-470f-8f19-3f1ef4253895",
-                "azureADGroupName": "Developers",
-                "azureRBACRoles": [
-                  {
-                    "name": "Contributor",
-                    "id": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-                  },
-                  {
-                    "name": "Dev Box User",
-                    "id": "45d50f46-0b78-4001-a660-4198cbe8cd05"
-                  },
-                  {
-                    "name": "Deployment Environment User",
-                    "id": "18e40d4e-8d2e-438d-97e1-9528336e149c"
-                  }
-                ]
-              }
-            ]
-          },
-          "pools": [
-            {
-              "name": "backend-engineer",
-              "imageDefinitionName": "eShop-backend-engineer"
-            },
-            {
-              "name": "frontend-engineer",
-              "imageDefinitionName": "eShop-frontend-engineer"
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
             }
-          ],
-          "environmentTypes": [
-            {
-              "name": "dev",
-              "deploymentTargetId": ""
-            },
-            {
-              "name": "staging",
-              "deploymentTargetId": ""
-            }
-          ],
-          "catalogs": {
-            "environmentDefinition": {
-              "name": "environments",
-              "type": "gitHub",
-              "uri": "https://github.com/Evilazaro/eShop.git",
-              "branch": "main",
-              "path": ".devcenter/environments"
-            },
-            "imageDefinition": {
-              "name": "imageDefinitions",
-              "type": "gitHub",
-              "uri": "https://github.com/Evilazaro/eShop.git",
-              "branch": "main",
-              "path": ".devcenter/imageDefinitions"
-            }
-          },
-          "tags": {
-            "environment": "dev",
-            "division": "Platforms",
-            "team": "DevExP",
-            "project": "DevExP-DevBox",
-            "costCenter": "IT",
-            "owner": "Evilazaro",
-            "resources": "Project"
           }
         }
-      ],
-      "examples": [
-        [
-          {
-            "name": "identityProvider",
-            "description": "Identity Provider project.",
-            "identity": {
-              "type": "SystemAssigned",
-              "roleAssignments": [
-                {
-                  "azureADGroupId": "74e97f40-4b75-470f-8f19-3f1ef4253895",
-                  "azureADGroupName": "Developers",
-                  "azureRBACRoles": [
-                    {
-                      "name": "Contributor",
-                      "id": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-                    },
-                    {
-                      "name": "Dev Box User",
-                      "id": "45d50f46-0b78-4001-a660-4198cbe8cd05"
-                    },
-                    {
-                      "name": "Deployment Environment User",
-                      "id": "18e40d4e-8d2e-438d-97e1-9528336e149c"
-                    }
-                  ]
-                }
-              ]
-            },
-            "pools": [
-              {
-                "name": "backend-engineer",
-                "imageDefinitionName": "identityProvider-backend-engineer"
-              },
-              {
-                "name": "frontend-engineer",
-                "imageDefinitionName": "identityProvider-frontend-engineer"
-              }
-            ],
-            "environmentTypes": [
-              {
-                "name": "dev",
-                "deploymentTargetId": ""
-              },
-              {
-                "name": "staging",
-                "deploymentTargetId": ""
-              }
-            ],
-            "catalogs": {
-              "environmentDefinition": {
-                "name": "environments",
-                "type": "gitHub",
-                "uri": "https://github.com/Evilazaro/identityProvider.git",
-                "branch": "main",
-                "path": ".configuration/devcenter/environments"
-              },
-              "imageDefinition": {
-                "name": "imageDefinitions",
-                "type": "gitHub",
-                "uri": "https://github.com/Evilazaro/identityProvider.git",
-                "branch": "main",
-                "path": ".configuration/devcenter/imageDefinitions"
-              }
-            },
-            "tags": {
-              "environment": "dev",
-              "division": "Platforms",
-              "team": "DevExP",
-              "project": "DevExP-DevBox",
-              "costCenter": "IT",
-              "owner": "Evilazaro",
-              "resources": "Project"
-            }
-          },
-          {
-            "name": "eShop",
-            "description": "eShop project.",
-            "identity": {
-              "type": "SystemAssigned",
-              "roleAssignments": [
-                {
-                  "azureADGroupId": "74e97f40-4b75-470f-8f19-3f1ef4253895",
-                  "azureADGroupName": "Developers",
-                  "azureRBACRoles": [
-                    {
-                      "name": "Contributor",
-                      "id": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-                    },
-                    {
-                      "name": "Dev Box User",
-                      "id": "45d50f46-0b78-4001-a660-4198cbe8cd05"
-                    },
-                    {
-                      "name": "Deployment Environment User",
-                      "id": "18e40d4e-8d2e-438d-97e1-9528336e149c"
-                    }
-                  ]
-                }
-              ]
-            },
-            "pools": [
-              {
-                "name": "backend-engineer",
-                "imageDefinitionName": "eShop-backend-engineer"
-              },
-              {
-                "name": "frontend-engineer",
-                "imageDefinitionName": "eShop-frontend-engineer"
-              }
-            ],
-            "environmentTypes": [
-              {
-                "name": "dev",
-                "deploymentTargetId": ""
-              },
-              {
-                "name": "staging",
-                "deploymentTargetId": ""
-              }
-            ],
-            "catalogs": {
-              "environmentDefinition": {
-                "name": "environments",
-                "type": "gitHub",
-                "uri": "https://github.com/Evilazaro/eShop.git",
-                "branch": "main",
-                "path": ".devcenter/environments"
-              },
-              "imageDefinition": {
-                "name": "imageDefinitions",
-                "type": "gitHub",
-                "uri": "https://github.com/Evilazaro/eShop.git",
-                "branch": "main",
-                "path": ".devcenter/imageDefinitions"
-              }
-            },
-            "tags": {
-              "environment": "dev",
-              "division": "Platforms",
-              "team": "DevExP",
-              "project": "DevExP-DevBox",
-              "costCenter": "IT",
-              "owner": "Evilazaro",
-              "resources": "Project"
-            }
-          }
-        ]
-      ]
+      }
     },
     "tags": {
-      "default": {
-        "environment": "dev",
-        "division": "Platforms",
-        "team": "DevExP",
-        "project": "DevExP-DevBox",
-        "costCenter": "IT",
-        "owner": "Evilazaro",
-        "resources": "DevCenter"
-      },
-      "examples": [
-        {
-          "environment": "dev",
-          "division": "Platforms",
-          "team": "DevExP",
-          "project": "DevExP-DevBox",
-          "costCenter": "IT",
-          "owner": "Evilazaro",
-          "resources": "DevCenter"
-        }
-      ]
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
     }
   }
 }
