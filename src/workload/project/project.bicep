@@ -88,10 +88,9 @@ module keyVaultAccessPolicies '../../security/keyvault-access.bicep' = {
 }
 
 @description('Project Identity')
-@batchSize(1)
 module projectIdentity '../../identity/projectIdentityRoleAssignment.bicep' = [
   for identity in identity.roleAssignments: {
-    name: 'projectIdentity-${project.name}-${identity.azureADGroupName}'
+    name: 'projectIdentity-${guid(project.name,identity.azureADGroupName,identity.azureADGroupId)}'
     scope: resourceGroup()
     params: {
       projectName: project.name
