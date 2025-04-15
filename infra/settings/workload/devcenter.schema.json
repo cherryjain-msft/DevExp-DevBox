@@ -6,9 +6,9 @@
   "properties": {
     "name": {
       "type": "string",
-      "description": "Name of the DevCenter.",
       "minLength": 1,
       "maxLength": 64,
+      "description": "Name of the DevCenter.",
       "default": "contoso-devexp-devcenter",
       "examples": [
         "contoso-devexp-devcenter"
@@ -16,9 +16,9 @@
     },
     "location": {
       "type": "string",
-      "description": "Azure region where the DevCenter is deployed.",
       "minLength": 1,
       "maxLength": 64,
+      "description": "Azure region where the DevCenter is deployed.",
       "default": "eastus2",
       "examples": [
         "eastus2"
@@ -26,246 +26,56 @@
     },
     "catalogItemSyncEnableStatus": {
       "type": "string",
-      "description": "Status to enable or disable catalog item synchronization.",
       "enum": [
         "Enabled",
         "Disabled"
       ],
+      "description": "Enable or disable catalog item synchronization.",
       "default": "Enabled"
     },
     "microsoftHostedNetworkEnableStatus": {
       "type": "string",
-      "description": "Status to enable or disable Microsoft hosted network.",
       "enum": [
         "Enabled",
         "Disabled"
       ],
+      "description": "Enable or disable Microsoft hosted network.",
       "default": "Enabled"
     },
     "installAzureMonitorAgentEnableStatus": {
       "type": "string",
-      "description": "Status to enable or disable Azure Monitor Agent installation.",
       "enum": [
         "Enabled",
         "Disabled"
       ],
+      "description": "Enable or disable Azure Monitor Agent installation.",
       "default": "Enabled"
     },
     "identity": {
-      "type": "object",
-      "description": "Identity configuration for the DevCenter.",
-      "properties": {
-        "type": {
-          "type": "string",
-          "enum": [
-            "SystemAssigned"
-          ],
-          "default": "SystemAssigned"
-        },
-        "roleAssignments": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string",
-                "pattern": "^[a-fA-F0-9\\-]{36}$",
-                "description": "Role ID"
-              },
-              "name": {
-                "type": "string",
-                "description": "Role name"
-              },
-              "orgRoleType": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "type": "string",
-                      "enum": [
-                        "DevManager"
-                      ]
-                    },
-                    "azureADGroupId": {
-                      "type": "string",
-                      "pattern": "^[a-fA-F0-9\\-]{36}$"
-                    },
-                    "azureADGroupName": {
-                      "type": "string"
-                    },
-                    "azureRBACRoles": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "name": {
-                            "type": "string"
-                          },
-                          "id": {
-                            "type": "string",
-                            "pattern": "^[a-fA-F0-9\\-]{36}$"
-                          }
-                        },
-                        "required": [
-                          "name",
-                          "id"
-                        ],
-                        "additionalProperties": false
-                      }
-                    }
-                  },
-                  "required": [
-                    "type",
-                    "azureADGroupId",
-                    "azureADGroupName",
-                    "azureRBACRoles"
-                  ],
-                  "additionalProperties": false
-                }
-              }
-            },
-            "required": [
-              "id",
-              "name",
-              "orgRoleType"
-            ],
-            "additionalProperties": false
-          }
-        }
-      },
-      "required": [
-        "type",
-        "roleAssignments"
-      ],
-      "additionalProperties": false
+      "$ref": "#/definitions/identity"
     },
     "catalogs": {
       "type": "array",
-      "description": "List of catalogs associated with the DevCenter.",
       "minItems": 1,
+      "description": "List of catalogs associated with the DevCenter.",
       "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "gitHub"
-            ]
-          },
-          "uri": {
-            "type": "string",
-            "format": "uri"
-          },
-          "branch": {
-            "type": "string"
-          },
-          "path": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "name",
-          "type",
-          "uri",
-          "branch",
-          "path"
-        ],
-        "additionalProperties": false
+        "$ref": "#/definitions/catalog"
       }
     },
     "environmentTypes": {
       "type": "array",
-      "description": "List of environment types associated with the DevCenter.",
       "minItems": 1,
+      "description": "List of environment types associated with the DevCenter.",
       "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "deploymentTargetId": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "name",
-          "deploymentTargetId"
-        ],
-        "additionalProperties": false
+        "$ref": "#/definitions/environmentType"
       }
     },
     "projects": {
       "type": "array",
-      "description": "List of projects associated with the DevCenter.",
       "minItems": 1,
+      "description": "List of projects associated with the DevCenter.",
       "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "identity": {
-            "$ref": "#/definitions/projectIdentity"
-          },
-          "pools": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string"
-                },
-                "imageDefinitionName": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "name",
-                "imageDefinitionName"
-              ],
-              "additionalProperties": false
-            }
-          },
-          "environmentTypes": {
-            "$ref": "#/properties/environmentTypes"
-          },
-          "catalogs": {
-            "type": "object",
-            "properties": {
-              "environmentDefinition": {
-                "$ref": "#/properties/catalogs/items"
-              },
-              "imageDefinition": {
-                "$ref": "#/properties/catalogs/items"
-              }
-            },
-            "required": [
-              "environmentDefinition",
-              "imageDefinition"
-            ],
-            "additionalProperties": false
-          },
-          "tags": {
-            "$ref": "#/properties/tags"
-          }
-        },
-        "required": [
-          "name",
-          "description",
-          "identity",
-          "pools",
-          "environmentTypes",
-          "catalogs",
-          "tags"
-        ],
-        "additionalProperties": false
+        "$ref": "#/definitions/project"
       }
     },
     "tags": {
@@ -285,10 +95,231 @@
       }
     }
   },
+  "required": [
+    "name",
+    "location",
+    "catalogs",
+    "environmentTypes",
+    "projects",
+    "identity"
+  ],
+  "additionalProperties": false,
   "definitions": {
-    "projectIdentity": {
+    "identity": {
       "type": "object",
       "description": "Identity configuration for the DevCenter.",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "SystemAssigned"
+          ],
+          "default": "SystemAssigned"
+        },
+        "roleAssignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/roleAssignment"
+          }
+        }
+      },
+      "required": [
+        "type",
+        "roleAssignments"
+      ],
+      "additionalProperties": false
+    },
+    "roleAssignment": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Role ID"
+        },
+        "name": {
+          "type": "string",
+          "description": "Role name"
+        },
+        "orgRoleType": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/orgRole"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "orgRoleType"
+      ],
+      "additionalProperties": false
+    },
+    "orgRole": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "DevManager"
+          ]
+        },
+        "azureADGroupId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "azureADGroupName": {
+          "type": "string"
+        },
+        "azureRBACRoles": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              }
+            },
+            "required": [
+              "name",
+              "id"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "type",
+        "azureADGroupId",
+        "azureADGroupName",
+        "azureRBACRoles"
+      ],
+      "additionalProperties": false
+    },
+    "catalog": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "gitHub"
+          ]
+        },
+        "uri": {
+          "type": "string",
+          "format": "uri"
+        },
+        "branch": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "type",
+        "uri",
+        "branch",
+        "path"
+      ],
+      "additionalProperties": false
+    },
+    "environmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "deploymentTargetId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "deploymentTargetId"
+      ],
+      "additionalProperties": false
+    },
+    "project": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "identity": {
+          "type": "object",
+          "$ref": "#/definitions/projectIdentity"
+        },
+        "pools": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "imageDefinitionName": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "imageDefinitionName"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "environmentTypes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/environmentType"
+          }
+        },
+        "catalogs": {
+          "type": "object",
+          "properties": {
+            "environmentDefinition": {
+              "$ref": "#/definitions/catalog"
+            },
+            "imageDefinition": {
+              "$ref": "#/definitions/catalog"
+            }
+          },
+          "required": [
+            "environmentDefinition",
+            "imageDefinition"
+          ],
+          "additionalProperties": false
+        },
+        "tags": {
+          "$ref": "#/properties/tags"
+        }
+      },
+      "required": [
+        "name",
+        "description",
+        "identity",
+        "pools",
+        "environmentTypes",
+        "catalogs",
+        "tags"
+      ],
+      "additionalProperties": false
+    },
+    "projectIdentity": {
+      "type": "object",
+      "description": "Identity configuration for the project.",
       "properties": {
         "type": {
           "type": "string",
@@ -307,7 +338,7 @@
             "properties": {
               "azureADGroupId": {
                 "type": "string",
-                "pattern": "^[a-fA-F0-9\\-]{36}$"
+                "format": "uuid"
               },
               "azureADGroupName": {
                 "type": "string"
@@ -322,9 +353,13 @@
                     },
                     "id": {
                       "type": "string",
-                      "pattern": "^[a-fA-F0-9\\-]{36}$"
+                      "format": "uuid"
                     }
                   },
+                  "required": [
+                    "name",
+                    "id"
+                  ],
                   "additionalProperties": false
                 }
               }
@@ -340,7 +375,5 @@
       },
       "additionalProperties": false
     }
-  },
-  "additionalProperties": false
+  }
 }
-
