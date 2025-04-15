@@ -15,7 +15,7 @@ module virtualNetwork 'vnet.bicep' = {
 }
 
 @description('The name of the Virtual Network')
-output virtualNetworkName string = virtualNetwork.outputs.virtualNetworkName
+output AZURE_VIRTUAL_NETWORK_NAME string = virtualNetwork.outputs.AZURE_VIRTUAL_NETWORK_NAME
 
 @description('The subnets of the Virtual Network')
-output virtualNetworkSubnets array = virtualNetwork.outputs.virtualNetworkSubnets
+output AZURE_VIRTUAL_NETWORK_SUBNETS array = virtualNetwork.outputs.AZURE_VIRTUAL_NETWORK_SUBNETS

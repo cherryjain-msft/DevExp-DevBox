@@ -249,6 +249,58 @@
           "description": "Description of the project.",
           "minLength": 1
         },
+        "identity": {
+          "type": "object",
+          "description": "Identity configuration for the DevCenter.",
+          "properties": {
+            "type": {
+              "type": "string",
+              "description": "Type of identity.",
+              "enum": [
+                "None",
+                "SystemAssigned",
+                "UserAssigned",
+                "SystemAssigned, UserAssigned"
+              ],
+              "default": "SystemAssigned"
+            },
+            "usergroup": {
+              "type": "object",
+              "description": "User group configuration.",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "ID of the user group.",
+                  "minLength": 1
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Name of the user group.",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "id",
+                "name"
+              ],
+              "additionalProperties": false
+            },
+            "roleAssignments": {
+              "type": "array",
+              "description": "List of role assignments.",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/definitions/roleDefinition"
+              }
+            }
+          },
+          "required": [
+            "type",
+            "usergroup",
+            "roleAssignments"
+          ],
+          "additionalProperties": false
+        },
         "pools": {
           "type": "array",
           "description": "List of pools associated with the project.",
