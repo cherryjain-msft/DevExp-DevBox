@@ -46,7 +46,6 @@ type AzureRBACRole = {
 }
 
 type RoleAssignment = {
-  type: string
   azureADGroupId: string
   azureADGroupName: string
   azureRBACRoles: AzureRBACRole[]
