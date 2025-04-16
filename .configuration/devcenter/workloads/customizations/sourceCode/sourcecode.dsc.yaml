@@ -64,23 +64,3 @@ properties:
           }
         GetScript: return $false
         TestScript: return $false
-
-    ### Reboot the Machine
-    ### -------------------------------------
-    - resource: PSDscResources/Script
-      id: RebootingMachine
-      directives:
-        description: Reboot the machine to apply changes in 10 seconds...
-        allowPrerelease: true
-      settings:
-        SetScript: |
-          try {
-              $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-              Start-Sleep -Seconds 10
-              Restart-Computer -Force
-              Write-Host "Machine will reboot in 10 seconds to apply changes."
-          } catch {
-              Write-Host "Failed to reboot the machine: $_"
-          }
-        GetScript: return $false
-        TestScript: return $false
