@@ -20,14 +20,11 @@ properties:
               "azps-tools.azps-tools",
               "azurite.azurite",
               "devcenter.ms-devbox",
-              "eamodio.gitlens",
               "github.copilot",
               "github.copilot-chat",
               "github.remotehub",
               "github.vscode-github-actions",
               "github.vscode-pull-request-github",
-              "humao.rest-client",
-              "ionide.ionide-fsharp",
               "ms-azure-devops.azure-pipelines",
               "ms-azuretools.azure-dev",
               "ms-azuretools.vscode-apimanagement",
@@ -66,8 +63,7 @@ properties:
               "ms-vscode.vscode-node-azure-pack",
               "ms-vscode.vscode-typescript-next",
               "msazurermtools.azurerm-vscode-tools",
-              "redhat.vscode-yaml",
-              "visualstudioonlineapplicationinsights.application-insights"
+              "redhat.vscode-yaml"
           )
           foreach ($extension in $extensions) {
               try {
