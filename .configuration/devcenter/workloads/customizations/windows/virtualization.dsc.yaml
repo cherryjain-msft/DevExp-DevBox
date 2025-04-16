@@ -8,6 +8,16 @@ properties:
   ### Install: WSL and Ubuntu
   ########################################
   resources:
+    ########################################################
+    ### Install Windows VirtualMachinePlatform
+    ### -------------------------------------
+    - resource: PSDscResources/WindowsOptionalFeature
+      directives:
+        description: Install VirtualMachinePlatform
+        securityContext: elevated
+      settings:
+        name: VirtualMachinePlatform
+        ensure: Present
     ### Install Windows Subsystem for Linux (WSL)
     ### -------------------------------------
     - resource: PSDscResources/Script

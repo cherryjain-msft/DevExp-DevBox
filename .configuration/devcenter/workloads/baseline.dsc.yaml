@@ -16,16 +16,17 @@ properties:
     ### Install: Microsoft.Office
     ########################################################
 
-    ### Enable Developer Mode
+    ### Enable: Developer Mode
     ### -------------------------------------
     - resource: Microsoft.Windows.Developer/DeveloperMode
-      id: DeveloperMode
       directives:
         description: Enable Developer Mode
+        # Requires elevation only for the set operation
+        securityContext: elevated
         allowPrerelease: true
       settings:
         Ensure: Present
-
+    
     ### Install Git
     ### -------------------------------------
     - resource: Microsoft.WinGet.DSC/WinGetPackage
