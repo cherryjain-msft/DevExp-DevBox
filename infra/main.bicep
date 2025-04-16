@@ -85,9 +85,6 @@ module connectivity '../src/connectivity/connectivity.bicep' = {
   ]
 }
 
-output AZURE_VIRTUAL_NETWORK_NAME string = connectivity.outputs.AZURE_VIRTUAL_NETWORK_NAME
-output AZURE_VIRTUAL_NETWORK_SUBNETS array = connectivity.outputs.AZURE_VIRTUAL_NETWORK_SUBNETS
-
 var workloadRgName = (landingZones.workload.create)
   ? '${landingZones.workload.name}-${environmentName}-${location}-rg'
   : landingZones.workload.name
@@ -116,4 +113,5 @@ module workload '../src/workload/workload.bicep' = {
 }
 
 output AZURE_DEV_CENTER_NAME string = workload.outputs.AZURE_DEV_CENTER_NAME
+output AZURE_DEV_CENTER_PROJECTS array = workload.outputs.AZURE_DEV_CENTER_PROJECTS
 
