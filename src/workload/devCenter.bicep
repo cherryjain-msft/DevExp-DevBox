@@ -130,9 +130,8 @@ module devCenterIdentityRoleAssignment '../identity/devCenterRoleAssignment.bice
 module devCenterIdentityUserGroupsRoleAssignment '../identity/orgRoleAssignment.bicep' = [
   for role in config.identity.roleAssignments.orgRoleType: {
     name: 'RBAC-${guid(role.azureADGroupId, role.azureADGroupName,role.azureRBACRoles[0].id,resourceGroup().id)}'
-    scope: resourceGroup()
+    scope: subscription()
     params: {
-      devCenterName: devcenter.name
       principalId: role.azureADGroupId
       roles: role.azureRBACRoles
     }
