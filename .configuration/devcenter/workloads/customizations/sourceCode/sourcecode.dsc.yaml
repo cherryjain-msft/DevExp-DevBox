@@ -32,6 +32,7 @@ properties:
       directives:
         description: Update Dotnet Workload
         allowPrerelease: true
+        securityContext: elevated
       settings:
         SetScript: |
           try {
@@ -51,6 +52,7 @@ properties:
       directives:
         description: Clone and Build Identity Provider and eShop-k8s repositories
         allowPrerelease: true
+        securityContext: elevated
       settings:
         SetScript: |
           try {

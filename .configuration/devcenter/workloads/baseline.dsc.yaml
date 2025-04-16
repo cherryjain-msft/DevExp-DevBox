@@ -34,6 +34,7 @@ properties:
       directives:
         description: Install Git
         allowPrerelease: true
+        securityContext: elevated
       settings:
         id: Git.Git
 
@@ -44,6 +45,7 @@ properties:
       directives:
         description: Install GitHub CLI
         allowPrerelease: true
+        securityContext: elevated
       settings:
         id: GitHub.CLI
 
@@ -54,6 +56,7 @@ properties:
       directives:
         description: Install GitHub Desktop
         allowPrerelease: true
+        securityContext: elevated
       settings:
         id: GitHub.GitHubDesktop
 
@@ -64,6 +67,7 @@ properties:
       directives:
         description: Install Windows Terminal
         allowPrerelease: true
+        securityContext: elevated
       settings:
         id: Microsoft.WindowsTerminal
 
@@ -74,5 +78,6 @@ properties:
       directives:
         description: Install PowerToys
         allowPrerelease: true
+        securityContext: elevated
       settings:
         id: Microsoft.PowerToys

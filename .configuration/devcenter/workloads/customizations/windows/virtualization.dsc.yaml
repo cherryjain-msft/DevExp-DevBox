@@ -24,6 +24,7 @@ properties:
       id: Microsoft-Windows-Subsystem-Linux
       directives:
         description: Enable Windows Features and Install Ubuntu for WSL
+        securityContext: elevated
       settings:
         SetScript: |
           try {
@@ -45,6 +46,7 @@ properties:
       id: Ubuntu
       directives:
         description: Install Ubuntu for WSL
+        securityContext: elevated
       settings:
         SetScript: |
           try {
@@ -68,6 +70,7 @@ properties:
       id: Ubuntu.User
       directives:
         description: Add the current user as an administrator to Ubuntu
+        securityContext: elevated
       settings:
         SetScript: |
           try {
@@ -107,6 +110,7 @@ properties:
       id: Ubuntu.AzureCli
       directives:
         description: Install Azure CLI, Developer and Bicep on Ubuntu
+        securityContext: elevated
       settings:
         SetScript: |
           try {
@@ -139,6 +143,7 @@ properties:
       id: Ubuntu.NET
       directives:
         description: Install .NET SDK and Runtime
+        securityContext: elevated
       settings:
         SetScript: |
           try {

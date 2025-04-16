@@ -21,6 +21,7 @@ properties:
       directives:
         description: Install Docker Desktop
         allowPrerelease: true
+        securityContext: elevated
       settings:
         id: Docker.DockerDesktop
         source: winget
@@ -32,6 +33,7 @@ properties:
       directives:
         description: Install Helm
         allowPrerelease: true
+        securityContext: elevated
       settings:
         id: Helm.Helm
         source: winget
