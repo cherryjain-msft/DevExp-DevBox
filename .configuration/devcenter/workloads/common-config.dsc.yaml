@@ -19,3 +19,11 @@ properties:
         allowPrerelease: true
       settings:
         id: Git.Git
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: GitHub.GitHubDesktop
+      directives:
+        description: Install GitHub Desktop
+        securityContext: elevated
+        allowPrerelease: true
+      settings:
+        id: GitHub.GitHubDesktop
