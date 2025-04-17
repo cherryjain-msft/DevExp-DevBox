@@ -1,12 +1,24 @@
 # yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
 
 # This DSC configuration installs and configures the following:
+# - Installs Node.js using WinGet.
 # - Installs Visual Studio Code using WinGet.
+# - Installs Visual Studio Code CLI using WinGet.
 # - Installs a list of essential VS Code extensions.
 
 properties:
   configurationVersion: "0.2.0"
   resources:
+    # Install Node.js using WinGet
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: OpenJS.NodeJS
+      directives:
+        description: Install Node.js
+        securityContext: elevated
+        allowPrerelease: true
+      settings:
+        id: OpenJS.NodeJS
+
     # Install Visual Studio Code using WinGet
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Microsoft.VisualStudioCode
@@ -16,6 +28,20 @@ properties:
         allowPrerelease: true
       settings:
         id: Microsoft.VisualStudioCode
+      dependsOn:
+        - OpenJS.NodeJS
+
+    # Install Visual Studio Code CLI
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Microsoft.VisualStudioCode.CLI
+      directives:
+        description: Install Visual Studio Code CLI
+        securityContext: elevated
+        allowPrerelease: true
+      settings:
+        id: Microsoft.VisualStudioCode.CLI
+      dependsOn:
+        - Microsoft.VisualStudioCode
 
     # Install a list of VS Code extensions
     - resource: PSDscResources/Script
