@@ -53,11 +53,11 @@ properties:
       settings:
         SetScript: |
           $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-          code --install extension ms-vscode.powershell --force
-          code --install extension ms-vscode-remote.remote-wsl --force
-          code --install extension ms-dotnettools.csharp --force
-          code --install extension ms-dotnettools.csdevkit --force
-          code --install extension ms-dotnettools.vscodeintellicode-csharp --force
+          code --install-extension ms-vscode.powershell --force
+          code --install-extension ms-vscode-remote.remote-wsl --force
+          code --install-extension ms-dotnettools.csharp --force
+          code --install-extension ms-dotnettools.csdevkit --force
+          code --install-extension ms-dotnettools.vscodeintellicode-csharp --force
         GetScript: return $false
         TestScript: return $false
       dependsOn:
