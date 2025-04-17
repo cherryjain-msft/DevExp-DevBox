@@ -1,63 +1,48 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/microsoft/winget-cli/refs/heads/master/schemas/JSON/configuration/configuration.schema.0.2.json
+# yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
+
+# This DSC configuration installs and configures the following:
+# - Installs .NET SDK 9 and .NET Runtime 9 using WinGet.
+# - Installs and updates .NET workloads such as Aspire and MAUI.
 
 properties:
-  configurationVersion: 0.2.0
-
-  ########################################
-  ### RESOURCES: System Configuration
-  ########################################
+  configurationVersion: "0.2.0"
   resources:
-    ########################################################
-    ### Installs Dotnet SDK and Runtime
-    ########################################################
-
-    ### Install Microsoft DotNet SDK 9
-    ### -------------------------------------
+    # Install .NET SDK 9 using WinGet
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Microsoft.DotNet.SDK.9
       directives:
-        description: Install Microsoft DotNet SDK 9
-        allowPrerelease: true
+        description: Install .NET SDK 9
         securityContext: elevated
+        allowPrerelease: true
       settings:
         id: Microsoft.DotNet.SDK.9
 
-    ### Install Microsoft DotNet Runtime 9
-    ### -------------------------------------
+    # Install .NET Runtime 9 using WinGet
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Microsoft.DotNet.Runtime.9
       directives:
-        description: Install Microsoft DotNet Runtime 9
-        allowPrerelease: true
+        description: Install .NET Runtime 9
         securityContext: elevated
+        allowPrerelease: true
       settings:
         id: Microsoft.DotNet.Runtime.9
-
       dependsOn:
         - Microsoft.DotNet.SDK.9
 
-    ### Install ASPIRE and Update Workloads
-    ### -------------------------------------
+    # Install and update .NET workloads (Aspire and MAUI)
     - resource: PSDscResources/Script
-      id: dotnet.workloads
+      id: Microsoft.DotNet.Aspire
       directives:
-        description: Install Ubuntu for WSL
+        description: Install DotNet Aspire and update workloads
         securityContext: elevated
+        allowPrerelease: true
       settings:
         SetScript: |
-          try {
-              Set-ExecutionPolicy Bypass -Scope Process -Force
-              Write-Verbose "Setting environment path"
-              $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-              Write-Verbose "Installing .NET ASPiRE and updating workloads"
-              dotnet workload install aspire
-              dotnet workload install maui
-              dotnet workload update
-              Write-Host "Workloads Installed and Updated successfully."
-          } catch {
-              Write-Error "Failed to install and update dotnet workloads: $_"
-          }
+          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
+          dotnet workload install aspire
+          dotnet workload install maui
+          dotnet workload update
         GetScript: return $false
         TestScript: return $false
       dependsOn:
-        - Microsoft.DotNet.Runtime.9
+        - Microsoft.DotNet.SDK.9

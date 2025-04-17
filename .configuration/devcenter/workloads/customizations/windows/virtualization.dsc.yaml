@@ -55,8 +55,8 @@ properties:
               $passwordBash = $password -replace '(["\$`])', '\\$1'
 
               $wslCommand = @(
-                  "sudo adduser --quiet --disabled-password --gecos '' $newUser",
-                  "echo '$newUser:$passwordBash' | sudo chpasswd",
+                  "sudo adduser --quiet --disabled-password --gecos '' $newUser",  # Fixed escaping issue
+                  "echo '$newUser : $passwordBash' | sudo chpasswd",
                   "sudo usermod -aG sudo $newUser",
                   "echo '$newUser ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/$newUser"
               ) -join "; "
