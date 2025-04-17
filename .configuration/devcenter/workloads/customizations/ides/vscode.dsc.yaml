@@ -78,7 +78,7 @@ properties:
           )
           foreach ($extension in $extensions) {
               try {
-                  code --install-extension $extension --trace-deprecation
+                  code --install-extension $extension --force
                   Write-Host "Installed: $extension"
               } catch {
                   Write-Host "Failed to install: $extension"
@@ -86,3 +86,5 @@ properties:
           }
         GetScript: return $false
         TestScript: return $false
+      dependsOn:
+        - Microsoft.VisualStudioCode
