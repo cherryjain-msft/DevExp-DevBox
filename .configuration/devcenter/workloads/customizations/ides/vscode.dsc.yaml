@@ -54,7 +54,11 @@ properties:
         SetScript: |
           $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
           $extensions = @(
-              "ms-vscode.powershell"
+              "ms-vscode.powershell",
+              "ms-vscode-remote.remote-wsl",
+              "ms-dotnettools.csharp",
+              "ms-dotnettools.csdevkit",
+              "ms-dotnettools.vscodeintellicode-csharp"
           )
           foreach ($extension in $extensions) {
               try {
