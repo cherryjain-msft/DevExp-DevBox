@@ -9,15 +9,6 @@ properties:
   ########################################
   resources:
     ########################################################
-    ### Install Windows VirtualMachinePlatform
-    ### -------------------------------------
-    - resource: PSDscResources/WindowsOptionalFeature
-      directives:
-        description: Install VirtualMachinePlatform
-        securityContext: elevated
-      settings:
-        name: VirtualMachinePlatform
-        ensure: Present
     ### Install Windows Subsystem for Linux (WSL)
     ### -------------------------------------
     - resource: PSDscResources/Script
@@ -27,8 +18,7 @@ properties:
         securityContext: elevated
       settings:
         SetScript: |
-          try {
-              Set-ExecutionPolicy Bypass -Scope Process -Force
+          try {              
               Write-Verbose "Setting environment path"
               $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
               Write-Verbose "Installing Windows Subsystem for Linux (WSL)"
@@ -49,8 +39,7 @@ properties:
         securityContext: elevated
       settings:
         SetScript: |
-          try {
-              Set-ExecutionPolicy Bypass -Scope Process -Force
+          try {              
               Write-Verbose "Setting environment path"
               $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
               Write-Verbose "Installing Ubuntu for WSL"
@@ -73,8 +62,7 @@ properties:
         securityContext: elevated
       settings:
         SetScript: |
-          try {
-              Set-ExecutionPolicy Bypass -Scope Process -Force
+          try {              
               Write-Verbose "Setting environment path"
               $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
               # Get the current Windows username (converted to lowercase for Linux)
@@ -113,8 +101,7 @@ properties:
         securityContext: elevated
       settings:
         SetScript: |
-          try {
-              Set-ExecutionPolicy Bypass -Scope Process -Force
+          try {              
               Write-Verbose "Setting environment path"
               $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 
@@ -146,8 +133,7 @@ properties:
         securityContext: elevated
       settings:
         SetScript: |
-          try {
-              Set-ExecutionPolicy Bypass -Scope Process -Force
+          try {              
               Write-Verbose "Setting environment path"
               $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 

@@ -70,14 +70,3 @@ properties:
         securityContext: elevated
       settings:
         id: Microsoft.WindowsTerminal
-
-    ### Install PowerToys
-    ### -------------------------------------
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: Microsoft.PowerToys
-      directives:
-        description: Install PowerToys
-        allowPrerelease: true
-        securityContext: elevated
-      settings:
-        id: Microsoft.PowerToys
