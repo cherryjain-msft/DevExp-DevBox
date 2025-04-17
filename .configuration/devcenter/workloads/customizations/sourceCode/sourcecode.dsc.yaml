@@ -58,8 +58,8 @@ properties:
           try {
               $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
               dotnet workload install aspire
-              dotnet restore "C:\Workspaces\IdentityProvider\src\Contoso.IdentityProvider.sln"
-              dotnet build "C:\Workspaces\IdentityProvider\src\Contoso.IdentityProvider.sln" --no-restore
+              dotnet restore "Z:\Workspaces\IdentityProvider\src\Contoso.IdentityProvider.sln"
+              dotnet build "Z:\Workspaces\IdentityProvider\src\Contoso.IdentityProvider.sln" --no-restore
               Write-Host "Identity Provider and eShop-k8s repositories built successfully."
           } catch {
               Write-Host "Failed to build Identity Provider and eShop-k8s repositories: $_"
