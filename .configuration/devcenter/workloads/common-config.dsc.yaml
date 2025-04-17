@@ -1,8 +1,14 @@
+# This DSC configuration installs and configures the following:
+# - Enables Developer Mode on the system.
+# - Installs Git, GitHub CLI, GitHub Desktop, and Windows Terminal using WinGet.
+# - Configures Git to use the default WAM account for authentication.
+# - Sets up a Dev Drive with ReFS format for development purposes.
 # yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
 
 properties:
   configurationVersion: "0.2.0"
   resources:
+    # Enable Developer Mode on the system
     - resource: Microsoft.Windows.Developer/DeveloperMode
       id: DeveloperMode
       directives:
@@ -11,6 +17,8 @@ properties:
         allowPrerelease: true
       settings:
         ensure: present
+
+    # Install Git using WinGet
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Git.Git
       directives:
@@ -19,6 +27,8 @@ properties:
         allowPrerelease: true
       settings:
         id: Git.Git
+
+    # Configure Git to use the default WAM account
     - resource: PSDscResources/Script
       directives:
         description: Configure Git to use Default WAM account
@@ -33,16 +43,20 @@ properties:
         TestScript: return $false
       dependsOn:
         - Git.Git
+
+    # Install GitHub CLI using WinGet
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: GitHub.cli
       directives:
-        description: Install Visual Studio Code
+        description: Install GitHub CLI
         securityContext: elevated
         allowPrerelease: true
       settings:
         id: GitHub.cli
       dependsOn:
         - Git.Git
+
+    # Install GitHub Desktop using WinGet
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: GitHub.GitHubDesktop
       directives:
@@ -51,6 +65,8 @@ properties:
         allowPrerelease: true
       settings:
         id: GitHub.GitHubDesktop
+
+    # Install Windows Terminal using WinGet
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Microsoft.WindowsTerminal
       directives:
@@ -59,11 +75,14 @@ properties:
         allowPrerelease: true
       settings:
         id: Microsoft.WindowsTerminal
+
+    # Configure a Dev Drive with ReFS format
     - resource: Disk
       id: DevDrive1
       directives:
         module: StorageDsc
         allowPrerelease: true
+        description: Configure Dev Drive with ReFS format
       settings:
         DiskId: "0"
         DiskIdType: "Number"
@@ -73,3 +92,5 @@ properties:
         AllowDestructive: true
         FSFormat: "ReFS"
         Size: "50Gb"
+      dependsOn:
+        - DeveloperMode
