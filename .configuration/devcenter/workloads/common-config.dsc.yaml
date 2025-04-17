@@ -11,15 +11,6 @@ properties:
         allowPrerelease: true
       settings:
         ensure: present
-    - resource: PSDscResources/WindowsOptionalFeature
-      id: VirtualMachinePlatform
-      directives:
-        description: Enable Virtual Machine Platform
-        securityContext: elevated
-        allowPrerelease: true
-      settings:
-        name: VirtualMachinePlatform
-        ensure: present
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Git.Git
       directives:
