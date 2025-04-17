@@ -30,6 +30,7 @@ properties:
 
     # Configure Git to use the default WAM account
     - resource: PSDscResources/Script
+      id: Git.GitCredentialManager
       directives:
         description: Configure Git to use Default WAM account
         securityContext: elevated

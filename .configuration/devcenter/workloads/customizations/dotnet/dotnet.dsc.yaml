@@ -21,3 +21,17 @@ properties:
         id: Microsoft.DotNet.Runtime.9
       dependsOn:
         - Microsoft.DotNet.SDK.9
+    - resource: PSDscResources/Script
+      id: Microsoft.DotNet.Aspire
+      directives:
+        description: Install DotNet Aspire
+        securityContext: elevated
+        allowPrerelease: true
+      settings:
+        SetScript: |
+          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
+          dotnet workload install aspire
+          dotnet workload install maui
+          dotnet workload update
+        GetScript: return $false
+        TestScript: return $false
