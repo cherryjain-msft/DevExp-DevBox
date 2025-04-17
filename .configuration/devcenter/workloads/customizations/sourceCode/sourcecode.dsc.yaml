@@ -32,6 +32,7 @@ properties:
       directives:
         description: Update Dotnet Workload
         allowPrerelease: true
+        securityContext: elevated
       settings:
         SetScript: |
           try {
@@ -51,36 +52,17 @@ properties:
       directives:
         description: Clone and Build Identity Provider and eShop-k8s repositories
         allowPrerelease: true
+        securityContext: elevated
       settings:
         SetScript: |
           try {
               $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
               dotnet workload install aspire
-              dotnet restore "C:\Workspaces\IdentityProvider\src\Contoso.IdentityProvider.sln"
-              dotnet build "C:\Workspaces\IdentityProvider\src\Contoso.IdentityProvider.sln" --no-restore
+              dotnet restore "Z:\Workspaces\IdentityProvider\src\Contoso.IdentityProvider.sln"
+              dotnet build "Z:\Workspaces\IdentityProvider\src\Contoso.IdentityProvider.sln" --no-restore
               Write-Host "Identity Provider and eShop-k8s repositories built successfully."
           } catch {
               Write-Host "Failed to build Identity Provider and eShop-k8s repositories: $_"
-          }
-        GetScript: return $false
-        TestScript: return $false
-
-    ### Reboot the Machine
-    ### -------------------------------------
-    - resource: PSDscResources/Script
-      id: RebootingMachine
-      directives:
-        description: Reboot the machine to apply changes in 10 seconds...
-        allowPrerelease: true
-      settings:
-        SetScript: |
-          try {
-              $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-              Start-Sleep -Seconds 10
-              Restart-Computer -Force
-              Write-Host "Machine will reboot in 10 seconds to apply changes."
-          } catch {
-              Write-Host "Failed to reboot the machine: $_"
           }
         GetScript: return $false
         TestScript: return $false

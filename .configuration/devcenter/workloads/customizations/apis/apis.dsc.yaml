@@ -17,6 +17,6 @@ properties:
       directives:
         description: Install Postman
         allowPrerelease: true
+        securityContext: elevated
       settings:
         id: Postman.Postman
-        source: winget

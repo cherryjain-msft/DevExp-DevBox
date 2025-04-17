@@ -8,13 +8,6 @@ properties:
     ########################################################
     ### Updates required before applying configurations
     ########################################################
-    ### Install PSDscResources
-    ### Enable: WinGet
-    ### Enable: AppInstaller
-    ### Enable: AppInstallerFileBuilder
-    ### Enable: DevHome
-    ### Enable: DevHome Azure Extension
-    ### Enable: DevHome GitHub Extension
     ### Install: Git
     ### Install: GitHub.CLI
     ### Install: GitHub.GitHubDesktop
@@ -23,99 +16,13 @@ properties:
     ### Install: Microsoft.Office
     ########################################################
 
-    ### Install PSDscResources
-    ### -------------------------------------
-    - resource: PSDscResources/Script
-      id: PSDscResources
-      directives:
-        description: Install PSDscResources
-        allowPrerelease: true
-      settings:
-        SetScript: |
-          Install-Module -Name PSDscResources -Force -AllowClobber
-        GetScript: return $false
-        TestScript: return $false
-
-    ### Enable WinGet
-    ### -------------------------------------
-    - resource: PSDscResources/Script
-      id: Microsoft.AppInstaller
-      directives:
-        description: Install Microsoft.AppInstaller
-      settings:
-        SetScript: |
-          Set-ExecutionPolicy Bypass -Scope Process -Force
-          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-          winget install Microsoft.AppInstaller --accept-package-agreements --accept-source-agreements --verbose --force
-        GetScript: return $false
-        TestScript: return $false
-      dependsOn:
-        - PSDscResources
-
-    ### Enable AppInstaller
-    ### -------------------------------------
-    - resource: PSDscResources/Script
-      id: Microsoft.AppInstallerFileBuilder
-      directives:
-        description: Install Microsoft.AppInstallerFileBuilder
-      settings:
-        SetScript: |
-          Set-ExecutionPolicy Bypass -Scope Process -Force
-          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-          winget install Microsoft.AppInstallerFileBuilder --accept-package-agreements --accept-source-agreements --verbose --force
-        GetScript: return $false
-        TestScript: return $false
-      dependsOn:
-        - Microsoft.AppInstaller
-
-    ### Enable DevHome
-    ### -------------------------------------
-    - resource: PSDscResources/Script
-      id: Microsoft.DevHome
-      directives:
-        description: Install Microsoft.DevHome
-      settings:
-        SetScript: |
-          Set-ExecutionPolicy Bypass -Scope Process -Force
-          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-          winget install Microsoft.DevHome --accept-package-agreements --accept-source-agreements --verbose --force
-        GetScript: return $false
-        TestScript: return $false
-      dependsOn:
-        - Microsoft.AppInstaller
-
-    ### Enable DevHome Azure Extension
-    ### -------------------------------------
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: Microsoft.DevHome.AzureExtension
-      directives:
-        description: Install Microsoft.DevHome Azure Extension
-        allowPrerelease: true
-      settings:
-        id: "9MV8F79FGXTR"
-        source: msstore
-      dependsOn:
-        - Microsoft.DevHome
-
-    ### Enable DevHome GitHub Extension
-    ### -------------------------------------
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: Microsoft.DevHome.GitHubExtension
-      directives:
-        description: Install Microsoft.DevHome GitHub Extension
-        allowPrerelease: true
-      settings:
-        id: "9NZCC27PR6N6"
-        source: msstore
-      dependsOn:
-        - Microsoft.DevHome
-
-    ### Enable Developer Mode
+    ### Enable: Developer Mode
     ### -------------------------------------
     - resource: Microsoft.Windows.Developer/DeveloperMode
-      id: DeveloperMode
       directives:
         description: Enable Developer Mode
+        # Requires elevation only for the set operation
+        securityContext: elevated
         allowPrerelease: true
       settings:
         Ensure: Present
@@ -127,6 +34,7 @@ properties:
       directives:
         description: Install Git
         allowPrerelease: true
+        securityContext: elevated
       settings:
         id: Git.Git
 
@@ -137,6 +45,7 @@ properties:
       directives:
         description: Install GitHub CLI
         allowPrerelease: true
+        securityContext: elevated
       settings:
         id: GitHub.CLI
 
@@ -147,6 +56,7 @@ properties:
       directives:
         description: Install GitHub Desktop
         allowPrerelease: true
+        securityContext: elevated
       settings:
         id: GitHub.GitHubDesktop
 
@@ -157,15 +67,6 @@ properties:
       directives:
         description: Install Windows Terminal
         allowPrerelease: true
+        securityContext: elevated
       settings:
         id: Microsoft.WindowsTerminal
-
-    ### Install PowerToys
-    ### -------------------------------------
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: Microsoft.PowerToys
-      directives:
-        description: Install PowerToys
-        allowPrerelease: true
-      settings:
-        id: Microsoft.PowerToys

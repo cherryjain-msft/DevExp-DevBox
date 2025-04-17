@@ -18,9 +18,9 @@ properties:
       directives:
         description: Install Microsoft DotNet SDK 9
         allowPrerelease: true
+        securityContext: elevated
       settings:
         id: Microsoft.DotNet.SDK.9
-        source: winget
 
     ### Install Microsoft DotNet Runtime 9
     ### -------------------------------------
@@ -29,9 +29,10 @@ properties:
       directives:
         description: Install Microsoft DotNet Runtime 9
         allowPrerelease: true
+        securityContext: elevated
       settings:
         id: Microsoft.DotNet.Runtime.9
-        source: winget
+
       dependsOn:
         - Microsoft.DotNet.SDK.9
 
@@ -41,6 +42,7 @@ properties:
       id: dotnet.workloads
       directives:
         description: Install Ubuntu for WSL
+        securityContext: elevated
       settings:
         SetScript: |
           try {
