@@ -4,6 +4,7 @@ properties:
   configurationVersion: "0.2.0"
   resources:
     - resource: Microsoft.Windows.Developer/DeveloperMode
+      id: DeveloperMode
       directives:
         description: Enable Developer Mode
         securityContext: elevated
@@ -11,6 +12,7 @@ properties:
       settings:
         ensure: present
     - resource: PSDscResources/WindowsOptionalFeature
+      id: VirtualMachinePlatform
       directives:
         description: Enable Virtual Machine Platform
         securityContext: elevated
@@ -18,3 +20,11 @@ properties:
       settings:
         name: VirtualMachinePlatform
         ensure: present
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Git.Git
+      directives:
+        description: Install Git
+        securityContext: elevated
+        allowPrerelease: true
+      settings:
+        id: Git.Git
