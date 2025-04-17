@@ -21,7 +21,6 @@ properties:
         securityContext: elevated
       settings:
         id: Microsoft.DotNet.SDK.9
-        source: winget
 
     ### Install Microsoft DotNet Runtime 9
     ### -------------------------------------
@@ -33,7 +32,7 @@ properties:
         securityContext: elevated
       settings:
         id: Microsoft.DotNet.Runtime.9
-        source: winget
+
       dependsOn:
         - Microsoft.DotNet.SDK.9
 

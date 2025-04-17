@@ -24,6 +24,6 @@ properties:
               Write-Host "Failed to install: Visual Studio Enterprise 2022"
               Write-Host "Error: $_"
           }
-          
+
         GetScript: return $false
         TestScript: return $false

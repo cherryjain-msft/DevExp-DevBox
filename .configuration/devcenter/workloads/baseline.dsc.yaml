@@ -26,7 +26,7 @@ properties:
         allowPrerelease: true
       settings:
         Ensure: Present
-    
+
     ### Install Git
     ### -------------------------------------
     - resource: Microsoft.WinGet.DSC/WinGetPackage

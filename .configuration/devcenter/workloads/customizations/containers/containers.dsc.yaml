@@ -24,7 +24,6 @@ properties:
         securityContext: elevated
       settings:
         id: Docker.DockerDesktop
-        source: winget
 
     ### Install Helm
     ### -------------------------------------
@@ -36,6 +35,6 @@ properties:
         securityContext: elevated
       settings:
         id: Helm.Helm
-        source: winget
+
       dependsOn:
         - Docker.DockerDesktop

@@ -20,4 +20,3 @@ properties:
         securityContext: elevated
       settings:
         id: Postman.Postman
-        source: winget
