@@ -34,6 +34,16 @@ properties:
       dependsOn:
         - Git.Git
     - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: GitHub.cli
+      directives:
+        description: Install Visual Studio Code
+        securityContext: elevated
+        allowPrerelease: true
+      settings:
+        id: GitHub.cli
+      dependsOn:
+        - Git.Git
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: GitHub.GitHubDesktop
       directives:
         description: Install GitHub Desktop
