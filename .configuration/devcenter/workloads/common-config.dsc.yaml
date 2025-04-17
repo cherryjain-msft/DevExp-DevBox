@@ -8,6 +8,22 @@
 properties:
   configurationVersion: "0.2.0"
   resources:
+    # Insstalls the required DSC resources
+    - resource: PSDscResources/Script
+      id: PSDscResources
+      directives:
+        description: Install the required DSC resources
+        securityContext: elevated
+        allowPrerelease: true
+      settings:
+        SetScript: |
+          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
+          Set-ExecutionPolicy Bypass -Scope LocalMachine -Force
+          Install-PackageProvider -Name NuGet -Scope AllUsers -Force | Out-Null
+          Install-Module -Name Microsoft.WinGet.Client -Scope AllUsers -Force -Repository PSGallery | Out-Null
+        GetScript: return $false
+        TestScript: return $false
+
     # Enable Developer Mode on the system
     - resource: Microsoft.Windows.Developer/DeveloperMode
       id: DeveloperMode
