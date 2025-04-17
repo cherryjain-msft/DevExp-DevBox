@@ -9,12 +9,12 @@ properties:
         securityContext: elevated
         allowPrerelease: true
       settings:
-        Enable: true
+        ensure: present
     - resource: PSDscResources/WindowsOptionalFeature
       directives:
         description: Enable Virtual Machine Platform
         securityContext: elevated
         allowPrerelease: true
       settings:
-        Enable: true
-        FeatureName: VirtualMachinePlatform
+        name: VirtualMachinePlatform
+        ensure: present

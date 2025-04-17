@@ -76,7 +76,7 @@ properties:
               # Construct the WSL command as a single-line string
               $wslCommand = @(
                   "sudo adduser --quiet --disabled-password --gecos '' $newUser",  # Fixed escaping issue
-                  "echo '$newUser : $passwordBash' | sudo chpasswd",
+                  "echo '$newUser:$passwordBash' | sudo chpasswd",
                   "sudo usermod -aG sudo $newUser",
                   "echo '$newUser ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/$newUser"
               ) -join "; "
