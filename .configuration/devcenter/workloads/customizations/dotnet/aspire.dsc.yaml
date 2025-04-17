@@ -1,0 +1,21 @@
+# yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
+properties:
+  configurationVersion: "0.2.0"
+  # This DSC configuration installs and configures the following:
+  # - Installs and updates .NET workloads such as Aspire and MAUI.
+  resources:
+    # Install and update .NET workloads (Aspire and MAUI)
+    - resource: PSDscResources/Script
+      id: Microsoft.DotNet.Aspire
+      directives:
+        description: Install DotNet Aspire and update workloads
+        securityContext: elevated
+        allowPrerelease: true
+      settings:
+        SetScript: |
+          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
+          dotnet workload install aspire
+          dotnet workload install maui
+          dotnet workload update
+        GetScript: return $false
+        TestScript: return $false
