@@ -1,87 +1,72 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/microsoft/winget-cli/refs/heads/master/schemas/JSON/configuration/configuration.schema.0.2.json
+# yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
+
+# This configuration installs essential Azure tools and emulators using WinGet.
+# Tools include Azure CLI, Azure Developer CLI, Bicep CLI, Azure Data CLI, 
+# Azure Storage Emulator, Azure Cosmos Emulator, and Service Bus Explorer.
 
 properties:
-  configurationVersion: 0.2.0
+  configurationVersion: "0.2.0"
 
-  ########################################
-  ### RESOURCES: System Configuration
-  ### Install: Microsoft Azure CLI
-  ### Install: Microsoft Azure Developer CLI
-  ### Install: Microsoft Azure Storage Emulator
-  ### Install: Microsoft Azure Storage Explorer
-  ### Install: Microsoft Azure Functions Core Tools
-  ### Install: Microsoft Azure Cosmos Emulator
-  ### Install: Microsoft Bicep
-  ########################################
   resources:
-    ### Install Microsoft Azure CLI
-    ### -------------------------------------
+    # Install Azure CLI for managing Azure resources
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Microsoft.AzureCLI
       directives:
-        description: Install Microsoft Azure CLI
-        allowPrerelease: true
+        description: Install Azure CLI using WinGet for managing Azure resources
         securityContext: elevated
       settings:
         id: Microsoft.AzureCLI
 
-    ### Install Microsoft Azure Developer CLI
-    ### -------------------------------------
+    # Install Azure Developer CLI (azd) for streamlined development workflows
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Microsoft.Azd
       directives:
-        description: Install Microsoft Azure Developer CLI
-        allowPrerelease: true
+        description: Install Azure Developer CLI (azd) using WinGet for streamlined development workflows
         securityContext: elevated
       settings:
         id: Microsoft.Azd
 
-    ### Install Microsoft Azure Storage Emulator
-    ### -------------------------------------
+    # Install Azure Storage Emulator for local development and testing
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Microsoft.Azure.StorageEmulator
       directives:
-        description: Install Microsoft Azure Storage Emulator
+        description: Install Azure Storage Emulator using WinGet for local development and testing
         securityContext: elevated
       settings:
         id: Microsoft.Azure.StorageEmulator
 
-    ### Install Microsoft Azure Storage Explorer
-    ### -------------------------------------
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: Microsoft.Azure.StorageExplorer
-      directives:
-        description: Install Microsoft Azure Storage Explorer
-        securityContext: elevated
-      settings:
-        id: Microsoft.Azure.StorageExplorer
-
-    ### Install Microsoft Azure Functions Core Tools
-    ### -------------------------------------
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: Microsoft.Azure.FunctionsCoreTools
-      directives:
-        description: Install Microsoft Azure Functions Core Tools
-        securityContext: elevated
-      settings:
-        id: Microsoft.Azure.FunctionsCoreTools
-
-    ### Install Microsoft Azure Cosmos Emulator
-    ### -------------------------------------
+    # Install Azure Cosmos Emulator for local Cosmos DB development
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Microsoft.Azure.CosmosEmulator
       directives:
-        description: Install Microsoft Azure Cosmos Emulator
+        description: Install Azure Cosmos Emulator using WinGet for local Cosmos DB development
         securityContext: elevated
       settings:
         id: Microsoft.Azure.CosmosEmulator
 
-    ### Install Microsoft Bicep
-    ### -------------------------------------
+    # Install Bicep CLI for ARM template authoring
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Microsoft.Bicep
       directives:
-        description: Install Microsoft Bicep
+        description: Install Bicep CLI using WinGet for ARM template authoring
         securityContext: elevated
       settings:
         id: Microsoft.Bicep
+
+    # Install Azure Data CLI for managing Azure data services
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Microsoft.Azure.DataCLI
+      directives:
+        description: Install Azure Data CLI using WinGet for managing Azure data services
+        securityContext: elevated
+      settings:
+        id: Microsoft.Azure.DataCLI
+
+    # Install Service Bus Explorer for managing Azure Service Bus
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: paolosalvatori.ServiceBusExplorer
+      directives:
+        description: Install Service Bus Explorer using WinGet for managing Azure Service Bus
+        securityContext: elevated
+      settings:
+        id: paolosalvatori.ServiceBusExplorer

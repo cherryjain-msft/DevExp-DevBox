@@ -1,5 +1,6 @@
 # This DSC configuration installs and configures the following:
 # - Enables Developer Mode on the system.
+# - Installs PowerShell using WinGet.
 # - Installs Git, GitHub CLI, GitHub Desktop, and Windows Terminal using WinGet.
 # - Configures Git to use the default WAM account for authentication.
 # - Sets up a Dev Drive with ReFS format for development purposes.
@@ -17,6 +18,15 @@ properties:
         allowPrerelease: true
       settings:
         ensure: present
+
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Microsoft.PowerShell
+      directives:
+        description: Install PowerShell using WinGet
+        securityContext: elevated
+        allowPrerelease: true
+      settings:
+        id: Microsoft.PowerShell
 
     # Install Git using WinGet
     - resource: Microsoft.WinGet.DSC/WinGetPackage
