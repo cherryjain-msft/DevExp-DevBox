@@ -20,7 +20,7 @@ properties:
           $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
           Set-ExecutionPolicy Bypass -Scope LocalMachine -Force
           Install-PackageProvider -Name NuGet -Scope AllUsers -Force | Out-Null
-          Install-Module -Name Microsoft.WinGet.Client -Scope AllUsers -Force -Repository PSGallery | Out-Null
+          Install-Module -Name PSDscResources -Scope AllUsers -Force -AllowClobber
         GetScript: return $false
         TestScript: return $false
 
