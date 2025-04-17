@@ -87,7 +87,7 @@ projects:
       team: "DevExP"
       project: "DevExP-DevBox"
       costCenter: "IT"
-      owner: "Evilazaro"
+      owner: "Contoso"
       resources: "Project"
 
   - name: "eShop"
@@ -138,7 +138,7 @@ projects:
       team: "DevExP"
       project: "DevExP-DevBox"
       costCenter: "IT"
-      owner: "Evilazaro"
+      owner: "Contoso"
       resources: "Project"
 
 tags:
@@ -147,5 +147,5 @@ tags:
   team: "DevExP"
   project: "DevExP-DevBox"
   costCenter: "IT"
-  owner: "Evilazaro"
+  owner: "Contoso"
   resources: "DevCenter"

@@ -10,7 +10,7 @@ workload:
     team: DevExP
     project: Contoso-DevExp-DevBox
     costCenter: IT
-    owner: Evilazaro
+    owner: Contoso
     landingZone: Workload
     resources: ResourceGroup
 
@@ -24,7 +24,7 @@ security:
     team: DevExP
     project: Contoso-DevExp-DevBox
     costCenter: IT
-    owner: Evilazaro
+    owner: Contoso
     landingZone: Workload
     resources: ResourceGroup
 
@@ -38,7 +38,7 @@ monitoring:
     team: DevExP
     project: Contoso-DevExp-DevBox
     costCenter: IT
-    owner: Evilazaro
+    owner: Contoso
     landingZone: Workload
     resources: ResourceGroup
 
@@ -52,6 +52,6 @@ connectivity:
     team: DevExP
     project: Contoso-DevExp-DevBox
     costCenter: IT
-    owner: Evilazaro
+    owner: Contoso
     landingZone: Workload
     resources: ResourceGroup
