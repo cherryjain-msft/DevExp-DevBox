@@ -78,7 +78,7 @@ properties:
           )
           foreach ($extension in $extensions) {
               try {
-                  code --install-extension $extension
+                  code --install-extension $extension --trace-deprecation
                   Write-Host "Installed: $extension"
               } catch {
                   Write-Host "Failed to install: $extension"
