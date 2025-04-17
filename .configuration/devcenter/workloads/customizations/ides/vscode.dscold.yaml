@@ -1,25 +1,21 @@
-# yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
+# yaml-language-server: $schema=https://raw.githubusercontent.com/microsoft/winget-cli/refs/heads/master/schemas/JSON/configuration/configuration.schema.0.2.json
 
 properties:
-  configurationVersion: "0.2.0"
+  configurationVersion: 0.2.0
+
+  ########################################
+  ### RESOURCES: System Configuration
+  ########################################
   resources:
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: Microsoft.VisualStudioCode
-      directives:
-        description: Install Visual Studio Code
-        securityContext: elevated
-        allowPrerelease: true
-      settings:
-        id: Microsoft.VisualStudioCode
+    ### Install VS Code Extensions
+    ### -------------------------------------
     - resource: PSDscResources/Script
       id: Microsoft.VisualStudioCode.Extensions
       directives:
         description: Install VS Code Extensions
-        securityContext: elevated
-        allowPrerelease: true
       settings:
         SetScript: |
-          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
+          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
           $extensions = @(
               "azps-tools.azps-tools",
               "azurite.azurite",
