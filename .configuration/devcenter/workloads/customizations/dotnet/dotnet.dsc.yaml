@@ -1,11 +1,9 @@
 # yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
-
-# This DSC configuration installs and configures the following:
-# - Installs .NET SDK 9 and .NET Runtime 9 using WinGet.
-# - Installs and updates .NET workloads such as Aspire and MAUI.
-
 properties:
   configurationVersion: "0.2.0"
+  # This DSC configuration installs and configures the following:
+  # - Installs .NET SDK 9 and .NET Runtime 9 using WinGet.
+  # - Installs and updates .NET workloads such as Aspire and MAUI.
   resources:
     # Install .NET SDK 9 using WinGet
     - resource: Microsoft.WinGet.DSC/WinGetPackage

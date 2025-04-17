@@ -1,12 +1,11 @@
-# This DSC configuration installs and configures the following:
-# - Enables Developer Mode on the system.
-# - Installs Git, GitHub CLI, GitHub Desktop, and Windows Terminal using WinGet.
-# - Configures Git to use the default WAM account for authentication.
-# - Sets up a Dev Drive with ReFS format for development purposes.
 # yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
-
 properties:
   configurationVersion: "0.2.0"
+  # This DSC configuration installs and configures the following:
+  # - Enables Developer Mode on the system.
+  # - Installs Git, GitHub CLI, GitHub Desktop, and Windows Terminal using WinGet.
+  # - Configures Git to use the default WAM account for authentication.
+  # - Sets up a Dev Drive with ReFS format for development purposes.
   resources:
     # Insstalls the required DSC resources
     - resource: PSDscResources/Script

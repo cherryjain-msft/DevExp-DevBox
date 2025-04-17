@@ -1,12 +1,9 @@
 # yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
-
-# This configuration installs essential Azure tools and emulators using WinGet.
-# Tools include Azure CLI, Azure Developer CLI, Bicep CLI, Azure Data CLI, 
-# Azure Storage Emulator, Azure Cosmos Emulator, and Service Bus Explorer.
-
 properties:
   configurationVersion: "0.2.0"
-
+  # This configuration installs essential Azure tools and emulators using WinGet.
+  # Tools include Azure CLI, Azure Developer CLI, Bicep CLI, Azure Data CLI,
+  # Azure Storage Emulator, Azure Cosmos Emulator, and Service Bus Explorer.
   resources:
     # Install Azure CLI for managing Azure resources
     - resource: Microsoft.WinGet.DSC/WinGetPackage
