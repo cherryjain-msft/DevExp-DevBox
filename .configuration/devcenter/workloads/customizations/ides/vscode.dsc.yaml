@@ -1,8 +1,13 @@
 # yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
 
+# This DSC configuration installs and configures the following:
+# - Installs Visual Studio Code using WinGet.
+# - Installs a list of essential VS Code extensions.
+
 properties:
   configurationVersion: "0.2.0"
   resources:
+    # Install Visual Studio Code using WinGet
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Microsoft.VisualStudioCode
       directives:
@@ -11,6 +16,8 @@ properties:
         allowPrerelease: true
       settings:
         id: Microsoft.VisualStudioCode
+
+    # Install a list of VS Code extensions
     - resource: PSDscResources/Script
       id: Microsoft.VisualStudioCode.Extensions
       directives:
