@@ -72,7 +72,7 @@ if (!(Get-AppxPackage -Name "Microsoft.UI.Xaml.2.8")){
 }
 
 $desktopAppInstallerPackage = Get-AppxPackage -Name "Microsoft.DesktopAppInstaller"
-if (!($desktopAppInstallerPackage) -or ($desktopAppInstallerPackage.Version -lt "1.22.0.0")) {
+if (!($desktopAppInstallerPackage)) {
     # install Microsoft.DesktopAppInstaller
     try {
         Write-Host "Installing Microsoft.DesktopAppInstaller"
