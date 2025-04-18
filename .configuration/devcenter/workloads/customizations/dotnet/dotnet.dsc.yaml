@@ -5,20 +5,6 @@ properties:
   # - Installs .NET SDK 9 and .NET Runtime 9 using WinGet.
   # - Installs and updates .NET workloads such as Aspire and MAUI.
   resources:
-    - resource: PSDscResources/Script
-      id: PSDscResources
-      directives:
-        description: Install PSDscResources module
-        securityContext: elevated
-        allowPrerelease: true
-      settings:
-        SetScript: |
-          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
-          Install-PackageProvider -Name NuGet -Force -Scope AllUsers -Verbose
-          Install-Module -Name PSDscResources -Force -Scope AllUsers -AllowClobber -Verbose
-        GetScript: return $false
-        TestScript: return $false
-        
     # Install .NET SDK 9 using WinGet
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Microsoft.DotNet.SDK.9

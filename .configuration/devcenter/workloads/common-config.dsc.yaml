@@ -7,19 +7,7 @@ properties:
   # - Configures Git to use the default WAM account for authentication.
   # - Sets up a Dev Drive with ReFS format for development purposes.
   resources:
-    - resource: PSDscResources/Script
-      id: PSDscResources
-      directives:
-        description: Install PSDscResources module
-        securityContext: elevated
-        allowPrerelease: true
-      settings:
-        SetScript: |
-          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
-          Install-PackageProvider -Name NuGet -Force -Scope AllUsers -Verbose
-          Install-Module -Name PSDscResources -Force -Scope AllUsers -AllowClobber -Verbose
-        GetScript: return $false
-        TestScript: return $false
+    
       
     # Enable Developer Mode on the system
     - resource: Microsoft.Windows.Developer/DeveloperMode

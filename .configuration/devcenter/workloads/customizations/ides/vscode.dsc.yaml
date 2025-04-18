@@ -7,20 +7,6 @@ properties:
   # - Installs Visual Studio Code CLI using WinGet.
   # - Installs a list of essential VS Code extensions.
   resources:
-    - resource: PSDscResources/Script
-      id: PSDscResources
-      directives:
-        description: Install PSDscResources module
-        securityContext: elevated
-        allowPrerelease: true
-      settings:
-        SetScript: |
-          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
-          Install-PackageProvider -Name NuGet -Force -Scope AllUsers -Verbose
-          Install-Module -Name PSDscResources -Force -Scope AllUsers -AllowClobber -Verbose
-        GetScript: return $false
-        TestScript: return $false
-        
     # Install Node.js using WinGet
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: OpenJS.NodeJS
