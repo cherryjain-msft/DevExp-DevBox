@@ -199,8 +199,9 @@ function InstallWinGet {
             if ($env:PROCESSOR_ARCHITECTURE -eq "ARM64") {
                 $architecture = "arm64"
             }
-            $MsUiXaml = "$env:TEMP\$([System.IO.Path]::GetRandomFileName())-Microsoft.UI.Xaml.2.8.7"
+            $MsUiXaml = "c:\wingetpackages\$([System.IO.Path]::GetRandomFileName())-Microsoft.UI.Xaml.2.8.7"
             $MsUiXamlZip = "$($MsUiXaml).zip"
+
             Invoke-WebRequest -Uri "https://www.nuget.org/api/v2/package/Microsoft.UI.Xaml/2.8.7" -OutFile $MsUiXamlZip
             Expand-Archive $MsUiXamlZip -DestinationPath $MsUiXaml
             Add-AppxPackage -Path "$($MsUiXaml)\tools\AppX\$($architecture)\Release\Microsoft.UI.Xaml.2.8.appx" -ForceApplicationShutdown
@@ -216,7 +217,7 @@ function InstallWinGet {
         # install Microsoft.DesktopAppInstaller
         try {
             Write-Host "Installing Microsoft.DesktopAppInstaller"
-            $DesktopAppInstallerAppx = "$env:TEMP\$([System.IO.Path]::GetRandomFileName())-DesktopAppInstaller.appx"
+            $DesktopAppInstallerAppx = "c:\wingetpackages\$([System.IO.Path]::GetRandomFileName())-DesktopAppInstaller.appx"
             Invoke-WebRequest -Uri "https://aka.ms/getwinget" -OutFile $DesktopAppInstallerAppx
             Add-AppxPackage -Path $DesktopAppInstallerAppx -ForceApplicationShutdown
             Write-Host "Done Installing Microsoft.DesktopAppInstaller"
