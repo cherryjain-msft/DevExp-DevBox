@@ -52,25 +52,29 @@ properties:
           try {
               $newUser = $env:USERNAME.ToLower()
               $password = "SecureP@ssw0rd"
-              $passwordBash = $password -replace '(["\$`])', '\\$1'
+              $escapedPassword = $password -replace '(["\\$`])', '\\$1'  # Escape for bash
 
-              $wslCommand = @(
-                  "sudo adduser --quiet --disabled-password --gecos '' $newUser",  # Fixed escaping issue
-                  "echo '$newUser : $passwordBash' | sudo chpasswd",
+              # Combine all commands in a single line separated by semicolons
+              $bashCommand = @(
+                  "sudo adduser --quiet --disabled-password --gecos '' $newUser",
+                  "echo '$newUser:$escapedPassword' | sudo chpasswd",
                   "sudo usermod -aG sudo $newUser",
                   "echo '$newUser ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/$newUser"
-              ) -join "; "
+              ) -join " && "
 
-              wsl.exe -d Ubuntu -u root -- bash -c "$wslCommand" 2>/dev/null
+              # Call WSL with the single-line bash command
+              wsl.exe -d Ubuntu -u root -- bash -c "`"$bashCommand`""
           } catch {
               Write-Error "Failed to add user as administrator: $_"
           }
+
         GetScript: |
           return @{ Result = $false }
         TestScript: |
           return $false
       dependsOn:
-        - Ubuntu
+        - Microsoft-Windows-Subsystem-Linux
+
 
     - resource: PSDscResources/Script
       id: Ubuntu.AzureCli

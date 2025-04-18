@@ -60,7 +60,7 @@ function SetupScheduledTasks {
 
     $Trigger = $Task.Triggers.Create(9)
     $Trigger.Enabled = $true
-    $Trigger.Repetition.Interval = "PT1M"
+    $Trigger.Repetition.Interval="PT1M"
 
     $Action = $Task.Actions.Create(0)
     $Action.Path = "PowerShell.exe"
@@ -90,13 +90,13 @@ function SetupScheduledTasks {
 
 function WithRetry {
     Param(
-        [Parameter(Position = 0, Mandatory = $true)]
+        [Parameter(Position=0, Mandatory=$true)]
         [scriptblock]$ScriptBlock,
 
-        [Parameter(Position = 1, Mandatory = $false)]
+        [Parameter(Position=1, Mandatory=$false)]
         [int]$Maximum = 5,
 
-        [Parameter(Position = 2, Mandatory = $false)]
+        [Parameter(Position=2, Mandatory=$false)]
         [int]$Delay = 100
     )
 
@@ -107,8 +107,7 @@ function WithRetry {
         try {
             Invoke-Command -Command $ScriptBlock
             return
-        }
-        catch {
+        } catch {
             $lastException = $_
             Write-Error $_
 
@@ -137,7 +136,7 @@ function InstallPS7 {
             }
         } -Maximum 5 -Delay 100
         # Need to update the path post install
-        $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
+        $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
         Write-Host "Done Installing PowerShell 7"
     }
     else {
@@ -192,55 +191,56 @@ function InstallWinGet {
         Write-Error $_
     }
 
-          
-    # instal Microsoft.UI.Xaml
-    try {
-        Write-Host "Installing Microsoft.UI.Xaml"
-        $architecture = "x64"
-        if ($env:PROCESSOR_ARCHITECTURE -eq "ARM64") {
-            $architecture = "arm64"
+    if (!(Get-AppxPackage -Name "Microsoft.UI.Xaml.2.8")){
+        # instal Microsoft.UI.Xaml
+        try {
+            Write-Host "Installing Microsoft.UI.Xaml"
+            $architecture = "x64"
+            if ($env:PROCESSOR_ARCHITECTURE -eq "ARM64") {
+                $architecture = "arm64"
+            }
+            $MsUiXaml = "$env:TEMP\$([System.IO.Path]::GetRandomFileName())-Microsoft.UI.Xaml.2.8.7"
+            $MsUiXamlZip = "$($MsUiXaml).zip"
+            Invoke-WebRequest -Uri "https://www.nuget.org/api/v2/package/Microsoft.UI.Xaml/2.8.7" -OutFile $MsUiXamlZip
+            Expand-Archive $MsUiXamlZip -DestinationPath $MsUiXaml
+            Add-AppxPackage -Path "$($MsUiXaml)\tools\AppX\$($architecture)\Release\Microsoft.UI.Xaml.2.8.appx" -ForceApplicationShutdown
+            Write-Host "Done Installing Microsoft.UI.Xaml"
+        } catch {
+            Write-Host "Failed to install Microsoft.UI.Xaml"
+            Write-Error $_
         }
-        $MsUiXaml = "$env:TEMP\$([System.IO.Path]::GetRandomFileName())-Microsoft.UI.Xaml"
-        $MsUiXamlZip = "$($MsUiXaml).zip"
-        Invoke-WebRequest -Uri "https://www.nuget.org/api/v2/package/Microsoft.UI.Xaml/" -OutFile $MsUiXamlZip
-        Expand-Archive $MsUiXamlZip -DestinationPath $MsUiXaml
-        Add-AppxPackage -Path "$($MsUiXaml)\tools\AppX\$($architecture)\Release\Microsoft.UI.Xaml.2.8.appx" -ForceApplicationShutdown
-        Write-Host "Done Installing Microsoft.UI.Xaml"
     }
-    catch {
-        Write-Host "Failed to install Microsoft.UI.Xaml"
-        Write-Error $_
+
+    $desktopAppInstallerPackage = Get-AppxPackage -Name "Microsoft.DesktopAppInstaller"
+    if (!($desktopAppInstallerPackage)) {
+        # install Microsoft.DesktopAppInstaller
+        try {
+            Write-Host "Installing Microsoft.DesktopAppInstaller"
+            $DesktopAppInstallerAppx = "$env:TEMP\$([System.IO.Path]::GetRandomFileName())-DesktopAppInstaller.appx"
+            Invoke-WebRequest -Uri "https://aka.ms/getwinget" -OutFile $DesktopAppInstallerAppx
+            Add-AppxPackage -Path $DesktopAppInstallerAppx -ForceApplicationShutdown
+            Write-Host "Done Installing Microsoft.DesktopAppInstaller"
+        }
+        catch {
+            Write-Host "Failed to install DesktopAppInstaller appx package"
+            Write-Error $_
+        }
     }
-        
-    # install Microsoft.DesktopAppInstaller
-    try {
-        Write-Host "Installing Microsoft.DesktopAppInstaller"
-        $DesktopAppInstallerAppx = "$env:TEMP\$([System.IO.Path]::GetRandomFileName())-DesktopAppInstaller.appx"
-        Invoke-WebRequest -Uri "https://aka.ms/getwinget" -OutFile $DesktopAppInstallerAppx
-        Add-AppxPackage -Path $DesktopAppInstallerAppx -ForceApplicationShutdown
-        Write-Host "Done Installing Microsoft.DesktopAppInstaller"
-    }
-    catch {
-        Write-Host "Failed to install DesktopAppInstaller appx package"
-        Write-Error $_
-    }
-        
 
     Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe
-    $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
+    $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
     Write-Host "WinGet version: $(winget -v)"
+    
+    # Revert PSGallery installation policy to untrusted
+    Set-PSRepository -Name "PSGallery" -InstallationPolicy Untrusted
 }
-
-# Revert PSGallery installation policy to untrusted
-Set-PSRepository -Name "PSGallery" -InstallationPolicy Untrusted
-
 
 InstallPS7
 InstallWinGet
 
 function AppendToUserScript {
     Param(
-        [Parameter(Position = 0, Mandatory = $true)]
+        [Parameter(Position=0, Mandatory=$true)]
         [string]$Content
     )
 
@@ -264,7 +264,7 @@ function EnsureConfigurationFileIsSet ($ConfigurationFile) {
 
     # Ensure the directory exists
     $ConfigurationFileDir = Split-Path -Path $ConfigurationFile
-    if (-Not (Test-Path -Path $ConfigurationFileDir)) {
+    if(-Not (Test-Path -Path $ConfigurationFileDir)) {
         $null = New-Item -ItemType Directory -Path $ConfigurationFileDir
     }
 
@@ -344,7 +344,7 @@ else {
             $versionFlag = "-Version '$($Version)'"
         }
 
-        $processCreation = Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{CommandLine = "C:\Program Files\PowerShell\7\pwsh.exe $($mtaFlag) -Command `"Install-WinGetPackage -Id '$($Package)' $($versionFlag) | ConvertTo-Json -Depth 10 > $($tempOutFile)`"" }
+        $processCreation = Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{CommandLine="C:\Program Files\PowerShell\7\pwsh.exe $($mtaFlag) -Command `"Install-WinGetPackage -Id '$($Package)' $($versionFlag) | ConvertTo-Json -Depth 10 > $($tempOutFile)`""}
         $process = Get-Process -Id $processCreation.ProcessId
         $handle = $process.Handle # cache process.Handle so ExitCode isn't null when we need it below
         $process.WaitForExit()
@@ -371,7 +371,7 @@ else {
     elseif ($ConfigurationFile) {
         Write-Host "Running installation of configuration file: $($ConfigurationFile)"
 
-        $processCreation = Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{CommandLine = "C:\Program Files\PowerShell\7\pwsh.exe $($mtaFlag) -Command `"Get-WinGetConfiguration -File '$($ConfigurationFile)' | Invoke-WinGetConfiguration -AcceptConfigurationAgreements | Select-Object -ExpandProperty UnitResults | ConvertTo-Json -Depth 10 > $($tempOutFile)`"" }
+        $processCreation = Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{CommandLine="C:\Program Files\PowerShell\7\pwsh.exe $($mtaFlag) -Command `"Get-WinGetConfiguration -File '$($ConfigurationFile)' | Invoke-WinGetConfiguration -AcceptConfigurationAgreements | Select-Object -ExpandProperty UnitResults | ConvertTo-Json -Depth 10 > $($tempOutFile)`""}
         $process = Get-Process -Id $processCreation.ProcessId
         $handle = $process.Handle # cache process.Handle so ExitCode isn't null when we need it below
         $process.WaitForExit()

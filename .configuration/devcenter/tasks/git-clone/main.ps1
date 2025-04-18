@@ -196,7 +196,7 @@ function InstallWinGet {
                 if ($env:PROCESSOR_ARCHITECTURE -eq "ARM64") {
                     $architecture = "arm64"
                 }
-                $MsUiXaml = "$env:TEMP\$([System.IO.Path]::GetRandomFileName())-Microsoft.UI.Xaml.2.8.6"
+                $MsUiXaml = "$env:TEMP\$([System.IO.Path]::GetRandomFileName())-Microsoft.UI.Xaml.2.8.7"
                 $MsUiXamlZip = "$($MsUiXaml).zip"
                 Invoke-WebRequest -Uri "https://www.nuget.org/api/v2/package/Microsoft.UI.Xaml" -OutFile $MsUiXamlZip
                 Expand-Archive $MsUiXamlZip -DestinationPath $MsUiXaml
