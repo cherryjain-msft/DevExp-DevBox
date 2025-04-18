@@ -54,16 +54,11 @@ properties:
               $password = "SecureP@ssw0rd"
               $escapedPassword = $password -replace '(["\\$`])', '\\$1'  # Escape for bash
 
-              # Combine all commands in a single line separated by semicolons
-              $bashCommand = @(
-                  "sudo adduser --quiet --disabled-password --gecos '' $newUser",
-                  "echo '$newUser:$escapedPassword' | sudo chpasswd",
-                  "sudo usermod -aG sudo $newUser",
-                  "echo '$newUser ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/$newUser"
-              ) -join " && "
-
               # Call WSL with the single-line bash command
-              wsl.exe -d Ubuntu -u root -- bash -c "`"$bashCommand`""
+              wsl.exe -d Ubuntu -u root -- bash -c "sudo adduser --quiet --disabled-password --gecos '' $newUser"
+              wsl.exe -d Ubuntu -u root -- bash -c "echo '${newUser}:${escapedPassword}' | sudo chpasswd"
+              wsl.exe -d Ubuntu -u root -- bash -c "sudo usermod -aG sudo $newUser"
+              wsl.exe -d Ubuntu -u root -- bash -c "echo '$newUser ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/$newUser"
           } catch {
               Write-Error "Failed to add user as administrator: $_"
           }
