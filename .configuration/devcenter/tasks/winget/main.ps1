@@ -192,49 +192,48 @@ function InstallWinGet {
         Write-Error $_
     }
 
-    if ($PsInstallScope -eq "CurrentUser") {
-        
-        # instal Microsoft.UI.Xaml
-        try {
-            Write-Host "Installing Microsoft.UI.Xaml"
-            $architecture = "x64"
-            if ($env:PROCESSOR_ARCHITECTURE -eq "ARM64") {
-                $architecture = "arm64"
-            }
-            $MsUiXaml = "$env:TEMP\$([System.IO.Path]::GetRandomFileName())-Microsoft.UI.Xaml"
-            $MsUiXamlZip = "$($MsUiXaml).zip"
-            Invoke-WebRequest -Uri "https://www.nuget.org/api/v2/package/Microsoft.UI.Xaml/" -OutFile $MsUiXamlZip
-            Expand-Archive $MsUiXamlZip -DestinationPath $MsUiXaml
-            Add-AppxPackage -Path "$($MsUiXaml)\tools\AppX\$($architecture)\Release\Microsoft.UI.Xaml.2.8.appx" -ForceApplicationShutdown
-            Write-Host "Done Installing Microsoft.UI.Xaml"
+          
+    # instal Microsoft.UI.Xaml
+    try {
+        Write-Host "Installing Microsoft.UI.Xaml"
+        $architecture = "x64"
+        if ($env:PROCESSOR_ARCHITECTURE -eq "ARM64") {
+            $architecture = "arm64"
         }
-        catch {
-            Write-Host "Failed to install Microsoft.UI.Xaml"
-            Write-Error $_
-        }
-        
-        # install Microsoft.DesktopAppInstaller
-        try {
-            Write-Host "Installing Microsoft.DesktopAppInstaller"
-            $DesktopAppInstallerAppx = "$env:TEMP\$([System.IO.Path]::GetRandomFileName())-DesktopAppInstaller.appx"
-            Invoke-WebRequest -Uri "https://aka.ms/getwinget" -OutFile $DesktopAppInstallerAppx
-            Add-AppxPackage -Path $DesktopAppInstallerAppx -ForceApplicationShutdown
-            Write-Host "Done Installing Microsoft.DesktopAppInstaller"
-        }
-        catch {
-            Write-Host "Failed to install DesktopAppInstaller appx package"
-            Write-Error $_
-        }
-        
-
-        Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe
-        $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
-        Write-Host "WinGet version: $(winget -v)"
+        $MsUiXaml = "$env:TEMP\$([System.IO.Path]::GetRandomFileName())-Microsoft.UI.Xaml"
+        $MsUiXamlZip = "$($MsUiXaml).zip"
+        Invoke-WebRequest -Uri "https://www.nuget.org/api/v2/package/Microsoft.UI.Xaml/" -OutFile $MsUiXamlZip
+        Expand-Archive $MsUiXamlZip -DestinationPath $MsUiXaml
+        Add-AppxPackage -Path "$($MsUiXaml)\tools\AppX\$($architecture)\Release\Microsoft.UI.Xaml.2.8.appx" -ForceApplicationShutdown
+        Write-Host "Done Installing Microsoft.UI.Xaml"
     }
+    catch {
+        Write-Host "Failed to install Microsoft.UI.Xaml"
+        Write-Error $_
+    }
+        
+    # install Microsoft.DesktopAppInstaller
+    try {
+        Write-Host "Installing Microsoft.DesktopAppInstaller"
+        $DesktopAppInstallerAppx = "$env:TEMP\$([System.IO.Path]::GetRandomFileName())-DesktopAppInstaller.appx"
+        Invoke-WebRequest -Uri "https://aka.ms/getwinget" -OutFile $DesktopAppInstallerAppx
+        Add-AppxPackage -Path $DesktopAppInstallerAppx -ForceApplicationShutdown
+        Write-Host "Done Installing Microsoft.DesktopAppInstaller"
+    }
+    catch {
+        Write-Host "Failed to install DesktopAppInstaller appx package"
+        Write-Error $_
+    }
+        
 
-    # Revert PSGallery installation policy to untrusted
-    Set-PSRepository -Name "PSGallery" -InstallationPolicy Untrusted
+    Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe
+    $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
+    Write-Host "WinGet version: $(winget -v)"
 }
+
+# Revert PSGallery installation policy to untrusted
+Set-PSRepository -Name "PSGallery" -InstallationPolicy Untrusted
+
 
 InstallPS7
 InstallWinGet
