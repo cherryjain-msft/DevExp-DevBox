@@ -64,7 +64,7 @@ if (!($msUiXamlPackage)) {
         }
         $MsUiXaml = "$env:TEMP\$([System.IO.Path]::GetRandomFileName())-Microsoft.UI.Xaml.2.8.6"
         $MsUiXamlZip = "$($MsUiXaml).zip"
-        Invoke-WebRequest -Uri "https://www.nuget.org/api/v2/package/Microsoft.UI.Xaml/2.8.6" -OutFile $MsUiXamlZip
+        Invoke-WebRequest -Uri "https://www.nuget.org/api/v2/package/Microsoft.UI.Xaml" -OutFile $MsUiXamlZip
         Expand-Archive $MsUiXamlZip -DestinationPath $MsUiXaml
         Add-AppxPackage -Path "$($MsUiXaml)\tools\AppX\$($architecture)\Release\Microsoft.UI.Xaml.2.8.appx" -ForceApplicationShutdown
         Write-Host "Done Installing Microsoft.UI.Xaml"
@@ -75,7 +75,7 @@ if (!($msUiXamlPackage)) {
 }
 
 $desktopAppInstallerPackage = Get-AppxPackage -Name "Microsoft.DesktopAppInstaller"
-if (!($desktopAppInstallerPackage) -or ($desktopAppInstallerPackage.Version -lt "1.22.0.0")) {
+if (!($desktopAppInstallerPackage) ) {
     # install Microsoft.DesktopAppInstaller
     try {
         Write-Host "Installing Microsoft.DesktopAppInstaller"

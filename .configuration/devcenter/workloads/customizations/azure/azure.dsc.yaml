@@ -5,20 +5,6 @@ properties:
   # Tools include Azure CLI, Azure Developer CLI, Bicep CLI, Azure Data CLI,
   # Azure Storage Emulator, Azure Cosmos Emulator, and Service Bus Explorer.
   resources:
-    - resource: PSDscResources/Script
-      id: PSDscResources
-      directives:
-        description: Install PSDscResources module
-        securityContext: elevated
-        allowPrerelease: true
-      settings:
-        SetScript: |
-          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
-          Install-PackageProvider -Name NuGet -Force -Scope AllUsers -Verbose
-          Install-Module -Name PSDscResources -Force -Scope AllUsers -AllowClobber -Verbose
-        GetScript: return $false
-        TestScript: return $false
-        
     # Install Azure CLI for managing Azure resources
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Microsoft.AzureCLI
