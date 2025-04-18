@@ -19,7 +19,7 @@ $RunAsUserScript = "runAsUser.ps1"
 $CleanupScript = "cleanup.ps1"
 $RunAsUserTask = "DevBoxCustomizations"
 $CleanupTask = "DevBoxCustomizationsCleanup"
-$PsInstallScope = "AllUsers"
+$PsInstallScope = "CurrentUser"
 if ($(whoami.exe) -eq "nt authority\system") {
     $PsInstallScope = "AllUsers"
 }
