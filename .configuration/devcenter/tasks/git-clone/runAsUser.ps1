@@ -1,6 +1,5 @@
 $CustomizationScriptsDir = "C:\DevBoxCustomizations"
 $LockFile = "lockfile"
-$SetVariablesScript = "setVariables.ps1"
 $RunAsUserScript = "runAsUser.ps1"
 $CleanupScript = "cleanup.ps1"
 $RunAsUserTask = "DevBoxCustomizations"
@@ -22,19 +21,22 @@ Remove-Item -Path "$($CustomizationScriptsDir)\$($LockFile)"
 
 Write-Host "Updating WinGet"
 # ensure NuGet provider is installed
-if (!(Get-PackageProvider | Where-Object { $_.Name -eq "NuGet" -and $_.Version -gt "3.0.0.0" })) {
+if (!(Get-PackageProvider | Where-Object { $_.Name -eq "NuGet" -and $_.Version -gt "2.8.5.201" })) {
     Write-Host "Installing NuGet provider"
-    Install-PackageProvider -Name "NuGet" -MinimumVersion "3.0.0.0" -Force -Scope $PsInstallScope
+    Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -Scope CurrentUser
     Write-Host "Done Installing NuGet provider"
 }
 else {
     Write-Host "NuGet provider is already installed"
 }
 
+# Set PSGallery installation policy to trusted
+Set-PSRepository -Name "PSGallery" -InstallationPolicy Trusted
+
 # check if the Microsoft.Winget.Client module is installed
 if (!(Get-Module -ListAvailable -Name Microsoft.Winget.Client)) {
     Write-Host "Installing Microsoft.Winget.Client"
-    Install-Module Microsoft.WinGet.Client -Scope $PsInstallScope
+    Install-Module Microsoft.WinGet.Client -Scope CurrentUser
     Write-Host "Done Installing Microsoft.Winget.Client"
 }
 else {
@@ -44,15 +46,16 @@ else {
 # check if the Microsoft.WinGet.Configuration module is installed
 if (!(Get-Module -ListAvailable -Name Microsoft.WinGet.Configuration)) {
     Write-Host "Installing Microsoft.WinGet.Configuration"
-    pwsh.exe -MTA -Command "Install-Module Microsoft.WinGet.Configuration -AllowPrerelease -Scope $PsInstallScope"
+    pwsh.exe -MTA -Command "Install-Module Microsoft.WinGet.Configuration -AllowPrerelease -Scope CurrentUser"
     Write-Host "Done Installing Microsoft.WinGet.Configuration"
 }
 else {
     Write-Host "Microsoft.WinGet.Configuration is already installed"
 }
 
-if (!(Get-AppxPackage -Name "Microsoft.UI.Xaml.2.8")){
-    # instal Microsoft.UI.Xaml
+$msUiXamlPackage = Get-AppxPackage -Name "Microsoft.UI.Xaml.2.8" | Where-Object { $_.Version -ge "8.2310.30001.0" }
+if (!($msUiXamlPackage)) {
+    # install Microsoft.UI.Xaml
     try{
         Write-Host "Installing Microsoft.UI.Xaml"
         $architecture = "x64"
@@ -96,4 +99,5 @@ Write-Host "WinGet version: $(winget -v)"
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 Write-Host "Done Updating WinGet"
 
-
+# Revert PSGallery installation policy to untrusted
+Set-PSRepository -Name "PSGallery" -InstallationPolicy Untrusted

@@ -38,11 +38,11 @@ function SetupScheduledTasks {
     }
 
     # Reference: https://learn.microsoft.com/en-us/windows/win32/taskschd/task-scheduler-objects
-    $ShedService = New-Object -comobject "Schedule.Service"
-    $ShedService.Connect()
+    $SchedService = New-Object -comobject "Schedule.Service"
+    $SchedService.Connect()
 
     # Schedule the cleanup script to run every minute as SYSTEM
-    $Task = $ShedService.NewTask(0)
+    $Task = $SchedService.NewTask(0)
     $Task.RegistrationInfo.Description = "Dev Box Customizations Cleanup"
     $Task.Settings.Enabled = $true
     $Task.Settings.AllowDemandStart = $false
@@ -55,11 +55,11 @@ function SetupScheduledTasks {
     $Action.Path = "PowerShell.exe"
     $Action.Arguments = "Set-ExecutionPolicy Bypass -Scope Process -Force; $($CustomizationScriptsDir)\$($CleanupScript)"
 
-    $TaskFolder = $ShedService.GetFolder("\")
+    $TaskFolder = $SchedService.GetFolder("\")
     $TaskFolder.RegisterTaskDefinition("$($CleanupTask)", $Task , 6, "NT AUTHORITY\SYSTEM", $null, 5)
 
     # Schedule the script to be run in the user context on login
-    $Task = $ShedService.NewTask(0)
+    $Task = $SchedService.NewTask(0)
     $Task.RegistrationInfo.Description = "Dev Box Customizations"
     $Task.Settings.Enabled = $true
     $Task.Settings.AllowDemandStart = $false
@@ -72,7 +72,7 @@ function SetupScheduledTasks {
     $Action.Path = "C:\Program Files\PowerShell\7\pwsh.exe"
     $Action.Arguments = "-MTA -Command $($CustomizationScriptsDir)\$($RunAsUserScript)"
 
-    $TaskFolder = $ShedService.GetFolder("\")
+    $TaskFolder = $SchedService.GetFolder("\")
     $TaskFolder.RegisterTaskDefinition("$($RunAsUserTask)", $Task , 6, "Users", $null, 4)
     Write-Host "Done setting up scheduled tasks"
 }
@@ -125,7 +125,7 @@ function InstallPS7 {
             }
         } -Maximum 5 -Delay 100
         # Need to update the path post install
-        $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+        $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") + ";C:\Program Files\PowerShell\7"
         Write-Host "Done Installing PowerShell 7"
     }
     else {
@@ -136,23 +136,26 @@ function InstallPS7 {
 function InstallWinGet {
     Write-Host "Installing powershell modules in scope: $PsInstallScope"
 
-    # Set PSGallery installation policy to trusted
-    Set-PSRepository -Name "PSGallery" -InstallationPolicy Trusted
-
     # ensure NuGet provider is installed
-    if (!(Get-PackageProvider | Where-Object { $_.Name -eq "NuGet" -and $_.Version -gt "3.0.0.0" })) {
+    if (!(Get-PackageProvider | Where-Object { $_.Name -eq "NuGet" -and $_.Version -gt "2.8.5.201" })) {
         Write-Host "Installing NuGet provider"
-        Install-PackageProvider -Name "NuGet" -MinimumVersion "3.0.0.0" -Force -Scope $PsInstallScope
+        Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -Scope $PsInstallScope
         Write-Host "Done Installing NuGet provider"
     }
     else {
         Write-Host "NuGet provider is already installed"
     }
 
+    # Set PSGallery installation policy to trusted
+    Set-PSRepository -Name "PSGallery" -InstallationPolicy Trusted
+    pwsh.exe -MTA -Command "Set-PSRepository -Name PSGallery -InstallationPolicy Trusted"
+
     # check if the Microsoft.Winget.Client module is installed
-    if (!(Get-Module -ListAvailable -Name Microsoft.Winget.Client)) {
+    $wingetClientPackage = Get-Module -ListAvailable -Name Microsoft.WinGet.Client | Where-Object { $_.Version -ge "1.9.2411" }
+    if (!($wingetClientPackage)) {
         Write-Host "Installing Microsoft.Winget.Client"
         Install-Module Microsoft.WinGet.Client -Scope $PsInstallScope
+        pwsh.exe -MTA -Command "Install-Module Microsoft.WinGet.Client -Scope $PsInstallScope"
         Write-Host "Done Installing Microsoft.Winget.Client"
     }
     else {
@@ -160,7 +163,8 @@ function InstallWinGet {
     }
 
     # check if the Microsoft.WinGet.Configuration module is installed
-    if (!(Get-Module -ListAvailable -Name Microsoft.WinGet.Configuration)) {
+    $wingetConfigurationPackage = Get-Module -ListAvailable -Name Microsoft.WinGet.Configuration | Where-Object { $_.Version -ge "1.8.1911" }
+    if (!($wingetConfigurationPackage)) {
         Write-Host "Installing Microsoft.WinGet.Configuration"
         pwsh.exe -MTA -Command "Install-Module Microsoft.WinGet.Configuration -AllowPrerelease -Scope $PsInstallScope"
         Write-Host "Done Installing Microsoft.WinGet.Configuration"
@@ -172,7 +176,7 @@ function InstallWinGet {
     Write-Host "Updating WinGet"
     try {
         Write-Host "Attempting to repair WinGet Package Manager"
-        Repair-WinGetPackageManager -Latest -Force
+        pwsh.exe -MTA -Command "Repair-WinGetPackageManager -Latest -Force -Verbose"
         Write-Host "Done Reparing WinGet Package Manager"
     }
     catch {
@@ -181,8 +185,11 @@ function InstallWinGet {
     }
 
     if ($PsInstallScope -eq "CurrentUser") {
-        if (!(Get-AppxPackage -Name "Microsoft.UI.Xaml.2.8")){
-            # instal Microsoft.UI.Xaml
+        # Under a user account, the way to materialize winget.exe and make it work is by installing DesktopAppInstaller appx,
+        # which in turn may have Xaml and VC++ redistributable requirements.
+        $msUiXamlPackage = Get-AppxPackage -Name "Microsoft.UI.Xaml.2.8" | Where-Object { $_.Version -ge "8.2310.30001.0" }
+        if (!($msUiXamlPackage)) {
+            # install Microsoft.UI.Xaml
             try {
                 Write-Host "Installing Microsoft.UI.Xaml"
                 $architecture = "x64"
@@ -218,83 +225,120 @@ function InstallWinGet {
         }
 
         Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe
-        $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+        $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") + ";C:\Program Files\PowerShell\7"
         Write-Host "WinGet version: $(winget -v)"
     }
 
     # Revert PSGallery installation policy to untrusted
     Set-PSRepository -Name "PSGallery" -InstallationPolicy Untrusted
+    pwsh.exe -MTA -Command "Set-PSRepository -Name PSGallery -InstallationPolicy Untrusted"
 }
 
-# install git if it's not already installed
-if (!(Get-Command git -ErrorAction SilentlyContinue)) {
-    # if winget is available, use it to install git
-    if (Get-Command winget -ErrorAction SilentlyContinue) {
-        Write-Host "Installing git with winget"
-        winget install --id Git.Git -e --source winget
-        $installExitCode = $LASTEXITCODE
-        Write-Host "'winget install --id Git.Git -e --source winget' exited with code: $($installExitCode)"
-        if ($installExitCode -eq 0) {
+
+function InstallPackage{
+    param (
+        [string]$PackageId,
+        [string]$PackageCommand,
+        [string]$PackagePath
+    )
+
+    # install package if it's not already installed
+    if (!(Get-Command $PackageCommand -ErrorAction SilentlyContinue)) {
+        # if winget is available, use it to install package
+        if (Get-Command winget -ErrorAction SilentlyContinue) {
+            Write-Host "Installing $PackageId with winget"
+            winget install --id $PackageId -e --source winget
+            $installExitCode = $LASTEXITCODE
+            Write-Host "'winget install --id $PackageId -e --source winget' exited with code: $($installExitCode)"
+            if ($installExitCode -eq 0) {
+                # add package path to path
+                $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") + ";" + $PackagePath
+            }
+        }
+
+        # If we reached here without being able to install the package, try with Install-WinGetPackage
+        if (!(Get-Command $PackageCommand -ErrorAction SilentlyContinue)) {
+            # install winget and use that to install packages
+            
+            # winget is not available for system context, so we need to leverage WingGet cmdlets for system context.
+            # The WinGet cmdlets aren't supported in PowerShell 5, so we need to install Powershell7 here. 
+            InstallPS7
+            InstallWinGet
+
+            # install package via winget client
+            Write-Host "Installing $PackageId with Install-WinGetPackage"
+            $mtaFlag = "-MTA"
+            $scopeFlagValue = "SystemOrUnknown"
+            if ($PsInstallScope -eq "CurrentUser") {
+                $mtaFlag = ""
+                $scopeFlagValue = "UserOrUnknown"
+            }
+
+            $tempOutFile = [System.IO.Path]::GetTempFileName() + ".out.json"
+
+            $installCommandBlock = {
+                $installPackageCommand = "Install-WinGetPackage -Scope $($scopeFlagValue) -Source winget -Id $($PackageId) | ConvertTo-Json -Depth 10 | Tee-Object -FilePath '$($tempOutFile)'"
+                $processCreation = Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{CommandLine="C:\Program Files\PowerShell\7\pwsh.exe $($mtaFlag) -Command `"$($installPackageCommand)`""}
+                if (!($processCreation) -or !($processCreation.ProcessId)) {
+                    Write-Error "Failed to install $PackageId package. Process creation failed."
+                    exit 1
+                }
+        
+                $process = Get-Process -Id $processCreation.ProcessId
+                $handle = $process.Handle # cache process.Handle so ExitCode isn't null when we need it below
+                $process.WaitForExit()
+                $installExitCode = $process.ExitCode
+                if ($installExitCode -ne 0) {
+                    Write-Error "Failed to install $PackageId with Install-WinGetPackage, error code $($installExitCode)."
+                    # this was the last try, so exit with the install exit code
+                    exit $installExitCode
+                }
+        
+                # read the output file and write it to the console
+                if (Test-Path -Path $tempOutFile) {
+                    $unitResults = Get-Content -Path $tempOutFile -Raw | Out-String
+                    Write-Host $unitResults
+                    Remove-Item -Path $tempOutFile -Force
+                    # If there are any errors in the package installation, we need to exit with a non-zero code
+                    $unitResultsObject = $unitResults | ConvertFrom-Json
+        
+                    # If the initial scope didn't produce an installer, retry with an "Any" scope
+                    if (($unitResultsObject.Status -eq "NoApplicableInstallers") -and ($scopeFlagValue -ne "Any")) {
+                        ([ref]$scopeFlagValue).Value = "Any"
+                        .$installCommandBlock
+                    }
+        
+                    # If there are any errors in the package installation, we need to exit with a non-zero code
+                    if ($unitResultsObject.Status -ne "Ok") {
+                        Write-Error "There were errors installing the package."
+                        exit 1
+                    }
+                }
+                else {
+                    Write-Host "Couldn't find output file for $PackageId installation, assuming fail."
+                    exit 1
+                }
+            }
+            .$installCommandBlock
+
             # add git to path
-            $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") + ";C:\Program Files\Git\cmd"
+            $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") + ";" + $PackagePath
         }
-    }
-
-    # if choco is available, use it to install git
-    if (!(Get-Command git -ErrorAction SilentlyContinue) -and (Get-Command choco -ErrorAction SilentlyContinue)) {
-        Write-Host "Installing git with choco"
-        choco install git -y
-        $installExitCode = $LASTEXITCODE
-        Write-Host "'choco install git -y' exited with code: $($installExitCode)"
-        if ($installExitCode -eq 0) {
-            # add git to path
-            $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") + ";C:\Program Files\Git\cmd"
-        }
-    }
-
-    # If we reached here without being able to install git, try with Install-WinGetPackage
-    if (!(Get-Command git -ErrorAction SilentlyContinue)) {
-        # install winget and use that to install git
-        InstallPS7
-        InstallWinGet
-        Write-Host "Installing git with Install-WinGetPackage"
-        $tempOutFile = [System.IO.Path]::GetTempFileName() + ".out.json"
-        $processCreation = Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{CommandLine="C:\Program Files\PowerShell\7\pwsh.exe -MTA -Command `"Install-WinGetPackage -Id Git.Git | ConvertTo-Json -Depth 10 > $($tempOutFile)`""}
-        if ($processCreation.ReturnValue -ne 0) {
-            Write-Host "Failed to create process to install git with Install-WinGetPackage, error code $($processCreation.ReturnValue)"
-            exit $processCreation.ReturnValue
-        }
-        Write-Host "Waiting for Install-WinGetPackage (pid: $($processCreation.ProcessId)) to complete"
-        $process = Get-Process -Id $processCreation.ProcessId
-        $handle = $process.Handle # cache process.Handle so ExitCode isn't null when we need it below
-        $process.WaitForExit()
-        $installExitCode = $process.ExitCode
-        $unitResults = Get-Content -Path $tempOutFile
-        Remove-Item -Path $tempOutFile -Force
-        Write-Host "Results:"
-        Write-Host $unitResults
-
-        if ($installExitCode -ne 0) {
-            Write-Error "Failed to install git with Install-WinGetPackage, error code $($installExitCode)"
-            # this was the last try, so exit with the install exit code
-            exit $installExitCode
-        }
-
-        # If there are any errors in the package installation, we need to exit with a non-zero code
-        $unitResultsObject = $unitResults | ConvertFrom-Json
-        if ($unitResultsObject.Status -ne "Ok") {
-            Write-Error "There were errors installing the package"
-            exit 1
-        }
-
-        # add git to path
-        $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") + ";C:\Program Files\Git\cmd"
     }
 }
+
+InstallPackage -PackageId "Git.Git" -PackagePath "C:\Program Files\Git\cmd" -PackageCommand "git"
 
 Write-Host "git version: $(git --version)"
 
 $repoCloned = $false
+
+# Disable credential prompting when running under system context to make sure the clone operation doesn't hang
+$credentialInteractiveFlag = @('-c', 'credential.interactive=Never')
+if ($PsInstallScope -eq "CurrentUser") {
+    $credentialInteractiveFlag = @()
+}
+
 if ($Pat) {
     # When a PAT is provided, we'll attempt to clone the repository during provisioning time.
     # If this fails, we'll try again when the user logs in.
@@ -309,22 +353,36 @@ if ($Pat) {
         if (Test-Path -PathType Container $TargetRepoDirectory) {
             Remove-Item -Recurse -Force $TargetRepoDirectory
         }
+
         if (!(Test-Path -PathType Container $TargetRepoDirectory)) {
             New-Item -Path $TargetRepoDirectory -ItemType Directory
         }
 
+        # Attempt to clone
         Push-Location $TargetRepoDirectory
         $b64pat = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("user:$Pat"))
+        
+        # Disable credential prompting here to make sure the clone operation doesn't hang
         if ($Branch) {
-            git -c http.extraHeader="Authorization: Basic $b64pat" clone -b $Branch $RepositoryUrl . 3>&1 2>&1
+            git $credentialInteractiveFlag -c http.extraHeader="Authorization: Basic $b64pat" clone -b $Branch $RepositoryUrl . 3>&1 2>&1
         }
         else {
-            git -c http.extraHeader="Authorization: Basic $b64pat" clone $RepositoryUrl . 3>&1 2>&1
+            git $credentialInteractiveFlag -c http.extraHeader="Authorization: Basic $b64pat" clone $RepositoryUrl . 3>&1 2>&1
         }
 
         if ($LASTEXITCODE -ne 0) {
             throw "git clone exited with code: $($LASTEXITCODE)"
         }
+
+        # Mark the directory as safe for git operations
+        $TargetRepoDirectorySafe = $TargetRepoDirectory -replace '\\', '/'
+        if ($PsInstallScope -eq "CurrentUser") {
+            git config --global --add safe.directory "$($TargetRepoDirectorySafe)"
+        }
+        else {
+            git config --system --add safe.directory "$($TargetRepoDirectorySafe)"
+        }
+
         # If the code reaches this point, we've successfully cloned the repository.
         Write-Host "Successfully cloned repository: $($RepositoryUrl) to directory: $($TargetRepoDirectory)"
         $repoCloned = $true
@@ -382,10 +440,12 @@ if ($Pat) {
             if (Test-Path -PathType Container $TargetRepoDirectory) {
                 Remove-Item -Recurse -Force $TargetRepoDirectory
             }
+
             if (!(Test-Path -PathType Container $TargetRepoDirectory)) {
                 New-Item -Path $TargetRepoDirectory -ItemType Directory
             }
 
+            # Attempt to clone
             Push-Location $TargetRepoDirectory
             if ($Branch) {
                 git clone -b $Branch $NormalizedRepositoryUrl . 3>&1 2>&1
@@ -397,6 +457,16 @@ if ($Pat) {
             if ($LASTEXITCODE -ne 0) {
                 throw "git clone exited with code: $($LASTEXITCODE)"
             }
+
+            # Mark the directory as safe for git operations
+            $TargetRepoDirectorySafe = $TargetRepoDirectory -replace '\\', '/'
+            if ($PsInstallScope -eq "CurrentUser") {
+                git config --global --add safe.directory "$($TargetRepoDirectorySafe)"
+            }
+            else {
+                git config --system --add safe.directory "$($TargetRepoDirectorySafe)"
+            }
+
             # If the code reaches this point, we've successfully cloned the repository.
             Write-Host "Successfully cloned repository: $($RepositoryUrl) to directory: $($TargetRepoDirectory)"
             $repoCloned = $true
@@ -424,20 +494,35 @@ if (!$repoCloned -and ($RepositoryUrl -match "github.com")) {
         if (Test-Path -PathType Container $TargetRepoDirectory) {
             Remove-Item -Recurse -Force $TargetRepoDirectory
         }
+
         if (!(Test-Path -PathType Container $TargetRepoDirectory)) {
             New-Item -Path $TargetRepoDirectory -ItemType Directory
         }
 
+        # Attempt to clone
         Push-Location $TargetRepoDirectory
+
+        # Disable credential prompting here to make sure the clone operation doesn't hang
         if ($Branch) {
-            git clone -b $Branch $RepositoryUrl . 3>&1 2>&1
+            git $credentialInteractiveFlag clone -b $Branch $RepositoryUrl . 3>&1 2>&1
         }
         else {
-            git clone $RepositoryUrl . 3>&1 2>&1
+            git $credentialInteractiveFlag clone $RepositoryUrl . 3>&1 2>&1
         }
+
         if ($LASTEXITCODE -ne 0) {
             throw "git clone exited with code: $($LASTEXITCODE)"
         }
+
+        # Mark the directory as safe for git operations
+        $TargetRepoDirectorySafe = $TargetRepoDirectory -replace '\\', '/'
+        if ($PsInstallScope -eq "CurrentUser") {
+            git config --global --add safe.directory "$($TargetRepoDirectorySafe)"
+        }
+        else {
+            git config --system --add safe.directory "$($TargetRepoDirectorySafe)"
+        }
+
         # If the code reaches this point, we've successfully cloned the repository.
         Write-Host "Successfully cloned repository: $($RepositoryUrl) to directory: $($TargetRepoDirectory)"
         $repoCloned = $true
@@ -449,6 +534,12 @@ if (!$repoCloned -and ($RepositoryUrl -match "github.com")) {
     finally {
         Pop-Location
     }
+}
+
+
+if ($repoCloned)
+{
+    exit 0 #Success!
 }
 
 # If the code reaches this point, we failed to clone the repository during provisioning time or
@@ -475,38 +566,34 @@ function AppendToUserScript {
 # Work from C:\
 AppendToUserScript "Push-Location C:\"
 
-if (!$repoCloned)
-{
-    # Write intent to output stream
-    AppendToUserScript "Write-Host 'Cloning repository: $($RepositoryUrl) to directory: $($TargetRepoDirectory)'"
-    if ($Branch) {
-        AppendToUserScript "Write-Host 'Using branch: $($Branch)'"
-    }
-
-    # make directory if it doesn't exist
-    AppendToUserScript "if (Test-Path -PathType Container '$($TargetRepoDirectory)') {"
-    AppendToUserScript "    Remove-Item -Recurse -Force '$($TargetRepoDirectory)'"
-    AppendToUserScript "}"
-    AppendToUserScript "if (!(Test-Path -PathType Container '$($TargetRepoDirectory)')) {"
-    AppendToUserScript "    New-Item -Path '$($TargetRepoDirectory)' -ItemType Directory"
-    AppendToUserScript "}"
-
-    # Work from specified directory, clone the repo and change branch if needed
-    AppendToUserScript "Push-Location $($TargetRepoDirectory)"
-    if ($Branch) {
-        AppendToUserScript "git clone -b $($Branch) $($RepositoryUrl) ."
-    }
-    else {
-        AppendToUserScript "git clone $($RepositoryUrl) ."
-    }
-    AppendToUserScript "Pop-Location"
+# Write intent to output stream
+AppendToUserScript "Write-Host 'Cloning repository: $($RepositoryUrl) to directory: $($TargetRepoDirectory)'"
+if ($Branch) {
+    AppendToUserScript "Write-Host 'Using branch: $($Branch)'"
 }
 
-# Change the permissions of the directory where the repository was cloned
-# by running git config --global --add safe.directory <directory>
-AppendToUserScript "Write-Host 'git config --global --add safe.directory $($TargetRepoDirectory)'"
-AppendToUserScript "git config --global --add safe.directory '$($TargetRepoDirectory)'"
-AppendToUserScript "git config --file 'C:/Program Files/Git/etc/gitconfig' --add safe.directory '$($TargetRepoDirectory)'"
+# make directory if it doesn't exist
+AppendToUserScript "if (Test-Path -PathType Container '$($TargetRepoDirectory)') {"
+AppendToUserScript "    Remove-Item -Recurse -Force '$($TargetRepoDirectory)'"
+AppendToUserScript "}"
+AppendToUserScript "if (!(Test-Path -PathType Container '$($TargetRepoDirectory)')) {"
+AppendToUserScript "    New-Item -Path '$($TargetRepoDirectory)' -ItemType Directory"
+AppendToUserScript "}"
+
+# Attempt to clone the repository
+AppendToUserScript "Push-Location $($TargetRepoDirectory)"
+if ($Branch) {
+    AppendToUserScript "git clone -b $($Branch) $($RepositoryUrl) ."
+}
+else {
+    AppendToUserScript "git clone $($RepositoryUrl) ."
+}
+
+AppendToUserScript "Pop-Location"
+
+# Mark the directory as safe for git operations
+$TargetRepoDirectorySafe = $TargetRepoDirectory -replace '\\', '/'
+AppendToUserScript "git config --global --add safe.directory '$($TargetRepoDirectorySafe)'"
 
 AppendToUserScript "Pop-Location"
 
