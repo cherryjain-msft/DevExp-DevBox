@@ -24,7 +24,7 @@ Write-Host "Updating WinGet"
 # ensure NuGet provider is installed
 if (!(Get-PackageProvider | Where-Object { $_.Name -eq "NuGet" -and $_.Version -gt "3.0.0.0" })) {
     Write-Host "Installing NuGet provider"
-    Install-PackageProvider -Name "NuGet" -MinimumVersion "3.0.0.0" -Force -Scope $PsInstallScope
+    Install-PackageProvider -Name "NuGet" -Force -Scope $PsInstallScope
     Write-Host "Done Installing NuGet provider"
 }
 else {
