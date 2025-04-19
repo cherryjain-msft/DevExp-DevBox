@@ -21,7 +21,7 @@ Remove-Item -Path "$($CustomizationScriptsDir)\$($LockFile)"
 
 Write-Host "Updating WinGet"
 # ensure NuGet provider is installed
-if (!(Get-PackageProvider | Where-Object { $_.Name -eq "NuGet"  })) {
+if (!(Get-PackageProvider | Where-Object { $_.Name -eq "NuGet" -and $_.Version -gt "2.8.5.201" })) {
     Write-Host "Installing NuGet provider"
     Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -Scope CurrentUser
     Write-Host "Done Installing NuGet provider"
@@ -53,7 +53,7 @@ else {
     Write-Host "Microsoft.WinGet.Configuration is already installed"
 }
 
-$msUiXamlPackage = Get-AppxPackage -Name "Microsoft.UI.Xaml.2.8" 
+$msUiXamlPackage = Get-AppxPackage -Name "Microsoft.UI.Xaml.2.8" | Where-Object { $_.Version -ge "8.2310.30001.0" }
 if (!($msUiXamlPackage)) {
     # install Microsoft.UI.Xaml
     try{
@@ -75,7 +75,7 @@ if (!($msUiXamlPackage)) {
 }
 
 $desktopAppInstallerPackage = Get-AppxPackage -Name "Microsoft.DesktopAppInstaller"
-if (!($desktopAppInstallerPackage) ) {
+if (!($desktopAppInstallerPackage) -or ($desktopAppInstallerPackage.Version -lt "1.22.0.0")) {
     # install Microsoft.DesktopAppInstaller
     try {
         Write-Host "Installing Microsoft.DesktopAppInstaller"

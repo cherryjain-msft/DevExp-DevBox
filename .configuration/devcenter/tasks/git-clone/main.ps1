@@ -137,7 +137,7 @@ function InstallWinGet {
     Write-Host "Installing powershell modules in scope: $PsInstallScope"
 
     # ensure NuGet provider is installed
-    if (!(Get-PackageProvider | Where-Object { $_.Name -eq "NuGet"  })) {
+    if (!(Get-PackageProvider | Where-Object { $_.Name -eq "NuGet" -and $_.Version -gt "2.8.5.201" })) {
         Write-Host "Installing NuGet provider"
         Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -Scope $PsInstallScope
         Write-Host "Done Installing NuGet provider"
@@ -151,7 +151,7 @@ function InstallWinGet {
     pwsh.exe -MTA -Command "Set-PSRepository -Name PSGallery -InstallationPolicy Trusted"
 
     # check if the Microsoft.Winget.Client module is installed
-    $wingetClientPackage = Get-Module -ListAvailable -Name Microsoft.WinGet.Client 
+    $wingetClientPackage = Get-Module -ListAvailable -Name Microsoft.WinGet.Client | Where-Object { $_.Version -ge "1.9.2411" }
     if (!($wingetClientPackage)) {
         Write-Host "Installing Microsoft.Winget.Client"
         Install-Module Microsoft.WinGet.Client -Scope $PsInstallScope
@@ -163,7 +163,7 @@ function InstallWinGet {
     }
 
     # check if the Microsoft.WinGet.Configuration module is installed
-    $wingetConfigurationPackage = Get-Module -ListAvailable -Name Microsoft.WinGet.Configuration 
+    $wingetConfigurationPackage = Get-Module -ListAvailable -Name Microsoft.WinGet.Configuration | Where-Object { $_.Version -ge "1.8.1911" }
     if (!($wingetConfigurationPackage)) {
         Write-Host "Installing Microsoft.WinGet.Configuration"
         pwsh.exe -MTA -Command "Install-Module Microsoft.WinGet.Configuration -AllowPrerelease -Scope $PsInstallScope"
@@ -187,7 +187,7 @@ function InstallWinGet {
     if ($PsInstallScope -eq "CurrentUser") {
         # Under a user account, the way to materialize winget.exe and make it work is by installing DesktopAppInstaller appx,
         # which in turn may have Xaml and VC++ redistributable requirements.
-        $msUiXamlPackage = Get-AppxPackage -Name "Microsoft.UI.Xaml.2.8" 
+        $msUiXamlPackage = Get-AppxPackage -Name "Microsoft.UI.Xaml.2.8" | Where-Object { $_.Version -ge "8.2310.30001.0" }
         if (!($msUiXamlPackage)) {
             # install Microsoft.UI.Xaml
             try {
@@ -209,7 +209,7 @@ function InstallWinGet {
         }
 
         $desktopAppInstallerPackage = Get-AppxPackage -Name "Microsoft.DesktopAppInstaller"
-        if (!($desktopAppInstallerPackage) ) {
+        if (!($desktopAppInstallerPackage) -or ($desktopAppInstallerPackage.Version -lt "1.22.0.0")) {
             # install Microsoft.DesktopAppInstaller
             try {
                 Write-Host "Installing Microsoft.DesktopAppInstaller"
