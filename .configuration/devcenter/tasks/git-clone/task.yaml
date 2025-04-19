@@ -1,6 +1,6 @@
 # This is a git repository cloning task for Dev Box
 
-$schema: "1.0"
+$schema: 1.0
 name: git-clone
 description: Clones a git repository.
 author: Microsoft Corporation
