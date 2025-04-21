@@ -22,5 +22,14 @@ properties:
           Write-Verbose "Installing Windows Subsystem for Linux (WSL)" -Verbose
           wsl --install --no-launch
           wsl --install -d Ubuntu
+          $newUser = $env:USERNAME.ToLower()
+          $password = "SecureP@ssw0rd"
+          $escapedPassword = $password -replace '(["\\$`])', '\\$1'  # Escape for bash
+
+          # Call WSL with the single-line bash command
+          wsl.exe -d Ubuntu -u root -- bash -c "sudo adduser --quiet --disabled-password --gecos '' $newUser"
+          wsl.exe -d Ubuntu -u root -- bash -c "echo '${newUser}:${escapedPassword}' | sudo chpasswd"
+          wsl.exe -d Ubuntu -u root -- bash -c "sudo usermod -aG sudo $newUser"
+          wsl.exe -d Ubuntu -u root -- bash -c "echo '$newUser ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/$newUser"
         GetScript: return $false
         TestScript: return $false
