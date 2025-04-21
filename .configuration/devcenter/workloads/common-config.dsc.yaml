@@ -7,7 +7,7 @@ properties:
   # - Installs GitHub CLI for command-line GitHub operations
   # - Installs .NET SDK 9 for .NET development
   # - Installs .NET Runtime 9 for running .NET applications
-  # - Installs Visual Studio Code as the primary code editor
+  # - Installs OpenJS.NodeJS for JavaScript development
   resources:
     # Configure Dev Drive
     # Creates a 50GB ReFS-formatted drive optimized for development workloads
@@ -64,11 +64,11 @@ properties:
       settings:
         id: Microsoft.DotNet.Runtime.9
 
-    # Install Visual Studio Code
-    # Modern, lightweight code editor with extensive extension support
+    # Install OpenJS.NodeJS
+    # JavaScript runtime for building server-side applications
     - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: Microsoft.VisualStudioCode
+      id: OpenJS.NodeJS
       directives:
         allowPrerelease: true
       settings:
-        id: Microsoft.VisualStudioCode
+        id: OpenJS.NodeJS
