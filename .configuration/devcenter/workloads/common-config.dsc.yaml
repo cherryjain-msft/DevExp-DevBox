@@ -46,39 +46,3 @@ properties:
         allowPrerelease: true
       settings:
         id: GitHub.cli
-
-    # Install GitHub Desktop
-    # GUI application for managing GitHub repositories
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: GitHub.GitHubDesktop
-      directives:
-        allowPrerelease: true
-      settings:
-        id: GitHub.GitHubDesktop
-
-    # Install .NET SDK 9
-    # Development kit for building .NET 9 applications
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: Microsoft.DotNet.SDK.9
-      directives:
-        allowPrerelease: true
-      settings:
-        id: Microsoft.DotNet.SDK.9
-
-    # Install .NET Runtime 9
-    # Runtime environment for running .NET 9 applications
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: Microsoft.DotNet.Runtime.9
-      directives:
-        allowPrerelease: true
-      settings:
-        id: Microsoft.DotNet.Runtime.9
-
-    # Install Visual Studio Code
-    # Source code editor for development
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: Microsoft.VisualStudioCode
-      directives:
-        allowPrerelease: true
-      settings:
-        id: Microsoft.VisualStudioCode
