@@ -1,12 +1,15 @@
 # yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
 properties:
   configurationVersion: "0.2.0"
-  # This DSC configuration installs and configures the following:
-  # - Enables Developer Mode on the system.
-  # - Configures Git to use the default WAM account for authentication.
-  # - Sets up a Dev Drive with ReFS format for development purposes.
+  # This DSC configuration implements the following:
+  # - Sets up a Dev Drive with ReFS format optimized for development workloads
+  # - Installs Git and configures it for Windows Authentication Manager integration
+  # - Installs GitHub CLI for command-line GitHub operations
+  # - Installs GitHub Desktop for GUI-based repository management
   resources:
-    # Configure a Dev Drive with ReFS format
+    # Configure Dev Drive
+    # Creates a 50GB ReFS-formatted drive optimized for development workloads
+    # The drive is assigned letter Z and labeled "Dev Drive 1"
     - resource: Disk
       id: DevDrive1
       directives:
@@ -23,11 +26,29 @@ properties:
         FSFormat: "ReFS"
         Size: "50Gb"
 
+    # Install Git
+    # The standard Git version control system for Windows
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Git.Git
       directives:
-        description: Install Git using WinGet
         allowPrerelease: true
       settings:
         id: Git.Git
-        
+
+    # Install GitHub CLI
+    # Command line tool for interacting with GitHub repositories
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: GitHub.cli
+      directives:
+        allowPrerelease: true
+      settings:
+        id: GitHub.cli
+
+    # Install GitHub Desktop
+    # GUI application for managing GitHub repositories
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: GitHub.GitHubDesktop
+      directives:
+        allowPrerelease: true
+      settings:
+        id: GitHub.GitHubDesktop
