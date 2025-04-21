@@ -1,46 +1,14 @@
-# yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
+# yaml-language-server: $schema=https://raw.githubusercontent.com/microsoft/winget-cli/refs/heads/master/schemas/JSON/configuration/configuration.schema.0.2.json
+
 properties:
-  configurationVersion: "0.2.0"
-  # This DSC configuration installs and configures the following:
-  # - Installs Node.js using WinGet.
-  # - Installs Visual Studio Code using WinGet.
-  # - Installs Visual Studio Code CLI using WinGet.
-  # - Installs a list of essential VS Code extensions.
+  configurationVersion: 0.2.0
+
+  ########################################
+  ### RESOURCES: System Configuration
+  ########################################
   resources:
-    # Install Node.js using WinGet
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: OpenJS.NodeJS
-      directives:
-        description: Install Node.js
-        securityContext: elevated
-        allowPrerelease: true
-      settings:
-        id: OpenJS.NodeJS
-
-    # Install Visual Studio Code using WinGet
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: Microsoft.VisualStudioCode
-      directives:
-        description: Install Visual Studio Code
-        securityContext: elevated
-        allowPrerelease: true
-      settings:
-        id: Microsoft.VisualStudioCode
-      dependsOn:
-        - OpenJS.NodeJS
-
-    # Install Visual Studio Code CLI
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: Microsoft.VisualStudioCode.CLI
-      directives:
-        description: Install Visual Studio Code CLI
-        securityContext: elevated
-        allowPrerelease: true
-      settings:
-        id: Microsoft.VisualStudioCode.CLI
-      dependsOn:
-        - Microsoft.VisualStudioCode
-
+    ### Install VS Code Extensions
+    ### -------------------------------------
     # Install a list of VS Code extensions
     - resource: PSDscResources/Script
       id: Microsoft.VisualStudioCode.Extensions
@@ -58,5 +26,3 @@ properties:
           code --install-extension ms-dotnettools.vscodeintellicode-csharp --force
         GetScript: return $false
         TestScript: return $false
-      dependsOn:
-        - Microsoft.VisualStudioCode
