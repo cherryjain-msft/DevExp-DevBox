@@ -2,68 +2,72 @@
 properties:
   configurationVersion: "0.2.0"
   # This configuration installs essential Azure tools and emulators using WinGet.
-  # Tools include Azure CLI, Azure Developer CLI, Bicep CLI, Azure Data CLI,
-  # Azure Storage Emulator, Azure Cosmos Emulator, and Service Bus Explorer.
+  # 
+  # Purpose:
+  # Provides a complete Azure development environment with command-line tools,
+  # local emulators, and management utilities for Azure services.
+  #
+  # Components:
+  # - Command Line Tools: Azure CLI, Azure Developer CLI, Bicep, Azure Data CLI
+  # - Local Emulators: Azure Storage Emulator, Azure Cosmos DB Emulator
   resources:
+    # COMMAND LINE TOOLS
+    # -----------------
+    
     # Install Azure CLI for managing Azure resources
+    # Core command-line tool for Azure resource management and administration
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Microsoft.AzureCLI
       directives:
-        description: Install Azure CLI using WinGet for managing Azure resources
-        securityContext: elevated
+        allowPrerelease: true
       settings:
         id: Microsoft.AzureCLI
 
     # Install Azure Developer CLI (azd) for streamlined development workflows
+    # Simplifies developing and deploying apps to Azure with project templates
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Microsoft.Azd
       directives:
-        description: Install Azure Developer CLI (azd) using WinGet for streamlined development workflows
-        securityContext: elevated
+        allowPrerelease: true
       settings:
         id: Microsoft.Azd
 
-    # Install Azure Storage Emulator for local development and testing
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: Microsoft.Azure.StorageEmulator
-      directives:
-        description: Install Azure Storage Emulator using WinGet for local development and testing
-        securityContext: elevated
-      settings:
-        id: Microsoft.Azure.StorageEmulator
-
-    # Install Azure Cosmos Emulator for local Cosmos DB development
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: Microsoft.Azure.CosmosEmulator
-      directives:
-        description: Install Azure Cosmos Emulator using WinGet for local Cosmos DB development
-        securityContext: elevated
-      settings:
-        id: Microsoft.Azure.CosmosEmulator
-
     # Install Bicep CLI for ARM template authoring
+    # Domain-specific language for declarative Azure resource deployment
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Microsoft.Bicep
       directives:
-        description: Install Bicep CLI using WinGet for ARM template authoring
-        securityContext: elevated
+        allowPrerelease: true
       settings:
         id: Microsoft.Bicep
 
     # Install Azure Data CLI for managing Azure data services
+    # Specialized CLI for working with Azure data-related services
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Microsoft.Azure.DataCLI
       directives:
-        description: Install Azure Data CLI using WinGet for managing Azure data services
-        securityContext: elevated
+        allowPrerelease: true
       settings:
         id: Microsoft.Azure.DataCLI
 
-    # Install Service Bus Explorer for managing Azure Service Bus
+    # LOCAL EMULATORS
+    # --------------
+    
+    # Install Azure Storage Emulator for local development and testing
+    # Simulates Azure Blob, Queue, and Table storage services for local development
     - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: paolosalvatori.ServiceBusExplorer
+      id: Microsoft.Azure.StorageEmulator
       directives:
-        description: Install Service Bus Explorer using WinGet for managing Azure Service Bus
-        securityContext: elevated
+        allowPrerelease: true
       settings:
-        id: paolosalvatori.ServiceBusExplorer
+        id: Microsoft.Azure.StorageEmulator
+
+    # Install Azure Cosmos Emulator for local Cosmos DB development
+    # Provides local environment for developing against Azure Cosmos DB
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Microsoft.Azure.CosmosEmulator
+      directives:
+        allowPrerelease: true
+      settings:
+        id: Microsoft.Azure.CosmosEmulator
+  
