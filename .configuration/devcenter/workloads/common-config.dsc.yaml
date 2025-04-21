@@ -62,3 +62,12 @@ properties:
         allowPrerelease: true
       settings:
         id: Microsoft.DotNet.Runtime.9
+
+    # Install Visual Studio Code
+    # Modern, lightweight code editor with extensive extension support
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Microsoft.VisualStudioCode
+      directives:
+        allowPrerelease: true
+      settings:
+        id: Microsoft.VisualStudioCode
