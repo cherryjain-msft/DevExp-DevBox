@@ -6,31 +6,6 @@ properties:
   # - Configures Git to use the default WAM account for authentication.
   # - Sets up a Dev Drive with ReFS format for development purposes.
   resources:
-    # Enable Developer Mode on the system
-    - resource: Microsoft.Windows.Developer/DeveloperMode
-      id: DeveloperMode
-      directives:
-        description: Enable Developer Mode
-        securityContext: elevated
-        allowPrerelease: true
-      settings:
-        ensure: present
-
-    # Configure Git to use the default WAM account
-    - resource: PSDscResources/Script
-      id: Git.GitCredentialManager
-      directives:
-        description: Configure Git to use Default WAM account
-        securityContext: elevated
-        allowPrerelease: true
-      settings:
-        SetScript: |
-          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
-          SET GCM_MSAUTH_USEDEFAULTACCOUNT="true"
-          git config --global credential.msauthUseDefaultAccount true
-        GetScript: return $false
-        TestScript: return $false
-
     # Configure a Dev Drive with ReFS format
     - resource: Disk
       id: DevDrive1
