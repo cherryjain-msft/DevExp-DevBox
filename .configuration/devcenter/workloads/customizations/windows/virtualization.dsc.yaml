@@ -21,7 +21,7 @@ properties:
         SetScript: |
           Write-Verbose "Installing Windows Subsystem for Linux (WSL)" -Verbose
           wsl --install --no-launch
-          wsl --install -d Ubuntu
+          wsl --install -d Ubuntu --no-launch
           $newUser = $env:USERNAME.ToLower()
           $password = "SecureP@ssw0rd"
           $escapedPassword = $password -replace '(["\\$`])', '\\$1'  # Escape for bash
@@ -31,5 +31,17 @@ properties:
           wsl.exe -d Ubuntu -u root -- bash -c "echo '${newUser}:${escapedPassword}' | sudo chpasswd"
           wsl.exe -d Ubuntu -u root -- bash -c "sudo usermod -aG sudo $newUser"
           wsl.exe -d Ubuntu -u root -- bash -c "echo '$newUser ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/$newUser"
+        GetScript: return $false
+        TestScript: return $false
+
+    - resource: PSDscResources/Script
+      id: Ubuntu
+      directives:
+        description: Enable Windows Features and Install Ubuntu for WSL
+        securityContext: elevated
+      settings:
+        SetScript: |
+          sudo apt-get update
+          sudo apt-get upgrade -y
         GetScript: return $false
         TestScript: return $false
