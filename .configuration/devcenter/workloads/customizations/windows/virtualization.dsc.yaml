@@ -23,25 +23,33 @@ properties:
           wsl --install --no-launch
           wsl --install -d Ubuntu --no-launch
           $newUser = $env:USERNAME.ToLower()
-          $password = "SecureP@ssw0rd"
-          $escapedPassword = $password -replace '(["\\$`])', '\\$1'  # Escape for bash
+          # Generate a random secure password instead of hardcoding
+          $securePassword = [System.Web.Security.Membership]::GeneratePassword(16, 4)
+          $escapedPassword = $securePassword -replace '(["\\$`])', '\\$1'  # Escape for bash
 
-          # Call WSL with the single-line bash command
+          # Create user account in Ubuntu
           wsl.exe -d Ubuntu -u root -- bash -c "sudo adduser --quiet --disabled-password --gecos '' $newUser"
+          # Set the generated password for the user
           wsl.exe -d Ubuntu -u root -- bash -c "echo '${newUser}:${escapedPassword}' | sudo chpasswd"
+          # Add user to sudo group for administrative privileges
           wsl.exe -d Ubuntu -u root -- bash -c "sudo usermod -aG sudo $newUser"
+          # Allow passwordless sudo for convenience in development environment
           wsl.exe -d Ubuntu -u root -- bash -c "echo '$newUser ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/$newUser"
         GetScript: return $false
         TestScript: return $false
 
+    # Update Ubuntu packages
+    # Ensures the Ubuntu distribution has the latest updates installed
     - resource: PSDscResources/Script
       id: Ubuntu
       directives:
-        description: Enable Windows Features and Install Ubuntu for WSL
+        description: Update and upgrade Ubuntu packages
         securityContext: elevated
       settings:
         SetScript: |
-          sudo apt-get update
-          sudo apt-get upgrade -y
+          # Update package lists
+          wsl.exe -d Ubuntu -u root -- bash -c "sudo apt-get update"
+          # Upgrade installed packages to latest versions
+          wsl.exe -d Ubuntu -u root -- bash -c "sudo apt-get upgrade -y"
         GetScript: return $false
         TestScript: return $false
