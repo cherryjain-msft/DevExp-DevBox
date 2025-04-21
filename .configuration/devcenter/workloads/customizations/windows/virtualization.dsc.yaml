@@ -2,10 +2,14 @@
 properties:
   configurationVersion: "0.2.0"
   resources:
-    # Install Azure CLI for managing Azure resources
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: Microsoft.WSL
+    - resource: PSDscResources/Script
+      id: Microsoft-Windows-Subsystem-Linux
       directives:
-        allowPrerelease: true
+        description: Enable Windows Features and Install Ubuntu for WSL
+        securityContext: elevated
       settings:
-        id: Microsoft.WSL
+        SetScript: |
+          Write-Verbose "Installing Windows Subsystem for Linux (WSL)" -Verbose
+          wsl --install --no-launch
+        GetScript: return $false
+        TestScript: return $false
