@@ -21,5 +21,6 @@ properties:
         SetScript: |
           Write-Verbose "Installing Windows Subsystem for Linux (WSL)" -Verbose
           wsl --install --no-launch
+          wsl --install -d Ubuntu
         GetScript: return $false
         TestScript: return $false
