@@ -48,8 +48,8 @@ properties:
       settings:
         SetScript: |
           # Update package lists
-          wsl.exe -d Ubuntu -u root -- bash -c "sudo apt-get update"
+          wsl.exe -d Ubuntu -u root -- bash -c "sudo apt-get update" --quiet
           # Upgrade installed packages to latest versions
-          wsl.exe -d Ubuntu -u root -- bash -c "sudo apt-get upgrade -y"
+          wsl.exe -d Ubuntu -u root -- bash -c "sudo apt-get upgrade -y" --quiet
         GetScript: return $false
         TestScript: return $false
