@@ -7,6 +7,7 @@ properties:
   # - Installs GitHub CLI for command-line GitHub operations
   # - Installs .NET SDK 9 for .NET development
   # - Installs .NET Runtime 9 for running .NET applications
+  # - Installs Visual Studio Code as the primary code editor
   resources:
     # Configure Dev Drive
     # Creates a 50GB ReFS-formatted drive optimized for development workloads
