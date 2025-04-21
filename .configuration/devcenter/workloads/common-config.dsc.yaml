@@ -22,3 +22,12 @@ properties:
         AllowDestructive: true
         FSFormat: "ReFS"
         Size: "50Gb"
+
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Git.Git
+      directives:
+        description: Install Git using WinGet
+        allowPrerelease: true
+      settings:
+        id: Git.Git
+        
