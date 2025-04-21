@@ -6,6 +6,7 @@ properties:
   # - Installs Git and configures it for Windows Authentication Manager integration
   # - Installs GitHub CLI for command-line GitHub operations
   # - Installs .NET SDK 9 for .NET development
+  # - Installs .NET Runtime 9 for running .NET applications
   resources:
     # Configure Dev Drive
     # Creates a 50GB ReFS-formatted drive optimized for development workloads
@@ -52,3 +53,12 @@ properties:
         allowPrerelease: true
       settings:
         id: Microsoft.DotNet.SDK.9
+
+    # Install .NET Runtime 9
+    # Runtime environment for executing .NET 9 applications
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Microsoft.DotNet.Runtime.9
+      directives:
+        allowPrerelease: true
+      settings:
+        id: Microsoft.DotNet.Runtime.9
