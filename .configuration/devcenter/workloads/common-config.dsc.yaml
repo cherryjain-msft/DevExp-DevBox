@@ -8,6 +8,7 @@ properties:
   # - Installs GitHub Desktop for GUI-based repository management
   # - Installs .NET SDK 9 for .NET development
   # - Installs .NET Runtime 9 for running .NET applications
+  # - Installs Visual Studio Code as the primary code editor
   resources:
     # Configure Dev Drive
     # Creates a 50GB ReFS-formatted drive optimized for development workloads
@@ -72,3 +73,12 @@ properties:
         allowPrerelease: true
       settings:
         id: Microsoft.DotNet.Runtime.9
+
+    # Install Visual Studio Code
+    # Source code editor for development
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Microsoft.VisualStudioCode
+      directives:
+        allowPrerelease: true
+      settings:
+        id: Microsoft.VisualStudioCode

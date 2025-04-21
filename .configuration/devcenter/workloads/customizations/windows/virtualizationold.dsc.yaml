@@ -1,0 +1,130 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/microsoft/winget-cli/refs/heads/master/schemas/JSON/configuration/configuration.schema.0.2.json
+
+properties:
+  configurationVersion: 0.2.0
+
+  resources:
+    - resource: PSDscResources/Script
+      id: Microsoft-Windows-Subsystem-Linux
+      directives:
+        description: Enable Windows Features and Install Ubuntu for WSL
+        securityContext: elevated
+      settings:
+        SetScript: |
+          try {
+              Write-Verbose "Installing Windows Subsystem for Linux (WSL)" -Verbose
+              wsl --install --no-launch 2>$null
+          } catch {
+              Write-Error "Failed to install WSL: $_"
+          }
+        GetScript: |
+          return @{ Result = $false }
+        TestScript: |
+          return $false
+
+    - resource: PSDscResources/Script
+      id: Ubuntu
+      directives:
+        description: Install Ubuntu for WSL
+        securityContext: elevated
+      settings:
+        SetScript: |
+          try {
+              Write-Verbose "Installing Ubuntu for WSL" -Verbose
+              wsl --install -d Ubuntu --no-launch 2>$null
+          } catch {
+              Write-Error "Failed to install Ubuntu: $_"
+          }
+        GetScript: |
+          return @{ Result = $false }
+        TestScript: |
+          return $false
+      dependsOn:
+        - Microsoft-Windows-Subsystem-Linux
+
+    - resource: PSDscResources/Script
+      id: Ubuntu.User
+      directives:
+        description: Add the current user as an administrator to Ubuntu
+        securityContext: elevated
+      settings:
+        SetScript: |
+          try {
+              $newUser = $env:USERNAME.ToLower()
+              $password = "SecureP@ssw0rd"
+              $escapedPassword = $password -replace '(["\\$`])', '\\$1'  # Escape for bash
+
+              # Call WSL with the single-line bash command
+              wsl.exe -d Ubuntu -u root -- bash -c "sudo adduser --quiet --disabled-password --gecos '' $newUser"
+              wsl.exe -d Ubuntu -u root -- bash -c "echo '${newUser}:${escapedPassword}' | sudo chpasswd"
+              wsl.exe -d Ubuntu -u root -- bash -c "sudo usermod -aG sudo $newUser"
+              wsl.exe -d Ubuntu -u root -- bash -c "echo '$newUser ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/$newUser"
+          } catch {
+              Write-Error "Failed to add user as administrator: $_"
+          }
+
+        GetScript: |
+          return @{ Result = $false }
+        TestScript: |
+          return $false
+      dependsOn:
+        - Microsoft-Windows-Subsystem-Linux
+
+
+    - resource: PSDscResources/Script
+      id: Ubuntu.AzureCli
+      directives:
+        description: Install Azure CLI, Developer and Bicep on Ubuntu
+        securityContext: elevated
+      settings:
+        SetScript: |
+          try {
+              $wslCommand = @(
+                  "sudo apt-get update",
+                  "sudo apt-get upgrade -y",
+                  "sudo apt-get install -y curl",
+                  "curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash",
+                  "curl -fsSL https://aka.ms/install-azd.sh | sudo bash"
+              ) -join "; "
+
+              wsl.exe -d Ubuntu -u root -- bash -c "$wslCommand" 2>/dev/null
+          } catch {
+              Write-Error "Failed to install Azure CLI: $_"
+          }
+        GetScript: |
+          return @{ Result = $false }
+        TestScript: |
+          return $false
+      dependsOn:
+        - Ubuntu.User
+
+    - resource: PSDscResources/Script
+      id: Ubuntu.NET
+      directives:
+        description: Install .NET SDK and Runtime
+        securityContext: elevated
+      settings:
+        SetScript: |
+          try {
+              $wslCommand = @(
+                  "sudo apt-get update",
+                  "sudo add-apt-repository ppa:dotnet/backports -y",
+                  "sudo apt-get update",
+                  "sudo apt-get install -y dotnet-sdk-9.0",
+                  "sudo apt-get install -y aspnetcore-runtime-9.0",
+                  "sudo dotnet workload install aspire",
+                  "sudo dotnet workload install maui",
+                  "sudo dotnet workload update",
+                  "sudo apt-get upgrade -y"
+              ) -join "; "
+
+              wsl.exe -d Ubuntu -u root -- bash -c "$wslCommand" 2>/dev/null
+          } catch {
+              Write-Error "Failed to install .NET SDK and Runtime: $_"
+          }
+        GetScript: |
+          return @{ Result = $false }
+        TestScript: |
+          return $false
+      dependsOn:
+        - Ubuntu.User
