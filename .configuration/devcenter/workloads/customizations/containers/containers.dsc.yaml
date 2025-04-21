@@ -1,21 +1,18 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/microsoft/winget-cli/refs/heads/master/schemas/JSON/configuration/configuration.schema.0.2.json
+# yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
 
 properties:
-  configurationVersion: 0.2.0
-
-  ########################################
-  ### RESOURCES: System Configuration
-  ########################################
+  configurationVersion: "0.2.0"
+  # This configuration installs essential container development tools using WinGet.
+  # 
+  # Purpose:
+  # Sets up container runtime and orchestration tools for development workflows.
+  #
+  # Components:
+  # - Docker Desktop: Containerization platform for building and running containers
+  # - Helm: Package manager for Kubernetes applications
   resources:
-    ########################################################
-    ### Updates required before applying configurations
-    ########################################################
-    ### Install: Docker Desktop
-    ### Install: Helm
-    ########################################################
-
-    ### Install Docker Desktop
-    ### -------------------------------------
+    # Install Docker Desktop
+    # Complete containerization platform with Docker Engine, Docker CLI, and Kubernetes support
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Docker.DockerDesktop
       directives:
@@ -25,8 +22,8 @@ properties:
       settings:
         id: Docker.DockerDesktop
 
-    ### Install Helm
-    ### -------------------------------------
+    # Install Helm
+    # Kubernetes package manager for deploying and managing applications
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Helm.Helm
       directives:
@@ -35,6 +32,5 @@ properties:
         securityContext: elevated
       settings:
         id: Helm.Helm
-
       dependsOn:
         - Docker.DockerDesktop

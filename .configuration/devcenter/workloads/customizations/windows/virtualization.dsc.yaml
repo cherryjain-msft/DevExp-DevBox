@@ -1,7 +1,17 @@
 # yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
 properties:
   configurationVersion: "0.2.0"
+  # This DSC configuration enables Windows virtualization features.
+  # 
+  # Purpose:
+  # Sets up Windows Subsystem for Linux (WSL) to support Linux workloads
+  # on Windows development environments.
+  #
+  # Components:
+  # - WSL: Windows Subsystem for Linux with Ubuntu distribution
   resources:
+    # Install Windows Subsystem for Linux (WSL)
+    # Enables the WSL feature and installs Ubuntu distribution for Linux development
     - resource: PSDscResources/Script
       id: Microsoft-Windows-Subsystem-Linux
       directives:
