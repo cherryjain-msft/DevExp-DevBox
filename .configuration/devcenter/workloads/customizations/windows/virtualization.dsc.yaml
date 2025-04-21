@@ -20,8 +20,8 @@ properties:
       settings:
         SetScript: |
           Write-Verbose "Installing Windows Subsystem for Linux (WSL)" -Verbose
-          wsl --install --no-launch
-          wsl --install -d Ubuntu --no-launch
+          wsl --install --no-launch --quiet
+          wsl --install -d Ubuntu --no-launch --quiet
           $newUser = $env:USERNAME.ToLower()
           # Generate a random secure password instead of hardcoding
           $securePassword = [System.Web.Security.Membership]::GeneratePassword(16, 4)
