@@ -1,22 +1,51 @@
+@description('The name of the DevCenter project')
 param projectName string
 
+@description('The principal (object) ID to assign roles to')
 param principalId string
 
+@description('Array of role definitions to assign to the principal')
 param roles array
 
-resource project 'Microsoft.DevCenter/projects@2025-02-01' existing = {
+@description('The principal type for the role assignments')
+@allowed([
+  'User'
+  'Group'
+  'ServicePrincipal'
+  'ForeignGroup'
+  'Device'
+])
+param principalType string = 'Group'
+
+@description('Reference to the existing DevCenter project')
+resource project 'Microsoft.DevCenter/projects@2023-04-01' existing = {
   name: projectName
-  scope: resourceGroup()
 }
 
+@description('Role assignments for the project')
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for role in roles: {
-    name: guid(role.id, principalId)
+    name: guid(project.id, principalId, role.id)
     scope: project
     properties: {
       principalId: principalId
       roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', role.id)
-      principalType: 'Group'
+      principalType: principalType
+      description: contains(role, 'name')
+        ? 'Role: ${role.name} for project ${projectName}'
+        : 'Role assignment for ${principalId}'
     }
   }
 ]
+
+@description('Array of created role assignment IDs')
+output roleAssignmentIds array = [
+  for (role, i) in roles: {
+    roleId: role.id
+    roleName: contains(role, 'name') ? role.name : role.id
+    assignmentId: roleAssignment[i].id
+  }
+]
+
+@description('Project ID')
+output projectId string = project.id

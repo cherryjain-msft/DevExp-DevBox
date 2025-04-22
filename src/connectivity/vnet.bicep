@@ -78,7 +78,7 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
 output virtualNetworkId string = settings.create ? virtualNetwork.id : existingVirtualNetwork.id
 
 @description('The subnets of the Virtual Network')
-output virtualNetworkSubnets array = [
+output AZURE_VIRTUAL_NETWORK_SUBNETS array = [
   for (subnet, i) in settings.subnets: {
     id: resourceId('Microsoft.Network/virtualNetworks/subnets', settings.name, subnet.name)
     name: subnet.name
@@ -86,4 +86,4 @@ output virtualNetworkSubnets array = [
 ]
 
 @description('The name of the Virtual Network')
-output virtualNetworkName string = settings.name
+output AZURE_VIRTUAL_NETWORK_NAME string = settings.name
