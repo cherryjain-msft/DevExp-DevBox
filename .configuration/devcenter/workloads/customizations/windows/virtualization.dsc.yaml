@@ -20,10 +20,7 @@ properties:
       settings:
         SetScript: |
           Write-Verbose "Installing Windows Subsystem for Linux (WSL)" -Verbose
-
-          # Check if WSL is already installed
-          $wslInstalled = Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
-                      
+                     
           Write-Verbose "Installing WSL feature" -Verbose
           wsl --install --no-launch --quiet
 
