@@ -18,8 +18,57 @@ properties:
         description: Enable Windows Features and Install Ubuntu for WSL
       settings:
         SetScript: |
+          # Install WSL with Ubuntu distribution
           Write-Verbose "Installing Windows Subsystem for Linux (WSL)" -Verbose                     
           Write-Verbose "Installing WSL feature" -Verbose
-          wsl --install --no-launch --quiet
+          wsl --install -d Ubuntu --no-launch
+        # Always returns false to simplify DSC state detection
         GetScript: return $false
+        # Always executes SetScript to ensure installation is attempted
+        TestScript: return $false
+
+    # Configure Ubuntu user
+    # Creates and configures a matching user account in Ubuntu with sudo privileges
+    - resource: PSDscResources/Script
+      id: Ubuntu.User
+      directives:
+        description: Add the current user as an administrator to Ubuntu
+        securityContext: elevated
+      settings:
+        SetScript: |
+          $newUser = $env:USERNAME.ToLower()
+          # Generate a random secure password instead of hardcoding
+          Add-Type -AssemblyName System.Web
+          $securePassword = [System.Web.Security.Membership]::GeneratePassword(16, 4)
+          $escapedPassword = $securePassword -replace '(["\\$`])', '\\$1'  # Escape for bash
+
+          # Create new user account that matches Windows username
+          wsl.exe -d Ubuntu -u root -- bash -c "sudo adduser --quiet --disabled-password --gecos '' $newUser"
+          # Set the generated password for the user
+          wsl.exe -d Ubuntu -u root -- bash -c "echo '${newUser}:${escapedPassword}' | sudo chpasswd"
+          # Add user to sudo group for administrative privileges
+          wsl.exe -d Ubuntu -u root -- bash -c "sudo usermod -aG sudo $newUser"
+          # Configure passwordless sudo for development convenience
+          wsl.exe -d Ubuntu -u root -- bash -c "echo '$newUser ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/$newUser"
+        # Always returns false to simplify DSC state detection
+        GetScript: return $false
+        # Always executes SetScript to ensure user configuration is applied
+        TestScript: return $false
+
+    # Update Ubuntu packages
+    # Ensures the Ubuntu distribution has the latest updates installed
+    - resource: PSDscResources/Script
+      id: Ubuntu.Update
+      directives:
+        description: Update and upgrade Ubuntu packages
+        securityContext: elevated
+      settings:
+        SetScript: |
+          # Update package lists from repositories
+          wsl.exe -d Ubuntu -u root -- bash -c "sudo apt-get update"
+          # Upgrade installed packages to latest versions
+          wsl.exe -d Ubuntu -u root -- bash -c "sudo apt-get upgrade -y"
+        # Always returns false to simplify DSC state detection
+        GetScript: return $false
+        # Always executes SetScript to ensure updates are applied
         TestScript: return $false
