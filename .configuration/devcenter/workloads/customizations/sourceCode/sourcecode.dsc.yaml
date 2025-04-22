@@ -24,14 +24,8 @@ properties:
           $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
           
           # Define repository path consistently
-          $repoPath = "C:\workspaces"
-          
-          # Create directory if it doesn't exist
-          if (-not (Test-Path -Path $repoPath)) {
-              Write-Host "Creating directory: $repoPath"
-              New-Item -ItemType Directory -Path $repoPath -Force | Out-Null
-          }
-          
+          $repoPath = "Z:\workspaces\IdentityProvider"
+
           # Clone the Identity Provider repository
           try {
               Write-Host "Cloning Identity Provider repository..."
@@ -42,29 +36,14 @@ properties:
               Write-Error "Failed to clone repository: $_"
               throw "Repository clone failed. See error above."
           }
-        GetScript: |
-          # Check if repository exists
-          $repoPath = "C:\workspaces\IdentityProvider"
-          $result = Test-Path -Path $repoPath
-          return @{ Result = $result }
-        TestScript: |
-          # Verify repository exists
-          $repoPath = "C:\workspaces\IdentityProvider"
-          $repoExists = Test-Path -Path $repoPath
-          
-          # Check if .git folder exists to confirm it's a git repository
-          $gitFolderExists = Test-Path -Path (Join-Path -Path $repoPath -ChildPath '.git')
-          
-          return $repoExists -and $gitFolderExists
-
+        GetScript: return $false
+        TestScript: return $false
     - resource: PSDscResources/Script
       id: WorkloadUpdate
       directives:
         description: Update .NET SDK workloads
         allowPrerelease: true
         securityContext: elevated
-      dependsOn:
-        - GitClone
       settings:
         SetScript: |
           # Enable script execution and set up environment
@@ -74,20 +53,15 @@ properties:
           # Update all installed .NET workloads to ensure latest versions
           try {
               Write-Host "Updating .NET SDK workloads..."
-              $output = dotnet workload update 2>&1
-              Write-Host $output
+              dotnet workload update
               Write-Host ".NET workloads updated successfully"
           }
           catch {
               Write-Error "Failed to update .NET workloads: $_"
               throw "Workload update failed. See error above."
           }
-        GetScript: |
-          # Not applicable for workload updates, but required
-          return @{ Result = "N/A" }
-        TestScript: |
-          # Always run update to ensure latest versions
-          return $false
+        GetScript: return $false
+        TestScript: return $false
 
     - resource: PSDscResources/Script
       id: dotnetbuild
@@ -95,59 +69,26 @@ properties:
         description: Build and test Identity Provider solution
         allowPrerelease: true
         securityContext: elevated
-      dependsOn:
-        - WorkloadUpdate
       settings:
         SetScript: |
           # Enable script execution and set up environment
           Set-ExecutionPolicy Bypass -Scope Process -Force
           $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
           
-          # Define solution path
-          $solutionPath = "C:\workspaces\IdentityProvider\IdentityProvider.sln"
-          
-          # Verify solution exists
-          if (-not (Test-Path -Path $solutionPath)) {
-              throw "Solution not found at path: $solutionPath"
-          }
-          
-          # Restore the solution dependencies
+          # Define repository path consistently
+          $repoPath = "Z:\workspaces\IdentityProvider"
+
+          # Build the Identity Provider solution
           try {
-              Write-Host "Restoring NuGet packages for solution..."
-              dotnet restore $solutionPath
-              Write-Host "Restore completed successfully"
-          }
-          catch {
-              Write-Error "Failed to restore packages: $_"
-              throw "Solution restore failed. See error above."
-          }
-          
-          # Build the solution
-          try {
-              Write-Host "Building solution in Release configuration..."
-              dotnet build $solutionPath --configuration Release --no-restore --verbosity normal
+              Write-Host "Building Identity Provider solution..."
+              dotnet restore $repoPath\IdentityProvider.sln --configuration Release --verbosity normal
+              dotnet test $repoPath\IdentityProvider.sln --configuration Release --no-restore --verbosity normal
+              dotnet build $repoPath\IdentityProvider.sln --configuration Release --no-restore --verbosity normal
               Write-Host "Build completed successfully"
           }
           catch {
-              Write-Error "Failed to build solution: $_"
-              throw "Solution build failed. See error above."
+              Write-Error "Build failed: $_"
+              throw "Build failed. See error above."
           }
-          
-          # Run tests on the solution
-          try {
-              Write-Host "Running solution tests..."
-              dotnet test $solutionPath --configuration Release --no-build --verbosity normal
-              Write-Host "Tests completed successfully"
-          }
-          catch {
-              Write-Error "Tests failed: $_"
-              throw "Solution tests failed. See error above."
-          }
-        GetScript: |
-          # Check if build artifacts exist
-          $outputPath = "C:\workspaces\IdentityProvider\bin\Release"
-          $result = Test-Path -Path $outputPath
-          return @{ Result = $result }
-        TestScript: |
-          # Always run build to ensure latest changes are compiled
-          return $false
+        GetScript: return $false
+        TestScript: return $false

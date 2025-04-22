@@ -37,6 +37,20 @@ properties:
       settings:
         id: Git.Git
 
+    # Configure Git to use Default WAM account
+    - resource: PSDscResources/Script
+      dependsOn:
+        - Git.Git
+      directives:
+        description: Configure Git to use Default WAM account
+      settings:
+        SetScript: |
+          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
+          SET GCM_MSAUTH_USEDEFAULTACCOUNT="true"
+          git config --global credential.msauthUseDefaultAccount true
+        GetScript: return $false
+        TestScript: return $false
+
     # Install GitHub CLI
     # Command line tool for interacting with GitHub repositories
     - resource: Microsoft.WinGet.DSC/WinGetPackage
