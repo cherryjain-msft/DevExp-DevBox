@@ -1,68 +1,153 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/microsoft/winget-cli/refs/heads/master/schemas/JSON/configuration/configuration.schema.0.2.json
 
+#
+# Identity Provider Dev Environment Configuration
+# Purpose: Sets up development environment for Identity Provider project
+# Version: 1.0
+# Last Updated: Current date
+# Usage: Applied via DevCenter to provision development environments
+#
+
 properties:
   configurationVersion: 0.2.0
-
-  ########################################
-  ### RESOURCES: System Configuration
-  ########################################
   resources:
-    ########################################################
-    ### Updates required before applying configurations
-    ########################################################
-    ### Install PSDscResources
-    ### Enable: WinGet
-    ### Enable: AppInstaller
-    ### Enable: AppInstallerFileBuilder
-    ### Enable: DevHome
-    ### Enable: DevHome Azure Extension
-    ### Enable: DevHome GitHub Extension
-    ### Install: Git
-    ### Install: GitHub.CLI
-    ### Install: GitHub.GitHubDesktop
-    ### Enable: Developer Mode
-    ### Install: Windows Terminal
-    ### Install: Microsoft.Office
-    ########################################################
-
-    ### Update Dotnet Workload
-    ### -------------------------------------
     - resource: PSDscResources/Script
-      id: UpdateDotnetWorkload
+      id: GitClone
       directives:
-        description: Update Dotnet Workload
+        description: Clone Identity Provider repository
         allowPrerelease: true
         securityContext: elevated
       settings:
         SetScript: |
-          try {
-              $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-              dotnet workload update
-              Write-Host "Dotnet workload updated successfully."
-          } catch {
-              Write-Host "Failed to update Dotnet workload: $_"
+          # Enable script execution and set up environment
+          Set-ExecutionPolicy Bypass -Scope Process -Force
+          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+          
+          # Define repository path consistently
+          $repoPath = "C:\workspaces"
+          
+          # Create directory if it doesn't exist
+          if (-not (Test-Path -Path $repoPath)) {
+              Write-Host "Creating directory: $repoPath"
+              New-Item -ItemType Directory -Path $repoPath -Force | Out-Null
           }
-        GetScript: return $false
-        TestScript: return $false
+          
+          # Clone the Identity Provider repository
+          try {
+              Write-Host "Cloning Identity Provider repository..."
+              git clone https://github.com/Evilazaro/IdentityProvider/ $repoPath
+              Write-Host "Repository cloned successfully to $repoPath"
+          }
+          catch {
+              Write-Error "Failed to clone repository: $_"
+              throw "Repository clone failed. See error above."
+          }
+        GetScript: |
+          # Check if repository exists
+          $repoPath = "C:\workspaces\IdentityProvider"
+          $result = Test-Path -Path $repoPath
+          return @{ Result = $result }
+        TestScript: |
+          # Verify repository exists
+          $repoPath = "C:\workspaces\IdentityProvider"
+          $repoExists = Test-Path -Path $repoPath
+          
+          # Check if .git folder exists to confirm it's a git repository
+          $gitFolderExists = Test-Path -Path (Join-Path -Path $repoPath -ChildPath '.git')
+          
+          return $repoExists -and $gitFolderExists
 
-    ### Clone and Build Identity Provider
-    ### -------------------------------------
     - resource: PSDscResources/Script
-      id: BuildIdentityProvider
+      id: WorkloadUpdate
       directives:
-        description: Clone and Build Identity Provider and eShop-k8s repositories
+        description: Update .NET SDK workloads
         allowPrerelease: true
         securityContext: elevated
+      dependsOn:
+        - GitClone
       settings:
         SetScript: |
+          # Enable script execution and set up environment
+          Set-ExecutionPolicy Bypass -Scope Process -Force
+          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+          
+          # Update all installed .NET workloads to ensure latest versions
           try {
-              $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-              dotnet workload install aspire
-              dotnet restore "Z:\Workspaces\IdentityProvider\src\Contoso.IdentityProvider.sln"
-              dotnet build "Z:\Workspaces\IdentityProvider\src\Contoso.IdentityProvider.sln" --no-restore
-              Write-Host "Identity Provider and eShop-k8s repositories built successfully."
-          } catch {
-              Write-Host "Failed to build Identity Provider and eShop-k8s repositories: $_"
+              Write-Host "Updating .NET SDK workloads..."
+              $output = dotnet workload update 2>&1
+              Write-Host $output
+              Write-Host ".NET workloads updated successfully"
           }
-        GetScript: return $false
-        TestScript: return $false
+          catch {
+              Write-Error "Failed to update .NET workloads: $_"
+              throw "Workload update failed. See error above."
+          }
+        GetScript: |
+          # Not applicable for workload updates, but required
+          return @{ Result = "N/A" }
+        TestScript: |
+          # Always run update to ensure latest versions
+          return $false
+
+    - resource: PSDscResources/Script
+      id: dotnetbuild
+      directives:
+        description: Build and test Identity Provider solution
+        allowPrerelease: true
+        securityContext: elevated
+      dependsOn:
+        - WorkloadUpdate
+      settings:
+        SetScript: |
+          # Enable script execution and set up environment
+          Set-ExecutionPolicy Bypass -Scope Process -Force
+          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+          
+          # Define solution path
+          $solutionPath = "C:\workspaces\IdentityProvider\IdentityProvider.sln"
+          
+          # Verify solution exists
+          if (-not (Test-Path -Path $solutionPath)) {
+              throw "Solution not found at path: $solutionPath"
+          }
+          
+          # Restore the solution dependencies
+          try {
+              Write-Host "Restoring NuGet packages for solution..."
+              dotnet restore $solutionPath
+              Write-Host "Restore completed successfully"
+          }
+          catch {
+              Write-Error "Failed to restore packages: $_"
+              throw "Solution restore failed. See error above."
+          }
+          
+          # Build the solution
+          try {
+              Write-Host "Building solution in Release configuration..."
+              dotnet build $solutionPath --configuration Release --no-restore --verbosity normal
+              Write-Host "Build completed successfully"
+          }
+          catch {
+              Write-Error "Failed to build solution: $_"
+              throw "Solution build failed. See error above."
+          }
+          
+          # Run tests on the solution
+          try {
+              Write-Host "Running solution tests..."
+              dotnet test $solutionPath --configuration Release --no-build --verbosity normal
+              Write-Host "Tests completed successfully"
+          }
+          catch {
+              Write-Error "Tests failed: $_"
+              throw "Solution tests failed. See error above."
+          }
+        GetScript: |
+          # Check if build artifacts exist
+          $outputPath = "C:\workspaces\IdentityProvider\bin\Release"
+          $result = Test-Path -Path $outputPath
+          return @{ Result = $result }
+        TestScript: |
+          # Always run build to ensure latest changes are compiled
+          return $false
