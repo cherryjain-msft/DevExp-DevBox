@@ -16,7 +16,6 @@ properties:
       id: WSL
       directives:
         description: Enable Windows Features and Install Ubuntu for WSL
-        securityContext: elevated
       settings:
         SetScript: |
           Write-Verbose "Installing Windows Subsystem for Linux (WSL)" -Verbose                     
