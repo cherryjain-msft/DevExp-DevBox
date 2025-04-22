@@ -22,34 +22,5 @@ properties:
           Write-Verbose "Installing Windows Subsystem for Linux (WSL)" -Verbose
           wsl --install --no-launch --quiet
           wsl --install -d Ubuntu --no-launch --quiet
-          $newUser = $env:USERNAME.ToLower()
-          # Generate a random secure password instead of hardcoding
-          $securePassword = [System.Web.Security.Membership]::GeneratePassword(16, 4)
-          $escapedPassword = $securePassword -replace '(["\\$`])', '\\$1'  # Escape for bash
-
-          # Create user account in Ubuntu
-          wsl.exe -d Ubuntu -u root -- bash -c "sudo adduser --quiet --disabled-password --gecos '' $newUser"
-          # Set the generated password for the user
-          wsl.exe -d Ubuntu -u root -- bash -c "echo '${newUser}:${escapedPassword}' | sudo chpasswd"
-          # Add user to sudo group for administrative privileges
-          wsl.exe -d Ubuntu -u root -- bash -c "sudo usermod -aG sudo $newUser"
-          # Allow passwordless sudo for convenience in development environment
-          wsl.exe -d Ubuntu -u root -- bash -c "echo '$newUser ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/$newUser"
-        GetScript: return $false
-        TestScript: return $false
-
-    # Update Ubuntu packages
-    # Ensures the Ubuntu distribution has the latest updates installed
-    - resource: PSDscResources/Script
-      id: Ubuntu
-      directives:
-        description: Update and upgrade Ubuntu packages
-        securityContext: elevated
-      settings:
-        SetScript: |
-          # Update package lists
-          wsl.exe -d Ubuntu -u root -- bash -c "sudo apt-get update" --quiet
-          # Upgrade installed packages to latest versions
-          wsl.exe -d Ubuntu -u root -- bash -c "sudo apt-get upgrade -y" --quiet
         GetScript: return $false
         TestScript: return $false
