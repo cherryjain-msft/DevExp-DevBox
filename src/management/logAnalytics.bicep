@@ -27,11 +27,17 @@ param tags object = {}
 ])
 param sku string = 'PerGB2018'
 
+// Naming convention variable using recommended pattern
+var workspaceName = '${name}-${uniqueString(resourceGroup().id)}'
+
 @description('Log Analytics Workspace')
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
-  name: '${name}-${uniqueString(resourceGroup().id)}'
+  name: workspaceName
   location: location
-  tags: tags
+  tags: union(tags, {
+    resourceType: 'Log Analytics'
+    module: 'monitoring'
+  })
   properties: {
     sku: {
       name: sku
@@ -39,15 +45,35 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10
     retentionInDays: retentionInDays
     features: {
       enableLogAccessUsingOnlyResourcePermissions: true
+      immediatePurgeDataOn30Days: retentionInDays > 30 ? false : true
     }
     publicNetworkAccessForIngestion: 'Enabled'
     publicNetworkAccessForQuery: 'Enabled'
+    workspaceCapping: {
+      dailyQuotaGb: -1
+    }
+  }
+}
+
+@description('Log Analytics Solutions')
+resource solution 'Microsoft.OperationsManagement/solutions@2015-11-01-preview' = {
+  name: 'AzureActivity(${workspaceName})'
+  location: location
+  tags: tags
+  properties: {
+    workspaceResourceId: logAnalyticsWorkspace.id
+  }
+  plan: {
+    name: 'AzureActivity(${workspaceName})'
+    product: 'OMSGallery/AzureActivity'
+    publisher: 'Microsoft'
+    promotionCode: ''
   }
 }
 
 @description('Log Analytics Diagnostic Settings')
 resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
-  name: '${logAnalyticsWorkspace.name}-diagnostics'
+  name: '${workspaceName}-diag'
   scope: logAnalyticsWorkspace
   properties: {
     workspaceId: logAnalyticsWorkspace.id
