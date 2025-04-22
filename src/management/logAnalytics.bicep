@@ -42,16 +42,6 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10
     sku: {
       name: sku
     }
-    retentionInDays: retentionInDays
-    features: {
-      enableLogAccessUsingOnlyResourcePermissions: true
-      immediatePurgeDataOn30Days: retentionInDays > 30 ? false : true
-    }
-    publicNetworkAccessForIngestion: 'Enabled'
-    publicNetworkAccessForQuery: 'Enabled'
-    workspaceCapping: {
-      dailyQuotaGb: -1
-    }
   }
 }
 

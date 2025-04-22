@@ -21,7 +21,7 @@ param unique string = utcNow('yyyyMMddHHmm')
 param logAnalyticsId string
 
 @description('Azure Key Vault')
-resource keyVault 'Microsoft.KeyVault/vaults@2024-04-01-preview' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2024-12-01-preview' = {
   name: '${keyVaultName}-${uniqueString(deployer().tenantId, location, unique, subscription().subscriptionId)}-kv'
   location: location
   tags: tags

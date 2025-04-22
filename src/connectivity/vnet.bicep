@@ -55,8 +55,8 @@ resource existingVirtualNetwork 'Microsoft.Network/virtualNetworks@2023-05-01' e
 
 @description('Log Analytics Diagnostic Settings')
 resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (settings.create) {
-  name: '${settings.create ? virtualNetwork.name : existingVirtualNetwork.name}-diag'
-  scope: settings.create ? virtualNetwork : existingVirtualNetwork
+  name: '${virtualNetwork.name}-diag'
+  scope: virtualNetwork
   properties: {
     workspaceId: logAnalyticsId
     logs: [
