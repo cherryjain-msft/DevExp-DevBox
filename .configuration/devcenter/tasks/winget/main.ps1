@@ -213,7 +213,7 @@ function InstallWinGet {
         }
 
         $desktopAppInstallerPackage = Get-AppxPackage -Name "Microsoft.DesktopAppInstaller"
-        #if (!($desktopAppInstallerPackage)) {
+        if (!($desktopAppInstallerPackage)) {
             # install Microsoft.DesktopAppInstaller
             try {
                 Write-Host "Installing Microsoft.DesktopAppInstaller"
@@ -226,7 +226,7 @@ function InstallWinGet {
                 Write-Host "Failed to install DesktopAppInstaller appx package"
                 Write-Error $_
             }
-        #}
+        }
 
         Add-AppxPackage -RegisterByFamilyName -MainPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe
         $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
