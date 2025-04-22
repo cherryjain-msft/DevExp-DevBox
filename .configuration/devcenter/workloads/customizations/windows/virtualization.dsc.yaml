@@ -16,8 +16,11 @@ properties:
       id: WSL
       directives:
         description: Enable Windows Features and Install Ubuntu for WSL
+        securityContext: elevated
       settings:
         SetScript: |
+          Set-ExecutionPolicy Bypass -Scope Process -Force
+          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
           # Install WSL with Ubuntu distribution
           Write-Verbose "Installing Windows Subsystem for Linux (WSL)" -Verbose                     
           Write-Verbose "Installing WSL feature" -Verbose
@@ -36,6 +39,8 @@ properties:
         securityContext: elevated
       settings:
         SetScript: |
+          Set-ExecutionPolicy Bypass -Scope Process -Force
+          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
           $newUser = $env:USERNAME.ToLower()
           # Generate a random secure password instead of hardcoding
           Add-Type -AssemblyName System.Web
@@ -64,6 +69,8 @@ properties:
         securityContext: elevated
       settings:
         SetScript: |
+          Set-ExecutionPolicy Bypass -Scope Process -Force
+          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
           # Update package lists from repositories
           wsl.exe -d Ubuntu -u root -- bash -c "sudo apt-get update"
           # Upgrade installed packages to latest versions

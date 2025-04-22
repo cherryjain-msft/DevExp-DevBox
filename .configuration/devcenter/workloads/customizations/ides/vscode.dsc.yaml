@@ -18,6 +18,7 @@ properties:
         allowPrerelease: true
       settings:
         SetScript: |
+          Set-ExecutionPolicy Bypass -Scope Process -Force
           $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
           code --install-extension ms-vscode.powershell --force
           code --install-extension ms-vscode-remote.remote-wsl --force

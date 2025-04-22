@@ -13,6 +13,7 @@ properties:
         allowPrerelease: true
       settings:
         SetScript: |
+          Set-ExecutionPolicy Bypass -Scope Process -Force
           $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") 
           dotnet workload install aspire
           dotnet workload install maui
