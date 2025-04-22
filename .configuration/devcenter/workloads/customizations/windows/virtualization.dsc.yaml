@@ -22,7 +22,5 @@ properties:
           Write-Verbose "Installing Windows Subsystem for Linux (WSL)" -Verbose                     
           Write-Verbose "Installing WSL feature" -Verbose
           wsl --install --no-launch --quiet
-          Write-Verbose "Installing Ubuntu distribution" -Verbose
-          wsl --install -d Ubuntu --no-launch
         GetScript: return $false
         TestScript: return $false
