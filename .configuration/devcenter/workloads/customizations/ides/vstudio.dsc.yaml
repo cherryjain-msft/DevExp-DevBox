@@ -1,51 +1,23 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/microsoft/winget-cli/master/schemas/JSON/configuration/configuration.schema.0.2.json
+# yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
 
 properties:
-  configurationVersion: 0.2.0
-
-  ########################################
-  ### RESOURCES: System Configuration
-  ########################################
+  configurationVersion: "0.2.0"
+  # This configuration installs Visual Studio 2022 Enterprise using WinGet.
+  # 
+  # Purpose:
+  # Provides a full-featured integrated development environment for any developer
+  # to build applications across any platform.
+  #
+  # Components:
+  # - Visual Studio 2022 Enterprise: Microsoft's flagship IDE with all features and workloads
   resources:
-    ### Install Visual Studio 2022 Enterprise
-    ### -------------------------------------
-    - resource: PSDscResources/Script
+    # Install Visual Studio 2022 Enterprise
+    # Complete IDE that provides comprehensive tools and services for developers
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Microsoft.VisualStudio.2022.Enterprise
       directives:
         description: Install Visual Studio 2022 Enterprise
+        allowPrerelease: true
         securityContext: elevated
       settings:
-        SetScript: |
-          Set-ExecutionPolicy Bypass -Scope Process -Force
-          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-          try {
-              Write-Host "Installing Visual Studio Enterprise 2022"
-              
-              # Create directory for configuration if it doesn't exist
-              $configDir = "c:\WingetConfig"
-              if (-not (Test-Path -Path $configDir)) {
-                  New-Item -Path $configDir -ItemType Directory -Force
-              }
-              
-              # Download Visual Studio configuration file
-              Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Evilazaro/DevExp-DevBox/refs/heads/main/.configuration/devcenter/workloads/customizations/ides/my.vsconfig" -OutFile "$configDir\my.vsconfig"
-              
-              # Install Visual Studio with specified configuration
-              winget install Microsoft.VisualStudio.2022.Enterprise --accept-package-agreements --accept-source-agreements --silent --force --override "--config $configDir\my.vsconfig"
-              
-              Write-Host "Visual Studio Enterprise 2022 installation completed successfully"
-          } catch {
-              Write-Host "Failed to install: Visual Studio Enterprise 2022"
-              Write-Host "Error: $_"
-              throw $_
-          }
-
-        GetScript: |
-          $vsInstallation = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\VisualStudio\Setup\Instances\*" | Where-Object { $_.DisplayName -like "*Visual Studio Enterprise 2022*" } -ErrorAction SilentlyContinue
-          return @{
-              Result = if ($vsInstallation) { "Visual Studio Enterprise 2022 is installed" } else { "Visual Studio Enterprise 2022 is not installed" }
-          }
-          
-        TestScript: |
-          $vsInstallation = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\VisualStudio\Setup\Instances\*" | Where-Object { $_.DisplayName -like "*Visual Studio Enterprise 2022*" } -ErrorAction SilentlyContinue
-          return [bool]$vsInstallation
+        id: Microsoft.VisualStudio.2022.Enterprise
