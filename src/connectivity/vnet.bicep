@@ -1,22 +1,38 @@
-@description('Log Analytics ID')
+@description('Log Analytics workspace resource ID for diagnostic settings')
 param logAnalyticsId string
 
-@description('Network Settings')
+@description('Azure region for resource deployment')
+param location string = resourceGroup().location
+
+@description('Tags to apply to all resources')
+param tags object = {}
+
+@description('Network configuration settings')
 param settings NetworkSettings
 
+@description('Network settings type definition with enhanced validation')
 type NetworkSettings = {
+  @description('Name of the virtual network')
   name: string
+
+  @description('Flag to create new or use existing virtual network')
   create: bool
+
+  @description('Resource tags')
   tags: object
-  addressPrefixes: array
+
+  @description('Address space prefixes in CIDR notation')
+  addressPrefixes: string[]
+
+  @description('Subnet configurations')
   subnets: array
 }
 
-@description('Virtual Network')
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = if (settings.create) {
+@description('Virtual Network resource')
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-05-01' = if (settings.create) {
   name: settings.name
-  location: resourceGroup().location
-  tags: settings.tags
+  location: location
+  tags: union(tags, settings.tags)
   properties: {
     addressSpace: {
       addressPrefixes: settings.addressPrefixes
@@ -32,18 +48,17 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = if (set
   }
 }
 
-@description('Existing Virtual Network')
-resource existingVNetRg 'Microsoft.Network/virtualNetworks@2024-05-01' existing = if (!settings.create) {
+@description('Reference to existing Virtual Network')
+resource existingVirtualNetwork 'Microsoft.Network/virtualNetworks@2023-05-01' existing = if (!settings.create) {
   name: settings.name
-  scope: resourceGroup()
 }
 
 @description('Log Analytics Diagnostic Settings')
 resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (settings.create) {
-  name: '${virtualNetwork.name}-diagnostic-settings'
-  scope: virtualNetwork
+  name: '${settings.create ? virtualNetwork.name : existingVirtualNetwork.name}-diag'
+  scope: settings.create ? virtualNetwork : existingVirtualNetwork
   properties: {
-    logAnalyticsDestinationType: 'AzureDiagnostics'
+    workspaceId: logAnalyticsId
     logs: [
       {
         categoryGroup: 'allLogs'
@@ -56,20 +71,19 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
         enabled: true
       }
     ]
-    workspaceId: logAnalyticsId
   }
 }
 
-@description('The ID of the Virtual Network')
-output virtualNetworkId string = (settings.create) ? virtualNetwork.id : existingVNetRg.id
+@description('The resource ID of the Virtual Network')
+output virtualNetworkId string = settings.create ? virtualNetwork.id : existingVirtualNetwork.id
 
 @description('The subnets of the Virtual Network')
-output AZURE_VIRTUAL_NETWORK_SUBNETS array = [
+output virtualNetworkSubnets array = [
   for (subnet, i) in settings.subnets: {
-    id: (settings.create) ? virtualNetwork.properties.subnets[i].id : existingVNetRg.properties.subnets[i].id
-    name: (settings.create) ? subnet.name : existingVNetRg.properties.subnets[i].name
+    id: resourceId('Microsoft.Network/virtualNetworks/subnets', settings.name, subnet.name)
+    name: subnet.name
   }
 ]
 
 @description('The name of the Virtual Network')
-output AZURE_VIRTUAL_NETWORK_NAME string = (settings.create) ? virtualNetwork.name : existingVNetRg.name
+output virtualNetworkName string = settings.name
