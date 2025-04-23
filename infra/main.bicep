@@ -1,31 +1,112 @@
 targetScope = 'subscription'
 
-@description('Location for the deployment')
+// Parameters with improved validation and documentation
+@description('Azure region where resources will be deployed')
+@allowed([
+  'eastus'
+  'eastus2'
+  'westus'
+  'westus2'
+  'centralus'
+  'northeurope'
+  'westeurope'
+])
 param location string = 'eastus2'
 
-@description('Key Vault Secret')
+@description('Secret value for Key Vault - GitHub Access Token')
 @secure()
 param secretValue string
 
+@description('Environment name used for resource naming (dev, test, prod)')
+@minLength(2)
+@maxLength(10)
 param environmentName string
 
-@description('Landing Zone Information')
+// Load configuration from YAML
+@description('Landing Zone resource organization')
 var landingZones = loadYamlContent('settings/resourceOrganization/azureResources.yaml')
 
-var securityRgName = (landingZones.security.create)
-  ? '${landingZones.security.name}-${environmentName}-${location}-RG'
-  : landingZones.security.name
+// Variables with consistent naming convention
+var resourceNameSuffix = '${environmentName}-${location}-RG'
 
-@description('Security Resource Group')
-resource securityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZones.security.create) {
-  name: securityRgName
-  location: location
-  tags: landingZones.security.tags
+// Helper function for resource group naming
+// Creates consistent resource group names
+var createResourceGroupName = {
+  security: landingZones.security.create
+    ? '${landingZones.security.name}-${resourceNameSuffix}'
+    : landingZones.security.name
+  monitoring: landingZones.monitoring.create
+    ? '${landingZones.monitoring.name}-${resourceNameSuffix}'
+    : landingZones.monitoring.name
+  connectivity: landingZones.connectivity.create
+    ? '${landingZones.connectivity.name}-${resourceNameSuffix}'
+    : landingZones.connectivity.name
+  workload: landingZones.workload.create
+    ? '${landingZones.workload.name}-${resourceNameSuffix}'
+    : landingZones.workload.name
 }
 
-@description('Deploy Security Module')
+var securityRgName = createResourceGroupName.security
+var monitoringRgName = createResourceGroupName.monitoring
+var connectivityRgName = createResourceGroupName.connectivity
+var workloadRgName = createResourceGroupName.workload
+
+// Security resources
+@description('Security Resource Group for Key Vault and related resources')
+resource securityRg 'Microsoft.Resources/resourceGroups@2023-07-01' = if (landingZones.security.create) {
+  name: securityRgName
+  location: location
+  tags: union(landingZones.security.tags, {
+    'component': 'security'
+  })
+}
+
+// Monitoring resources
+@description('Monitoring Resource Group for Log Analytics and related resources')
+resource monitoringRg 'Microsoft.Resources/resourceGroups@2023-07-01' = if (landingZones.monitoring.create) {
+  name: monitoringRgName
+  location: location
+  tags: union(landingZones.monitoring.tags, {
+    'component': 'monitoring'
+  })
+}
+
+// Connectivity resources
+@description('Connectivity Resource Group for networking resources')
+resource connectivityRg 'Microsoft.Resources/resourceGroups@2023-07-01' = if (landingZones.connectivity.create) {
+  name: connectivityRgName
+  location: location
+  tags: union(landingZones.connectivity.tags, {
+    'component': 'connectivity'
+  })
+}
+
+// Workload resources
+@description('Workload Resource Group for DevCenter resources')
+resource workloadRg 'Microsoft.Resources/resourceGroups@2023-07-01' = if (landingZones.workload.create) {
+  name: workloadRgName
+  location: location
+  tags: union(landingZones.workload.tags, {
+    'component': 'workload'
+  })
+}
+
+// Module deployments with improved names and organization
+@description('Log Analytics Workspace for centralized monitoring')
+module monitoring '../src/management/logAnalytics.bicep' = {
+  name: 'monitoring-logAnalytics-deployment'
+  scope: resourceGroup(monitoringRgName)
+  params: {
+    name: 'logAnalytics'
+  }
+  dependsOn: [
+    monitoringRg
+  ]
+}
+
+@description('Security components including Key Vault')
 module security '../src/security/security.bicep' = {
-  name: 'security'
+  name: 'security-keyvault-deployment'
   scope: resourceGroup(securityRgName)
   params: {
     keyVaultName: 'devexp'
@@ -36,69 +117,26 @@ module security '../src/security/security.bicep' = {
   }
   dependsOn: [
     securityRg
+    monitoring
   ]
 }
 
-var monitoringRgName = (landingZones.monitoring.create)
-  ? '${landingZones.monitoring.name}-${environmentName}-${location}-RG'
-  : landingZones.monitoring.name
-
-@description('Monitoring Resource Group')
-resource monitoringRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZones.monitoring.create) {
-  name: monitoringRgName
-  location: location
-  tags: landingZones.monitoring.tags
-}
-
-@description('Deploy Monitoring Module')
-module monitoring '../src/management/logAnalytics.bicep' = {
-  name: 'monitoring'
-  scope: resourceGroup(monitoringRgName)
-  params: {
-    name: 'logAnalytics'
-  }
-  dependsOn: [
-    monitoringRg
-  ]
-}
-
-var connectivityRgName = (landingZones.connectivity.create)
-  ? '${landingZones.connectivity.name}-${environmentName}-${location}-RG'
-  : landingZones.connectivity.name
-
-@description('Connectivity Resource Group')
-resource connectivityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZones.connectivity.create) {
-  name: connectivityRgName
-  location: location
-  tags: landingZones.connectivity.tags
-}
-
-@description('Deploy Connectivity Module')
+@description('Network connectivity resources')
 module connectivity '../src/connectivity/connectivity.bicep' = {
-  name: 'connectivity'
+  name: 'connectivity-network-deployment'
   scope: resourceGroup(connectivityRgName)
   params: {
     logAnalyticsId: monitoring.outputs.logAnalyticsId
   }
   dependsOn: [
     connectivityRg
+    monitoring
   ]
 }
 
-var workloadRgName = (landingZones.workload.create)
-  ? '${landingZones.workload.name}-${environmentName}-${location}-RG'
-  : landingZones.workload.name
-
-@description('Workload Resource Group')
-resource workloadRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZones.workload.create) {
-  name: workloadRgName
-  location: location
-  tags: landingZones.workload.tags
-}
-
-@description('Deploy Workload Module')
+@description('DevCenter workload deployment')
 module workload '../src/workload/workload.bicep' = {
-  name: 'workload'
+  name: 'workload-devcenter-deployment'
   scope: resourceGroup(workloadRgName)
   params: {
     logAnalyticsId: monitoring.outputs.logAnalyticsId
@@ -109,9 +147,14 @@ module workload '../src/workload/workload.bicep' = {
   }
   dependsOn: [
     workloadRg
+    security
+    connectivity
   ]
 }
 
+// Outputs with consistent naming and descriptions
+@description('Name of the deployed Azure DevCenter')
 output AZURE_DEV_CENTER_NAME string = workload.outputs.AZURE_DEV_CENTER_NAME
-output AZURE_DEV_CENTER_PROJECTS array = workload.outputs.AZURE_DEV_CENTER_PROJECTS
 
+@description('List of project names deployed in the DevCenter')
+output AZURE_DEV_CENTER_PROJECTS array = workload.outputs.AZURE_DEV_CENTER_PROJECTS

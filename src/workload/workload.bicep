@@ -1,31 +1,46 @@
-@description('Log Analytics Workspace')
+/*
+  Workload Module for DevCenter Resources
+  -------------------------------------
+  This module deploys the DevCenter workload and associated projects.
+*/
+
+// Parameters with improved validation and documentation
+@description('Log Analytics Workspace Resource ID')
+@minLength(1)
 param logAnalyticsId string
 
-@description('Subnets')
+@description('Network subnet configurations')
 param subnets object[]
 
-@description('Secret Identifier')
+@description('Secret Identifier for secured content')
 @secure()
 param secretIdentifier string
 
-@description('Key Vault Name')
+@description('Key Vault Name for accessing secrets')
+@minLength(3)
+@maxLength(24)
 param keyVaultName string
 
 @description('Security Resource Group Name')
+@minLength(3)
 param securityResourceGroupName string
 
+// Resource types with documentation
+@description('Landing Zone configuration type')
 type LandingZone = {
   name: string
   create: bool
   tags: object
 }
 
-@description('Dev Center Settings')
+// Variables with clear naming
+@description('Settings loaded from configuration file')
 var devCenterSettings = loadYamlContent('../../infra/settings/workload/devcenter.yaml')
 
-@description('Deploy Dev Center Module')
+// Deploy core DevCenter infrastructure
+@description('DevCenter Core Infrastructure')
 module devcenter 'devCenter.bicep' = {
-  name: 'devCenter'
+  name: 'devCenterDeployment'
   scope: resourceGroup()
   params: {
     config: devCenterSettings
@@ -39,16 +54,15 @@ module devcenter 'devCenter.bicep' = {
   }
 }
 
-output AZURE_DEV_CENTER_NAME string = devcenter.outputs.AZURE_DEV_CENTER_NAME
-
-@description('Dev Center Projects')
+// Deploy individual projects with proper dependencies
+@description('DevCenter Projects')
 module projects 'project/project.bicep' = [
   for project in devCenterSettings.projects: {
-    name: 'Project-${project.name}'
+    name: 'project-${project.name}'
     scope: resourceGroup()
     params: {
       name: project.name
-      projectDescription: project.name
+      projectDescription: project.description ?? project.name
       devCenterName: devcenter.outputs.AZURE_DEV_CENTER_NAME
       projectCatalogs: project.catalogs
       projectEnvironmentTypes: project.environmentTypes
@@ -66,6 +80,11 @@ module projects 'project/project.bicep' = [
   }
 ]
 
+// Outputs with clear naming and descriptions
+@description('Name of the deployed DevCenter')
+output AZURE_DEV_CENTER_NAME string = devcenter.outputs.AZURE_DEV_CENTER_NAME
+
+@description('List of project names deployed in the DevCenter')
 output AZURE_DEV_CENTER_PROJECTS array = [
   for (project, i) in devCenterSettings.projects: projects[i].outputs.AZURE_PROJECT_NAME
 ]

@@ -70,7 +70,7 @@
                 }
               }
             },
-            "orgRoleType": {
+            "orgRoleTypes": {
               "type": "array",
               "items": {
                 "type": "object",
