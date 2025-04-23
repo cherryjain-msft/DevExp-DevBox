@@ -213,7 +213,7 @@ function InstallWinGet {
         }
 
         $desktopAppInstallerPackage = Get-AppxPackage -Name "Microsoft.DesktopAppInstaller"
-        if (!($desktopAppInstallerPackage)) {
+        if (!($desktopAppInstallerPackage) -or ($desktopAppInstallerPackage.Version -lt "1.25.389.0")) {
             # install Microsoft.DesktopAppInstaller
             try {
                 Write-Host "Installing Microsoft.DesktopAppInstaller"

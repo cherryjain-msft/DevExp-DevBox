@@ -12,33 +12,6 @@ properties:
   configurationVersion: 0.2.0
   resources:
     - resource: PSDscResources/Script
-      id: GitClone
-      directives:
-        description: Clone Identity Provider repository
-        allowPrerelease: true
-        securityContext: elevated
-      settings:
-        SetScript: |
-          # Enable script execution and set up environment
-          Set-ExecutionPolicy Bypass -Scope Process -Force
-          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-          
-          # Define repository path consistently
-          $repoPath = "Z:\workspaces\IdentityProvider"
-
-          # Clone the Identity Provider repository
-          try {
-              Write-Host "Cloning Identity Provider repository..."
-              git clone https://github.com/Evilazaro/IdentityProvider/ $repoPath
-              Write-Host "Repository cloned successfully to $repoPath"
-          }
-          catch {
-              Write-Error "Failed to clone repository: $_"
-              throw "Repository clone failed. See error above."
-          }
-        GetScript: return $false
-        TestScript: return $false
-    - resource: PSDscResources/Script
       id: WorkloadUpdate
       directives:
         description: Update .NET SDK workloads
@@ -49,7 +22,7 @@ properties:
           # Enable script execution and set up environment
           Set-ExecutionPolicy Bypass -Scope Process -Force
           $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-          
+
           # Update all installed .NET workloads to ensure latest versions
           try {
               Write-Host "Updating .NET SDK workloads..."
@@ -62,7 +35,6 @@ properties:
           }
         GetScript: return $false
         TestScript: return $false
-
     - resource: PSDscResources/Script
       id: dotnetbuild
       directives:
@@ -74,7 +46,7 @@ properties:
           # Enable script execution and set up environment
           Set-ExecutionPolicy Bypass -Scope Process -Force
           $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-          
+
           # Define repository path consistently
           $repoPath = "Z:\workspaces\IdentityProvider"
 
