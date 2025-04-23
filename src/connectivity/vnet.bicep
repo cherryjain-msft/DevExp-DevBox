@@ -29,7 +29,7 @@ type NetworkSettings = {
 }
 
 @description('Virtual Network resource')
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-05-01' = if (settings.create) {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = if (settings.create) {
   name: settings.name
   location: location
   tags: union(tags, settings.tags)
@@ -49,7 +49,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-05-01' = if (set
 }
 
 @description('Reference to existing Virtual Network')
-resource existingVirtualNetwork 'Microsoft.Network/virtualNetworks@2023-05-01' existing = if (!settings.create) {
+resource existingVirtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' existing = if (!settings.create) {
   name: settings.name
 }
 

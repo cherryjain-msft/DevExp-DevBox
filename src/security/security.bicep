@@ -45,7 +45,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-12-01-preview' = {
 }
 
 @description('Azure Key Vault Secret')
-resource secret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
+resource secret 'Microsoft.KeyVault/vaults/secrets@2024-12-01-preview' = {
   name: secretName
   tags: tags
   parent: keyVault
@@ -58,9 +58,8 @@ resource secret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
   }
 }
 
-
 @description('Log Analytics Diagnostic Settings')
-resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' =  {
+resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
   name: '${keyVault.name}-diagnostic-settings'
   scope: keyVault
   properties: {

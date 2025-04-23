@@ -7,9 +7,18 @@ targetScope = 'subscription'
   'eastus2'
   'westus'
   'westus2'
+  'westus3'
   'centralus'
   'northeurope'
   'westeurope'
+  'southeastasia'
+  'australiaeast'
+  'japaneast'
+  'uksouth'
+  'canadacentral'
+  'swedencentral'
+  'switzerlandnorth'
+  'germanywestcentral'
 ])
 param location string = 'eastus2'
 
@@ -29,7 +38,6 @@ var landingZones = loadYamlContent('settings/resourceOrganization/azureResources
 // Variables with consistent naming convention
 var resourceNameSuffix = '${environmentName}-${location}-RG'
 
-// Helper function for resource group naming
 // Creates consistent resource group names
 var createResourceGroupName = {
   security: landingZones.security.create
@@ -53,7 +61,7 @@ var workloadRgName = createResourceGroupName.workload
 
 // Security resources
 @description('Security Resource Group for Key Vault and related resources')
-resource securityRg 'Microsoft.Resources/resourceGroups@2023-07-01' = if (landingZones.security.create) {
+resource securityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZones.security.create) {
   name: securityRgName
   location: location
   tags: union(landingZones.security.tags, {
@@ -63,7 +71,7 @@ resource securityRg 'Microsoft.Resources/resourceGroups@2023-07-01' = if (landin
 
 // Monitoring resources
 @description('Monitoring Resource Group for Log Analytics and related resources')
-resource monitoringRg 'Microsoft.Resources/resourceGroups@2023-07-01' = if (landingZones.monitoring.create) {
+resource monitoringRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZones.monitoring.create) {
   name: monitoringRgName
   location: location
   tags: union(landingZones.monitoring.tags, {
@@ -73,7 +81,7 @@ resource monitoringRg 'Microsoft.Resources/resourceGroups@2023-07-01' = if (land
 
 // Connectivity resources
 @description('Connectivity Resource Group for networking resources')
-resource connectivityRg 'Microsoft.Resources/resourceGroups@2023-07-01' = if (landingZones.connectivity.create) {
+resource connectivityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZones.connectivity.create) {
   name: connectivityRgName
   location: location
   tags: union(landingZones.connectivity.tags, {
@@ -83,7 +91,7 @@ resource connectivityRg 'Microsoft.Resources/resourceGroups@2023-07-01' = if (la
 
 // Workload resources
 @description('Workload Resource Group for DevCenter resources')
-resource workloadRg 'Microsoft.Resources/resourceGroups@2023-07-01' = if (landingZones.workload.create) {
+resource workloadRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZones.workload.create) {
   name: workloadRgName
   location: location
   tags: union(landingZones.workload.tags, {

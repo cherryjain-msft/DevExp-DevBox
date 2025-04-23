@@ -30,12 +30,12 @@ param principalId string
 param tenantId string = subscription().tenantId
 
 @description('Reference to the existing Key Vault')
-resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2024-12-01-preview' existing = {
   name: keyVaultName
 }
 
 @description('Key Vault Access Policies')
-resource keyVaultAccessPolicies 'Microsoft.KeyVault/vaults/accessPolicies@2023-07-01' = {
+resource keyVaultAccessPolicies 'Microsoft.KeyVault/vaults/accessPolicies@2024-12-01-preview' = {
   parent: keyVault
   name: name
   properties: {
