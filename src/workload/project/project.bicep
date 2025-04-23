@@ -1,63 +1,77 @@
-@description('Dev Center Name')
+@description('Name of the DevCenter instance')
 param devCenterName string
 
-@description('Project Name')
+@description('Name of the project to be created')
 param name string
 
-@description('Project Description')
+@description('Description for the DevCenter project')
 param projectDescription string
 
-@description('Project Catalogs')
+@description('Catalog configuration for the project')
 param projectCatalogs object
 
-@description('Project Environment Types')
-param projectEnvironmentTypes object[]
+@description('Environment types to be associated with the project')
+param projectEnvironmentTypes array
 
-@description('Project Pools')
-param projectPools object[]
+@description('DevBox pool configurations for the project')
+param projectPools array
 
-@description('Network Connection Name')
+@description('Name of the network connection to be used with DevBox pools')
 param networkConnectionName string
 
-@description('Secret Identifier')
+@description('Secret identifier for Git repository authentication')
 @secure()
 param secretIdentifier string
 
-@description('Key Vault Name')
+@description('Name of the Key Vault containing secrets')
 param keyVaultName string
 
-@description('Security Resource Group Name')
+@description('Resource group name for security resources')
 param securityResourceGroupName string
 
-@description('Project Identity')
+@description('Managed identity configuration for the project')
 param identity Identity
 
-@description('Tags')
-param tags object
+@description('Tags to be applied to all resources')
+param tags object = {}
 
+@description('Identity configuration for the project')
 type Identity = {
+  @description('Type of managed identity (SystemAssigned or UserAssigned)')
   type: string
+
+  @description('Role assignments for Azure AD groups')
   roleAssignments: RoleAssignment[]
 }
 
+@description('Azure RBAC role definition')
 type AzureRBACRole = {
+  @description('Role definition ID')
   id: string
+
+  @description('Display name of the role')
   name: string
 }
 
+@description('Role assignment configuration')
 type RoleAssignment = {
+  @description('Azure AD group object ID')
   azureADGroupId: string
+
+  @description('Azure AD group display name')
   azureADGroupName: string
+
+  @description('Azure RBAC roles to assign')
   azureRBACRoles: AzureRBACRole[]
 }
 
-@description('Dev Center')
-resource devCenter 'Microsoft.DevCenter/devcenters@2024-10-01-preview' existing = {
+@description('Reference to existing DevCenter')
+resource devCenter 'Microsoft.DevCenter/devcenters@2025-02-01' existing = {
   name: devCenterName
 }
 
-@description('Dev Center Project')
-resource project 'Microsoft.DevCenter/projects@2024-10-01-preview' = {
+@description('DevCenter Project resource')
+resource project 'Microsoft.DevCenter/projects@2025-02-01' = {
   name: name
   location: resourceGroup().location
   identity: {
@@ -74,35 +88,46 @@ resource project 'Microsoft.DevCenter/projects@2024-10-01-preview' = {
       ]
     }
   }
-  tags: tags
+  tags: union(tags, {
+    'ms-resource-usage': 'azure-cloud-devbox'
+    'project': name
+  })
 }
 
-@description('Key Vault Access Policies')
+@description('Configure Key Vault access policies for project identity')
 module keyVaultAccessPolicies '../../security/keyvault-access.bicep' = {
-  name: '${project.name}-keyvaultAccess'
+  name: 'kv-access-${uniqueString(project.id)}'
   scope: resourceGroup(securityResourceGroupName)
   params: {
     keyVaultName: keyVaultName
     principalId: project.identity.principalId
+    permissions: {
+      secrets: [
+        'get'
+        'list'
+      ]
+      certificates: []
+      keys: []
+    }
   }
 }
 
-@description('Project Identity')
+@description('Configure project identity role assignments')
 module projectIdentity '../../identity/projectIdentityRoleAssignment.bicep' = [
-  for identity in identity.roleAssignments: {
-    name: 'projectIdentity-${guid(project.name,identity.azureADGroupName,identity.azureADGroupId)}'
+  for (role, i) in identity.roleAssignments: {
+    name: 'prj-rbac-${i}-${uniqueString(project.id, role.azureADGroupId)}'
     scope: resourceGroup()
     params: {
       projectName: project.name
-      principalId: identity.azureADGroupId
-      roles: identity.azureRBACRoles
+      principalId: role.azureADGroupId
+      roles: role.azureRBACRoles
     }
   }
 ]
 
-@description('Environment Definition Catalog')
+@description('Configure environment definition catalogs')
 module catalogs 'projectCatalog.bicep' = {
-  name: 'catalogs-${project.name}'
+  name: 'catalog-${uniqueString(project.id)}'
   scope: resourceGroup()
   params: {
     projectName: project.name
@@ -110,18 +135,19 @@ module catalogs 'projectCatalog.bicep' = {
     secretIdentifier: secretIdentifier
   }
   dependsOn: [
+    keyVaultAccessPolicies
     projectIdentity
   ]
 }
 
-@description('Project Environment Types')
+@description('Configure project environment types')
 module environmentTypes 'projectEnvironmentType.bicep' = [
-  for environmentType in projectEnvironmentTypes: {
-    name: 'environmentType-${project.name}-${environmentType.name}'
+  for (envType, i) in projectEnvironmentTypes: {
+    name: 'env-type-${i}-${uniqueString(project.id, envType.name)}'
     scope: resourceGroup()
     params: {
       projectName: project.name
-      environmentConfig: environmentType
+      environmentConfig: envType
     }
     dependsOn: [
       projectIdentity
@@ -129,10 +155,10 @@ module environmentTypes 'projectEnvironmentType.bicep' = [
   }
 ]
 
-@description('Project Pools')
+@description('Configure DevBox pools for the project')
 module pools 'projectPool.bicep' = [
-  for pool in projectPools: {
-    name: 'pool-${project.name}-${pool.name}'
+  for (pool, i) in projectPools: {
+    name: 'pool-${i}-${uniqueString(project.id, pool.name)}'
     scope: resourceGroup()
     params: {
       name: pool.name
@@ -148,5 +174,8 @@ module pools 'projectPool.bicep' = [
   }
 ]
 
+@description('The name of the deployed project')
 output AZURE_PROJECT_NAME string = project.name
 
+@description('The resource ID of the deployed project')
+output AZURE_PROJECT_ID string = project.id

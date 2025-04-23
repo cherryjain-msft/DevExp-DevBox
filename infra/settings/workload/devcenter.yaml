@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=./devcenter.schema.json
 
-name: "contoso-devexp"
+name: "contoso-devexp2"
 location: "eastus2"
 catalogItemSyncEnableStatus: "Enabled"
 microsoftHostedNetworkEnableStatus: "Enabled"
@@ -18,7 +18,7 @@ identity:
       - id: "18d7d88d-d35e-4fb5-a5c3-7773c20a72d9"
         name: "User Access Administrator"
 
-    orgRoleType:
+    orgRoleTypes:
       - type: DevManager
         azureADGroupId: "8dae87fa-87b2-460b-b972-a4239fbd4a96"
         azureADGroupName: "Dev Manager"

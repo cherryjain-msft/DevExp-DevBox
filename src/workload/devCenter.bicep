@@ -1,16 +1,22 @@
-@description('Configuration')
+// Common variables for reuse
+var devCenterName = config.name
+var devCenterPrincipalId = devcenter.identity.principalId
+
+// Parameters with improved metadata and validation
+@description('DevCenter configuration including identity and settings')
 param config DevCenterConfig
 
 @description('Dev Center Catalogs')
-param catalogs object[]
+param catalogs array
 
 @description('Environment Types')
-param environmentTypes object[]
+param environmentTypes array
 
 @description('Subnets')
-param subnets object[]
+param subnets array
 
 @description('Log Analytics Workspace Id')
+@minLength(1)
 param logAnalyticsId string
 
 @description('Secret Identifier')
@@ -18,11 +24,15 @@ param logAnalyticsId string
 param secretIdentifier string
 
 @description('Key Vault Name')
+@minLength(3)
+@maxLength(24)
 param keyVaultName string
 
 @description('Security Resource Group Name')
 param securityResourceGroupName string
 
+// Type definitions with proper naming conventions
+@description('DevCenter configuration type')
 type DevCenterConfig = {
   name: string
   identity: Identity
@@ -32,23 +42,28 @@ type DevCenterConfig = {
   tags: object
 }
 
+@description('Status type for feature toggles')
 type Status = 'Enabled' | 'Disabled'
 
+@description('Identity configuration type')
 type Identity = {
   type: string
   roleAssignments: RoleAssignment
 }
 
+@description('Role assignment configuration')
 type RoleAssignment = {
   devCenter: AzureRBACRole[]
-  orgRoleType: OrgRoleType[]
+  orgRoleTypes: OrgRoleType[]
 }
 
+@description('Azure RBAC role definition')
 type AzureRBACRole = {
   id: string
   name: string
 }
 
+@description('Organization role type configuration')
 type OrgRoleType = {
   type: string
   azureADGroupId: string
@@ -56,9 +71,10 @@ type OrgRoleType = {
   azureRBACRoles: AzureRBACRole[]
 }
 
+// Main DevCenter resource
 @description('Dev Center Resource')
-resource devcenter 'Microsoft.DevCenter/devcenters@2024-10-01-preview' = {
-  name: config.name
+resource devcenter 'Microsoft.DevCenter/devcenters@2025-02-01' = {
+  name: devCenterName
   location: resourceGroup().location
   identity: {
     type: config.identity.type
@@ -77,21 +93,21 @@ resource devcenter 'Microsoft.DevCenter/devcenters@2024-10-01-preview' = {
   tags: config.tags
 }
 
-output AZURE_DEV_CENTER_NAME string = devcenter.name
-
+// Security configuration
 @description('Key Vault Access Policies')
 module keyVaultAccessPolicies '../security/keyvault-access.bicep' = {
-  name: 'keyVaultAccessPolicies'
+  name: 'keyVaultAccessPolicies-${devCenterName}'
   scope: resourceGroup(securityResourceGroupName)
   params: {
     keyVaultName: keyVaultName
-    principalId: devcenter.identity.principalId
+    principalId: devCenterPrincipalId
   }
 }
 
+// Monitoring configuration
 @description('Log Analytics Diagnostic Settings')
 resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
-  name: devcenter.name
+  name: '${devCenterName}-diagnostics'
   scope: devcenter
   properties: {
     logAnalyticsDestinationType: 'AzureDiagnostics'
@@ -111,14 +127,15 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
   }
 }
 
+// RBAC and Identity Management
 @description('Dev Center Identity Role Assignments')
 module devCenterIdentityRoleAssignment '../identity/devCenterRoleAssignment.bicep' = [
-  for role in config.identity.roleAssignments.devCenter: {
-    name: 'RBAC-${guid(role.id, role.name,resourceGroup().id)}'
+  for (role, i) in config.identity.roleAssignments.devCenter: {
+    name: 'RBACDevCenter-${i}-${devCenterName}'
     scope: subscription()
     params: {
       id: role.id
-      principalId: devcenter.identity.principalId
+      principalId: devCenterPrincipalId
     }
     dependsOn: [
       keyVaultAccessPolicies
@@ -128,8 +145,8 @@ module devCenterIdentityRoleAssignment '../identity/devCenterRoleAssignment.bice
 
 @description('Dev Center Identity User Groups role assignments')
 module devCenterIdentityUserGroupsRoleAssignment '../identity/orgRoleAssignment.bicep' = [
-  for role in config.identity.roleAssignments.orgRoleType: {
-    name: 'RBAC-${guid(role.azureADGroupId, role.azureADGroupName,role.azureRBACRoles[0].id,resourceGroup().id)}'
+  for (role, i) in config.identity.roleAssignments.orgRoleTypes: {
+    name: 'RBACUserGroup-${i}-${devCenterName}'
     scope: subscription()
     params: {
       principalId: role.azureADGroupId
@@ -141,29 +158,28 @@ module devCenterIdentityUserGroupsRoleAssignment '../identity/orgRoleAssignment.
   }
 ]
 
+// Network configuration
 @description('Network Connections')
 module networkConnection 'core/networkConnection.bicep' = [
-  for subnet in subnets: {
-    name: 'networkConnections-${subnet.name}'
+  for (subnet, i) in subnets: {
+    name: 'networkConnection-${i}-${devCenterName}'
     scope: resourceGroup()
     params: {
       name: 'nc-${subnet.name}'
-      devCenterName: devcenter.name
+      devCenterName: devCenterName
       subnetId: subnet.id
     }
   }
 ]
 
-@description('Network Connections Output')
-output networkConnectionName string = networkConnection[0].outputs.vnetAttachmentName
-
+// Catalog configuration
 @description('Dev Center Catalogs')
 module catalog 'core/catalog.bicep' = [
-  for catalog in catalogs: {
-    name: 'catalog-${catalog.name}'
+  for (catalog, i) in catalogs: {
+    name: 'catalog-${i}-${devCenterName}'
     scope: resourceGroup()
     params: {
-      devCenterName: devcenter.name
+      devCenterName: devCenterName
       catalogConfig: catalog
       secretIdentifier: secretIdentifier
     }
@@ -173,14 +189,22 @@ module catalog 'core/catalog.bicep' = [
   }
 ]
 
+// Environment types configuration
 @description('Dev Center Environments')
 module environment 'core/environmentType.bicep' = [
-  for environment in environmentTypes: {
-    name: 'environmentType-${environment.name}'
+  for (environment, i) in environmentTypes: {
+    name: 'environmentType-${i}-${devCenterName}'
     scope: resourceGroup()
     params: {
-      devCenterName: devcenter.name
+      devCenterName: devCenterName
       environmentConfig: environment
     }
   }
 ]
+
+// Outputs with clear descriptions
+@description('Deployed Dev Center name')
+output AZURE_DEV_CENTER_NAME string = devCenterName
+
+@description('Network Connection Name for Dev Center')
+output networkConnectionName string = !empty(subnets) ? networkConnection[0].outputs.vnetAttachmentName : ''

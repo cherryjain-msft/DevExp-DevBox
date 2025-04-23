@@ -1,27 +1,37 @@
 targetScope = 'subscription'
 
-@description('The role to assign to the identity.')
+@description('The role definition ID to assign to the identity')
 param id string
 
-@description('The principal ID of the identity to assign the roles to.')
+@description('The principal ID of the identity to assign the role to')
 param principalId string
 
-@description('The principal type of the identity to assign the roles to.')
-@allowed(['User', 'Group', 'ServicePrincipal'])
+@description('The principal type of the identity to assign the role to')
+@allowed([
+  'User'
+  'Group'
+  'ServicePrincipal'
+])
 param principalType string = 'ServicePrincipal'
 
-resource role 'Microsoft.Authorization/roleDefinitions@2022-05-01-preview' existing = {
+@description('Existing role definition reference')
+resource roleDefinition 'Microsoft.Authorization/roleDefinitions@2022-05-01-preview' existing = {
   name: id
   scope: subscription()
 }
 
-@description('Role assignment resource.')
+@description('Role assignment resource')
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(role.id, principalId)
-  scope: subscription()
+  name: guid(subscription().id, principalId, id)
   properties: {
     principalId: principalId
-    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', role.name)
+    roleDefinitionId: roleDefinition.id
     principalType: principalType
   }
 }
+
+@description('The ID of the created role assignment')
+output roleAssignmentId string = roleAssignment.id
+
+@description('The scope of the role assignment')
+output scope string = subscription().id

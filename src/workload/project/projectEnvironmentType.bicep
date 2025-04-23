@@ -22,7 +22,7 @@ resource project 'Microsoft.DevCenter/projects@2024-10-01-preview' existing = {
 }
 
 @description('Dev Center Environments')
-resource environmentType 'Microsoft.DevCenter/projects/environmentTypes@2024-10-01-preview' = {
+resource environmentType 'Microsoft.DevCenter/projects/environmentTypes@2025-02-01' = {
   name: environmentConfig.name
   parent: project
   identity: {
