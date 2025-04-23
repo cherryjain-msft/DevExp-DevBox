@@ -1,37 +1,58 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/microsoft/winget-cli/refs/heads/master/schemas/JSON/configuration/configuration.schema.0.2.json
+
 # yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
+#
+# Purpose: This configuration installs and configures Windows Subsystem for Linux (WSL) 
+# with Ubuntu distribution and essential developer tools including Azure CLI and .NET SDK.
+#
+# Requirements:
+#   - Windows 10/11 with admin privileges
+#   - Internet connectivity for package downloads
+#   - Runs on Azure DevBox or compatible Windows systems
+#
+# Maintainer: DevExp Team
+
 properties:
-  configurationVersion: "0.2.0"
-  # This DSC configuration enables Windows virtualization features.
-  #
-  # Purpose:
-  # Sets up Windows Subsystem for Linux (WSL) to support Linux workloads
-  # on Windows development environments.
-  #
-  # Components:
-  # - WSL: Windows Subsystem for Linux with Ubuntu distribution
+  configurationVersion: 0.2.0
+
   resources:
-    # Install Windows Subsystem for Linux (WSL)
-    # Enables the WSL feature and installs Ubuntu distribution for Linux development
+    # Resource 1: Install Windows Subsystem for Linux feature
     - resource: PSDscResources/Script
-      id: WSL
+      id: Microsoft-Windows-Subsystem-Linux
       directives:
         description: Enable Windows Features and Install Ubuntu for WSL
         securityContext: elevated
       settings:
         SetScript: |
-          Set-ExecutionPolicy Bypass -Scope Process -Force
-          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-          # Install WSL with Ubuntu distribution
-          Write-Verbose "Installing Windows Subsystem for Linux (WSL)" -Verbose                     
-          Write-Verbose "Installing WSL feature" -Verbose
-          wsl --install -d Ubuntu --no-launch
-        # Always returns false to simplify DSC state detection
+          try {
+              Write-Verbose "Installing Windows Subsystem for Linux (WSL)" -Verbose
+              wsl --install --no-launch 2>$null
+          } catch {
+              Write-Error "Failed to install WSL: $_"
+          }
         GetScript: return $false
-        # Always executes SetScript to ensure installation is attempted
         TestScript: return $false
 
-    # Configure Ubuntu user
-    # Creates and configures a matching user account in Ubuntu with sudo privileges
+    # Resource 2: Install Ubuntu distribution for WSL
+    - resource: PSDscResources/Script
+      id: Ubuntu
+      directives:
+        description: Install Ubuntu for WSL
+        securityContext: elevated
+      settings:
+        SetScript: |
+          try {
+              Write-Verbose "Installing Ubuntu for WSL" -Verbose
+              wsl --install -d Ubuntu --no-launch 2>$null
+          } catch {
+              Write-Error "Failed to install Ubuntu: $_"
+          }
+        GetScript: return $false
+        TestScript: return $false
+      dependsOn:
+        - Microsoft-Windows-Subsystem-Linux
+
+    # Resource 3: Configure Ubuntu user account
     - resource: PSDscResources/Script
       id: Ubuntu.User
       directives:
@@ -39,43 +60,77 @@ properties:
         securityContext: elevated
       settings:
         SetScript: |
-          Set-ExecutionPolicy Bypass -Scope Process -Force
-          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-          $newUser = $env:USERNAME.ToLower()
-          # Generate a random secure password instead of hardcoding
-          Add-Type -AssemblyName System.Web
-          $securePassword = [System.Web.Security.Membership]::GeneratePassword(16, 4)
-          $escapedPassword = $securePassword -replace '(["\\$`])', '\\$1'  # Escape for bash
+          try {
+              $newUser = $env:USERNAME.ToLower()
+              $password = "SecureP@ssw0rd"
+              $escapedPassword = $password -replace '(["\\$`])', '\\$1'  # Escape for bash
 
-          # Create new user account that matches Windows username
-          wsl.exe -d Ubuntu -u root -- bash -c "sudo adduser --quiet --disabled-password --gecos '' $newUser"
-          # Set the generated password for the user
-          wsl.exe -d Ubuntu -u root -- bash -c "echo '${newUser}:${escapedPassword}' | sudo chpasswd"
-          # Add user to sudo group for administrative privileges
-          wsl.exe -d Ubuntu -u root -- bash -c "sudo usermod -aG sudo $newUser"
-          # Configure passwordless sudo for development convenience
-          wsl.exe -d Ubuntu -u root -- bash -c "echo '$newUser ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/$newUser"
-        # Always returns false to simplify DSC state detection
+              # Call WSL with the single-line bash command
+              wsl.exe -d Ubuntu -u root -- bash -c "sudo adduser --quiet --disabled-password --gecos '' $newUser"
+              wsl.exe -d Ubuntu -u root -- bash -c "echo '${newUser}:${escapedPassword}' | sudo chpasswd"
+              wsl.exe -d Ubuntu -u root -- bash -c "sudo usermod -aG sudo $newUser"
+              wsl.exe -d Ubuntu -u root -- bash -c "echo '$newUser ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/$newUser"
+          } catch {
+              Write-Error "Failed to add user as administrator: $_"
+          }
+
         GetScript: return $false
-        # Always executes SetScript to ensure user configuration is applied
         TestScript: return $false
+      dependsOn:
+        - Microsoft-Windows-Subsystem-Linux
 
-    # Update Ubuntu packages
-    # Ensures the Ubuntu distribution has the latest updates installed
+    # Resource 4: Install Azure CLI and Azure Developer CLI
     - resource: PSDscResources/Script
-      id: Ubuntu.Update
+      id: Ubuntu.AzureCli
       directives:
-        description: Update and upgrade Ubuntu packages
+        description: Install Azure CLI, Developer and Bicep on Ubuntu
         securityContext: elevated
       settings:
         SetScript: |
-          Set-ExecutionPolicy Bypass -Scope Process -Force
-          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-          # Update package lists from repositories
-          wsl.exe -d Ubuntu -u root -- bash -c "sudo apt-get update"
-          # Upgrade installed packages to latest versions
-          wsl.exe -d Ubuntu -u root -- bash -c "sudo apt-get upgrade -y"
-        # Always returns false to simplify DSC state detection
+          try {
+              $wslCommand = @(
+                  "sudo apt-get update",
+                  "sudo apt-get upgrade -y",
+                  "sudo apt-get install -y curl",
+                  "curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash",
+                  "curl -fsSL https://aka.ms/install-azd.sh | sudo bash"
+              ) -join "; "
+
+              wsl.exe -d Ubuntu -u root -- bash -c "$wslCommand" 2>/dev/null
+          } catch {
+              Write-Error "Failed to install Azure CLI: $_"
+          }
         GetScript: return $false
-        # Always executes SetScript to ensure updates are applied
         TestScript: return $false
+      dependsOn:
+        - Ubuntu.User
+
+    # Resource 5: Install .NET SDK and Runtime
+    - resource: PSDscResources/Script
+      id: Ubuntu.NET
+      directives:
+        description: Install .NET SDK and Runtime
+        securityContext: elevated
+      settings:
+        SetScript: |
+          try {
+              $wslCommand = @(
+                  "sudo apt-get update",
+                  "sudo add-apt-repository ppa:dotnet/backports -y",
+                  "sudo apt-get update",
+                  "sudo apt-get install -y dotnet-sdk-9.0",
+                  "sudo apt-get install -y aspnetcore-runtime-9.0",
+                  "sudo dotnet workload install aspire",
+                  "sudo dotnet workload install maui",
+                  "sudo dotnet workload update",
+                  "sudo apt-get upgrade -y"
+              ) -join "; "
+
+              wsl.exe -d Ubuntu -u root -- bash -c "$wslCommand" 2>/dev/null
+          } catch {
+              Write-Error "Failed to install .NET SDK and Runtime: $_"
+          }
+        GetScript: return $false
+        TestScript: return $false
+      dependsOn:
+        - Ubuntu.User
