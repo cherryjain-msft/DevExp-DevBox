@@ -34,7 +34,6 @@ properties:
       id: Git.Git
       directives:
         allowPrerelease: true
-        force: true
       settings:
         id: Git.Git
 
