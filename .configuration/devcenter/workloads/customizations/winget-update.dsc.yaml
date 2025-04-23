@@ -14,36 +14,10 @@ properties:
       settings:
         GetScript: |
           # Set execution policy for current process
-          Set-ExecutionPolicy Bypass -Scope Process -Force -ErrorAction SilentlyContinue
-            
+          Set-ExecutionPolicy Bypass -Scope Process -Force -ErrorAction SilentlyContinue            
           # Ensure path is properly set
           $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-
           # This returns the current state (whether updates are available)
-          $scriptBlock = {
-            try {
-              # Check if winget is available in PATH
-              if (-not (Get-Command 'winget' -ErrorAction SilentlyContinue)) {
-                Write-Warning "Windows Package Manager (winget) is not available"
-                return @{ WingetAvailable = $false; UpdatesAvailable = $false }
-              }
-              
-              # Check for available updates
-              $updateCheck = winget upgrade --accept-source-agreements | Select-String -Pattern '\d+ upgrades available\.'
-              if ($updateCheck) {
-                $count = [regex]::Match($updateCheck, '(\d+) upgrades available').Groups[1].Value
-                return @{ WingetAvailable = $true; UpdatesAvailable = $true; UpdateCount = $count }
-              }
-              return @{ WingetAvailable = $true; UpdatesAvailable = $false; UpdateCount = 0 }
-            }
-            catch {
-              Write-Warning "Error checking for updates: $_"
-              return @{ WingetAvailable = $false; UpdatesAvailable = $false; Error = $_.Exception.Message }
-            }
-          }
-
-          # Execute in a fresh PowerShell process to ensure correct PATH
-          $result = & powershell -Command $scriptBlock
-          return $result
+          winget upgrade --all --silent --accept-source-agreements --accept-package-agreements
         TestScript: return $false
         SetScript: return $false
