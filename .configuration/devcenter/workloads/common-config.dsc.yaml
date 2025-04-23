@@ -28,6 +28,15 @@ properties:
         FSFormat: "ReFS"
         Size: "50Gb"
 
+    # Install DSC on Windows with WinGet
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: 9NVTPZWRC6KQ
+      directives:
+        allowPrerelease: true
+      settings:
+        id: 9NVTPZWRC6KQ
+        source: msstore
+
     # Install Git
     # The standard Git version control system for Windows
     - resource: Microsoft.WinGet.DSC/WinGetPackage

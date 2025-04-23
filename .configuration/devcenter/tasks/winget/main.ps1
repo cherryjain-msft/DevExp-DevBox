@@ -192,6 +192,27 @@ function InstallWinGet {
     }
 
     if ($PsInstallScope -eq "CurrentUser") {
+
+        if (!(Get-AppxPackage -Name "Microsoft.VCLibs.140.00")){
+            # instal Microsoft.VCLibs.140.00
+            try {
+                Write-Host "Microsoft.VCLibs.140.00"
+                $architecture = "x64"
+                if ($env:PROCESSOR_ARCHITECTURE -eq "ARM64") {
+                    $architecture = "arm64"
+                }
+                $MsVCLibs = "$env:TEMP\$([System.IO.Path]::GetRandomFileName())-Microsoft.VCLibs.140.00"
+                $MsVCLibsZip = "$($MsVCLibs).zip"
+                Invoke-WebRequest -Uri "https://aka.ms/Microsoft.VCLibs.x64.14.00.Desktop.appx" -OutFile $MsVCLibsZip
+                Expand-Archive $MsVCLibsZip -DestinationPath $MsVCLibs
+                Add-AppxPackage -Path "$($MsVCLibs)\tools\AppX\$($architecture)\Microsoft.VCLibs.140.00.appx" -ForceApplicationShutdown
+                Write-Host "Done Installing Microsoft.VCLibs.140.00"
+            } catch {
+                Write-Host "Failed to install Microsoft.VCLibs.140.00"
+                Write-Error $_
+            }
+        }
+
         if (!(Get-AppxPackage -Name "Microsoft.UI.Xaml.2.8")){
             # instal Microsoft.UI.Xaml
             try {
