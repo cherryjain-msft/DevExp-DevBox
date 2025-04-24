@@ -88,11 +88,11 @@ properties:
       settings:
         SetScript: |
           try {
-              wsl.exe -d Ubuntu -u root -- bash -c "sudo apt-get update"
-              wsl.exe -d Ubuntu -u root -- bash -c "sudo apt-get upgrade -y"
-              wsl.exe -d Ubuntu -u root -- bash -c "sudo apt-get install -y curl"
-              wsl.exe -d Ubuntu -u root -- bash -c "curl -fsSL https://aka.ms/InstallAzureCLIDeb | sudo bash"
-              wsl.exe -d Ubuntu -u root -- bash -c "curl -fsSL https://aka.ms/install-azd.sh | sudo bash"
+              wsl.exe -d Ubuntu -u root -- bash -c "sudo apt-get update --quiet"
+              wsl.exe -d Ubuntu -u root -- bash -c "sudo apt-get upgrade --quiet -y"
+              wsl.exe -d Ubuntu -u root -- bash -c "sudo apt-get install curl --quiet -y"
+              # wsl.exe -d Ubuntu -u root -- bash -c "curl -fsSL https://aka.ms/InstallAzureCLIDeb | sudo bash"
+              # wsl.exe -d Ubuntu -u root -- bash -c "curl -fsSL https://aka.ms/install-azd.sh | sudo bash"
           } catch {
               Write-Error "Failed to install Azure CLI: $_"
           }
@@ -110,13 +110,12 @@ properties:
       settings:
         SetScript: |
           try {
-              wsl.exe -d Ubuntu -u root -- bash -c "sudo apt-get update"
-              wsl.exe -d Ubuntu -u root -- bash -c "sudo add-apt-repository ppa:dotnet/backports -y"
-              wsl.exe -d Ubuntu -u root -- bash -c "sudo apt-get update"
-              wsl.exe -d Ubuntu -u root -- bash -c "sudo apt-get install -y dotnet-sdk-9.0"
-              wsl.exe -d Ubuntu -u root -- bash -c "sudo apt-get install -y aspnetcore-runtime-9.0"
-              wsl.exe -d Ubuntu -u root -- bash -c "sudo dotnet workload install aspire"
-              wsl.exe -d Ubuntu -u root -- bash -c "sudo dotnet workload install maui"
+              wsl.exe -d Ubuntu -u root -- bash -c "sudo apt-get update --quiet"
+              wsl.exe -d Ubuntu -u root -- bash -c "sudo add-apt-repository ppa:dotnet/backports --quiet -y"
+              wsl.exe -d Ubuntu -u root -- bash -c "sudo apt-get install dotnet-sdk-9.0 --quiet -y"
+              wsl.exe -d Ubuntu -u root -- bash -c "sudo apt-get install aspnetcore-runtime-9.0 --quiet -y"
+              wsl.exe -d Ubuntu -u root -- bash -c "sudo dotnet workload install aspire --quiet -y"
+              wsl.exe -d Ubuntu -u root -- bash -c "sudo dotnet workload install maui --quiet -y"
           } catch {
               Write-Error "Failed to install .NET SDK and Runtime: $_"
           }
