@@ -1,16 +1,43 @@
 # yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
+#
+# Azure DevBox Backend Development Configuration
+# =============================================
+#
+# Purpose:
+#   This DSC configuration creates a complete Azure backend development environment with:
+#   - WSL2 with Ubuntu for Linux-based development
+#   - Azure CLI tools in both Windows and Ubuntu environments
+#   - .NET development tools in both environments
+#   - Container tools (Docker Desktop, Helm) for microservice development
+#   - API testing tools (Postman)
+#
+# Best Practices:
+#   - Uses Windows and WSL2 for a complete cross-platform experience
+#   - Applies principle of least privilege where possible
+#   - Maintains consistent environment between Windows and Linux
+#   - Uses official Microsoft installation methods for all tools
+#
 properties:
   configurationVersion: 0.2.0
 
   resources:
+    #----------------------------------------------
+    # WSL2 Installation and Configuration
+    #----------------------------------------------
+    # Windows Subsystem for Linux is the foundation for cross-platform development
+    # enabling Linux-based Azure services testing in a local environment
     - resource: PSDscResources/Script
       id: Microsoft-Windows-Subsystem-Linux
       directives:
         description: Enable Windows Features and Install Ubuntu for WSL
-        securityContext: elevated
+        securityContext: elevated # Requires admin rights to enable Windows features
       settings:
         SetScript: |
           try {
+              # Set execution policy for current process
+              Set-ExecutionPolicy Bypass -Scope Process -Force -ErrorAction SilentlyContinue            
+              # Ensure path is properly set
+              $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
               Write-Verbose "Installing Windows Subsystem for Linux (WSL)" -Verbose
               wsl --install --no-launch 2>$null
           } catch {
@@ -19,14 +46,20 @@ properties:
         GetScript: return $false
         TestScript: return $false
 
+    # Install Ubuntu distribution which provides a comprehensive Linux environment
+    # with broad Azure service compatibility and tool support
     - resource: PSDscResources/Script
       id: Ubuntu
       directives:
         description: Install Ubuntu for WSL
-        securityContext: elevated
+        securityContext: elevated # Requires admin rights to install WSL distribution
       settings:
         SetScript: |
           try {
+              # Set execution policy for current process
+              Set-ExecutionPolicy Bypass -Scope Process -Force -ErrorAction SilentlyContinue            
+              # Ensure path is properly set
+              $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
               Write-Verbose "Installing Ubuntu for WSL" -Verbose
               wsl --install -d Ubuntu --no-launch 2>$null
           } catch {
@@ -35,22 +68,32 @@ properties:
         GetScript: return $false
         TestScript: return $false
       dependsOn:
-        - Microsoft-Windows-Subsystem-Linux
+        - Microsoft-Windows-Subsystem-Linux # WSL must be installed before Ubuntu distribution
 
+    # Configure user access to simplify development and avoid credential prompts
+    # while maintaining security through Windows authentication
     - resource: PSDscResources/Script
       id: Ubuntu.User
       directives:
         description: Add the current user as an administrator to Ubuntu
-        securityContext: elevated
+        securityContext: elevated # Requires admin rights to configure WSL distribution
       settings:
         SetScript: |
           try {
+              # Set execution policy for current process
+              Set-ExecutionPolicy Bypass -Scope Process -Force -ErrorAction SilentlyContinue            
+              # Ensure path is properly set
+              $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
               $newUser = $env:USERNAME.ToLower()
-              $password = "SecureP@ssw0rd"
+              $password = "SecureP@ssw0rd" # Consider using a more secure password generation method
               $escapedPassword = $password -replace '(["\\$`])', '\\$1'
+              # Create user account
               wsl.exe -d Ubuntu -u root -- bash -c "sudo adduser --quiet --disabled-password --gecos '' $newUser"
+              # Set password
               wsl.exe -d Ubuntu -u root -- bash -c "echo '${newUser}:${escapedPassword}' | sudo chpasswd"
+              # Add to sudo group
               wsl.exe -d Ubuntu -u root -- bash -c "sudo usermod -aG sudo $newUser"
+              # Enable passwordless sudo for DevBox convenience
               wsl.exe -d Ubuntu -u root -- bash -c "echo '$newUser ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/$newUser"
           } catch {
               Write-Error "Failed to add user as administrator: $_"
@@ -58,16 +101,22 @@ properties:
         GetScript: return $false
         TestScript: return $false
       dependsOn:
-        - Microsoft-Windows-Subsystem-Linux
+        - Ubuntu # Ubuntu must be installed before configuring users
 
+    # Update Ubuntu packages to ensure security patches and latest tool compatibility
+    # following Azure best practices for keeping development environments current
     - resource: PSDscResources/Script
       id: Ubuntu.Update
       directives:
         description: Update Ubuntu package repositories and install updates
-        securityContext: elevated
+        securityContext: elevated # Requires admin rights to run WSL commands
       settings:
         SetScript: |
           try {
+              # Set execution policy for current process
+              Set-ExecutionPolicy Bypass -Scope Process -Force -ErrorAction SilentlyContinue            
+              # Ensure path is properly set
+              $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
               $updateCommand = "sudo bash -c 'export DEBIAN_FRONTEND=noninteractive; apt-get update && apt-get upgrade -y --quiet'"
               wsl.exe -d Ubuntu -u root -- bash -c "$updateCommand"
           } catch {
@@ -76,20 +125,32 @@ properties:
         GetScript: return $false
         TestScript: return $false
       dependsOn:
-        - Ubuntu.User
+        - Ubuntu.User # User must be configured to perform updates
 
+    #----------------------------------------------
+    # Azure Development Tools for Ubuntu
+    #----------------------------------------------
+    # Install Azure CLI tools in Ubuntu to provide cross-platform development capability
+    # and ensure consistent deployment behavior between local and cloud environments
     - resource: PSDscResources/Script
       id: Ubuntu.AzureCli
       directives:
         description: Install Azure CLI, Developer CLI and Bicep on Ubuntu
-        securityContext: elevated
+        securityContext: elevated # Requires admin rights to run WSL commands
       settings:
         SetScript: |
           try {
+              # Set execution policy for current process
+              Set-ExecutionPolicy Bypass -Scope Process -Force -ErrorAction SilentlyContinue            
+              # Ensure path is properly set
+              $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+              # Install curl as prerequisite
               $updateCommand = "sudo bash -c 'export DEBIAN_FRONTEND=noninteractive; apt-get install curl --quiet -y'"
               wsl.exe -d Ubuntu -u root -- bash -c "$updateCommand"
+              # Install Azure CLI using official Microsoft script
               $updateCommand = "sudo bash -c 'export DEBIAN_FRONTEND=noninteractive; curl -fsSL https://aka.ms/InstallAzureCLIDeb | sudo bash'"
               wsl.exe -d Ubuntu -u root -- bash -c "$updateCommand"
+              # Install Azure Developer CLI using official Microsoft script
               $updateCommand = "sudo bash -c 'export DEBIAN_FRONTEND=noninteractive; curl -fsSL https://aka.ms/install-azd.sh | sudo bash'"
               wsl.exe -d Ubuntu -u root -- bash -c "$updateCommand"
           } catch {
@@ -98,30 +159,69 @@ properties:
         GetScript: return $false
         TestScript: return $false
       dependsOn:
-        - Ubuntu.User
+        - Ubuntu.Update # System should be updated before installing new packages
 
+    # Install .NET SDK and Runtime for cross-platform .NET development
+    # enabling development of Azure Functions, Web Apps, and microservices
     - resource: PSDscResources/Script
       id: Ubuntu.DotNetSDK
       directives:
         description: Install .NET 9 SDK and Runtime on Ubuntu
-        securityContext: elevated
+        securityContext: elevated # Requires admin rights to run WSL commands
       settings:
         SetScript: |
           try {
+              # Set execution policy for current process
+              Set-ExecutionPolicy Bypass -Scope Process -Force -ErrorAction SilentlyContinue            
+              # Ensure path is properly set
+              $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+              # Add Microsoft's PPA for .NET
               $installDotnetCommand = "sudo bash -c 'export DEBIAN_FRONTEND=noninteractive; sudo add-apt-repository ppa:dotnet/backports -y'"
               wsl.exe -d Ubuntu -u root -- bash -c "$installDotnetCommand"
-              $installDotnetCommand = "sudo bash -c 'export DEBIAN_FRONTEND=noninteractive; sudo apt-get update --quiet && sudo apt-get install --quiet -y dotnet-sdk-9.0'"
+              # Install .NET SDK for development
+              $installDotnetCommand = "sudo bash -c 'export DEBIAN_FRONTEND=noninteractive; apt-get update --quiet && apt-get install --quiet -y dotnet-sdk-9.0'"
               wsl.exe -d Ubuntu -u root -- bash -c "$installDotnetCommand"
-              $installDotnetCommand = "sudo bash -c 'export DEBIAN_FRONTEND=noninteractive; sudo apt-get install --quiet -y aspnetcore-runtime-9.0'"
-              wsl.exe -d Ubuntu -u root -- bash -c "$installDotnetCommand"              
+              # Install ASP.NET Core Runtime for web applications
+              $installDotnetCommand = "sudo bash -c 'export DEBIAN_FRONTEND=noninteractive; apt-get install --quiet -y aspnetcore-runtime-9.0'"
+              wsl.exe -d Ubuntu -u root -- bash -c "$installDotnetCommand"
           } catch {
               Write-Error "Failed to install .NET SDK and Runtime: $_"
           }
         GetScript: return $false
         TestScript: return $false
       dependsOn:
-        - Ubuntu.AzureCli
+        - Ubuntu.AzureCli # Install after CLI tools to ensure compatible versions
 
+    #----------------------------------------------
+    # Container and API Development Tools
+    #----------------------------------------------
+    # Docker Desktop provides container management with Kubernetes integration
+    # essential for microservices development and container-based Azure services
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Docker.DockerDesktop
+      directives:
+        description: Install Docker Desktop for container development and testing
+        allowPrerelease: true
+        securityContext: elevated # Requires admin rights to install system services
+      settings:
+        id: Docker.DockerDesktop
+      dependsOn:
+        - Microsoft-Windows-Subsystem-Linux # Docker Desktop uses WSL2 backend
+
+    # Helm simplifies Kubernetes application management with package-based deployments
+    # commonly used with Azure Kubernetes Service (AKS)
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Helm.Helm
+      directives:
+        description: Install Helm for Kubernetes application deployment management
+        allowPrerelease: true
+      settings:
+        id: Helm.Helm
+      dependsOn:
+        - Docker.DockerDesktop # Docker should be installed before Helm
+
+    # Postman enables API testing and documentation, ensuring reliable integrations
+    # between backend services and Azure APIs
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Postman.Postman
       directives:
@@ -129,3 +229,32 @@ properties:
         allowPrerelease: true
       settings:
         id: Postman.Postman
+
+    #----------------------------------------------
+    # System Maintenance and Updates
+    #----------------------------------------------
+    # Keep all Windows packages up to date following Azure security best practices
+    # to maintain a secure development environment
+    - resource: PSDscResources/Script
+      id: Winget.Update
+      directives:
+        description: Update all installed WinGet packages
+        securityContext: elevated # Requires admin rights to update system packages
+      settings:
+        SetScript: |
+          try {
+              # Set execution policy for current process
+              Set-ExecutionPolicy Bypass -Scope Process -Force -ErrorAction SilentlyContinue            
+              # Ensure path is properly set
+              $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+              # Update all packages silently
+              winget upgrade --all --silent --accept-source-agreements --accept-package-agreements
+          } catch {
+              Write-Error "Failed to update WinGet packages: $_"
+          }
+        GetScript: return $false
+        TestScript: return $false
+      dependsOn:
+        - Docker.DockerDesktop # Run updates after all installations complete
+        - Helm.Helm
+        - Postman.Postman

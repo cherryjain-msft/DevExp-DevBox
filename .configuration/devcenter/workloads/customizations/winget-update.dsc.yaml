@@ -1,8 +1,4 @@
 # yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
-#
-# Purpose: This configuration automatically updates all installed packages using Windows Package Manager (winget)
-# It implements idempotence by checking if updates are available before running the update command
-#
 properties:
   configurationVersion: "0.2.0"
   resources:
