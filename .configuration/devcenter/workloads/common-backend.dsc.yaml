@@ -1,0 +1,121 @@
+# yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
+# 
+# Azure DevBox Backend Development Configuration
+# =============================================
+#
+# Purpose:
+#   This DSC configuration installs essential tools for Azure backend development:
+#   - Azure command-line tools (Azure CLI, AZD, Bicep)
+#   - Local Azure service emulators (Storage, Cosmos DB)
+#   - Container tools (Docker Desktop, Helm)
+#   - API testing tools (Postman)
+#
+# Prerequisites:
+#   - Windows 10/11 with admin privileges
+#   - Minimum 16GB RAM recommended (for emulators)
+#   - Internet connectivity for package downloads
+#
+# Maintainer: DevExp Team
+
+properties:
+  configurationVersion: "0.2.0"
+  resources:
+    #----------------------------------------------
+    # Azure Development Tools
+    #----------------------------------------------
+    # Azure CLI - Command-line tool for managing Azure resources
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Microsoft.AzureCLI
+      directives:
+        allowPrerelease: true
+        description: Install Azure CLI for managing Azure resources from the command line
+      settings:
+        id: Microsoft.AzureCLI
+
+    # Azure Developer CLI (azd) - Command-line tool for Azure application development
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Microsoft.Azd
+      directives:
+        allowPrerelease: true
+        description: Install Azure Developer CLI (azd) for end-to-end application development
+      settings:
+        id: Microsoft.Azd
+      dependsOn:
+        - Microsoft.AzureCLI  # Best practice to install after Azure CLI
+
+    # Bicep CLI - Domain-specific language for Azure Resource Manager templates
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Microsoft.Bicep
+      directives:
+        allowPrerelease: true
+        description: Install Bicep CLI for Infrastructure as Code development on Azure
+      settings:
+        id: Microsoft.Bicep
+      dependsOn:
+        - Microsoft.AzureCLI  # Bicep is commonly used with Azure CLI
+
+    # Azure Data CLI - Command-line tools for data services
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Microsoft.Azure.DataCLI
+      directives:
+        allowPrerelease: true
+        description: Install Azure Data CLI for managing Azure data services
+      settings:
+        id: Microsoft.Azure.DataCLI
+
+    #----------------------------------------------
+    # Azure Local Development Emulators
+    #----------------------------------------------
+    # Azure Storage Emulator - Local development environment for Azure Storage
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Microsoft.Azure.StorageEmulator
+      directives:
+        allowPrerelease: true
+        description: Install Azure Storage Emulator for local development
+      settings:
+        id: Microsoft.Azure.StorageEmulator
+
+    # Azure Cosmos DB Emulator - Local development environment for Cosmos DB
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Microsoft.Azure.CosmosEmulator
+      directives:
+        allowPrerelease: true
+        description: Install Azure Cosmos DB Emulator for local NoSQL database development
+      settings:
+        id: Microsoft.Azure.CosmosEmulator
+
+    #----------------------------------------------
+    # Container Development Tools
+    #----------------------------------------------
+    # Docker Desktop - Container platform for local development
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Docker.DockerDesktop
+      directives:
+        description: Install Docker Desktop for container development and testing
+        allowPrerelease: true
+      settings:
+        id: Docker.DockerDesktop
+      # Note: Docker Desktop requires WSL 2 and virtualization enabled in BIOS
+
+    # Helm - Package manager for Kubernetes
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Helm.Helm
+      directives:
+        description: Install Helm for Kubernetes application deployment management
+        allowPrerelease: true
+      settings:
+        id: Helm.Helm
+      dependsOn:
+        - Docker.DockerDesktop  # Helm is commonly used with Docker/Kubernetes
+
+    #----------------------------------------------
+    # API Development Tools
+    #----------------------------------------------
+    # Postman - API development and testing tool
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Postman.Postman
+      directives:
+        description: Install Postman API platform for designing, testing and documenting APIs
+        allowPrerelease: true
+      settings:
+        id: Postman.Postman
