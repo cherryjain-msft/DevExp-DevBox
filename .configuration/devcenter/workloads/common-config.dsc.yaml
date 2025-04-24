@@ -1,12 +1,12 @@
 # yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
-# 
+#
 # Azure DevBox Common Configuration
 # =================================
 #
 # Purpose:
 #   This DSC configuration sets up a standard development environment with:
 #   - Development storage using Dev Drive
-#   - Source control tools (Git, GitHub CLI, GitHub Desktop)
+#   - Source control tools (Git, GitHub CLI)
 #   - Development runtimes (.NET 9 SDK and Runtime)
 #   - Development tools (VS Code, Node.js)
 #
@@ -31,15 +31,15 @@ properties:
         allowPrerelease: true
         description: Configure Dev Drive with ReFS format
       settings:
-        DiskId: "0"        # First available disk (verify this matches your environment)
+        DiskId: "0" # First available disk (verify this matches your environment)
         DiskIdType: "Number"
-        DriveLetter: "Z"   # Standard letter for development drives
+        DriveLetter: "Z" # Standard letter for development drives
         FSLabel: "Dev Drive 1"
-        DevDrive: true     # Enables Windows Dev Drive optimizations
-        AllowDestructive: true  # Warning: Will format existing disk if present
-        FSFormat: "ReFS"   # Required for Dev Drive functionality
-        Size: "50Gb"       # Recommended minimum size for development workloads
-        
+        DevDrive: true # Enables Windows Dev Drive optimizations
+        AllowDestructive: true # Warning: Will format existing disk if present
+        FSFormat: "ReFS" # Required for Dev Drive functionality
+        Size: "50Gb" # Recommended minimum size for development workloads
+
     #----------------------------------------------
     # Source Control Tools
     #----------------------------------------------
@@ -61,18 +61,7 @@ properties:
       settings:
         id: GitHub.cli
       dependsOn:
-        - Git.Git  # Requires Git for full functionality
-
-    # GitHub Desktop - GUI for Git and GitHub workflows
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: GitHub.GitHubDesktop
-      directives:
-        allowPrerelease: true
-        description: Install GitHub Desktop application
-      settings:
-        id: GitHub.GitHubDesktop
-      dependsOn:
-        - Git.Git  # Requires Git for repository operations
+        - Git.Git # Requires Git for full functionality
 
     #----------------------------------------------
     # Development Runtimes
@@ -95,7 +84,7 @@ properties:
       settings:
         id: Microsoft.DotNet.Runtime.9
       dependsOn:
-        - Microsoft.DotNet.SDK.9  # Runtime is included in SDK, but explicit dependency ensures correct order
+        - Microsoft.DotNet.SDK.9 # Runtime is included in SDK, but explicit dependency ensures correct order
 
     # Node.js - JavaScript runtime environment
     - resource: Microsoft.WinGet.DSC/WinGetPackage
@@ -111,7 +100,7 @@ properties:
     #----------------------------------------------
     # Visual Studio Code - Lightweight code editor
     - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: Microsoft.VisualStudioCode 
+      id: Microsoft.VisualStudioCode
       directives:
         allowPrerelease: true
         description: Install Visual Studio Code editor
