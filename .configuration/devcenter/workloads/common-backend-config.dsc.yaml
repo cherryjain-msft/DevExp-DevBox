@@ -107,15 +107,3 @@ properties:
         id: Helm.Helm
       dependsOn:
         - Docker.DockerDesktop  # Helm is commonly used with Docker/Kubernetes
-
-    #----------------------------------------------
-    # API Development Tools
-    #----------------------------------------------
-    # Postman - API development and testing tool
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: Postman.Postman
-      directives:
-        description: Install Postman API platform for designing, testing and documenting APIs
-        allowPrerelease: true
-      settings:
-        id: Postman.Postman

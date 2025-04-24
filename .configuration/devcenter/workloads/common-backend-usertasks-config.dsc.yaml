@@ -121,3 +121,11 @@ properties:
         TestScript: return $false
       dependsOn:
         - Ubuntu.AzureCli
+
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Postman.Postman
+      directives:
+        description: Install Postman API platform for designing, testing and documenting APIs
+        allowPrerelease: true
+      settings:
+        id: Postman.Postman
