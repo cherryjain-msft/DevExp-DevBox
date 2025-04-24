@@ -12,30 +12,6 @@ properties:
   configurationVersion: 0.2.0
   resources:
     - resource: PSDscResources/Script
-      id: WorkloadUpdate
-      directives:
-        description: Update .NET SDK workloads
-        allowPrerelease: true
-        securityContext: elevated
-      settings:
-        SetScript: |
-          # Enable script execution and set up environment
-          Set-ExecutionPolicy Bypass -Scope Process -Force
-          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
-
-          # Update all installed .NET workloads to ensure latest versions
-          try {
-              Write-Host "Updating .NET SDK workloads..."
-              dotnet workload update
-              Write-Host ".NET workloads updated successfully"
-          }
-          catch {
-              Write-Error "Failed to update .NET workloads: $_"
-              throw "Workload update failed. See error above."
-          }
-        GetScript: return $false
-        TestScript: return $false
-    - resource: PSDscResources/Script
       id: dotnetbuild
       directives:
         description: Build and test Identity Provider solution
