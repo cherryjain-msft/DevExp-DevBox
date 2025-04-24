@@ -1,0 +1,123 @@
+# yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
+properties:
+  configurationVersion: 0.2.0
+
+  resources:
+    - resource: PSDscResources/Script
+      id: Microsoft-Windows-Subsystem-Linux
+      directives:
+        description: Enable Windows Features and Install Ubuntu for WSL
+        securityContext: elevated
+      settings:
+        SetScript: |
+          try {
+              Write-Verbose "Installing Windows Subsystem for Linux (WSL)" -Verbose
+              wsl --install --no-launch 2>$null
+          } catch {
+              Write-Error "Failed to install WSL: $_"
+          }
+        GetScript: return $false
+        TestScript: return $false
+
+    - resource: PSDscResources/Script
+      id: Ubuntu
+      directives:
+        description: Install Ubuntu for WSL
+        securityContext: elevated
+      settings:
+        SetScript: |
+          try {
+              Write-Verbose "Installing Ubuntu for WSL" -Verbose
+              wsl --install -d Ubuntu --no-launch 2>$null
+          } catch {
+              Write-Error "Failed to install Ubuntu: $_"
+          }
+        GetScript: return $false
+        TestScript: return $false
+      dependsOn:
+        - Microsoft-Windows-Subsystem-Linux
+
+    - resource: PSDscResources/Script
+      id: Ubuntu.User
+      directives:
+        description: Add the current user as an administrator to Ubuntu
+        securityContext: elevated
+      settings:
+        SetScript: |
+          try {
+              $newUser = $env:USERNAME.ToLower()
+              $password = "SecureP@ssw0rd"
+              $escapedPassword = $password -replace '(["\\$`])', '\\$1'
+              wsl.exe -d Ubuntu -u root -- bash -c "sudo adduser --quiet --disabled-password --gecos '' $newUser"
+              wsl.exe -d Ubuntu -u root -- bash -c "echo '${newUser}:${escapedPassword}' | sudo chpasswd"
+              wsl.exe -d Ubuntu -u root -- bash -c "sudo usermod -aG sudo $newUser"
+              wsl.exe -d Ubuntu -u root -- bash -c "echo '$newUser ALL=(ALL) NOPASSWD:ALL' | sudo tee /etc/sudoers.d/$newUser"
+          } catch {
+              Write-Error "Failed to add user as administrator: $_"
+          }
+        GetScript: return $false
+        TestScript: return $false
+      dependsOn:
+        - Microsoft-Windows-Subsystem-Linux
+
+    - resource: PSDscResources/Script
+      id: Ubuntu.Update
+      directives:
+        description: Update Ubuntu package repositories and install updates
+        securityContext: elevated
+      settings:
+        SetScript: |
+          try {
+              $updateCommand = "sudo bash -c 'export DEBIAN_FRONTEND=noninteractive; apt-get update && apt-get upgrade -y --quiet'"
+              wsl.exe -d Ubuntu -u root -- bash -c "$updateCommand"
+          } catch {
+              Write-Error "Failed to update Ubuntu packages: $_"
+          }
+        GetScript: return $false
+        TestScript: return $false
+      dependsOn:
+        - Ubuntu.User
+
+    - resource: PSDscResources/Script
+      id: Ubuntu.AzureCli
+      directives:
+        description: Install Azure CLI, Developer CLI and Bicep on Ubuntu
+        securityContext: elevated
+      settings:
+        SetScript: |
+          try {
+              $updateCommand = "sudo bash -c 'export DEBIAN_FRONTEND=noninteractive; apt-get install curl --quiet -y'"
+              wsl.exe -d Ubuntu -u root -- bash -c "$updateCommand"
+              $updateCommand = "sudo bash -c 'export DEBIAN_FRONTEND=noninteractive; curl -fsSL https://aka.ms/InstallAzureCLIDeb | sudo bash'"
+              wsl.exe -d Ubuntu -u root -- bash -c "$updateCommand"
+              $updateCommand = "sudo bash -c 'export DEBIAN_FRONTEND=noninteractive; curl -fsSL https://aka.ms/install-azd.sh | sudo bash'"
+              wsl.exe -d Ubuntu -u root -- bash -c "$updateCommand"
+          } catch {
+              Write-Error "Failed to install Azure CLI: $_"
+          }
+        GetScript: return $false
+        TestScript: return $false
+      dependsOn:
+        - Ubuntu.User
+
+    - resource: PSDscResources/Script
+      id: Ubuntu.DotNetSDK
+      directives:
+        description: Install .NET 9 SDK and Runtime on Ubuntu
+        securityContext: elevated
+      settings:
+        SetScript: |
+          try {
+              $installDotnetCommand = "sudo bash -c 'export DEBIAN_FRONTEND=noninteractive; sudo add-apt-repository ppa:dotnet/backports -y'"
+              wsl.exe -d Ubuntu -u root -- bash -c "$installDotnetCommand"
+              $installDotnetCommand = "sudo bash -c 'export DEBIAN_FRONTEND=noninteractive; sudo apt-get update --quiet && sudo apt-get install --quiet -y dotnet-sdk-9.0'"
+              wsl.exe -d Ubuntu -u root -- bash -c "$installDotnetCommand"
+              $installDotnetCommand = "sudo bash -c 'export DEBIAN_FRONTEND=noninteractive; sudo apt-get install --quiet -y aspnetcore-runtime-9.0'"
+              wsl.exe -d Ubuntu -u root -- bash -c "$installDotnetCommand"              
+          } catch {
+              Write-Error "Failed to install .NET SDK and Runtime: $_"
+          }
+        GetScript: return $false
+        TestScript: return $false
+      dependsOn:
+        - Ubuntu.AzureCli
