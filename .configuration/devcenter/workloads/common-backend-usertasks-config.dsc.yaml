@@ -248,7 +248,7 @@ properties:
               # Ensure path is properly set
               $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
               # Update all packages silently
-              winget upgrade --all --silent --accept-source-agreements --accept-package-agreements
+              winget upgrade --all --accept-source-agreements --accept-package-agreements
           } catch {
               Write-Error "Failed to update WinGet packages: $_"
           }
