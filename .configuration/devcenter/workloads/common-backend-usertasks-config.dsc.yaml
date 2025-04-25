@@ -67,8 +67,6 @@ properties:
           }
         GetScript: return $false
         TestScript: return $false
-      dependsOn:
-        - Microsoft-Windows-Subsystem-Linux # WSL must be installed before Ubuntu distribution
 
     # Configure user access to simplify development and avoid credential prompts
     # while maintaining security through Windows authentication
@@ -100,8 +98,6 @@ properties:
           }
         GetScript: return $false
         TestScript: return $false
-      dependsOn:
-        - Ubuntu # Ubuntu must be installed before configuring users
 
     # Update Ubuntu packages to ensure security patches and latest tool compatibility
     # following Azure best practices for keeping development environments current
@@ -124,8 +120,6 @@ properties:
           }
         GetScript: return $false
         TestScript: return $false
-      dependsOn:
-        - Ubuntu.User # User must be configured to perform updates
 
     #----------------------------------------------
     # Azure Development Tools for Ubuntu
@@ -158,8 +152,6 @@ properties:
           }
         GetScript: return $false
         TestScript: return $false
-      dependsOn:
-        - Ubuntu.Update # System should be updated before installing new packages
 
     # Install .NET SDK and Runtime for cross-platform .NET development
     # enabling development of Azure Functions, Web Apps, and microservices
@@ -189,8 +181,6 @@ properties:
           }
         GetScript: return $false
         TestScript: return $false
-      dependsOn:
-        - Ubuntu.AzureCli # Install after CLI tools to ensure compatible versions
 
     #----------------------------------------------
     # Container and API Development Tools
@@ -205,8 +195,6 @@ properties:
         securityContext: elevated # Requires admin rights to install system services
       settings:
         id: Docker.DockerDesktop
-      dependsOn:
-        - Microsoft-Windows-Subsystem-Linux # Docker Desktop uses WSL2 backend
 
     # Helm simplifies Kubernetes application management with package-based deployments
     # commonly used with Azure Kubernetes Service (AKS)
@@ -217,8 +205,6 @@ properties:
         allowPrerelease: true
       settings:
         id: Helm.Helm
-      dependsOn:
-        - Docker.DockerDesktop # Docker should be installed before Helm
 
     # Postman enables API testing and documentation, ensuring reliable integrations
     # between backend services and Azure APIs
@@ -254,10 +240,6 @@ properties:
           }
         GetScript: return $false
         TestScript: return $false
-      dependsOn:
-        - Docker.DockerDesktop # Run updates after all installations complete
-        - Helm.Helm
-        - Postman.Postman
 
     # Resource: .NET Workload Update
     # This resource ensures all installed .NET workloads are up to date, which is
@@ -281,5 +263,28 @@ properties:
           } catch {
               Write-Error "Failed to update WinGet packages: $_"
           }
+        GetScript: return $false
+        TestScript: return $false
+
+    - resource: PSDscResources/Script
+      id: Microsoft.VisualStudioCode.Extensions
+      directives:
+        description: Install VS Code Extensions
+        securityContext: elevated
+        allowPrerelease: true
+      settings:
+        SetScript: |
+          Set-ExecutionPolicy Bypass -Scope Process -Force
+          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+          code --install-extension ms-vscode.powershell
+          code --install-extension ms-vscode-remote.remote-wsl
+          code --install-extension ms-dotnettools.csdevkit	
+          code --install-extension ms-vscode.vscode-typescript-next
+          code --install-extension redhat.vscode-yaml
+          code --install-extension ms-azuretools.vscode-bicep
+          code --install-extension ms-vscode.vscode-node-azure-pack
+          code --install-extension ms-vscode.azurecli
+          code --install-extension GitHub.remotehub
+          code --install-extension GitHub.vscode-pull-request-github
         GetScript: return $false
         TestScript: return $false
