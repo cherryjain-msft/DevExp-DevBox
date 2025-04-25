@@ -36,3 +36,6 @@ output AZURE_VIRTUAL_NETWORK_SUBNETS array = virtualNetwork.outputs.AZURE_VIRTUA
 
 @description('The resource ID of the deployed Virtual Network')
 output AZURE_VIRTUAL_NETWORK_ID string = virtualNetwork.outputs.virtualNetworkId
+
+@description('Network type (Managed or Unmanaged)')
+output AZURE_VIRTUAL_NETWORK_TYPE string = networkSettings.virtualNetworkType

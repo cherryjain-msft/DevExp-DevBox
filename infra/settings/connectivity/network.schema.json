@@ -4,6 +4,15 @@
   "description": "Schema for defining network settings including virtual networks and subnets.",
   "type": "object",
   "properties": {
+    "virtualNetworkType": {
+      "type": "string",
+      "description": "Type of network connection",
+      "enum": [
+        "Unmanaged",
+        "Managed"
+      ],
+      "default": "vnet"
+    },
     "create": {
       "type": "boolean",
       "description": "Flag to indicate if the network should be created",
@@ -20,7 +29,9 @@
       "items": {
         "$ref": "#/definitions/addressPrefix"
       },
-      "default": ["10.0.0.0/16"]
+      "default": [
+        "10.0.0.0/16"
+      ]
     },
     "subnets": {
       "type": "array",
@@ -72,6 +83,7 @@
     }
   },
   "required": [
+    "virtualNetworkType",
     "create",
     "name",
     "addressPrefixes",

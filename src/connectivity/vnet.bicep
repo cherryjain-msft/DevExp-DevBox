@@ -15,6 +15,9 @@ type NetworkSettings = {
   @description('Name of the virtual network')
   name: string
 
+  @description('Type of network to create (vnet or existing)')
+  virtualNetworkType: 'Unmanaged' | 'Managed'
+
   @description('Flag to create new or use existing virtual network')
   create: bool
 
@@ -29,7 +32,7 @@ type NetworkSettings = {
 }
 
 @description('Virtual Network resource')
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = if (settings.create) {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = if (settings.create && settings.virtualNetworkType == 'Unmanaged') {
   name: settings.name
   location: location
   tags: union(tags, settings.tags)
@@ -49,12 +52,12 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = if (set
 }
 
 @description('Reference to existing Virtual Network')
-resource existingVirtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' existing = if (!settings.create) {
+resource existingVirtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' existing = if (!settings.create && settings.virtualNetworkType == 'Unmanaged') {
   name: settings.name
 }
 
 @description('Log Analytics Diagnostic Settings')
-resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (settings.create) {
+resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (settings.create && settings.virtualNetworkType == 'Unmanaged') {
   name: '${virtualNetwork.name}-diag'
   scope: virtualNetwork
   properties: {
@@ -75,15 +78,28 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
 }
 
 @description('The resource ID of the Virtual Network')
-output virtualNetworkId string = settings.create ? virtualNetwork.id : existingVirtualNetwork.id
+output virtualNetworkId string = (settings.create && settings.virtualNetworkType == 'Unmanaged')
+  ? virtualNetwork.id
+  : (!settings.create && settings.virtualNetworkType == 'Unmanaged')
+      ? existingVirtualNetwork.id
+      : settings.virtualNetworkType
 
-@description('The subnets of the Virtual Network')
-output AZURE_VIRTUAL_NETWORK_SUBNETS array = [
-  for (subnet, i) in settings.subnets: {
-    id: resourceId('Microsoft.Network/virtualNetworks/subnets', settings.name, subnet.name)
-    name: subnet.name
-  }
-]
+var subnetsOutput = (settings.create && settings.virtualNetworkType == 'Unmanaged')
+  ? virtualNetwork.properties.subnets
+  : (!settings.create && settings.virtualNetworkType == 'Unmanaged')
+      ? existingVirtualNetwork.properties.subnets
+      : [
+          {
+            name: settings.name
+            id: settings.virtualNetworkType
+          }
+        ]
 
+@description('The subnets of the deployed Virtual Network')
+output AZURE_VIRTUAL_NETWORK_SUBNETS array = subnetsOutput
 @description('The name of the Virtual Network')
-output AZURE_VIRTUAL_NETWORK_NAME string = settings.name
+output AZURE_VIRTUAL_NETWORK_NAME string = (settings.create && settings.virtualNetworkType == 'Unmanaged')
+  ? virtualNetwork.name
+  : (!settings.create && settings.virtualNetworkType == 'Unmanaged')
+      ? existingVirtualNetwork.name
+      : settings.virtualNetworkType

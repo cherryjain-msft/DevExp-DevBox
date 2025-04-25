@@ -13,6 +13,10 @@ param imageDefinitionName string
 @description('The name of the network connection to use for the pool')
 param networkConnectionName string
 
+@description('Network type for resource deployment')
+@allowed(['Unmanaged', 'Managed'])
+param networkType string
+
 @description('The name of the project to which the pool belongs')
 param projectName string
 
@@ -46,7 +50,8 @@ resource pool 'Microsoft.DevCenter/projects/pools@2025-02-01' = {
     localAdministrator: 'Enabled'
     singleSignOnStatus: 'Enabled'
     displayName: name
-    virtualNetworkType: 'Unmanaged'
+    virtualNetworkType: networkType
+    managedVirtualNetworkRegions: (networkType == 'Managed') ? [resourceGroup().location] : []
   }
 }
 
