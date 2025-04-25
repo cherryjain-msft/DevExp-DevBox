@@ -18,19 +18,6 @@ properties:
   configurationVersion: "0.2.0"
   resources:
     #----------------------------------------------
-    # Source Control Tools
-    #----------------------------------------------
-    # GitHub Desktop provides a GUI interface for Git operations with seamless GitHub integration
-    # for managing repositories, branches, and pull requests
-    - resource: Microsoft.WinGet.DSC/WinGetPackage
-      id: GitHub.GitHubDesktop
-      directives:
-        allowPrerelease: true
-        description: Install GitHub Desktop client for visual Git workflow management
-      settings:
-        id: GitHub.GitHubDesktop
-
-    #----------------------------------------------
     # Azure Command-Line Tools
     #----------------------------------------------
     # Azure CLI is the foundation for Azure management and serves as a dependency for other Azure tools
