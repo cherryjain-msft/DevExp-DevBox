@@ -9,6 +9,9 @@
 @minLength(1)
 param logAnalyticsId string
 
+@description('Network type for resource deployment')
+param networkType string
+
 @description('Network subnet configurations')
 param subnets object[]
 
@@ -47,6 +50,7 @@ module devcenter 'devCenter.bicep' = {
     catalogs: devCenterSettings.catalogs
     environmentTypes: devCenterSettings.environmentTypes
     logAnalyticsId: logAnalyticsId
+    networkType: networkType
     subnets: subnets
     secretIdentifier: secretIdentifier
     keyVaultName: keyVaultName
@@ -68,6 +72,7 @@ module projects 'project/project.bicep' = [
       projectEnvironmentTypes: project.environmentTypes
       projectPools: project.pools
       networkConnectionName: devcenter.outputs.networkConnectionName
+      networkType: networkType
       secretIdentifier: secretIdentifier
       keyVaultName: keyVaultName
       securityResourceGroupName: securityResourceGroupName

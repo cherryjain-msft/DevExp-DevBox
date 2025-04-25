@@ -102,7 +102,7 @@ resource workloadRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landin
 // Module deployments with improved names and organization
 @description('Log Analytics Workspace for centralized monitoring')
 module monitoring '../src/management/logAnalytics.bicep' = {
-  name: 'monitoring-logAnalytics-deployment'
+  name: 'monitoring-logAnalytics-deployment-${environmentName}'
   scope: resourceGroup(monitoringRgName)
   params: {
     name: 'logAnalytics'
@@ -114,7 +114,7 @@ module monitoring '../src/management/logAnalytics.bicep' = {
 
 @description('Security components including Key Vault')
 module security '../src/security/security.bicep' = {
-  name: 'security-keyvault-deployment'
+  name: 'security-keyvault-deployment-${environmentName}'
   scope: resourceGroup(securityRgName)
   params: {
     keyVaultName: 'devexp'
@@ -131,7 +131,7 @@ module security '../src/security/security.bicep' = {
 
 @description('Network connectivity resources')
 module connectivity '../src/connectivity/connectivity.bicep' = {
-  name: 'connectivity-network-deployment'
+  name: 'connectivity-network-deployment-${environmentName}'
   scope: resourceGroup(connectivityRgName)
   params: {
     logAnalyticsId: monitoring.outputs.logAnalyticsId
@@ -144,10 +144,11 @@ module connectivity '../src/connectivity/connectivity.bicep' = {
 
 @description('DevCenter workload deployment')
 module workload '../src/workload/workload.bicep' = {
-  name: 'workload-devcenter-deployment'
+  name: 'workload-devcenter-deployment-${environmentName}'
   scope: resourceGroup(workloadRgName)
   params: {
     logAnalyticsId: monitoring.outputs.logAnalyticsId
+    networkType: connectivity.outputs.AZURE_VIRTUAL_NETWORK_TYPE
     subnets: connectivity.outputs.AZURE_VIRTUAL_NETWORK_SUBNETS
     secretIdentifier: security.outputs.secretIdentifier
     keyVaultName: security.outputs.keyVaultName

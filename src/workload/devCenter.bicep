@@ -12,6 +12,10 @@ param catalogs array
 @description('Environment Types')
 param environmentTypes array
 
+@description('Network type for resource deployment')
+@allowed(['Unmanaged', 'Managed'])
+param networkType string
+
 @description('Subnets')
 param subnets array
 
@@ -161,7 +165,7 @@ module devCenterIdentityUserGroupsRoleAssignment '../identity/orgRoleAssignment.
 // Network configuration
 @description('Network Connections')
 module networkConnection 'core/networkConnection.bicep' = [
-  for (subnet, i) in subnets: {
+  for (subnet, i) in subnets: if (networkType == 'Unmanaged') {
     name: 'networkConnection-${i}-${devCenterName}'
     scope: resourceGroup()
     params: {
@@ -207,4 +211,4 @@ module environment 'core/environmentType.bicep' = [
 output AZURE_DEV_CENTER_NAME string = devCenterName
 
 @description('Network Connection Name for Dev Center')
-output networkConnectionName string = !empty(subnets) ? networkConnection[0].outputs.vnetAttachmentName : ''
+output networkConnectionName string = (networkType == 'Unmanaged') ? networkConnection[0].name : 'Managed'

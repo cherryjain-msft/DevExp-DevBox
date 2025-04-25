@@ -19,6 +19,10 @@ param projectPools array
 @description('Name of the network connection to be used with DevBox pools')
 param networkConnectionName string
 
+@description('Network type for resource deployment')
+@allowed(['Unmanaged', 'Managed'])
+param networkType string
+
 @description('Secret identifier for Git repository authentication')
 @secure()
 param secretIdentifier string
@@ -166,6 +170,7 @@ module pools 'projectPool.bicep' = [
       catalogName: projectCatalogs.imageDefinition.name
       imageDefinitionName: pool.imageDefinitionName
       networkConnectionName: networkConnectionName
+      networkType: networkType
     }
     dependsOn: [
       projectIdentity
