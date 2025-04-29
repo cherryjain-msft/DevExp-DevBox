@@ -1,3 +1,12 @@
+---
+title: Workload Default Settings Documentation
+tags: 
+ - devbox
+ - resources
+ - subnet
+description: Workload Default Settings Documentation
+---
+
 # Microsoft Dev Box Accelerator: Workload Default Settings Documentation
 
 ## Overview

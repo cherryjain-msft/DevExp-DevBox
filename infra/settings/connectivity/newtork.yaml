@@ -3,7 +3,7 @@
 # Microsoft Dev Box Accelerator: Network Configuration
 # ===============================================
 # 
-# Purpose: Defines the virtual network infrastructure for Azure DevBox environments.
+# Purpose: Defines the virtual network infrastructure for Microsoft Dev Box Accelerator environments.
 # This configuration creates a managed virtual network that isolates DevBox resources
 # while enabling secure connectivity to Azure services and corporate resources.
 #
