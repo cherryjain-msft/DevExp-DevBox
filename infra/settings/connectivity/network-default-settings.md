@@ -1,3 +1,22 @@
+---
+title: Network Settings Documentation
+tags: 
+ - devbox
+ - network
+ - virtual network
+ - subnet
+description: Network Settings Documentation
+---
+
+# Microsoft Dev Box Accelerator: Network Settings Documentation
+
+## Overview
+
+This documentation details the network configuration for Microsoft Dev Box Accelerator. The configuration defines a managed virtual network infrastructure that isolates Dev Box resources while enabling secure connectivity to both Azure services and corporate resources.
+
+## Default Settings 
+
+```yaml
 # yaml-language-server: $schema=./network.schema.json
 #
 # Microsoft Dev Box Accelerator: Network Configuration
@@ -82,3 +101,15 @@ tags:
   # Resources tag: Describes the resource type or purpose
   # Helps with resource categorization and filtering
   resources: Network
+```
+## References
+
+- [Azure Virtual Network Documentation](https://learn.microsoft.com/en-us/azure/virtual-network/)
+- [Azure VNet Best Practices](https://learn.microsoft.com/en-us/azure/architecture/reference-architectures/hybrid-networking/)
+- [Microsoft Dev Box Accelerator Networking](https://learn.microsoft.com/en-us/azure/dev-box/how-to-configure-network-connectivity)
+- [Azure Cloud Adoption Framework - Naming and Tagging](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming)
+- [Microsoft Dev Box Accelerator GitHub](https://github.com/Evilazaro/DevExp-DevBox/)
+
+---
+
+*This documentation is part of the Microsoft Dev Box Accelerator project. For more information, visit the [GitHub Repository](https://github.com/Evilazaro/DevExp-DevBox/).*

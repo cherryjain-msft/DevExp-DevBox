@@ -1,3 +1,35 @@
+---
+title: Backend Development Environment Configuration
+tags: 
+ - devbox
+ - resources
+description: Backend Development Environment Configuration
+---
+
+# Microsoft Dev Box Accelerator Backend Development Environment Configuration
+
+## Overview
+
+This documentation provides a comprehensive explanation of the Microsoft Dev Box Accelerator backend development environment configuration defined in common-backend-config.dsc.yaml. This configuration deploys a standardized development environment using Desired State Configuration (DSC) to ensure consistency across developer workstations.
+
+## Table of Contents
+
+- Introduction
+- Configuration Properties
+- Azure Command-Line Tools
+  - Azure CLI
+  - Azure Developer CLI (azd)
+  - Bicep CLI
+  - Azure Data CLI
+- Local Development Emulators
+  - Azure Storage Emulator
+  - Azure Cosmos DB Emulator
+- Implementation Guide
+- Security Considerations
+
+## Default File
+
+```yaml
 # yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
 #
 # Microsoft Dev Box Accelerator Backend Development Configuration
@@ -287,3 +319,20 @@ properties:
         description: Install Azure Cosmos DB Emulator for local NoSQL database development
       settings:
         id: Microsoft.Azure.CosmosEmulator
+```
+
+## References
+
+- [Azure CLI Documentation](https://learn.microsoft.com/en-us/cli/azure/)
+- [Azure Developer CLI Documentation](https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/)
+- [Bicep Documentation](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/)
+- [Azure Data CLI Documentation](https://learn.microsoft.com/en-us/sql/azdata/install/deploy-install-azdata)
+- [Azure Storage Emulator Documentation](https://learn.microsoft.com/en-us/azure/storage/common/storage-use-emulator)
+- [Azure Cosmos DB Emulator Documentation](https://learn.microsoft.com/en-us/azure/cosmos-db/local-emulator)
+- [Azure Dev Box Documentation](https://learn.microsoft.com/en-us/azure/dev-box/overview-what-is-microsoft-dev-box)
+- [DSC Configuration Schema](https://aka.ms/configuration-dsc-schema/0.2)
+- [DevExp-DevBox Repository](https://github.com/Evilazaro/DevExp-DevBox/)
+
+---
+
+*This documentation is part of the Microsoft Dev Box Accelerator Accelerator project. For more information, visit the [GitHub Repository](https://github.com/Evilazaro/DevExp-DevBox/).*
