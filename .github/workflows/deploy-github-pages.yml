@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - main  # Only deploy from main branch
+      - gh-pages  # Only deploy from main branch
   pull_request:
 
 env:
