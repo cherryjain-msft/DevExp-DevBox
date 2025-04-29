@@ -1,3 +1,11 @@
+---
+title: Backend Development Environment Configuration
+tags: 
+ - devbox
+ - resources
+description: Backend Development Environment Configuration
+---
+
 # Microsoft Dev Box Accelerator Backend Development Environment Configuration
 
 ## Overview
