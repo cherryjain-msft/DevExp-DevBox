@@ -1,3 +1,12 @@
+# Microsoft Dev Box Accelerator: Workload Default Settings Documentation
+
+## Overview
+
+This documentation provides a comprehensive explanation of the Microsoft Dev Box Accelerator defined in devcenter.yaml. Azure Dev Box is a managed service that enables organizations to provision, manage, and secure development workstations in the cloud, allowing developers to focus on code rather than environment setup.
+
+## Default Settings
+
+```yaml
 # yaml-language-server: $schema=./devcenter.schema.json
 #
 # Microsoft Dev Box Accelerator: Dev Center Configuration
@@ -274,3 +283,17 @@ tags:
   costCenter: "IT"             # Financial tracking designation
   owner: "Contoso"             # Resource ownership
   resources: "DevCenter"       # Resource type identifier
+```
+
+## References
+
+- [Azure Dev Box Documentation](https://learn.microsoft.com/en-us/azure/dev-box/overview-what-is-microsoft-dev-box)
+- [Azure RBAC Roles](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles)
+- [Azure Managed Identities](https://learn.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview)
+- [Azure Tagging Best Practices](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-tagging)
+- [Azure Dev Box CLI Commands](https://learn.microsoft.com/en-us/cli/azure/devcenter?view=azure-cli-latest)
+- [Azure Dev Box Accelerator GitHub](https://github.com/Evilazaro/DevExp-DevBox/)
+
+---
+
+*This documentation is part of the Azure Dev Box Accelerator project. For more information, visit the [GitHub Repository](https://github.com/Evilazaro/DevExp-DevBox/).*

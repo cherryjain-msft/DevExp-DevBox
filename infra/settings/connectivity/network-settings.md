@@ -1,13 +1,22 @@
-# Azure Dev Box Accelerator: Network Configuration Documentation
+---
+title: Network Settings Documentation
+tags: 
+ - devbox
+ - network
+ - virtual network
+ - subnet
+description: Network Settings Documentation
+---
+
+# Microsoft Dev Box Accelerator: Network Settings Documentation
 
 ## Overview
 
-This documentation details the network configuration for Azure Dev Box Accelerator. The configuration defines a managed virtual network infrastructure that isolates Dev Box resources while enabling secure connectivity to both Azure services and corporate resources.
+This documentation details the network configuration for Microsoft Dev Box Accelerator. The configuration defines a managed virtual network infrastructure that isolates Dev Box resources while enabling secure connectivity to both Azure services and corporate resources.
 
 ## Table of Contents
 
 - [Configuration Purpose](#configuration-purpose)
-  - [Default Configuration](#default-configuration)
 - [Parameters](#parameters)
   - [Network Creation](#netwrk-creation)
   - [Virtual Network Type](#virtual-network-type)
@@ -20,40 +29,12 @@ This documentation details the network configuration for Azure Dev Box Accelerat
 
 ## Configuration Purpose
 
-The network configuration (`network.yaml`) establishes the networking foundation for Azure Dev Box environments. It defines a virtual network that:
+The network configuration (`network.yaml`) establishes the networking foundation for Microsoft Dev Box Accelerator environments. It defines a virtual network that:
 
 - Creates isolated network boundaries for Dev Box workstations
 - Enables controlled access to Azure services
 - Provides connectivity options to corporate networks
 - Follows Azure networking best practices
-
-## Default Configuration
-
-```yaml
-# yaml-language-server: $schema=./network.schema.json
-
-create: true
-virtualNetworkType: Managed
-
-name: contoso-vnet
-addressPrefixes:
-  - 10.0.0.0/16
-subnets:
-  - name: contoso-subnet
-    properties:
-      addressPrefix: 10.0.1.0/24
-
-tags:
-  environment: dev
-  division: Platforms
-  team: DevExP
-  project: DevExP-DevBox
-  costCenter: IT
-  owner: Contoso
-  resources: Network
-  ```
-
-## Parameters
 
 ## Network Creation
 
@@ -213,10 +194,10 @@ tags:
 
 - [Azure Virtual Network Documentation](https://learn.microsoft.com/en-us/azure/virtual-network/)
 - [Azure VNet Best Practices](https://learn.microsoft.com/en-us/azure/architecture/reference-architectures/hybrid-networking/)
-- [Azure Dev Box Networking](https://learn.microsoft.com/en-us/azure/dev-box/how-to-configure-network-connectivity)
+- [Microsoft Dev Box Accelerator Networking](https://learn.microsoft.com/en-us/azure/dev-box/how-to-configure-network-connectivity)
 - [Azure Cloud Adoption Framework - Naming and Tagging](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming)
-- [Azure Dev Box Accelerator GitHub](https://github.com/Evilazaro/DevExp-DevBox/)
+- [Microsoft Dev Box Accelerator GitHub](https://github.com/Evilazaro/DevExp-DevBox/)
 
 ---
 
-*This documentation is part of the Azure Dev Box Accelerator project. For more information, visit the [GitHub Repository](https://github.com/Evilazaro/DevExp-DevBox/).*
+*This documentation is part of the Microsoft Dev Box Accelerator project. For more information, visit the [GitHub Repository](https://github.com/Evilazaro/DevExp-DevBox/).*

@@ -1,13 +1,21 @@
-# Azure Dev Box Accelerator: Resource Organization Documentation
+---
+title: Resources Organization Documentation
+tags: 
+ - devbox
+ - resources
+ - subnet
+description: Resources Organization Documentation
+---
+
+# Microsoft Dev Box Accelerator: Resources Organization Documentation
 
 ## Overview
 
-This documentation details the resource organization structure for the Azure Dev Box Accelerator. The configuration defines a comprehensive resource group strategy aligned with Azure Landing Zone principles, segregating resources based on their functional purpose to improve manageability, security, and governance.
+This documentation details the resource organization structure for the Microsoft Dev Box Accelerator. The configuration defines a comprehensive resource group strategy aligned with Azure Landing Zone principles, segregating resources based on their functional purpose to improve manageability, security, and governance.
 
 ## Table of Contents
 
 - [Configuration Purpose](#configuration-purpose)
-    - [Default Configuration](#default-configuration)
 - [Resource Group Structure](#resource-group-structure)
   - [Workload Resource Group](#workload-resource-group)
   - [Security Resource Group](#security-resource-group)
@@ -20,7 +28,7 @@ This documentation details the resource organization structure for the Azure Dev
 
 ## Configuration Purpose
 
-The resource organization configuration (`azureResources.yaml`) establishes the foundational resource group structure for Azure Dev Box environments. It implements the following design principles:
+The resource organization configuration (`azureResources.yaml`) establishes the foundational resource group structure for Microsoft Dev Box Accelerator environments. It implements the following design principles:
 
 - **Separation of concerns**: Resources are grouped by their functional purpose
 - **Least privilege access**: Resource groups can have different RBAC assignments
@@ -28,72 +36,6 @@ The resource organization configuration (`azureResources.yaml`) establishes the 
 - **Operational efficiency**: Maintenance and troubleshooting are simplified through logical grouping
 
 This approach aligns with the Azure Landing Zone methodology, which recommends organizing resources into management groups and resource groups based on their purpose, lifecycle, and access requirements.
-
-## Default Configuration
-
-```yaml
-# yaml-language-server: $schema=./azureResources.shema.json
-
-workload:
-  create: true
-  name: devexp-workload
-  description: prodExp
-  
-  tags:
-    environment: dev           # Deployment environment (dev, test, prod)
-    division: Platforms        # Business division responsible for the resource
-    team: DevExP              # Team owning the resource
-    project: Contoso-DevExp-DevBox  # Project name
-    costCenter: IT            # Financial allocation center
-    owner: Contoso            # Resource owner
-    landingZone: Workload     # Landing zone classification
-    resources: ResourceGroup  # Resource type
-
-security:
-  create: true
-  name: devexp-security
-  description: prodExp
-  
-  tags:
-    environment: dev
-    division: Platforms
-    team: DevExP
-    project: Contoso-DevExp-DevBox
-    costCenter: IT
-    owner: Contoso
-    landingZone: Workload
-    resources: ResourceGroup
-
-monitoring:
-  create: true
-  name: devexp-monitoring
-  description: prodExp
-  
-  tags:
-    environment: dev
-    division: Platforms
-    team: DevExP
-    project: Contoso-DevExp-DevBox
-    costCenter: IT
-    owner: Contoso
-    landingZone: Workload
-    resources: ResourceGroup
-
-connectivity:
-  create: true
-  name: devexp-connectivity
-  description: prodExp
-  
-  tags:
-    environment: dev
-    division: Platforms
-    team: DevExP
-    project: Contoso-DevExp-DevBox
-    costCenter: IT
-    owner: Contoso
-    landingZone: Workload
-    resources: ResourceGroup
-```
 
 ## Resource Group Structure
 
@@ -115,7 +57,7 @@ workload:
 - Project resources
 
 **Key Considerations**:
-- This resource group will host the core Azure Dev Box resources
+- This resource group will host the core Microsoft Dev Box Accelerator resources
 - It should be managed by the team responsible for Dev Box operations
 - Resource lifecycle is tied to the Dev Box service lifecycle
 - Suitable for workload-specific RBAC assignments
@@ -268,9 +210,9 @@ Examples:
 - [Azure Landing Zones](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/landing-zone/)
 - [Azure Resource Groups Documentation](https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/manage-resource-groups-portal)
 - [Cloud Adoption Framework - Naming and Tagging Strategy](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming)
-- [Azure Dev Box Accelerator GitHub](https://github.com/Evilazaro/DevExp-DevBox/)
+- [Microsoft Dev Box Accelerator GitHub](https://github.com/Evilazaro/DevExp-DevBox/)
 - [Azure Well-Architected Framework](https://learn.microsoft.com/en-us/azure/architecture/framework/)
 
 ---
 
-*This documentation is part of the Azure Dev Box Accelerator project. For more information, visit the [GitHub Repository](https://github.com/Evilazaro/DevExp-DevBox/).*
+*This documentation is part of the Microsoft Dev Box Accelerator project. For more information, visit the [GitHub Repository](https://github.com/Evilazaro/DevExp-DevBox/).*
