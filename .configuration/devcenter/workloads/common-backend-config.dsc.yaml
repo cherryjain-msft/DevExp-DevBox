@@ -20,8 +20,29 @@ properties:
     #----------------------------------------------
     # Azure Command-Line Tools
     #----------------------------------------------
-    # Azure CLI is the foundation for Azure management and serves as a dependency for other Azure tools
-    # It provides command-line access to nearly all Azure service operations
+    # Resource: Azure CLI
+    # Azure CLI is the foundation for Azure management and serves as a dependency for other Azure tools.
+    # It provides command-line access to nearly all Azure service operations.
+    #
+    # Key Azure integration points:
+    # - Unified authentication with Microsoft Entra ID (formerly Azure AD)
+    # - Support for service principals and managed identities
+    # - JSON-based output for automation and scripting
+    # - Cross-platform compatibility for consistent workflows
+    #
+    # Security best practices:
+    # - Use 'az login --tenant' to explicitly specify tenants
+    # - Leverage managed identities where available
+    # - Apply RBAC with principle of least privilege
+    # - Use service principals with certificate-based auth for automation
+    #
+    # Common development scenarios:
+    # - Resource provisioning via templates and scripts
+    # - Querying resource status and configurations
+    # - Integrated deployment workflows with CI/CD
+    # - Management of secrets and connection strings
+    #
+    # Reference: https://learn.microsoft.com/en-us/cli/azure/
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Microsoft.AzureCLI
       directives:
@@ -30,8 +51,30 @@ properties:
       settings:
         id: Microsoft.AzureCLI
 
+    # Resource: Azure Developer CLI (azd)
     # Azure Developer CLI (azd) simplifies application development workflow with templates
-    # and integrated deployment capabilities
+    # and integrated deployment capabilities.
+    #
+    # Key Azure integration points:
+    # - End-to-end application development lifecycle management
+    # - Built-in templates for common Azure architectural patterns
+    # - Automated environment provisioning with infrastructure as code
+    # - Integration with GitHub Actions and Azure DevOps for CI/CD
+    # - Application monitoring and logging setup
+    #
+    # Development best practices:
+    # - Use environment variables for secrets ('azd env set')
+    # - Leverage service templates for consistent architecture
+    # - Implement standardized application structures
+    # - Follow Azure landing zone principles for environments
+    #
+    # Common development scenarios:
+    # - Setting up complete development environments
+    # - Implementing production-ready services with best practices
+    # - Consistent local-to-cloud development experience
+    # - Orchestrating multi-service deployments
+    #
+    # Reference: https://learn.microsoft.com/en-us/azure/developer/azure-developer-cli/
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Microsoft.Azd
       directives:
@@ -42,8 +85,31 @@ properties:
       dependsOn:
         - Microsoft.AzureCLI # AZD requires Azure CLI to function properly
 
+    # Resource: Bicep CLI
     # Bicep provides a domain-specific language for deploying Azure resources
-    # with improved syntax over ARM templates
+    # with improved syntax over ARM templates.
+    #
+    # Key Azure integration points:
+    # - Native integration with Azure Resource Manager
+    # - Support for all Azure resource types and apiVersions
+    # - Resource visualization capabilities
+    # - Module composition for reusable infrastructure
+    # - Built-in functions for dynamic deployments
+    #
+    # IaC best practices:
+    # - Use modules for reusable components
+    # - Implement parameterization for environment flexibility
+    # - Apply Azure Policy as Code for governance
+    # - Use symbolic references instead of string manipulation
+    # - Implement deployment validation with 'what-if'
+    #
+    # Common development scenarios:
+    # - Defining infrastructure as code for Azure environments
+    # - Creating reusable infrastructure modules
+    # - Setting up complex multi-resource deployments
+    # - Implementing infrastructure governance
+    #
+    # Reference: https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Microsoft.Bicep
       directives:
@@ -54,8 +120,32 @@ properties:
       dependsOn:
         - Microsoft.AzureCLI # Bicep extensions use Azure CLI for deployment
 
+    # Resource: Azure Data CLI
     # Azure Data CLI offers specialized commands for working with Azure data services
-    # including databases, storage, and analytics
+    # including databases, storage, and analytics.
+    #
+    # Key Azure integration points:
+    # - Management of SQL Database, SQL Managed Instance, and PostgreSQL
+    # - Support for Synapse Analytics workspace operations
+    # - Data migration tooling and automation
+    # - Integrated data governance capabilities
+    # - Azure Arc data services management
+    #
+    # Data best practices:
+    # - Implement proper data tiering strategies
+    # - Apply column and row level security where needed
+    # - Configure backup and disaster recovery
+    # - Use connection pooling for database access
+    # - Implement proper indexing strategies
+    #
+    # Common development scenarios:
+    # - Database creation and configuration
+    # - Data migration between environments
+    # - Query performance optimization
+    # - Data masking and security implementation
+    # - Hybrid data estate management with Arc
+    #
+    # Reference: https://learn.microsoft.com/en-us/sql/azdata/install/deploy-install-azdata
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Microsoft.Azure.DataCLI
       directives:
@@ -67,8 +157,32 @@ properties:
     #----------------------------------------------
     # Local Development Emulators
     #----------------------------------------------
+    # Resource: Azure Storage Emulator
     # Azure Storage Emulator provides a local environment for testing Azure Storage applications
-    # without requiring an Azure subscription for development
+    # without requiring an Azure subscription for development.
+    #
+    # Key Azure integration points:
+    # - Local emulation of Blob, Queue, and Table storage
+    # - Development connection string compatibility with Azure Storage
+    # - Support for Azure Storage SDK integration
+    # - Local debugging of storage-dependent applications
+    # - Reduced development costs by minimizing cloud resource usage
+    #
+    # Development best practices:
+    # - Use consistent connection strings between local and cloud
+    # - Validate local operations match cloud behavior
+    # - Implement proper exception handling for both environments
+    # - Test with both emulator and actual Azure resources before deployment
+    # - Create automated tests that work with both environments
+    #
+    # Common development scenarios:
+    # - Building applications using Azure Storage
+    # - Performing rapid iterative development
+    # - Unit and integration testing without cloud dependencies
+    # - Offline development scenarios
+    # - Cost optimization during development phases
+    #
+    # Reference: https://learn.microsoft.com/en-us/azure/storage/common/storage-use-emulator
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Microsoft.Azure.StorageEmulator
       directives:
@@ -77,8 +191,37 @@ properties:
       settings:
         id: Microsoft.Azure.StorageEmulator
 
+    # Resource: Azure Cosmos DB Emulator
     # Azure Cosmos DB Emulator provides a local instance of the Cosmos DB service
-    # supporting multiple data models (SQL, MongoDB, Gremlin, etc.)
+    # supporting multiple data models (SQL, MongoDB, Gremlin, etc.).
+    #
+    # Key Azure integration points:
+    # - Support for SQL, MongoDB, Table, Gremlin, and Cassandra APIs
+    # - Local development of multi-region applications
+    # - Built-in data explorer for query development
+    # - Export functionality for data migration
+    # - Simulated consistency levels matching Azure Cosmos DB
+    #
+    # Development best practices:
+    # - Use consistent connection logic between emulator and cloud
+    # - Test with various consistency levels before deployment
+    # - Simulate production request patterns for performance testing
+    # - Create parameterized applications that work with both environments
+    # - Ensure partition key strategies are validated locally
+    #
+    # Common development scenarios:
+    # - NoSQL database application development
+    # - Graph database implementations with Gremlin API
+    # - High-performance, globally distributed application prototyping
+    # - Schema evolution and migration testing
+    # - Multi-model database application development
+    #
+    # Security note:
+    # - The emulator uses a well-known certificate and key for development
+    # - Never use the emulator's certificate in production environments
+    # - Data persistence is local and requires backup consideration
+    #
+    # Reference: https://learn.microsoft.com/en-us/azure/cosmos-db/local-emulator
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: Microsoft.Azure.CosmosEmulator
       directives:
