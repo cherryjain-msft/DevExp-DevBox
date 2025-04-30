@@ -7,21 +7,21 @@ tags:
 description: Resources Organization Documentation
 ---
 
-# Microsoft Dev Box Accelerator: Resources Organization Documentation
+# Microsoft Dev Box landing zone accelerator: Resources Organization Documentation
 
 ## Overview
 
-This documentation details the resource organization structure for the Microsoft Dev Box Accelerator. The configuration defines a comprehensive resource group strategy aligned with Azure Landing Zone principles, segregating resources based on their functional purpose to improve manageability, security, and governance.
+This documentation details the resource organization structure for the Microsoft Dev Box landing zone accelerator. The configuration defines a comprehensive resource group strategy aligned with Azure Landing Zone principles, segregating resources based on their functional purpose to improve manageability, security, and governance.
 
 ## Default Settings
 
 ```yaml
 # yaml-language-server: $schema=./azureResources.shema.json
 #
-# Microsoft Dev Box Accelerator: Resource Groups Configuration
+# Microsoft Dev Box landing zone accelerator: Resource Groups Configuration
 # =======================================================
 #
-# Purpose: Defines the resource group organization structure for Microsoft Dev Box Accelerator environments.
+# Purpose: Defines the resource group organization structure for Microsoft Dev Box landing zone accelerator environments.
 # This configuration aligns with Azure Landing Zone principles by segregating resources
 # based on their functional purpose (workload, security, monitoring, connectivity).
 #
@@ -145,9 +145,9 @@ connectivity:
 - [Azure Landing Zones](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/landing-zone/)
 - [Azure Resource Groups Documentation](https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/manage-resource-groups-portal)
 - [Cloud Adoption Framework - Naming and Tagging Strategy](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming)
-- [Microsoft Dev Box Accelerator GitHub](https://github.com/Evilazaro/DevExp-DevBox/)
+- [Microsoft Dev Box landing zone accelerator GitHub](https://github.com/Evilazaro/DevExp-DevBox/)
 - [Azure Well-Architected Framework](https://learn.microsoft.com/en-us/azure/architecture/framework/)
 
 ---
 
-*This documentation is part of the Microsoft Dev Box Accelerator project. For more information, visit the [GitHub Repository](https://github.com/Evilazaro/DevExp-DevBox/).*
+*This documentation is part of the Microsoft Dev Box landing zone accelerator project. For more information, visit the [GitHub Repository](https://github.com/Evilazaro/DevExp-DevBox/).*

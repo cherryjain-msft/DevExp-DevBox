@@ -1,9 +1,9 @@
 # yaml-language-server: $schema=./devcenter.schema.json
 #
-# Microsoft Dev Box Accelerator: Dev Center Configuration
+# Microsoft Dev Box landing zone accelerator: Dev Center Configuration
 # ======================================
 #
-# Purpose: Defines the Dev Center resource and associated projects for Microsoft Dev Box Accelerator.
+# Purpose: Defines the Dev Center resource and associated projects for Microsoft Dev Box landing zone accelerator.
 # This configuration establishes a centralized developer workstation platform with
 # role-specific configurations and appropriate access controls.
 #
