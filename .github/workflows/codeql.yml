@@ -46,14 +46,14 @@ jobs:
       matrix:
         include:
           - language: "javascript-typescript"
-            build-mode: "auto" # Use "auto" for JavaScript and TypeScript projects
+            build-mode: "autobuild" # Use "auto" for JavaScript and TypeScript projects
           - language: "csharp"
-            build-mode: "auto" 
+            build-mode: "autobuild" 
           - language: "go"
-            build-mode: "auto" # Use "auto" for Go projects
+            build-mode: "autobuild" # Use "auto" for Go projects
 
           - language: "actions"
-            build-mode: "auto" # Use "auto" for Action projects
+            build-mode: "autobuild" # Use "auto" for Action projects
         # CodeQL supports the following values keywords for 'language': 'actions', 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby', 'swift'
         # Use `c-cpp` to analyze code written in C, C++ or both
         # Use 'java-kotlin' to analyze code written in Java, Kotlin or both
