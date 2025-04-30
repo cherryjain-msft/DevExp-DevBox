@@ -7,11 +7,11 @@ tags:
 description: Workload Settings Documentation
 ---
 
-# Microsoft Dev Box Accelerator: Workload Settings Documentation
+# Microsoft Dev Box landing zone accelerator: Workload Settings Documentation
 
 ## Overview
 
-This documentation provides a comprehensive explanation of the Microsoft Dev Box Accelerator defined in devcenter.yaml. Azure Dev Box is a managed service that enables organizations to provision, manage, and secure development workstations in the cloud, allowing developers to focus on code rather than environment setup.
+This documentation provides a comprehensive explanation of the Microsoft Dev Box landing zone accelerator defined in devcenter.yaml. Azure Dev Box is a managed service that enables organizations to provision, manage, and secure development workstations in the cloud, allowing developers to focus on code rather than environment setup.
 
 ## Table of Contents
 
@@ -342,10 +342,10 @@ tags:
 ```yaml
 # yaml-language-server: $schema=./devcenter.schema.json
 #
-# Microsoft Dev Box Accelerator: Dev Center Configuration
+# Microsoft Dev Box landing zone accelerator: Dev Center Configuration
 # ======================================
 #
-# Purpose: Defines the Dev Center resource and associated projects for Microsoft Dev Box Accelerator.
+# Purpose: Defines the Dev Center resource and associated projects for Microsoft Dev Box landing zone accelerator.
 # This configuration establishes a centralized developer workstation platform with
 # role-specific configurations and appropriate access controls.
 #

@@ -8,21 +8,21 @@ tags:
 description: Network Settings Documentation
 ---
 
-# Microsoft Dev Box Accelerator: Network Settings Documentation
+# Microsoft Dev Box landing zone accelerator: Network Settings Documentation
 
 ## Overview
 
-This documentation details the network configuration for Microsoft Dev Box Accelerator. The configuration defines a managed virtual network infrastructure that isolates Dev Box resources while enabling secure connectivity to both Azure services and corporate resources.
+This documentation details the network configuration for Microsoft Dev Box landing zone accelerator. The configuration defines a managed virtual network infrastructure that isolates Dev Box resources while enabling secure connectivity to both Azure services and corporate resources.
 
 ## Default Settings 
 
 ```yaml
 # yaml-language-server: $schema=./network.schema.json
 #
-# Microsoft Dev Box Accelerator: Network Configuration
+# Microsoft Dev Box landing zone accelerator: Network Configuration
 # ===============================================
 # 
-# Purpose: Defines the virtual network infrastructure for Microsoft Dev Box Accelerator environments.
+# Purpose: Defines the virtual network infrastructure for Microsoft Dev Box landing zone accelerator environments.
 # This configuration creates a managed virtual network that isolates DevBox resources
 # while enabling secure connectivity to Azure services and corporate resources.
 #
@@ -106,10 +106,10 @@ tags:
 
 - [Azure Virtual Network Documentation](https://learn.microsoft.com/en-us/azure/virtual-network/)
 - [Azure VNet Best Practices](https://learn.microsoft.com/en-us/azure/architecture/reference-architectures/hybrid-networking/)
-- [Microsoft Dev Box Accelerator Networking](https://learn.microsoft.com/en-us/azure/dev-box/how-to-configure-network-connectivity)
+- [Microsoft Dev Box landing zone accelerator Networking](https://learn.microsoft.com/en-us/azure/dev-box/how-to-configure-network-connectivity)
 - [Azure Cloud Adoption Framework - Naming and Tagging](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming)
-- [Microsoft Dev Box Accelerator GitHub](https://github.com/Evilazaro/DevExp-DevBox/)
+- [Microsoft Dev Box landing zone accelerator GitHub](https://github.com/Evilazaro/DevExp-DevBox/)
 
 ---
 
-*This documentation is part of the Microsoft Dev Box Accelerator project. For more information, visit the [GitHub Repository](https://github.com/Evilazaro/DevExp-DevBox/).*
+*This documentation is part of the Microsoft Dev Box landing zone accelerator project. For more information, visit the [GitHub Repository](https://github.com/Evilazaro/DevExp-DevBox/).*

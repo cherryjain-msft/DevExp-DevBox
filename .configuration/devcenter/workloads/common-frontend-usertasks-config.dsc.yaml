@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
 #
-# Microsoft Dev Box Accelerator Frontend Development Configuration
+# Microsoft Dev Box landing zone accelerator Frontend Development Configuration
 # =============================================
 #
 # Purpose:
@@ -9,7 +9,7 @@
 #   - API testing tools (Postman)
 #
 # Requirements:
-#   - Microsoft Dev Box Accelerator with Windows 11
+#   - Microsoft Dev Box landing zone accelerator with Windows 11
 #   - Administrator access for tool installation
 #   - Internet connectivity for package downloads
 #
@@ -68,7 +68,7 @@ properties:
               
               # Ensure path is properly set
               # This combines both machine and user paths to ensure we can find dotnet command
-              # Follows Microsoft Dev Box Accelerator best practice for managing PATH environment
+              # Follows Microsoft Dev Box landing zone accelerator best practice for managing PATH environment
               $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
               
               # Check if dotnet command exists before attempting updates
@@ -98,7 +98,7 @@ properties:
     # These extensions provide syntax highlighting, IntelliSense, debugging, and other
     # features specific to Azure and web development technologies.
     #
-    # Following Microsoft Dev Box Accelerator best practices for developer productivity and
+    # Following Microsoft Dev Box landing zone accelerator best practices for developer productivity and
     # standardized tooling across development teams.
     - resource: PSDscResources/Script
       id: Microsoft.VisualStudioCode.Extensions

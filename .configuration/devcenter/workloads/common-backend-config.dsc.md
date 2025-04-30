@@ -6,11 +6,11 @@ tags:
 description: Backend Development Environment Configuration
 ---
 
-# Microsoft Dev Box Accelerator Backend Development Environment Configuration
+# Microsoft Dev Box landing zone accelerator Backend Development Environment Configuration
 
 ## Overview
 
-This documentation provides a comprehensive explanation of the Microsoft Dev Box Accelerator backend development environment configuration defined in common-backend-config.dsc.yaml. This configuration deploys a standardized development environment using Desired State Configuration (DSC) to ensure consistency across developer workstations.
+This documentation provides a comprehensive explanation of the Microsoft Dev Box landing zone accelerator backend development environment configuration defined in common-backend-config.dsc.yaml. This configuration deploys a standardized development environment using Desired State Configuration (DSC) to ensure consistency across developer workstations.
 
 ## Table of Contents
 
@@ -30,7 +30,7 @@ This documentation provides a comprehensive explanation of the Microsoft Dev Box
 
 ## Introduction
 
-The Microsoft Dev Box Accelerator backend development configuration installs essential tools for Azure backend development, providing a standardized environment with:
+The Microsoft Dev Box landing zone accelerator backend development configuration installs essential tools for Azure backend development, providing a standardized environment with:
 
 - Azure command-line tools for resource management and deployment
 - Local development emulators for Azure services
@@ -344,4 +344,4 @@ When using this configuration, consider these security best practices:
 
 ---
 
-*This documentation is part of the Microsoft Dev Box Accelerator Accelerator project. For more information, visit the [GitHub Repository](https://github.com/Evilazaro/DevExp-DevBox/).*
+*This documentation is part of the Microsoft Dev Box landing zone accelerator Accelerator project. For more information, visit the [GitHub Repository](https://github.com/Evilazaro/DevExp-DevBox/).*

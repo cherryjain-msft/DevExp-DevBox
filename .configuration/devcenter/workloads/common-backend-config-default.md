@@ -6,11 +6,11 @@ tags:
 description: Backend Development Environment Configuration
 ---
 
-# Microsoft Dev Box Accelerator Backend Development Environment Configuration
+# Microsoft Dev Box landing zone accelerator Backend Development Environment Configuration
 
 ## Overview
 
-This documentation provides a comprehensive explanation of the Microsoft Dev Box Accelerator backend development environment configuration defined in common-backend-config.dsc.yaml. This configuration deploys a standardized development environment using Desired State Configuration (DSC) to ensure consistency across developer workstations.
+This documentation provides a comprehensive explanation of the Microsoft Dev Box landing zone accelerator backend development environment configuration defined in common-backend-config.dsc.yaml. This configuration deploys a standardized development environment using Desired State Configuration (DSC) to ensure consistency across developer workstations.
 
 ## Table of Contents
 
@@ -32,7 +32,7 @@ This documentation provides a comprehensive explanation of the Microsoft Dev Box
 ```yaml
 # yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
 #
-# Microsoft Dev Box Accelerator Backend Development Configuration
+# Microsoft Dev Box landing zone accelerator Backend Development Configuration
 # =============================================
 #
 # Purpose:
@@ -335,4 +335,4 @@ properties:
 
 ---
 
-*This documentation is part of the Microsoft Dev Box Accelerator Accelerator project. For more information, visit the [GitHub Repository](https://github.com/Evilazaro/DevExp-DevBox/).*
+*This documentation is part of the Microsoft Dev Box landing zone accelerator Accelerator project. For more information, visit the [GitHub Repository](https://github.com/Evilazaro/DevExp-DevBox/).*
