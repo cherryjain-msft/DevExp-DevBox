@@ -47,13 +47,7 @@ identity:
   roleAssignments:
     # Roles assigned to the Dev Center managed identity
     # These permissions allow the Dev Center to manage related resources
-    devCenter:
-      # Owner role grants full access to manage all resources
-      # Required for Dev Center to manage projects and environments
-      # Security note: Follow least-privilege principle in production environments
-      - id: "8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
-        name: "Owner"
-      
+    devCenter:      
       # Contributor role allows creating/managing resources without granting access
       # Needed for Dev Center to deploy and configure Dev Box resources
       - id: "b24988ac-6180-42a0-ab88-20f7382dd24c"
