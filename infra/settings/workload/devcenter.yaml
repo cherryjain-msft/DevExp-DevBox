@@ -13,7 +13,7 @@
 
 # Dev Center name - globally unique identifier for your Dev Center resource
 # Best practice: Follow naming convention [company]-[purpose]-[instance] for clarity
-name: "contoso-devexp2"
+name: "contoso-devexp"
 
 # Azure region where the Dev Center will be deployed
 # Best practice: Deploy to a region close to your development team for optimal performance

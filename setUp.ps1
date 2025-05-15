@@ -37,7 +37,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory=$false)]
-    [string]$EnvName = "prod",
+    [string]$EnvName = "workshop",
     
     [Parameter(Mandatory=$false)]
     [ValidateSet("eastus", "eastus2", "westus", "westus2", "northeurope", "westeurope")]
@@ -318,7 +318,7 @@ catch {
     $errorMsg = $_.Exception.Message
     $errorLine = $_.InvocationInfo.ScriptLineNumber
     
-    Write-LogMessage "Setup failed at line $errorLine: $errorMsg" -Level "Error"
+    Write-LogMessage "Setup failed at line $errorLine : $errorMsg" -Level "Error"
     
     # Provide guidance on next steps
     Write-LogMessage "Check the error details above and try again" -Level "Info"
