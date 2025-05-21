@@ -1,5 +1,5 @@
 # Overview
-The **Dev Box accelerator** is an open-source, reference implementation designed to help you quickly establish a landing zone subscription optimized for Microsoft Dev Box deployments. Built on the principles and best practices of the [**Azure Cloud Adoption Framework (CAF) enterprise-scale landing zones**](https://docs.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/enterprise-scale), it provides a strategic design path and a target technical state that:
+The [**Dev Box accelerator**](https://evilazaro.github.io/DevExp-DevBox/) is an open-source, reference implementation designed to help you quickly establish a landing zone subscription optimized for Microsoft Dev Box deployments. Built on the principles and best practices of the [**Azure Cloud Adoption Framework (CAF) enterprise-scale landing zones**](https://docs.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/enterprise-scale), it provides a strategic design path and a target technical state that:
 
 - Establishes foundational services (network, monitoring, security, and workload) required for a secure, scalable, and multi-tenant Dev Box environment.
 - Aligns to CAF guidance for subscription structure, resource groups, and role-based access control (RBAC).
