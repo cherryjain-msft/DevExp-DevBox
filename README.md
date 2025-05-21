@@ -8,7 +8,7 @@ The **Dev Box accelerator** is an open-source, reference implementation designed
 
 ## Resources Visualization
 
-![Resources Visualization](mainbicepvisualization.png)
+![Resources Visualization](https://evilazaro.github.io/DevExp-DevBox/docs/overview/whatis/mainbicepvisualization.png)
 
 ## What the Microsoft Dev Box accelerator Provides
 
