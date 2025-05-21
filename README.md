@@ -1,18 +1,54 @@
-[![Microsoft Dev Box CI](https://github.com/Evilazaro/DevExp-DevBox/actions/workflows/devbox-ci.yml/badge.svg)](https://github.com/Evilazaro/DevExp-DevBox/actions/workflows/devbox-ci.yml)  [![Microsoft Dev Box Deployment V2](https://github.com/Evilazaro/DevExp-DevBox/actions/workflows/azure-dev.yml/badge.svg)](https://github.com/Evilazaro/DevExp-DevBox/actions/workflows/azure-dev.yml)
+# Overview
+The [**Dev Box accelerator**](https://evilazaro.github.io/DevExp-DevBox/) is an open-source, reference implementation designed to help you quickly establish a landing zone subscription optimized for Microsoft Dev Box deployments. Built on the principles and best practices of the [**Azure Cloud Adoption Framework (CAF) enterprise-scale landing zones**](https://docs.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/enterprise-scale), it provides a strategic design path and a target technical state that:
 
-# Microsoft Dev Box landing zone accelerator
+- Establishes foundational services (network, monitoring, security, and workload) required for a secure, scalable, and multi-tenant Dev Box environment.
+- Aligns to CAF guidance for subscription structure, resource groups, and role-based access control (RBAC).
+- Is fully modular, parameterized, and ready to be adapted to your organization’s existing landing zone or to provision new platform services from scratch.
+- Is open source—feel free to fork, extend, or customize the Bicep modules, policies, and scripts to meet your unique requirements.
 
-Welcome to the Contoso Dev Box repository! This project showcases how Contoso, a fictitious company with developers located worldwide, leverages Microsoft Dev Box to streamline its engineer onboarding and deployment environment automation processes.
+## Resources Visualization
 
-## Overview
+![Resources Visualization](https://evilazaro.github.io/DevExp-DevBox/docs/overview/whatis/mainbicepvisualization.png)
 
-Contoso aims to enhance its engineering efficiency by adopting Microsoft Dev Box. This repository demonstrates how Contoso designed and deployed its solution, enabling remote engineers to quickly and effectively set up their development environments.
+## What the Microsoft Dev Box accelerator Provides
 
-## Key Benefits
+The Microsoft Dev Box Accelerator delivers a comprehensive set of Bicep modules, automation scripts, and **YAML configuration files with accompanying JSON schema definitions**, designed to streamline the deployment of a production-ready Microsoft Dev Box landing zone. These artifacts empower infrastructure professionals with a **configuration-as-code** approach, enabling repeatable, scalable, and policy-compliant environments.
 
-- **Streamlined Onboarding**: New engineers can get started quickly with pre-configured development environments.
-- **Automated Deployment**: Simplifies the process of setting up and managing deployment environments.
-- **Global Accessibility**: Ensures that developers from any location can access the necessary tools and resources.
-- **Platform Engineering Capabilities**: Platform engineers can create dev box pools, manage security settings, network configurations, and organizational policies to ensure secure access to resources [here](https://learn.microsoft.com/en-us/azure/dev-box/overview-what-is-microsoft-dev-box).
+### Key Components
 
-[Explore](https://evilazaro.github.io/DevExp-DevBox/) the repository to learn more about how Contoso utilizes Microsoft Dev Box to achieve these goals. 
+- **Networking**: Virtual networks, subnets, network connections and optional hub connectivity.
+- **Identity & Access**: Microsoft Entra integration, service principals, managed identities, and RBAC assignments.
+- **Security & Governance**: Policy assignments (tagging, security baseline, resource consistency), Azure Monitor and Log Analytics integration.
+- **Platform Services**: DevCenter, Projects, and supporting components.
+
+## Cloud Adoption Framework Alignment
+
+All artifacts align with CAF’s enterprise-scale landing zone patterns:
+
+- **Management Group Hierarchy**: Clear separation of concerns (Connectivity, Monitoring, Security, Workload).
+- **Modularity**: Deploy only the foundational services you need.
+
+## Enterprise-Scale Design Principles
+
+- **Scalability**: Supports hundreds of developers and multiple Dev Box SKUs.
+- **Security**: Zero-trust networking, least-privilege access, continuous monitoring, and compliance.
+- **Cost Management**: Tagging, budget alerts, and automated Dev Box lifecycle management.
+
+## Design Areas
+
+When implementing a scalable Microsoft Dev Box landing zone, consider the following design areas:
+
+| Design Area                | Considerations                                                                                                           |
+|----------------------------|--------------------------------------------------------------------------------------------------------------------------|
+| **Subscription Topology**  | Placement under a dedicated **“Dev Box”** subscription; isolation from production workloads; environment-dependent naming. |
+| **Resource Organization**  | Resource group structure (e.g., `connectivity-rg`, `monitoring-rg`, `security-rg`, and `workload-rg`); consistent naming & tagging policies.        |
+| **Networking**             | Hub-and-spoke or standalone VNet; subnet segmentation; Azure Firewall or NVA integration; optional VPN/ExpressRoute.     |
+| **Identity & Access**      | Microsoft Entra security groups for platform engineering teams, dev team leads, and developers; managed identities for automation, and DevCenter integration. |                 |
+| **Security & Governance**  | Key Vault for secrets; Log Analytics workspace for logs, and telemetry.                    |
+| **Platform Services** | Configuration of Dev Center, Custom Tasks Catalogs, Networking Connections, Projects, Environments and Image Definitions, and environments types; assignment of Dev Center roles via RBAC.                        |
+
+## Journey Paths  
+> - **Greenfield**: Deploy the accelerator’s Bicep modules to create platform foundational services, then launch your Dev Box environment.  
+> - **Brownfield**: Import existing landing zone services by disabling and parameterizing connections (e.g., pointing to an existing VNet, Subnet, Resource Group or Key Vault).
+
+**Learn more** how to configure the Accelerator in the [Accelerator Configuration](https://evilazaro.github.io/DevExp-DevBox/docs/configureresources/) session.
