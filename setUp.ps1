@@ -302,11 +302,11 @@ try {
     Write-LogMessage "Initializing Azure Developer CLI environment..." -Level "Info"
     Initialize-AzdEnvironment
     
-    # Provision Azure resources
-    # This step creates the actual resources in Azure
-    if (-not (Start-AzureProvisioning)) {
-        exit 1
-    }
+    # # Provision Azure resources
+    # # This step creates the actual resources in Azure
+    # if (-not (Start-AzureProvisioning)) {
+    #     exit 1
+    # }
     
     # Success message with environment details
     Write-LogMessage "Dev Box environment '$EnvName' setup successfully in '$Location'" -Level "Success"
