@@ -25,6 +25,7 @@ resource existingKeyVault 'Microsoft.KeyVault/vaults@2024-12-01-preview' existin
   scope: resourceGroup()
 }
 
+@description('Key vault secret module')
 module secret 'secret.bicep' = {
   params: {
     name: securitySettings.keyVault.secretName
@@ -34,10 +35,10 @@ module secret 'secret.bicep' = {
   }
 }
 @description('The name of the Key Vault')
-output keyVaultName string = keyVault.name
+output keyVaultName string = (securitySettings.create ? keyVault.outputs.keyVaultName : existingKeyVault.name)
 
 @description('The identifier of the secret')
 output secretIdentifier string = secret.outputs.secretIdentifier
 
 @description('The endpoint URI of the Key Vault')
-output endpoint string = keyVault.outputs.endpoint
+output endpoint string = (securitySettings.create ? keyVault.outputs.endpoint : existingKeyVault.properties.vaultUri)
