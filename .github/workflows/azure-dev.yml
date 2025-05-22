@@ -1,5 +1,5 @@
 # Run when commits are pushed to main
-name: Microsoft Dev Box Deployment
+name: Accelerator Continuous Deployment
 on:
   workflow_dispatch:
 
