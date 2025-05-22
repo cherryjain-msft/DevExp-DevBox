@@ -117,9 +117,7 @@ module security '../src/security/security.bicep' = {
   name: 'security-keyvault-deployment-${environmentName}'
   scope: resourceGroup(securityRgName)
   params: {
-    keyVaultName: 'devexp'
     secretValue: secretValue
-    secretName: 'gha-token'
     logAnalyticsId: monitoring.outputs.logAnalyticsId
     tags: landingZones.security.tags
   }
