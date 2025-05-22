@@ -1,0 +1,55 @@
+@description('Secret Name')
+param name string
+
+@description('Secret Value')
+@secure()
+param secretValue string
+
+@description('Key Vault Name')
+param keyVaultName string
+
+@description('Log Analytics Workspace ID')
+param logAnalyticsId string
+
+resource keyVault 'Microsoft.KeyVault/vaults@2024-12-01-preview' existing = {
+  name: keyVaultName
+  scope: resourceGroup()
+}
+
+@description('Azure Key Vault Secret')
+resource secret 'Microsoft.KeyVault/vaults/secrets@2024-12-01-preview' = {
+  name: name
+  parent: keyVault
+  properties: {
+    attributes: {
+      enabled: true
+    }
+    contentType: 'string'
+    value: secretValue
+  }
+}
+
+@description('Log Analytics Diagnostic Settings')
+resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: '${keyVault.name}-diagnostic-settings'
+  scope: keyVault
+  properties: {
+    logAnalyticsDestinationType: 'AzureDiagnostics'
+    logs: [
+      {
+        categoryGroup: 'allLogs'
+        enabled: true
+      }
+    ]
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+      }
+    ]
+    workspaceId: logAnalyticsId
+  }
+}
+
+@description('The identifier of the secret')
+output secretIdentifier string = secret.properties.secretUri
