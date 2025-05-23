@@ -98,22 +98,16 @@ resource project 'Microsoft.DevCenter/projects@2025-02-01' = {
   })
 }
 
-@description('Configure Key Vault access policies for project identity')
-module keyVaultAccessPolicies '../../security/keyvault-access.bicep' = {
-  name: 'kv-access-${uniqueString(project.id)}'
+@description('Role assignment resource')
+module roleAssignment '../../identity/keyVaultAccess.bicep' = {
   scope: resourceGroup(securityResourceGroupName)
   params: {
-    keyVaultName: keyVaultName
+    name: project.name
     principalId: project.identity.principalId
-    permissions: {
-      secrets: [
-        'get'
-        'list'
-      ]
-      certificates: []
-      keys: []
-    }
   }
+  dependsOn: [
+    project
+  ]
 }
 
 @description('Configure project identity role assignments')
@@ -139,7 +133,6 @@ module catalogs 'projectCatalog.bicep' = {
     secretIdentifier: secretIdentifier
   }
   dependsOn: [
-    keyVaultAccessPolicies
     projectIdentity
   ]
 }

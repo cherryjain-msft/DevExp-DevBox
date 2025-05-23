@@ -18,7 +18,7 @@ keyVault:
   # Security settings
   enablePurgeProtection: true                 # Prevents permanent deletion of secrets even by authorized users
   enableSoftDelete: true                      # Enables recovery of deleted secrets within retention period
-  softDeleteRetentionInDays: 90               # Number of days deleted secrets remain recoverable (7-90 days)
+  softDeleteRetentionInDays: 7                # Number of days deleted secrets remain recoverable (7-90 days)
   enableRbacAuthorization: true               # Uses Azure RBAC for access control instead of vault access policies
 
   # Resource organization

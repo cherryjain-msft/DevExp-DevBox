@@ -97,17 +97,6 @@ resource devcenter 'Microsoft.DevCenter/devcenters@2025-02-01' = {
   tags: config.tags
 }
 
-// Security configuration
-@description('Key Vault Access Policies')
-module keyVaultAccessPolicies '../security/keyvault-access.bicep' = {
-  name: 'keyVaultAccessPolicies-${devCenterName}'
-  scope: resourceGroup(securityResourceGroupName)
-  params: {
-    keyVaultName: keyVaultName
-    principalId: devCenterPrincipalId
-  }
-}
-
 // Monitoring configuration
 @description('Log Analytics Diagnostic Settings')
 resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
@@ -141,9 +130,6 @@ module devCenterIdentityRoleAssignment '../identity/devCenterRoleAssignment.bice
       id: role.id
       principalId: devCenterPrincipalId
     }
-    dependsOn: [
-      keyVaultAccessPolicies
-    ]
   }
 ]
 
@@ -188,7 +174,7 @@ module catalog 'core/catalog.bicep' = [
       secretIdentifier: secretIdentifier
     }
     dependsOn: [
-      keyVaultAccessPolicies
+      devCenterIdentityRoleAssignment
     ]
   }
 ]

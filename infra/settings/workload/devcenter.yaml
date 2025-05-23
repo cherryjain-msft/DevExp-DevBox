@@ -205,6 +205,11 @@ projects:
             - name: "Deployment Environment User"
               id: "18e40d4e-8d2e-438d-97e1-9528336e149c"
 
+            # Key Vault Secrets User role allows accessing secrets in Azure Key Vault
+            # Needed for Dev Center to retrieve secrets for Dev Box provisioning
+            - name: "Key Vault Secrets User"
+              id: "4633458b-17de-408a-b874-0445c86b69e6"
+
     # Dev Box pools - collections of Dev Boxes with specific configurations
     # Best practice: Create role-specific pools with appropriate tools and settings
     pools:
