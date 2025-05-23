@@ -1,9 +1,9 @@
 # yaml-language-server: $schema=./network.schema.json
 #
-# Microsoft Dev Box landing zone accelerator: Network Configuration
+# Microsoft Dev Box accelerator: Network Configuration
 # ===============================================
 # 
-# Purpose: Defines the virtual network infrastructure for Microsoft Dev Box landing zone accelerator environments.
+# Purpose: Defines the virtual network infrastructure for environments.
 # This configuration creates a managed virtual network that isolates DevBox resources
 # while enabling secure connectivity to Azure services and corporate resources.
 #

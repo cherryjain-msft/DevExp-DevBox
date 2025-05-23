@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
 #
-# Microsoft Dev Box landing zone accelerator Common Configuration
+# Common Configuration
 # =================================
 #
 # Purpose:
@@ -55,7 +55,7 @@ properties:
     # Source Control Tools
     #----------------------------------------------
     # Resource: Git
-    # Git is essential for Microsoft Dev Box landing zone accelerator workflows, enabling developers to work with
+    # Git is essential for workflows, enabling developers to work with
     # source code repositories, CI/CD pipelines, and infrastructure as code.
     #
     # Azure-specific considerations:

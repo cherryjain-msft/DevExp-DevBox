@@ -1,9 +1,9 @@
 # yaml-language-server: $schema=./azureResources.shema.json
 #
-# Microsoft Dev Box landing zone accelerator: Resource Groups Configuration
+# Microsoft Dev Box accelerator: Resource Groups Configuration
 # =======================================================
 #
-# Purpose: Defines the resource group organization structure for Microsoft Dev Box landing zone accelerator environments.
+# Purpose: Defines the resource group organization structure for environments.
 # This configuration aligns with Azure Landing Zone principles by segregating resources
 # based on their functional purpose (workload, security, monitoring, connectivity).
 #
