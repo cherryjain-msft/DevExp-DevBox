@@ -25,7 +25,7 @@ resource project 'Microsoft.DevCenter/projects@2025-02-01' existing = {
 @description('Role assignments for the project')
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for role in roles: {
-    name: guid(deployer().objectId, principalId, role.id)
+    name: guid(project.id, principalId, role.id)
     scope: project
     properties: {
       principalId: principalId
@@ -47,5 +47,5 @@ output roleAssignmentIds array = [
   }
 ]
 
-// // @description('Project ID')
-// // output projectId string = project.id
+@description('Project ID')
+output projectId string = project.id
