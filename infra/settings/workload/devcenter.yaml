@@ -55,14 +55,8 @@ identity:
       
       # # User Access Administrator allows managing user access to resources
       # # Required for Dev Center to assign appropriate permissions to projects
-      # - id: "18d7d88d-d35e-4fb5-a5c3-7773c20a72d9"
-      #   name: "User Access Administrator"
-
-      - id: "e40ec5ca-96e0-45a2-b4ff-59039f2c2b59"
-        name: "Managed Identity Contributor"
-
-      - id: "f1a07417-d97a-45cb-824c-7a7467783830"
-        name: "Managed Identity Operator"    
+      - id: "18d7d88d-d35e-4fb5-a5c3-7773c20a72d9"
+        name: "User Access Administrator"
 
     # Organizational role definitions - maps Azure AD groups to Dev Center roles
     # Best practice: Use Azure AD groups instead of individual users for simplified management
