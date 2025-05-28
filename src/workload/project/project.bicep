@@ -114,7 +114,7 @@ module roleAssignment '../../identity/keyVaultAccess.bicep' = {
 module projectIdentity '../../identity/projectIdentityRoleAssignment.bicep' = [
   for (role, i) in identity.roleAssignments: {
     name: 'prj-rbac-${i}-${uniqueString(project.id, role.azureADGroupId)}'
-    scope: resourceGroup()
+    scope: subscription()
     params: {
       projectName: project.name
       principalId: role.azureADGroupId
