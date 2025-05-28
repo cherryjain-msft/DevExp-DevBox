@@ -25,9 +25,9 @@ resource project 'Microsoft.DevCenter/projects@2025-02-01' existing = {
 resource environmentType 'Microsoft.DevCenter/projects/environmentTypes@2025-02-01' = {
   name: environmentConfig.name
   parent: project
-  identity: {
-    type: 'SystemAssigned'
-  }
+  // identity: {
+  //   type: 'SystemAssigned'
+  // }
   properties: {
     displayName: environmentConfig.name
     deploymentTargetId: subscription().id
