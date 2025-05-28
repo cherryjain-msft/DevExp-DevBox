@@ -9,15 +9,15 @@ type ProjectEnvironmentType = {
   deploymentTargetId: string
 }
 
-var roles = [
-  {
-    id: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-    properties: {}
-  }
-]
+// var roles = [
+//   {
+//     id: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+//     properties: {}
+//   }
+// ]
 
 @description('Project')
-resource project 'Microsoft.DevCenter/projects@2024-10-01-preview' existing = {
+resource project 'Microsoft.DevCenter/projects@2025-02-01' existing = {
   name: projectName
 }
 
@@ -32,9 +32,6 @@ resource environmentType 'Microsoft.DevCenter/projects/environmentTypes@2025-02-
     displayName: environmentConfig.name
     deploymentTargetId: subscription().id
     status: 'Enabled'
-    creatorRoleAssignment: {
-      roles: toObject(roles, role => role.id, role => role.properties)
-    }
   }
 }
 
