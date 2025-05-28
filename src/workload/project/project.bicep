@@ -120,6 +120,10 @@ module projectIdentity '../../identity/projectIdentityRoleAssignment.bicep' = [
       principalId: role.azureADGroupId
       roles: role.azureRBACRoles
     }
+    dependsOn: [
+      project
+      roleAssignment
+    ]
   }
 ]
 
@@ -148,6 +152,7 @@ module environmentTypes 'projectEnvironmentType.bicep' = [
     }
     dependsOn: [
       projectIdentity
+      catalogs
     ]
   }
 ]
