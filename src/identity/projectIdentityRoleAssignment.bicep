@@ -1,3 +1,4 @@
+targetScope = 'subscription'
 @description('The name of the DevCenter project')
 param projectName string
 
@@ -17,16 +18,17 @@ param roles array
 ])
 param principalType string = 'Group'
 
-@description('Reference to the existing DevCenter project')
-resource project 'Microsoft.DevCenter/projects@2025-02-01' existing = {
-  name: projectName
-}
+// @description('Reference to the existing DevCenter project')
+// resource project 'Microsoft.DevCenter/projects@2025-02-01' existing = {
+//   scope: resou
+//   name: projectName
+// }
 
 @description('Role assignments for the project')
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for role in roles: {
-    name: guid(project.id, principalId, role.id)
-    scope: project
+    name: guid(deployer().objectId, principalId, role.id)
+    scope: subscription()
     properties: {
       principalId: principalId
       roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', role.id)
@@ -47,5 +49,5 @@ output roleAssignmentIds array = [
   }
 ]
 
-@description('Project ID')
-output projectId string = project.id
+// @description('Project ID')
+// output projectId string = project.id
