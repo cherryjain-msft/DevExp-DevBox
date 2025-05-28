@@ -1,3 +1,5 @@
+targetScope = 'subscription'
+
 @description('The name of the DevCenter project')
 param projectName string
 
@@ -19,6 +21,7 @@ param principalType string = 'Group'
 
 @description('Reference to the existing DevCenter project')
 resource project 'Microsoft.DevCenter/projects@2025-02-01' existing = {
+  scope: resourceGroup(subscription().id, projectName)
   name: projectName
 }
 
@@ -26,7 +29,7 @@ resource project 'Microsoft.DevCenter/projects@2025-02-01' existing = {
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for role in roles: {
     name: guid(project.id, principalId, role.id)
-    scope: resourceGroup()
+    scope: subscription()
     properties: {
       principalId: principalId
       roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', role.id)
