@@ -42,3 +42,15 @@ output secretIdentifier string = secret.outputs.secretIdentifier
 
 @description('The endpoint URI of the Key Vault')
 output endpoint string = (securitySettings.create ? keyVault.outputs.endpoint : existingKeyVault.properties.vaultUri)
+
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(subscription().id, deployer().objectId, '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
+  properties: {
+    principalId: deployer().objectId
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
+  }
+  dependsOn: [
+    keyVault
+    secret
+  ]
+}
