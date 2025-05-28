@@ -26,7 +26,7 @@ resource project 'Microsoft.DevCenter/projects@2025-02-01' existing = {
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for role in roles: {
     name: guid(project.id, principalId, role.id)
-    scope: project
+    scope: resourceGroup()
     properties: {
       principalId: principalId
       roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', role.id)
