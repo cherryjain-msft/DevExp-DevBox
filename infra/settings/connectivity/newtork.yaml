@@ -8,6 +8,7 @@
 # while enabling secure connectivity to Azure services and corporate resources.
 #
 # References:
+# - Microsoft Dev Box accelerator: https://learn.microsoft.com/en-us/azure/https://evilazaro.github.io/DevExp-DevBox/docs/configureresources/connectivity/
 # - Azure VNet best practices: https://learn.microsoft.com/en-us/azure/architecture/reference-architectures/hybrid-networking/
 # - DevBox networking: https://learn.microsoft.com/en-us/azure/dev-box/how-to-configure-network-connectivity
 
