@@ -8,6 +8,7 @@
 # based on their functional purpose (workload, security, monitoring, connectivity).
 #
 # References:
+# - Microsoft Dev Box accelerator: https://evilazaro.github.io/DevExp-DevBox/docs/configureresources/resourceorganization/
 # - Azure Landing Zones: https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/landing-zone/
 # - Azure Resource Groups: https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/manage-resource-groups-portal
 
@@ -22,22 +23,10 @@
 # Best practice: Separate application workloads from infrastructure components
 # to enable independent scaling, access control, and lifecycle management.
 workload:
-  # Determines whether to create this resource group or use existing
   create: true
-  
-  # Resource group name
-  # Best practice: Use a consistent naming convention such as:
-  # [project]-[purpose]-[environment]-rg
   name: devexp-workload
-  
-  # Brief description of the resource group purpose
-  # Consider replacing "prodExp" with more descriptive text like:
-  # "Dev Box primary workload resources"
   description: prodExp
   
-  # Resource tags for governance and organization
-  # Best practice: Apply consistent tags across all resources
-  # for effective resource management and cost allocation
   tags:
     environment: dev           # Deployment environment (dev, test, prod)
     division: Platforms        # Business division responsible for the resource
@@ -62,6 +51,7 @@ security:
   create: true
   name: devexp-security
   description: prodExp
+  
   tags:
     environment: dev
     division: Platforms
@@ -86,6 +76,7 @@ monitoring:
   create: true
   name: devexp-monitoring
   description: prodExp
+  
   tags:
     environment: dev
     division: Platforms
@@ -111,6 +102,7 @@ connectivity:
   create: true
   name: devexp-connectivity
   description: prodExp
+  
   tags:
     environment: dev
     division: Platforms
