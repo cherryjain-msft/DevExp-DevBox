@@ -5,6 +5,13 @@
 # This file defines the configuration for an Azure Key Vault resource
 # used for storing sensitive credentials and secrets in the development environment.
 
+# Purpose: Centralized management of secrets, keys, and certificates\
+# for secure access by applications and services in the Contoso development environment.
+# References: 
+# - Microsoft Dev Box accelerator: https://evilazaro.github.io/DevExp-DevBox/docs/configureresources/security/
+# - Azure Key Vault documentation: https://learn.microsoft.com/en-us/azure/key-vault/general/basic-concepts
+# - Azure Key Vault best practices: https://learn.microsoft.com/en-us/azure/key-vault/general/best-practices
+
 # Whether to create the Key Vault resource
 create: true
 
