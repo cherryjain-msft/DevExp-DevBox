@@ -13,7 +13,7 @@ param catalogs array
 param environmentTypes array
 
 @description('Subnets')
-param subnets array
+param subnets object[]
 
 @description('Log Analytics Workspace Id')
 @minLength(1)

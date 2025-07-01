@@ -28,7 +28,7 @@ type NetworkSettings = {
   addressPrefixes: string[]
 
   @description('Subnet configurations')
-  subnets: array
+  subnets: object[]
 }
 
 @description('Virtual Network resource')
@@ -101,7 +101,8 @@ var subnetsOutput = (settings.create && settings.virtualNetworkType == 'Unmanage
         ]
 
 @description('The subnets of the deployed Virtual Network')
-output AZURE_VIRTUAL_NETWORK_SUBNETS array = subnetsOutput
+output AZURE_VIRTUAL_NETWORK_SUBNETS object[] = subnetsOutput
+
 @description('The name of the Virtual Network')
 output AZURE_VIRTUAL_NETWORK_NAME string = (settings.create && settings.virtualNetworkType == 'Unmanaged')
   ? virtualNetwork.name

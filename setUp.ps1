@@ -37,7 +37,7 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory=$false)]
-    [string]$EnvName = "demo",
+    [string]$EnvName = "prod",
     
     [Parameter(Mandatory=$false)]
     [ValidateSet("eastus", "eastus2", "westus", "westus2", "northeurope", "westeurope")]
