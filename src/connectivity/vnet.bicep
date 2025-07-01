@@ -84,9 +84,16 @@ output AZURE_VIRTUAL_NETWORK object = (settings.create && settings.virtualNetwor
       virtualNetworkType: settings.virtualNetworkType
       subnets: virtualNetwork.properties.subnets
     }
-  : {
-      name: existingVirtualNetwork.name
-      resourceGroupName: resourceGroup().name
-      virtualNetworkType: settings.virtualNetworkType
-      subnets: existingVirtualNetwork.properties.subnets
-    }
+  : (!settings.create && settings.virtualNetworkType == 'Unmanaged')
+      ? {
+          name: existingVirtualNetwork.name
+          resourceGroupName: resourceGroup().name
+          virtualNetworkType: settings.virtualNetworkType
+          subnets: existingVirtualNetwork.properties.subnets
+        }
+      : {
+          name: ''
+          resourceGroupName: ''
+          virtualNetworkType: settings.virtualNetworkType
+          subnets: []
+        }

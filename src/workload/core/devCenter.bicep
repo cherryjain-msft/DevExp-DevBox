@@ -158,12 +158,18 @@ module networkConnection 'networkConnection.bicep' = [
 ]
 
 @description('Network Connections for Dev Center')
-output networkConnections array = [
-  for (vnet, i) in virtualNetworks: {
-    name: networkConnection[i].outputs.networkConnectionName
-    id: networkConnection[i].outputs.networkConnectionId
-    virtualNetworkType: vnet.virtualNetworkType
-  }
+output networkConnections object[] = [
+  for (vnet, i) in virtualNetworks: (vnet.virtualNetworkType == 'Unmanaged')
+    ? {
+        name: networkConnection[i].outputs.networkConnectionName
+        id: networkConnection[i].outputs.networkConnectionId
+        virtualNetworkType: vnet.virtualNetworkType
+      }
+    : {
+        name: vnet.virtualNetworkType
+        id: vnet.virtualNetworkType
+        virtualNetworkType: vnet.virtualNetworkType
+      }
 ]
 
 // Catalog configuration
@@ -199,4 +205,3 @@ module environment 'environmentType.bicep' = [
 // Outputs with clear descriptions
 @description('Deployed Dev Center name')
 output AZURE_DEV_CENTER_NAME string = devCenterName
-
