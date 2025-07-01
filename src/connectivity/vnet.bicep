@@ -77,35 +77,14 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
   }
 }
 
-@description('The resource ID of the Virtual Network')
-output virtualNetworkId string = (settings.create && settings.virtualNetworkType == 'Unmanaged')
-  ? virtualNetwork.id
-  : (!settings.create && settings.virtualNetworkType == 'Unmanaged')
-      ? existingVirtualNetwork.id
-      : settings.virtualNetworkType
-
-var subnetsOutput = (settings.create && settings.virtualNetworkType == 'Unmanaged')
-  ? [
-      {
-        name: settings.name
-        id: settings.virtualNetworkType
-      }
-    ]
-  : (!settings.create && settings.virtualNetworkType == 'Unmanaged')
-      ? existingVirtualNetwork.properties.subnets
-      : [
-          {
-            name: settings.name
-            id: settings.virtualNetworkType
-          }
-        ]
-
-@description('The subnets of the deployed Virtual Network')
-output AZURE_VIRTUAL_NETWORK_SUBNETS object[] = subnetsOutput
-
-@description('The name of the Virtual Network')
-output AZURE_VIRTUAL_NETWORK_NAME string = (settings.create && settings.virtualNetworkType == 'Unmanaged')
-  ? virtualNetwork.name
-  : (!settings.create && settings.virtualNetworkType == 'Unmanaged')
-      ? existingVirtualNetwork.name
-      : settings.virtualNetworkType
+output AZURE_VIRTUAL_NETWORK object = (settings.create && settings.virtualNetworkType == 'Unmanaged')
+  ? {
+      name: virtualNetwork.name
+      virtualNetworkType: settings.virtualNetworkType
+      subnets: virtualNetwork.properties.subnets
+    }
+  : {
+      name: existingVirtualNetwork.name
+      virtualNetworkType: settings.virtualNetworkType
+      subnets: existingVirtualNetwork.properties.subnets
+    }

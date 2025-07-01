@@ -13,7 +13,7 @@ param catalogs array
 param environmentTypes array
 
 @description('Subnets')
-param subnets object[]
+param virtualNetworks VirtualNetwork[]
 
 @description('Log Analytics Workspace Id')
 @minLength(1)
@@ -40,6 +40,12 @@ type DevCenterConfig = {
   microsoftHostedNetworkEnableStatus: Status
   installAzureMonitorAgentEnableStatus: Status
   tags: object
+}
+
+type VirtualNetwork = {
+  name: string
+  virtualNetworkType: string
+  subnets: object[]
 }
 
 @description('Status type for feature toggles')
@@ -147,13 +153,13 @@ module devCenterIdentityUserGroupsRoleAssignment '../../identity/orgRoleAssignme
 // Network configuration
 @description('Network Connections')
 module networkConnection 'networkConnection.bicep' = [
-  for (subnet, i) in subnets: if (subnet.virtualNetworkType == 'Unmanaged') {
+  for (vnet, i) in virtualNetworks: if (vnet.virtualNetworkType == 'Unmanaged') {
     name: 'networkConnection-${i}-${devCenterName}'
     scope: resourceGroup()
     params: {
-      name: 'nc-${subnet.name}'
+      name: 'nc-${vnet.subnets[i].name}'
       devCenterName: devCenterName
-      subnetId: subnet.id
+      subnetId: vnet.subnets[i].id
     }
   }
 ]
@@ -194,7 +200,7 @@ output AZURE_DEV_CENTER_NAME string = devCenterName
 
 @description('Network Connections for Dev Center')
 output networkConnections array = [
-  for (subnet, i) in subnets: {
+  for (subnet, i) in virtualNetworks: {
     name: networkConnection[i].outputs.networkConnectionName
     id: subnet.outputs.networkConnectionId
     virtualNetworkType: subnet.outputs.virtualNetworkType

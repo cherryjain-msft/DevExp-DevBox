@@ -30,22 +30,10 @@ module virtualNetwork 'vnet.bicep' = [
   }
 ]
 
-@description('The names of the deployed Virtual Networks')
-output AZURE_VIRTUAL_NETWORK_NAMES array = [
-  for i in range(0, length(networkSettings.virtualNetworks)): virtualNetwork[i].outputs.AZURE_VIRTUAL_NETWORK_NAME
-]
-
-@description('The subnets of the deployed Virtual Networks')
-output AZURE_VIRTUAL_NETWORK_SUBNETS array = [
-  for i in range(0, length(networkSettings.virtualNetworks)): virtualNetwork[i].outputs.AZURE_VIRTUAL_NETWORK_SUBNETS
-]
-
-@description('The resource IDs of the deployed Virtual Networks')
-output AZURE_VIRTUAL_NETWORK_IDS array = [
-  for i in range(0, length(networkSettings.virtualNetworks)): virtualNetwork[i].outputs.virtualNetworkId
-]
-
-@description('The list of network types for each virtual network')
-output AZURE_VIRTUAL_NETWORK_TYPES array = [
-  for v in networkSettings.virtualNetworks: v.virtualNetworkType
+output AZURE_VIRTUAL_NETWORKS object[] = [
+  for (vnet, i) in networkSettings.virtualNetworks: {
+    name: virtualNetwork[i].name
+    virtualNetworkType: vnet.virtualNetworkType
+    subnets: virtualNetwork[i].outputs.AZURE_VIRTUAL_NETWORK.subnets
+  }
 ]

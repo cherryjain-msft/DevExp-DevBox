@@ -10,7 +10,7 @@
 param logAnalyticsId string
 
 @description('Network subnet configurations')
-param subnets object[]
+param virtualNetworks object[]
 
 @description('Secret Identifier for secured content')
 @secure()
@@ -47,7 +47,7 @@ module devcenter 'core/devCenter.bicep' = {
     catalogs: devCenterSettings.catalogs
     environmentTypes: devCenterSettings.environmentTypes
     logAnalyticsId: logAnalyticsId
-    subnets: subnets
+    virtualNetworks: virtualNetworks
     secretIdentifier: secretIdentifier
     keyVaultName: keyVaultName
     securityResourceGroupName: securityResourceGroupName

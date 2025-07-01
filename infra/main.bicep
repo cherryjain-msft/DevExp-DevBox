@@ -20,7 +20,7 @@ targetScope = 'subscription'
   'switzerlandnorth'
   'germanywestcentral'
 ])
-param location string = 'eastus2'
+param location string 
 
 @description('Secret value for Key Vault - GitHub Access Token')
 @secure()
@@ -146,7 +146,7 @@ module workload '../src/workload/workload.bicep' = {
   scope: resourceGroup(workloadRgName)
   params: {
     logAnalyticsId: monitoring.outputs.logAnalyticsId
-    subnets: connectivity.outputs.AZURE_VIRTUAL_NETWORK_SUBNETS
+    virtualNetworks: connectivity.outputs.AZURE_VIRTUAL_NETWORKS
     secretIdentifier: security.outputs.secretIdentifier
     keyVaultName: security.outputs.keyVaultName
     securityResourceGroupName: securityRgName
