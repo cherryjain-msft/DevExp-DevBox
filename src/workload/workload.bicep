@@ -52,38 +52,38 @@ module devcenter 'core/devCenter.bicep' = {
   }
 }
 
-// // Deploy individual projects with proper dependencies
-// @description('DevCenter Projects')
-// module projects 'project/project.bicep' = [
-//   for (project, i) in devCenterSettings.projects: {
-//     name: 'project-${project.name}'
-//     scope: resourceGroup()
-//     params: {
-//       name: project.name
-//       projectDescription: project.description ?? project.name
-//       devCenterName: devcenter.outputs.AZURE_DEV_CENTER_NAME
-//       projectCatalogs: project.catalogs
-//       projectEnvironmentTypes: project.environmentTypes
-//       projectPools: project.pools
-//       networkConnectionName: devcenter.outputs.networkConnections[i].name
-//       networkType: devcenter.outputs.networkConnections[i].virtualNetworkType
-//       secretIdentifier: secretIdentifier
-//       keyVaultName: keyVaultName
-//       securityResourceGroupName: securityResourceGroupName
-//       identity: project.identity
-//       tags: project.tags
-//     }
-//     dependsOn: [
-//       devcenter
-//     ]
-//   }
-// ]
+// Deploy individual projects with proper dependencies
+@description('DevCenter Projects')
+module projects 'project/project.bicep' = [
+  for (project, i) in devCenterSettings.projects: {
+    name: 'project-${project.name}'
+    scope: resourceGroup()
+    params: {
+      name: project.name
+      projectDescription: project.description ?? project.name
+      devCenterName: devcenter.outputs.AZURE_DEV_CENTER_NAME
+      projectCatalogs: project.catalogs
+      projectEnvironmentTypes: project.environmentTypes
+      projectPools: project.pools
+      networkConnectionName: devcenter.outputs.networkConnections[i].name
+      networkType: devcenter.outputs.networkConnections[i].virtualNetworkType
+      secretIdentifier: secretIdentifier
+      keyVaultName: keyVaultName
+      securityResourceGroupName: securityResourceGroupName
+      identity: project.identity
+      tags: project.tags
+    }
+    dependsOn: [
+      devcenter
+    ]
+  }
+]
 
-// // Outputs with clear naming and descriptions
-// @description('Name of the deployed DevCenter')
-// output AZURE_DEV_CENTER_NAME string = devcenter.outputs.AZURE_DEV_CENTER_NAME
+// Outputs with clear naming and descriptions
+@description('Name of the deployed DevCenter')
+output AZURE_DEV_CENTER_NAME string = devcenter.outputs.AZURE_DEV_CENTER_NAME
 
-// @description('List of project names deployed in the DevCenter')
-// output AZURE_DEV_CENTER_PROJECTS array = [
-//   for (project, i) in devCenterSettings.projects: projects[i].outputs.AZURE_PROJECT_NAME
-// ]
+@description('List of project names deployed in the DevCenter')
+output AZURE_DEV_CENTER_PROJECTS array = [
+  for (project, i) in devCenterSettings.projects: projects[i].outputs.AZURE_PROJECT_NAME
+]

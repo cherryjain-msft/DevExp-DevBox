@@ -147,13 +147,22 @@ module devCenterIdentityUserGroupsRoleAssignment '../../identity/orgRoleAssignme
 @description('Network Connections')
 module networkConnection 'networkConnection.bicep' = [
   for (vnet, i) in virtualNetworks: if (vnet.virtualNetworkType == 'Unmanaged') {
-    name: 'networkConnection-${i}-${devCenterName}'
+    name: 'netConn-${vnet.name}-${uniqueString(vnet.name,resourceGroup().id)}'
     scope: resourceGroup()
     params: {
-      name: 'nc-${vnet.subnets[i].name}'
+      name: 'nc-${vnet.subnets[0].name}'
       devCenterName: devCenterName
-      subnetId: vnet.subnets[i].id
+      subnetId: vnet.subnets[0].id
     }
+  }
+]
+
+@description('Network Connections for Dev Center')
+output networkConnections array = [
+  for (vnet, i) in virtualNetworks: {
+    name: networkConnection[i].outputs.networkConnectionName
+    id: networkConnection[i].outputs.networkConnectionId
+    virtualNetworkType: vnet.virtualNetworkType
   }
 ]
 
@@ -191,11 +200,3 @@ module environment 'environmentType.bicep' = [
 @description('Deployed Dev Center name')
 output AZURE_DEV_CENTER_NAME string = devCenterName
 
-@description('Network Connections for Dev Center')
-output networkConnections array = [
-  for (subnet, i) in virtualNetworks: {
-    name: networkConnection[i].outputs.networkConnectionName
-    id: subnet.outputs.networkConnectionId
-    virtualNetworkType: subnet.outputs.virtualNetworkType
-  }
-]
