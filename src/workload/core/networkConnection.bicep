@@ -10,9 +10,6 @@ param subnetId string
 @description('Azure region for resource deployment')
 param location string = resourceGroup().location
 
-@description('Resource Group Name for the Connectivity resources')
-param resourceGroupName string 
-
 @description('Optional tags to apply to the network connection')
 param tags object = {}
 
@@ -29,7 +26,6 @@ resource netConnection 'Microsoft.DevCenter/networkConnections@2025-02-01' = {
   properties: {
     domainJoinType: 'AzureADJoin'
     subnetId: subnetId
-    networkingResourceGroupName: resourceGroupName
   }
 }
 

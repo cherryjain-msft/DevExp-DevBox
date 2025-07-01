@@ -151,7 +151,6 @@ module networkConnection 'networkConnection.bicep' = [
     scope: resourceGroup()
     params: {
       name: 'nc-${vnet.subnets[i].name}'
-      resourceGroupName: vnet.resourceGroupName
       devCenterName: devCenterName
       subnetId: vnet.subnets[i].id
     }
