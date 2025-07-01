@@ -12,12 +12,8 @@ param catalogs array
 @description('Environment Types')
 param environmentTypes array
 
-@description('Network type for resource deployment')
-@allowed(['Unmanaged', 'Managed'])
-param networkType string
-
 @description('Subnets')
-param subnets array
+param virtualNetworks VirtualNetwork[]
 
 @description('Log Analytics Workspace Id')
 @minLength(1)
@@ -26,14 +22,6 @@ param logAnalyticsId string
 @description('Secret Identifier')
 @secure()
 param secretIdentifier string
-
-@description('Key Vault Name')
-@minLength(3)
-@maxLength(24)
-param keyVaultName string
-
-@description('Security Resource Group Name')
-param securityResourceGroupName string
 
 // Type definitions with proper naming conventions
 @description('DevCenter configuration type')
@@ -44,6 +32,13 @@ type DevCenterConfig = {
   microsoftHostedNetworkEnableStatus: Status
   installAzureMonitorAgentEnableStatus: Status
   tags: object
+}
+
+type VirtualNetwork = {
+  name: string
+  resourceGroupName: string
+  virtualNetworkType: string
+  subnets: object[]
 }
 
 @description('Status type for feature toggles')
@@ -122,7 +117,7 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
 
 // RBAC and Identity Management
 @description('Dev Center Identity Role Assignments')
-module devCenterIdentityRoleAssignment '../identity/devCenterRoleAssignment.bicep' = [
+module devCenterIdentityRoleAssignment '../../identity/devCenterRoleAssignment.bicep' = [
   for (role, i) in config.identity.roleAssignments.devCenter: {
     name: 'RBACDevCenter-${i}-${devCenterName}'
     scope: subscription()
@@ -134,7 +129,7 @@ module devCenterIdentityRoleAssignment '../identity/devCenterRoleAssignment.bice
 ]
 
 @description('Dev Center Identity User Groups role assignments')
-module devCenterIdentityUserGroupsRoleAssignment '../identity/orgRoleAssignment.bicep' = [
+module devCenterIdentityUserGroupsRoleAssignment '../../identity/orgRoleAssignment.bicep' = [
   for (role, i) in config.identity.roleAssignments.orgRoleTypes: {
     name: 'RBACUserGroup-${i}-${devCenterName}'
     scope: subscription()
@@ -150,21 +145,30 @@ module devCenterIdentityUserGroupsRoleAssignment '../identity/orgRoleAssignment.
 
 // Network configuration
 @description('Network Connections')
-module networkConnection 'core/networkConnection.bicep' = [
-  for (subnet, i) in subnets: if (networkType == 'Unmanaged') {
-    name: 'networkConnection-${i}-${devCenterName}'
+module networkConnection 'networkConnection.bicep' = [
+  for (vnet, i) in virtualNetworks: if (vnet.virtualNetworkType == 'Unmanaged') {
+    name: 'netConn-${vnet.name}-${uniqueString(vnet.name,resourceGroup().id)}'
     scope: resourceGroup()
     params: {
-      name: 'nc-${subnet.name}'
+      name: 'nc-${vnet.subnets[0].name}'
       devCenterName: devCenterName
-      subnetId: subnet.id
+      subnetId: vnet.subnets[0].id
     }
+  }
+]
+
+@description('Network Connections for Dev Center')
+output networkConnections array = [
+  for (vnet, i) in virtualNetworks: {
+    name: networkConnection[i].outputs.networkConnectionName
+    id: networkConnection[i].outputs.networkConnectionId
+    virtualNetworkType: vnet.virtualNetworkType
   }
 ]
 
 // Catalog configuration
 @description('Dev Center Catalogs')
-module catalog 'core/catalog.bicep' = [
+module catalog 'catalog.bicep' = [
   for (catalog, i) in catalogs: {
     name: 'catalog-${i}-${devCenterName}'
     scope: resourceGroup()
@@ -181,7 +185,7 @@ module catalog 'core/catalog.bicep' = [
 
 // Environment types configuration
 @description('Dev Center Environments')
-module environment 'core/environmentType.bicep' = [
+module environment 'environmentType.bicep' = [
   for (environment, i) in environmentTypes: {
     name: 'environmentType-${i}-${devCenterName}'
     scope: resourceGroup()
@@ -196,5 +200,3 @@ module environment 'core/environmentType.bicep' = [
 @description('Deployed Dev Center name')
 output AZURE_DEV_CENTER_NAME string = devCenterName
 
-@description('Network Connection Name for Dev Center')
-output networkConnectionName string = (networkType == 'Unmanaged') ? networkConnection[0].name : 'Managed'

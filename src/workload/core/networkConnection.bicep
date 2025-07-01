@@ -26,7 +26,6 @@ resource netConnection 'Microsoft.DevCenter/networkConnections@2025-02-01' = {
   properties: {
     domainJoinType: 'AzureADJoin'
     subnetId: subnetId
-    networkingResourceGroupName: 'NetworkingResources-${uniqueString(resourceGroup().id)}'
   }
 }
 
@@ -47,3 +46,6 @@ output networkConnectionId string = netConnection.id
 
 @description('The resource ID of the attached network')
 output attachedNetworkId string = vnetAttachment.id
+
+@description('The name of the Network Connection')
+output networkConnectionName string = netConnection.name
