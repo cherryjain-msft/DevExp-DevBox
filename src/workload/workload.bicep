@@ -9,9 +9,6 @@
 @minLength(1)
 param logAnalyticsId string
 
-@description('Network type for resource deployment')
-param networkType string
-
 @description('Network subnet configurations')
 param subnets object[]
 
@@ -42,7 +39,7 @@ var devCenterSettings = loadYamlContent('../../infra/settings/workload/devcenter
 
 // Deploy core DevCenter infrastructure
 @description('DevCenter Core Infrastructure')
-module devcenter 'devCenter.bicep' = {
+module devcenter 'core/devCenter.bicep' = {
   name: 'devCenterDeployment'
   scope: resourceGroup()
   params: {
@@ -50,7 +47,6 @@ module devcenter 'devCenter.bicep' = {
     catalogs: devCenterSettings.catalogs
     environmentTypes: devCenterSettings.environmentTypes
     logAnalyticsId: logAnalyticsId
-    networkType: networkType
     subnets: subnets
     secretIdentifier: secretIdentifier
     keyVaultName: keyVaultName
@@ -61,7 +57,7 @@ module devcenter 'devCenter.bicep' = {
 // Deploy individual projects with proper dependencies
 @description('DevCenter Projects')
 module projects 'project/project.bicep' = [
-  for project in devCenterSettings.projects: {
+  for (project, i) in devCenterSettings.projects: {
     name: 'project-${project.name}'
     scope: resourceGroup()
     params: {
@@ -71,8 +67,8 @@ module projects 'project/project.bicep' = [
       projectCatalogs: project.catalogs
       projectEnvironmentTypes: project.environmentTypes
       projectPools: project.pools
-      networkConnectionName: devcenter.outputs.networkConnectionName
-      networkType: networkType
+      networkConnectionName: devcenter.outputs.networkConnections[i].name
+      networkType: devcenter.outputs.networkConnections[i].virtualNetworkType
       secretIdentifier: secretIdentifier
       keyVaultName: keyVaultName
       securityResourceGroupName: securityResourceGroupName

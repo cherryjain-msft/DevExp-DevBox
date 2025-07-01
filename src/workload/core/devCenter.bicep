@@ -12,10 +12,6 @@ param catalogs array
 @description('Environment Types')
 param environmentTypes array
 
-@description('Network type for resource deployment')
-@allowed(['Unmanaged', 'Managed'])
-param networkType string
-
 @description('Subnets')
 param subnets array
 
@@ -122,7 +118,7 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
 
 // RBAC and Identity Management
 @description('Dev Center Identity Role Assignments')
-module devCenterIdentityRoleAssignment '../identity/devCenterRoleAssignment.bicep' = [
+module devCenterIdentityRoleAssignment '../../identity/devCenterRoleAssignment.bicep' = [
   for (role, i) in config.identity.roleAssignments.devCenter: {
     name: 'RBACDevCenter-${i}-${devCenterName}'
     scope: subscription()
@@ -134,7 +130,7 @@ module devCenterIdentityRoleAssignment '../identity/devCenterRoleAssignment.bice
 ]
 
 @description('Dev Center Identity User Groups role assignments')
-module devCenterIdentityUserGroupsRoleAssignment '../identity/orgRoleAssignment.bicep' = [
+module devCenterIdentityUserGroupsRoleAssignment '../../identity/orgRoleAssignment.bicep' = [
   for (role, i) in config.identity.roleAssignments.orgRoleTypes: {
     name: 'RBACUserGroup-${i}-${devCenterName}'
     scope: subscription()
@@ -150,8 +146,8 @@ module devCenterIdentityUserGroupsRoleAssignment '../identity/orgRoleAssignment.
 
 // Network configuration
 @description('Network Connections')
-module networkConnection 'core/networkConnection.bicep' = [
-  for (subnet, i) in subnets: if (networkType == 'Unmanaged') {
+module networkConnection 'networkConnection.bicep' = [
+  for (subnet, i) in subnets: if (subnet.virtualNetworkType == 'Unmanaged') {
     name: 'networkConnection-${i}-${devCenterName}'
     scope: resourceGroup()
     params: {
@@ -164,7 +160,7 @@ module networkConnection 'core/networkConnection.bicep' = [
 
 // Catalog configuration
 @description('Dev Center Catalogs')
-module catalog 'core/catalog.bicep' = [
+module catalog 'catalog.bicep' = [
   for (catalog, i) in catalogs: {
     name: 'catalog-${i}-${devCenterName}'
     scope: resourceGroup()
@@ -181,7 +177,7 @@ module catalog 'core/catalog.bicep' = [
 
 // Environment types configuration
 @description('Dev Center Environments')
-module environment 'core/environmentType.bicep' = [
+module environment 'environmentType.bicep' = [
   for (environment, i) in environmentTypes: {
     name: 'environmentType-${i}-${devCenterName}'
     scope: resourceGroup()
@@ -196,5 +192,11 @@ module environment 'core/environmentType.bicep' = [
 @description('Deployed Dev Center name')
 output AZURE_DEV_CENTER_NAME string = devCenterName
 
-@description('Network Connection Name for Dev Center')
-output networkConnectionName string = (networkType == 'Unmanaged') ? networkConnection[0].name : 'Managed'
+@description('Network Connections for Dev Center')
+output networkConnections array = [
+  for (subnet, i) in subnets: {
+    name: networkConnection[i].outputs.networkConnectionName
+    id: subnet.outputs.networkConnectionId
+    virtualNetworkType: subnet.outputs.virtualNetworkType
+  }
+]

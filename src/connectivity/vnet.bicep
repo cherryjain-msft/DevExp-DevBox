@@ -85,7 +85,12 @@ output virtualNetworkId string = (settings.create && settings.virtualNetworkType
       : settings.virtualNetworkType
 
 var subnetsOutput = (settings.create && settings.virtualNetworkType == 'Unmanaged')
-  ? virtualNetwork.properties.subnets
+  ? [
+      {
+        name: settings.name
+        id: settings.virtualNetworkType
+      }
+    ]
   : (!settings.create && settings.virtualNetworkType == 'Unmanaged')
       ? existingVirtualNetwork.properties.subnets
       : [

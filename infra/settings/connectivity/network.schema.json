@@ -1,100 +1,195 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Network settings",
-  "description": "Schema for defining network settings including virtual networks and subnets.",
+  "$id": "https://schemas.devexp.io/network-settings.json",
+  "title": "Network Settings",
+  "description": "Schema for defining network settings including virtual networks and subnets for Azure DevBox environments.",
   "type": "object",
+  "additionalProperties": false,
   "properties": {
-    "virtualNetworkType": {
-      "type": "string",
-      "description": "Type of network connection",
-      "enum": [
-        "Unmanaged",
-        "Managed"
-      ],
-      "default": "vnet"
-    },
-    "create": {
-      "type": "boolean",
-      "description": "Flag to indicate if the network should be created",
-      "default": true
-    },
-    "name": {
-      "type": "string",
-      "description": "Name of the virtual network",
-      "default": "devexp-vnet"
-    },
-    "addressPrefixes": {
+    "virtualNetworks": {
       "type": "array",
-      "description": "List of address prefixes for the virtual network",
+      "description": "Array of virtual network configurations to be deployed.",
+      "minItems": 1,
+      "maxItems": 100,
       "items": {
-        "$ref": "#/definitions/addressPrefix"
+        "$ref": "#/definitions/virtualNetwork"
       },
-      "default": [
-        "10.0.0.0/16"
-      ]
-    },
-    "subnets": {
-      "type": "array",
-      "description": "List of subnets within the virtual network",
-      "items": {
-        "type": "object",
-        "description": "Subnet configuration",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "Name of the subnet",
-            "default": "devexp-subnet"
-          },
-          "properties": {
-            "type": "object",
-            "description": "Properties of the subnet",
-            "properties": {
-              "addressPrefix": {
-                "type": "string",
-                "pattern": "^([0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$",
-                "description": "Address prefix for the subnet",
-                "default": "10.0.1.0/24"
+      "examples": [
+        [
+          {
+            "name": "contoso-vnet",
+            "create": true,
+            "virtualNetworkType": "Managed",
+            "addressPrefixes": ["10.0.0.0/16"],
+            "subnets": [
+              {
+                "name": "contoso-subnet",
+                "properties": {
+                  "addressPrefix": "10.0.1.0/24"
+                }
               }
-            },
-            "required": [
-              "addressPrefix"
-            ]
+            ],
+            "tags": {
+              "environment": "dev",
+              "division": "Platforms"
+            }
           }
-        },
-        "required": [
-          "name",
-          "properties"
         ]
-      }
-    },
-    "tags": {
-      "type": "object",
-      "description": "Tags associated with the virtual network",
-      "additionalProperties": {
-        "type": "string"
-      },
-      "default": {
-        "division": "Platforms",
-        "team": "devexp-team",
-        "project": "devexp",
-        "costCenter": "IT",
-        "owner": "devexp-team"
-      }
+      ]
     }
   },
   "required": [
-    "virtualNetworkType",
-    "create",
-    "name",
-    "addressPrefixes",
-    "subnets",
-    "tags"
+    "virtualNetworks"
   ],
   "definitions": {
+    "virtualNetwork": {
+      "type": "object",
+      "description": "Configuration for a single virtual network including its subnets and properties.",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the virtual network. Must be unique within the resource group.",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9\\-_.]*[a-zA-Z0-9]$",
+          "default": "devexp-vnet",
+          "examples": ["contoso-vnet", "devexp-network"]
+        },
+        "create": {
+          "type": "boolean",
+          "description": "Flag to indicate if the virtual network should be created during deployment.",
+          "default": true,
+          "examples": [true, false]
+        },
+        "virtualNetworkType": {
+          "type": "string",
+          "description": "Type of virtual network connection management.",
+          "enum": [
+            "Unmanaged",
+            "Managed"
+          ],
+          "default": "Managed",
+          "examples": ["Managed", "Unmanaged"]
+        },
+        "addressPrefixes": {
+          "type": "array",
+          "description": "List of address prefixes (CIDR blocks) for the virtual network.",
+          "minItems": 1,
+          "maxItems": 10,
+          "items": {
+            "$ref": "#/definitions/addressPrefix"
+          },
+          "default": [
+            "10.0.0.0/16"
+          ],
+          "examples": [
+            ["10.0.0.0/16"],
+            ["192.168.0.0/16", "172.16.0.0/12"]
+          ]
+        },
+        "subnets": {
+          "type": "array",
+          "description": "List of subnets within the virtual network.",
+          "minItems": 1,
+          "maxItems": 50,
+          "items": {
+            "$ref": "#/definitions/subnet"
+          },
+          "examples": [
+            [
+              {
+                "name": "default-subnet",
+                "properties": {
+                  "addressPrefix": "10.0.1.0/24"
+                }
+              }
+            ]
+          ]
+        },
+        "tags": {
+          "type": "object",
+          "description": "Resource tags for the virtual network used for organization and cost management.",
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "maxProperties": 50,
+          "default": {
+            "environment": "dev",
+            "division": "Platforms",
+            "team": "DevExP",
+            "project": "DevExP-DevBox",
+            "costCenter": "IT",
+            "owner": "Contoso",
+            "resources": "Network"
+          },
+          "examples": [
+            {
+              "environment": "prod",
+              "division": "Engineering",
+              "costCenter": "12345",
+              "owner": "TeamA"
+            }
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "create",
+        "virtualNetworkType",
+        "addressPrefixes",
+        "subnets",
+        "tags"
+      ]
+    },
+    "subnet": {
+      "type": "object",
+      "description": "Configuration for a subnet within a virtual network.",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the subnet. Must be unique within the virtual network.",
+          "minLength": 1,
+          "maxLength": 80,
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9\\-_.]*[a-zA-Z0-9]$",
+          "default": "devexp-subnet",
+          "examples": ["default-subnet", "app-subnet", "db-subnet"]
+        },
+        "properties": {
+          "type": "object",
+          "description": "Properties and configuration settings for the subnet.",
+          "additionalProperties": false,
+          "properties": {
+            "addressPrefix": {
+              "type": "string",
+              "description": "CIDR block address prefix for the subnet. Must be within the virtual network's address space.",
+              "pattern": "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\/(?:[0-9]|[1-2][0-9]|3[0-2])$",
+              "default": "10.0.1.0/24",
+              "examples": ["10.0.1.0/24", "192.168.1.0/24", "172.16.0.0/20"]
+            }
+          },
+          "required": [
+            "addressPrefix"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "properties"
+      ]
+    },
     "addressPrefix": {
       "type": "string",
-      "pattern": "^([0-9]{1,3}\\.){3}[0-9]{1,3}/[0-9]{1,2}$",
-      "description": "Address prefix for the virtual network"
+      "description": "CIDR notation address prefix for network addressing (e.g., 10.0.0.0/16).",
+      "pattern": "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\/(?:[0-9]|[1-2][0-9]|3[0-2])$",
+      "examples": [
+        "10.0.0.0/16",
+        "192.168.0.0/24",
+        "172.16.0.0/12"
+      ]
     }
   }
 }

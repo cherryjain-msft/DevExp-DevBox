@@ -12,22 +12,39 @@
 # - Azure VNet best practices: https://learn.microsoft.com/en-us/azure/architecture/reference-architectures/hybrid-networking/
 # - DevBox networking: https://learn.microsoft.com/en-us/azure/dev-box/how-to-configure-network-connectivity
 
-create: true
-virtualNetworkType: Managed
-name: contoso-vnet
+virtualNetworks:
+  - name: identityProvider
+    create: true
+    virtualNetworkType: Unmanaged  
+    addressPrefixes:
+      - 10.0.0.0/16
+    subnets:
+      - name: identityProvider-subnet
+        properties:
+          addressPrefix: 10.0.1.0/24
+    tags:
+      environment: dev
+      division: Platforms
+      team: DevExP
+      project: DevExP-DevBox
+      costCenter: IT
+      owner: Contoso
+      resources: Network
 
-addressPrefixes:
-  - 10.0.0.0/16
-subnets:
-  - name: contoso-subnet
-    properties:
-      addressPrefix: 10.0.1.0/24
-
-tags:
-  environment: dev
-  division: Platforms
-  team: DevExP
-  project: DevExP-DevBox
-  costCenter: IT
-  owner: Contoso
-  resources: Network
+  - name: eShop
+    create: true
+    virtualNetworkType: Unmanaged  
+    addressPrefixes:
+      - 10.0.0.0/16
+    subnets:
+      - name: eShop-subnet
+        properties:
+          addressPrefix: 10.0.1.0/24
+    tags:
+      environment: dev
+      division: Platforms
+      team: DevExP
+      project: DevExP-DevBox
+      costCenter: IT
+      owner: Contoso
+      resources: Network

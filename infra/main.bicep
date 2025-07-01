@@ -146,7 +146,6 @@ module workload '../src/workload/workload.bicep' = {
   scope: resourceGroup(workloadRgName)
   params: {
     logAnalyticsId: monitoring.outputs.logAnalyticsId
-    networkType: connectivity.outputs.AZURE_VIRTUAL_NETWORK_TYPE
     subnets: connectivity.outputs.AZURE_VIRTUAL_NETWORK_SUBNETS
     secretIdentifier: security.outputs.secretIdentifier
     keyVaultName: security.outputs.keyVaultName
