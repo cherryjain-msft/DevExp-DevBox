@@ -49,8 +49,6 @@ module devcenter 'core/devCenter.bicep' = {
     logAnalyticsId: logAnalyticsId
     virtualNetworks: virtualNetworks
     secretIdentifier: secretIdentifier
-    keyVaultName: keyVaultName
-    securityResourceGroupName: securityResourceGroupName
   }
 }
 

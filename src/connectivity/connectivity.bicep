@@ -33,6 +33,7 @@ module virtualNetwork 'vnet.bicep' = [
 output AZURE_VIRTUAL_NETWORKS object[] = [
   for (vnet, i) in networkSettings.virtualNetworks: {
     name: virtualNetwork[i].name
+    resourceGroupName: virtualNetwork[i].outputs.AZURE_VIRTUAL_NETWORK.resourceGroupName
     virtualNetworkType: vnet.virtualNetworkType
     subnets: virtualNetwork[i].outputs.AZURE_VIRTUAL_NETWORK.subnets
   }

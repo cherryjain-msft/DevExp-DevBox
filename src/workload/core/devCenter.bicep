@@ -23,14 +23,6 @@ param logAnalyticsId string
 @secure()
 param secretIdentifier string
 
-@description('Key Vault Name')
-@minLength(3)
-@maxLength(24)
-param keyVaultName string
-
-@description('Security Resource Group Name')
-param securityResourceGroupName string
-
 // Type definitions with proper naming conventions
 @description('DevCenter configuration type')
 type DevCenterConfig = {
@@ -44,6 +36,7 @@ type DevCenterConfig = {
 
 type VirtualNetwork = {
   name: string
+  resourceGroupName: string
   virtualNetworkType: string
   subnets: object[]
 }
@@ -158,6 +151,7 @@ module networkConnection 'networkConnection.bicep' = [
     scope: resourceGroup()
     params: {
       name: 'nc-${vnet.subnets[i].name}'
+      resourceGroupName: vnet.resourceGroupName
       devCenterName: devCenterName
       subnetId: vnet.subnets[i].id
     }

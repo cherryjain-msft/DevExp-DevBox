@@ -80,11 +80,13 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
 output AZURE_VIRTUAL_NETWORK object = (settings.create && settings.virtualNetworkType == 'Unmanaged')
   ? {
       name: virtualNetwork.name
+      resourceGroupName: resourceGroup().name
       virtualNetworkType: settings.virtualNetworkType
       subnets: virtualNetwork.properties.subnets
     }
   : {
       name: existingVirtualNetwork.name
+      resourceGroupName: resourceGroup().name
       virtualNetworkType: settings.virtualNetworkType
       subnets: existingVirtualNetwork.properties.subnets
     }
