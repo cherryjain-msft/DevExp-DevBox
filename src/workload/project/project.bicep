@@ -4,6 +4,10 @@ param devCenterName string
 @description('Name of the project to be created')
 param name string
 
+@description('Log Analytics Workspace Resource ID')
+@minLength(1)
+param logAnalyticsId string
+
 @description('Description for the DevCenter project')
 param projectDescription string
 
@@ -165,7 +169,7 @@ module connectivity '../../connectivity/connectivity.bicep' = {
   params: {
     devCenterName: devCenterName
     projectNetwork: projectNetwork
-    logAnalyticsId: projectNetwork.logAnalyticsId
+    logAnalyticsId: logAnalyticsId
     location: resourceGroup().location
     environmentName: environmentName
   }

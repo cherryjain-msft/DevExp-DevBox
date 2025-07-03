@@ -62,6 +62,7 @@ module projects 'project/project.bicep' = [
     params: {
       name: project.name
       environmentName: environmentName
+      logAnalyticsId: logAnalyticsId
       projectDescription: project.description ?? project.name
       devCenterName: devcenter.outputs.AZURE_DEV_CENTER_NAME
       projectCatalogs: project.catalogs

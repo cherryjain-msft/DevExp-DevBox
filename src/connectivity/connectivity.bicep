@@ -20,13 +20,19 @@ param environmentName string
 // Variables with consistent naming convention
 var resourceNameSuffix = '${environmentName}-${location}-RG'
 
-resource projectNetworkRg 'Microsoft.Resources/resourceGroups@2025-04-01' = {
+resource projectNetworkRg 'Microsoft.Resources/resourceGroups@2025-04-01' = if (projectNetwork.create && projectNetwork.virtualNetworkType == 'Unmanaged') {
   name: '${projectNetwork.name}-${resourceNameSuffix}'
   location: location
 }
 
+resource existingNetworkRg 'Microsoft.Resources/resourceGroups@2025-04-01' existing = if (!projectNetwork.create && projectNetwork.virtualNetworkType == 'Unmanaged') {
+  name: '${projectNetwork.name}'
+}
+
 module virtualNetwork 'vnet.bicep' = {
-  scope: projectNetworkRg
+  scope: (projectNetwork.create && projectNetwork.virtualNetworkType == 'Unmanaged')
+    ? projectNetworkRg
+    : existingNetworkRg
   params: {
     logAnalyticsId: logAnalyticsId
     settings: {
