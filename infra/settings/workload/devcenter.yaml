@@ -30,6 +30,8 @@ identity:
         name: "Contributor"
       - id: "18d7d88d-d35e-4fb5-a5c3-7773c20a72d9"
         name: "User Access Administrator"
+      - id: "4633458b-17de-408a-b874-0445c86b69e6"
+        name: "Key Vault Secrets User"
 
     orgRoleTypes:
       # Dev Manager role - for users who manage Dev Box deployments
@@ -101,9 +103,11 @@ projects:
             - name: "Contributor"
               id: "b24988ac-6180-42a0-ab88-20f7382dd24c"
             - name: "Dev Box User"
-              id: "45d50f46-0b78-4001-a660-4198cbe8cd05"
+              id: "45d50f46-0b78-4001-a660-4198cbe8cd05"            
             - name: "Deployment Environment User"
               id: "18e40d4e-8d2e-438d-97e1-9528336e149c"
+            - name: "Key Vault Secrets User"
+              id: "4633458b-17de-408a-b874-0445c86b69e6"
     
     # Dev Box pools - collections of Dev Boxes with specific configurations
     # Best practice: Create role-specific pools with appropriate tools and settings
