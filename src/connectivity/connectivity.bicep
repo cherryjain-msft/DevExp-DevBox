@@ -10,16 +10,11 @@ param logAnalyticsId string
 @description('Azure region for resource deployment')
 param location string
 
-@description('Environment name used for resource naming (dev, test, prod)')
-@minLength(2)
-@maxLength(10)
-param environmentName string
-
-module projectNetworkRg 'resourceGroup.bicep' = {
+module Rg 'resourceGroup.bicep' = {
+  name: 'projectNetworkRg-${uniqueString(projectNetwork.name, location)}'
   scope: subscription()
   params: {
     name: projectNetwork.resourceGroupName
-    environmentName: environmentName
     location: location
     tags: projectNetwork.tags
     create: projectNetwork.create
@@ -28,7 +23,7 @@ module projectNetworkRg 'resourceGroup.bicep' = {
 
 module virtualNetwork 'vnet.bicep' = {
   name: 'virtualNetwork-${uniqueString(projectNetwork.name, location)}'
-  scope: resourceGroup(projectNetworkRg.name)
+  scope: resourceGroup(projectNetwork.resourceGroupName)
   params: {
     logAnalyticsId: logAnalyticsId
     location: location
@@ -42,16 +37,22 @@ module virtualNetwork 'vnet.bicep' = {
       tags: projectNetwork.tags
     }
   }
+  dependsOn: [
+    Rg
+  ]
 }
 
 module networkConnection './networkConnection.bicep' = if (projectNetwork.create && projectNetwork.virtualNetworkType == 'Unmanaged') {
-  name: 'netconn-${uniqueString(projectNetworkRg.name,resourceGroup().id)}'
-  scope: resourceGroup(projectNetworkRg.name)
+  name: 'netconn-${uniqueString(projectNetwork.name,resourceGroup().id)}'
+  scope: resourceGroup(projectNetwork.name)
   params: {
     devCenterName: devCenterName
     name: 'netconn-${virtualNetwork.name}'
     subnetId: virtualNetwork.outputs.AZURE_VIRTUAL_NETWORK.subnets[0].id
   }
+  dependsOn: [
+    virtualNetwork
+  ]
 }
 
 var connectionName = (projectNetwork.create && projectNetwork.virtualNetworkType == 'Unmanaged')

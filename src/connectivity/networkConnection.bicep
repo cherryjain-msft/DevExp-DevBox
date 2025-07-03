@@ -36,6 +36,9 @@ resource vnetAttachment 'Microsoft.DevCenter/devcenters/attachednetworks@2025-02
   properties: {
     networkConnectionId: netConnection.id
   }
+  dependsOn: [
+    netConnection
+  ]
 }
 
 @description('The name of the Virtual Network Attachment')

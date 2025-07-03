@@ -11,11 +11,6 @@ param logAnalyticsId string
 @description('Description for the DevCenter project')
 param projectDescription string
 
-@description('Environment name used for resource naming (dev, test, prod)')
-@minLength(2)
-@maxLength(10)
-param environmentName string
-
 @description('Catalog configuration for the project')
 param projectCatalogs object
 
@@ -31,9 +26,6 @@ param projectNetwork object
 @description('Secret identifier for Git repository authentication')
 @secure()
 param secretIdentifier string
-
-@description('Name of the Key Vault containing secrets')
-param keyVaultName string
 
 @description('Resource group name for security resources')
 param securityResourceGroupName string
@@ -170,7 +162,6 @@ module connectivity '../../connectivity/connectivity.bicep' = {
     devCenterName: devCenterName
     projectNetwork: projectNetwork
     logAnalyticsId: logAnalyticsId
-    environmentName: environmentName
     location: resourceGroup().location
   }
   dependsOn: [

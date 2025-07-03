@@ -61,7 +61,6 @@ module projects 'project/project.bicep' = [
     scope: resourceGroup()
     params: {
       name: project.name
-      environmentName: environmentName
       logAnalyticsId: logAnalyticsId
       projectDescription: project.description ?? project.name
       devCenterName: devcenter.outputs.AZURE_DEV_CENTER_NAME
@@ -70,7 +69,6 @@ module projects 'project/project.bicep' = [
       projectPools: project.pools
       projectNetwork: project.network
       secretIdentifier: secretIdentifier
-      keyVaultName: keyVaultName
       securityResourceGroupName: securityResourceGroupName
       identity: project.identity
       tags: project.tags

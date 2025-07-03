@@ -74,8 +74,8 @@ projects:
     network:
       name: identityProvider
       create: true
-      resourceGroupName: "contoso-devcenter-rg"
-      virtualNetworkType: Managed  
+      resourceGroupName: "identityProvider-connectivity-RG"
+      virtualNetworkType: Unmanaged  
       addressPrefixes:
         - 10.0.0.0/16
       subnets:
@@ -151,10 +151,10 @@ projects:
     description: "eShop project."
 
     network:
-      name: identityProvider
+      name: eShop
       create: true
-      resourceGroupName: "contoso-devcenter-rg"
-      virtualNetworkType: Managed  
+      resourceGroupName: "eShop-connectivity-RG"
+      virtualNetworkType: Unmanaged  
       addressPrefixes:
         - 10.0.0.0/16
       subnets:
