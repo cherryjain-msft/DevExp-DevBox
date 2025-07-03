@@ -75,7 +75,7 @@ projects:
       name: identityProvider
       create: true
       resourceGroupName: "identityProvider-connectivity-RG"
-      virtualNetworkType: Unmanaged  
+      virtualNetworkType: Managed  
       addressPrefixes:
         - 10.0.0.0/16
       subnets:
@@ -154,7 +154,7 @@ projects:
       name: eShop
       create: true
       resourceGroupName: "eShop-connectivity-RG"
-      virtualNetworkType: Unmanaged  
+      virtualNetworkType: Managed
       addressPrefixes:
         - 10.0.0.0/16
       subnets:
