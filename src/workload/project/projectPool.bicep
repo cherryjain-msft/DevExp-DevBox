@@ -14,7 +14,6 @@ param imageDefinitionName string
 param networkConnectionName string
 
 @description('Network type for resource deployment')
-@allowed(['Unmanaged', 'Managed'])
 param networkType string
 
 @description('The name of the project to which the pool belongs')

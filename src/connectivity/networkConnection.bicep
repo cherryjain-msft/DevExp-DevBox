@@ -16,6 +16,7 @@ param tags object = {}
 @description('Reference to existing DevCenter instance')
 resource devcenter 'Microsoft.DevCenter/devcenters@2025-02-01' existing = {
   name: devCenterName
+  scope: resourceGroup()
 }
 
 @description('Network Connection resource for DevCenter')
@@ -36,6 +37,9 @@ resource vnetAttachment 'Microsoft.DevCenter/devcenters/attachednetworks@2025-02
   properties: {
     networkConnectionId: netConnection.id
   }
+  dependsOn: [
+    netConnection
+  ]
 }
 
 @description('The name of the Virtual Network Attachment')

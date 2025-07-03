@@ -1,42 +1,64 @@
+@description('Name of the DevCenter instance')
+param devCenterName string
+
+@description('Project Network Connectivity')
+param projectNetwork object
+
 @description('Log Analytics workspace resource ID for diagnostic settings')
 param logAnalyticsId string
 
 @description('Azure region for resource deployment')
-param location string = resourceGroup().location
+param location string
 
-@description('Environment name for resource tagging and naming')
-param environmentName string = 'dev'
+module Rg 'resourceGroup.bicep' = {
+  name: 'projectNetworkRg-${uniqueString(projectNetwork.name, location)}'
+  scope: subscription()
+  params: {
+    name: projectNetwork.resourceGroupName
+    location: location
+    tags: projectNetwork.tags
+    create: projectNetwork.create
+  }
+}
 
-@description('Optional resource tags to apply')
-param tags object = {}
-
-// Corrected file path typo in 'network.yaml' (was 'newtork.yaml')
-@description('Network settings loaded from YAML configuration')
-var networkSettings = loadYamlContent('../../infra/settings/connectivity/network.yaml')
-
-@description('Deploy Virtual Network and related networking components')
-module virtualNetwork 'vnet.bicep' = [
-  for setting in networkSettings.virtualNetworks: {
-    name: 'vnet-deployment-${uniqueString(resourceGroup().id, setting.name)}'
-    params: {
-      logAnalyticsId: logAnalyticsId
-      settings: setting
-      location: location
-      tags: union(tags, {
-        module: 'connectivity'
-        environment: environmentName
-      })
+module virtualNetwork 'vnet.bicep' = {
+  name: 'virtualNetwork-${uniqueString(projectNetwork.name, location)}'
+  scope: resourceGroup(projectNetwork.resourceGroupName)
+  params: {
+    logAnalyticsId: logAnalyticsId
+    location: location
+    settings: {
+      name: projectNetwork.name
+      virtualNetworkType: projectNetwork.virtualNetworkType
+      create: projectNetwork.create
+      resourceGroupName: projectNetwork.resourceGroupName
+      addressPrefixes: projectNetwork.addressPrefixes
+      subnets: projectNetwork.subnets
+      tags: projectNetwork.tags
     }
   }
-]
+  dependsOn: [
+    Rg
+  ]
+}
 
-output vnets object[] = networkSettings.virtualNetworks
-
-output AZURE_VIRTUAL_NETWORKS object[] = [
-  for (vnet, i) in networkSettings.virtualNetworks: {
-    name: virtualNetwork[i].outputs.AZURE_VIRTUAL_NETWORK.name
-    resourceGroupName: virtualNetwork[i].outputs.AZURE_VIRTUAL_NETWORK.resourceGroupName
-    virtualNetworkType: virtualNetwork[i].outputs.AZURE_VIRTUAL_NETWORK.virtualNetworkType
-    subnets: virtualNetwork[i].outputs.AZURE_VIRTUAL_NETWORK.subnets
+module networkConnection './networkConnection.bicep' = if (projectNetwork.create && projectNetwork.virtualNetworkType == 'Unmanaged') {
+  name: 'netconn-${uniqueString(projectNetwork.name,resourceGroup().id)}'
+  scope: resourceGroup()
+  params: {
+    devCenterName: devCenterName
+    name: 'netconn-${virtualNetwork.outputs.AZURE_VIRTUAL_NETWORK.name}'
+    subnetId: virtualNetwork.outputs.AZURE_VIRTUAL_NETWORK.subnets[0].id
   }
-]
+  dependsOn: [
+    virtualNetwork
+  ]
+}
+
+var connectionName = (projectNetwork.create && projectNetwork.virtualNetworkType == 'Unmanaged')
+  ? networkConnection.outputs.networkConnectionName
+  : projectNetwork.name
+
+output networkConnectionName string = connectionName
+
+output networkType string = projectNetwork.virtualNetworkType

@@ -4,6 +4,10 @@ param devCenterName string
 @description('Name of the project to be created')
 param name string
 
+@description('Log Analytics Workspace Resource ID')
+@minLength(1)
+param logAnalyticsId string
+
 @description('Description for the DevCenter project')
 param projectDescription string
 
@@ -16,19 +20,12 @@ param projectEnvironmentTypes array
 @description('DevBox pool configurations for the project')
 param projectPools array
 
-@description('Name of the network connection to be used with DevBox pools')
-param networkConnectionName string
-
-@description('Network type for resource deployment')
-@allowed(['Unmanaged', 'Managed'])
-param networkType string
+@description('Network connection name for the project')
+param projectNetwork object
 
 @description('Secret identifier for Git repository authentication')
 @secure()
 param secretIdentifier string
-
-@description('Name of the Key Vault containing secrets')
-param keyVaultName string
 
 @description('Resource group name for security resources')
 param securityResourceGroupName string
@@ -157,6 +154,22 @@ module environmentTypes 'projectEnvironmentType.bicep' = [
   }
 ]
 
+@description('Connectivity configuration for the project')
+module connectivity '../../connectivity/connectivity.bicep' = {
+  name: 'connectivity-${uniqueString(project.id)}'
+  scope: resourceGroup()
+  params: {
+    devCenterName: devCenterName
+    projectNetwork: projectNetwork
+    logAnalyticsId: logAnalyticsId
+    location: resourceGroup().location
+  }
+  dependsOn: [
+    projectIdentity
+    catalogs
+  ]
+}
+
 @description('Configure DevBox pools for the project')
 module pools 'projectPool.bicep' = [
   for (pool, i) in projectPools: {
@@ -167,12 +180,12 @@ module pools 'projectPool.bicep' = [
       projectName: project.name
       catalogName: projectCatalogs.imageDefinition.name
       imageDefinitionName: pool.imageDefinitionName
-      networkConnectionName: networkConnectionName
-      networkType: networkType
+      networkConnectionName: connectivity.outputs.networkConnectionName
+      networkType: connectivity.outputs.networkType
     }
     dependsOn: [
-      projectIdentity
-      catalogs
+      project
+      connectivity
     ]
   }
 ]

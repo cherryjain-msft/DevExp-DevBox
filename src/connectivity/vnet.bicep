@@ -2,13 +2,13 @@
 param logAnalyticsId string
 
 @description('Azure region for resource deployment')
-param location string = resourceGroup().location
+param location string
 
 @description('Tags to apply to all resources')
 param tags object = {}
 
 @description('Network configuration settings')
-param settings NetworkSettings
+param settings object
 
 @description('Network settings type definition with enhanced validation')
 type NetworkSettings = {
@@ -20,6 +20,9 @@ type NetworkSettings = {
 
   @description('Flag to create new or use existing virtual network')
   create: bool
+
+  @description('Resource group name for existing virtual network')
+  resourceGroupName: string
 
   @description('Resource tags')
   tags: object
@@ -54,6 +57,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = if (set
 @description('Reference to existing Virtual Network')
 resource existingVirtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' existing = if (!settings.create && settings.virtualNetworkType == 'Unmanaged') {
   name: settings.name
+  scope: resourceGroup()
 }
 
 @description('Log Analytics Diagnostic Settings')

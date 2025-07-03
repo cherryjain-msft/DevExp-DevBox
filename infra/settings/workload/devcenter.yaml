@@ -12,7 +12,7 @@
 # - Dev Center documentation: https://learn.microsoft.com/en-us/azure/dev-box/overview-what-is-microsoft-dev-box
 # - Azure RBAC roles: https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles
 
-name: "contoso-devcenter"
+name: "devexp-devcenter"
 location: "eastus2"
 catalogItemSyncEnableStatus: "Enabled"
 microsoftHostedNetworkEnableStatus: "Enabled"
@@ -70,6 +70,26 @@ projects:
   # Identity Provider project - for authentication/authorization services
   - name: "identityProvider"
     description: "Identity Provider project."
+
+    network:
+      name: identityProvider
+      create: true
+      resourceGroupName: "identityProvider-connectivity-RG"
+      virtualNetworkType: Unmanaged  
+      addressPrefixes:
+        - 10.0.0.0/16
+      subnets:
+        - name: identityProvider-subnet
+          properties:
+            addressPrefix: 10.0.1.0/24
+      tags:
+        environment: dev
+        division: Platforms
+        team: DevExP
+        project: DevExP-DevBox
+        costCenter: IT
+        owner: Contoso
+        resources: Network
 
     # Project identity configuration - controls project-level security
     identity:
@@ -129,6 +149,26 @@ projects:
 
   - name: "eShop"
     description: "eShop project."
+
+    network:
+      name: eShop
+      create: true
+      resourceGroupName: "eShop-connectivity-RG"
+      virtualNetworkType: Unmanaged  
+      addressPrefixes:
+        - 10.0.0.0/16
+      subnets:
+        - name: identityProvider-subnet
+          properties:
+            addressPrefix: 10.0.1.0/24
+      tags:
+        environment: dev
+        division: Platforms
+        team: DevExP
+        project: DevExP-DevBox
+        costCenter: IT
+        owner: Contoso
+        resources: Network
 
     # Project identity configuration - controls project-level security
     identity:

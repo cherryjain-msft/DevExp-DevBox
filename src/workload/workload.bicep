@@ -9,9 +9,6 @@
 @minLength(1)
 param logAnalyticsId string
 
-@description('Network subnet configurations')
-param virtualNetworks object[]
-
 @description('Secret Identifier for secured content')
 @secure()
 param secretIdentifier string
@@ -24,6 +21,11 @@ param keyVaultName string
 @description('Security Resource Group Name')
 @minLength(3)
 param securityResourceGroupName string
+
+@description('Environment name used for resource naming (dev, test, prod)')
+@minLength(2)
+@maxLength(10)
+param environmentName string
 
 // Resource types with documentation
 @description('Landing Zone configuration type')
@@ -47,7 +49,6 @@ module devcenter 'core/devCenter.bicep' = {
     catalogs: devCenterSettings.catalogs
     environmentTypes: devCenterSettings.environmentTypes
     logAnalyticsId: logAnalyticsId
-    virtualNetworks: virtualNetworks
     secretIdentifier: secretIdentifier
   }
 }
@@ -60,15 +61,14 @@ module projects 'project/project.bicep' = [
     scope: resourceGroup()
     params: {
       name: project.name
+      logAnalyticsId: logAnalyticsId
       projectDescription: project.description ?? project.name
       devCenterName: devcenter.outputs.AZURE_DEV_CENTER_NAME
       projectCatalogs: project.catalogs
       projectEnvironmentTypes: project.environmentTypes
       projectPools: project.pools
-      networkConnectionName: devcenter.outputs.networkConnections[i].name
-      networkType: devcenter.outputs.networkConnections[i].virtualNetworkType
+      projectNetwork: project.network
       secretIdentifier: secretIdentifier
-      keyVaultName: keyVaultName
       securityResourceGroupName: securityResourceGroupName
       identity: project.identity
       tags: project.tags
