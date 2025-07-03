@@ -44,7 +44,7 @@ module virtualNetwork 'vnet.bicep' = {
 
 module networkConnection './networkConnection.bicep' = if (projectNetwork.create && projectNetwork.virtualNetworkType == 'Unmanaged') {
   name: 'netconn-${uniqueString(projectNetwork.name,resourceGroup().id)}'
-  scope: resourceGroup(projectNetwork.name)
+  scope: resourceGroup()
   params: {
     devCenterName: devCenterName
     name: 'netconn-${virtualNetwork.name}'
