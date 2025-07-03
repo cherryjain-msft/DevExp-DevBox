@@ -165,8 +165,9 @@ module environmentTypes 'projectEnvironmentType.bicep' = [
 @description('Connectivity configuration for the project')
 module connectivity '../../connectivity/connectivity.bicep' = {
   name: 'connectivity-${uniqueString(project.id)}'
-  scope: subscription()
+  scope: resourceGroup()
   params: {
+    devCenterName: devCenterName
     projectNetwork: projectNetwork
     logAnalyticsId: logAnalyticsId
     environmentName: environmentName

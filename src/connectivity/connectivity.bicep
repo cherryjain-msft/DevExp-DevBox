@@ -1,6 +1,5 @@
-targetScope = 'subscription'
-// @description('Name of the DevCenter instance')
-// param devCenterName string
+@description('Name of the DevCenter instance')
+param devCenterName string
 
 @description('Project Network Connectivity')
 param projectNetwork object
@@ -16,12 +15,22 @@ param location string
 @maxLength(10)
 param environmentName string
 
-module virtualNetwork 'vnet.bicep' = {
-  name: 'virtualNetwork-${uniqueString(projectNetwork.name, location)}'
+module projectNetworkRg 'resourceGroup.bicep' = {
   scope: subscription()
   params: {
-    logAnalyticsId: logAnalyticsId
+    name: projectNetwork.resourceGroupName
     environmentName: environmentName
+    location: location
+    tags: projectNetwork.tags
+    create: projectNetwork.create
+  }
+}
+
+module virtualNetwork 'vnet.bicep' = {
+  name: 'virtualNetwork-${uniqueString(projectNetwork.name, location)}'
+  scope: resourceGroup(projectNetworkRg.name)
+  params: {
+    logAnalyticsId: logAnalyticsId
     location: location
     settings: {
       name: projectNetwork.name
@@ -35,20 +44,20 @@ module virtualNetwork 'vnet.bicep' = {
   }
 }
 
-// module networkConnection './networkConnection.bicep' = if (projectNetwork.create && projectNetwork.virtualNetworkType == 'Unmanaged') {
-//   name: 'networkConnection-${uniqueString(projectNetworkRg.id)}'
-//   scope: projectNetworkRg
-//   params: {
-//     devCenterName: devCenterName
-//     name: 'netconn-${virtualNetwork.name}'
-//     subnetId: virtualNetwork.outputs.AZURE_VIRTUAL_NETWORK.subnets[0].id
-//   }
-// }
+module networkConnection './networkConnection.bicep' = if (projectNetwork.create && projectNetwork.virtualNetworkType == 'Unmanaged') {
+  name: 'netconn-${uniqueString(projectNetworkRg.name,resourceGroup().id)}'
+  scope: resourceGroup(projectNetworkRg.name)
+  params: {
+    devCenterName: devCenterName
+    name: 'netconn-${virtualNetwork.name}'
+    subnetId: virtualNetwork.outputs.AZURE_VIRTUAL_NETWORK.subnets[0].id
+  }
+}
 
-// var connectionName = (projectNetwork.create && projectNetwork.virtualNetworkType == 'Unmanaged')
-//   ? networkConnection.name
-//   : projectNetwork.name
+var connectionName = (projectNetwork.create && projectNetwork.virtualNetworkType == 'Unmanaged')
+  ? networkConnection.name
+  : projectNetwork.name
 
-// output networkConnectionName string = connectionName
+output networkConnectionName string = connectionName
 
-// output networkType string = projectNetwork.virtualNetworkType
+output networkType string = projectNetwork.virtualNetworkType
