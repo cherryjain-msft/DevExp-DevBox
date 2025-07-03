@@ -12,7 +12,7 @@
 # - Dev Center documentation: https://learn.microsoft.com/en-us/azure/dev-box/overview-what-is-microsoft-dev-box
 # - Azure RBAC roles: https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles
 
-name: "contoso-devcenter"
+name: "contoso-devcenterDev"
 location: "eastus2"
 catalogItemSyncEnableStatus: "Enabled"
 microsoftHostedNetworkEnableStatus: "Enabled"

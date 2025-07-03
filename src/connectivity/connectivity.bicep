@@ -56,7 +56,7 @@ module networkConnection './networkConnection.bicep' = if (projectNetwork.create
 }
 
 var connectionName = (projectNetwork.create && projectNetwork.virtualNetworkType == 'Unmanaged')
-  ? networkConnection.name
+  ? networkConnection.outputs.networkConnectionName
   : projectNetwork.name
 
 output networkConnectionName string = connectionName
