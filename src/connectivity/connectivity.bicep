@@ -1,7 +1,6 @@
 targetScope = 'subscription'
-
-@description('Name of the DevCenter instance')
-param devCenterName string
+// @description('Name of the DevCenter instance')
+// param devCenterName string
 
 @description('Project Network Connectivity')
 param projectNetwork object
@@ -17,49 +16,39 @@ param location string
 @maxLength(10)
 param environmentName string
 
-// Variables with consistent naming convention
-var resourceNameSuffix = '${environmentName}-${location}-RG'
-
-resource projectNetworkRg 'Microsoft.Resources/resourceGroups@2025-04-01' = if (projectNetwork.create && projectNetwork.virtualNetworkType == 'Unmanaged') {
-  name: '${projectNetwork.name}-${resourceNameSuffix}'
-  location: location
-}
-
-resource existingNetworkRg 'Microsoft.Resources/resourceGroups@2025-04-01' existing = if (!projectNetwork.create && projectNetwork.virtualNetworkType == 'Unmanaged') {
-  name: '${projectNetwork.name}'
-}
-
 module virtualNetwork 'vnet.bicep' = {
-  scope: (projectNetwork.create && projectNetwork.virtualNetworkType == 'Unmanaged')
-    ? projectNetworkRg
-    : existingNetworkRg
+  name: 'virtualNetwork-${uniqueString(projectNetwork.name, location)}'
+  scope: subscription()
   params: {
     logAnalyticsId: logAnalyticsId
+    environmentName: environmentName
+    location: location
     settings: {
       name: projectNetwork.name
-      tags: projectNetwork.tags
-      addressPrefixes: projectNetwork.addressPrefixes
-      create: projectNetwork.create
-      subnets: projectNetwork.subnets
       virtualNetworkType: projectNetwork.virtualNetworkType
+      create: projectNetwork.create
+      resourceGroupName: projectNetwork.resourceGroupName
+      addressPrefixes: projectNetwork.addressPrefixes
+      subnets: projectNetwork.subnets
+      tags: projectNetwork.tags
     }
   }
 }
 
-module networkConnection './networkConnection.bicep' = if (projectNetwork.create && projectNetwork.virtualNetworkType == 'Unmanaged') {
-  name: 'networkConnection-${uniqueString(projectNetworkRg.id)}'
-  scope: projectNetworkRg
-  params: {
-    devCenterName: devCenterName
-    name: 'netconn-${virtualNetwork.name}'
-    subnetId: virtualNetwork.outputs.AZURE_VIRTUAL_NETWORK.subnets[0].id
-  }
-}
+// module networkConnection './networkConnection.bicep' = if (projectNetwork.create && projectNetwork.virtualNetworkType == 'Unmanaged') {
+//   name: 'networkConnection-${uniqueString(projectNetworkRg.id)}'
+//   scope: projectNetworkRg
+//   params: {
+//     devCenterName: devCenterName
+//     name: 'netconn-${virtualNetwork.name}'
+//     subnetId: virtualNetwork.outputs.AZURE_VIRTUAL_NETWORK.subnets[0].id
+//   }
+// }
 
-var connectionName = (projectNetwork.create && projectNetwork.virtualNetworkType == 'Unmanaged')
-  ? networkConnection.name
-  : projectNetwork.name
+// var connectionName = (projectNetwork.create && projectNetwork.virtualNetworkType == 'Unmanaged')
+//   ? networkConnection.name
+//   : projectNetwork.name
 
-output networkConnectionName string = connectionName
+// output networkConnectionName string = connectionName
 
-output networkType string = projectNetwork.virtualNetworkType
+// output networkType string = projectNetwork.virtualNetworkType

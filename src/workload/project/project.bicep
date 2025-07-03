@@ -167,11 +167,10 @@ module connectivity '../../connectivity/connectivity.bicep' = {
   name: 'connectivity-${uniqueString(project.id)}'
   scope: subscription()
   params: {
-    devCenterName: devCenterName
     projectNetwork: projectNetwork
     logAnalyticsId: logAnalyticsId
-    location: resourceGroup().location
     environmentName: environmentName
+    location: resourceGroup().location
   }
   dependsOn: [
     projectIdentity
