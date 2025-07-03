@@ -7,6 +7,11 @@ param name string
 @description('Description for the DevCenter project')
 param projectDescription string
 
+@description('Environment name used for resource naming (dev, test, prod)')
+@minLength(2)
+@maxLength(10)
+param environmentName string
+
 @description('Catalog configuration for the project')
 param projectCatalogs object
 
@@ -16,12 +21,8 @@ param projectEnvironmentTypes array
 @description('DevBox pool configurations for the project')
 param projectPools array
 
-@description('Name of the network connection to be used with DevBox pools')
-param networkConnectionName string
-
-@description('Network type for resource deployment')
-@allowed(['Unmanaged', 'Managed'])
-param networkType string
+@description('Network connection name for the project')
+param projectNetwork object
 
 @description('Secret identifier for Git repository authentication')
 @secure()
@@ -157,6 +158,23 @@ module environmentTypes 'projectEnvironmentType.bicep' = [
   }
 ]
 
+@description('Connectivity configuration for the project')
+module connectivity '../../connectivity/connectivity.bicep' = {
+  name: 'connectivity-${uniqueString(project.id)}'
+  scope: subscription()
+  params: {
+    devCenterName: devCenterName
+    projectNetwork: projectNetwork
+    logAnalyticsId: projectNetwork.logAnalyticsId
+    location: resourceGroup().location
+    environmentName: environmentName
+  }
+  dependsOn: [
+    projectIdentity
+    catalogs
+  ]
+}
+
 @description('Configure DevBox pools for the project')
 module pools 'projectPool.bicep' = [
   for (pool, i) in projectPools: {
@@ -167,12 +185,11 @@ module pools 'projectPool.bicep' = [
       projectName: project.name
       catalogName: projectCatalogs.imageDefinition.name
       imageDefinitionName: pool.imageDefinitionName
-      networkConnectionName: networkConnectionName
-      networkType: networkType
+      networkConnectionName: connectivity.outputs.networkConnectionName
+      networkType: connectivity.outputs.networkType
     }
     dependsOn: [
-      projectIdentity
-      catalogs
+      project
     ]
   }
 ]

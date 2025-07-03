@@ -12,9 +12,6 @@ param catalogs array
 @description('Environment Types')
 param environmentTypes array
 
-@description('Subnets')
-param virtualNetworks VirtualNetwork[]
-
 @description('Log Analytics Workspace Id')
 @minLength(1)
 param logAnalyticsId string
@@ -141,35 +138,6 @@ module devCenterIdentityUserGroupsRoleAssignment '../../identity/orgRoleAssignme
       devCenterIdentityRoleAssignment
     ]
   }
-]
-
-// Network configuration
-@description('Network Connections')
-module networkConnection 'networkConnection.bicep' = [
-  for (vnet, i) in virtualNetworks: if (vnet.virtualNetworkType == 'Unmanaged') {
-    name: 'netConn-${vnet.name}-${uniqueString(vnet.name,resourceGroup().id)}'
-    scope: resourceGroup()
-    params: {
-      name: 'nc-${vnet.subnets[0].name}'
-      devCenterName: devCenterName
-      subnetId: vnet.subnets[0].id
-    }
-  }
-]
-
-@description('Network Connections for Dev Center')
-output networkConnections object[] = [
-  for (vnet, i) in virtualNetworks: (vnet.virtualNetworkType == 'Unmanaged')
-    ? {
-        name: networkConnection[i].outputs.networkConnectionName
-        id: networkConnection[i].outputs.networkConnectionId
-        virtualNetworkType: vnet.virtualNetworkType
-      }
-    : {
-        name: vnet.virtualNetworkType
-        id: vnet.virtualNetworkType
-        virtualNetworkType: vnet.virtualNetworkType
-      }
 ]
 
 // Catalog configuration

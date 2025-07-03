@@ -56,7 +56,6 @@ var createResourceGroupName = {
 
 var securityRgName = createResourceGroupName.security
 var monitoringRgName = createResourceGroupName.monitoring
-var connectivityRgName = createResourceGroupName.connectivity
 var workloadRgName = createResourceGroupName.workload
 
 // Security resources
@@ -76,16 +75,6 @@ resource monitoringRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (land
   location: location
   tags: union(landingZones.monitoring.tags, {
     'component': 'monitoring'
-  })
-}
-
-// Connectivity resources
-@description('Connectivity Resource Group for networking resources')
-resource connectivityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZones.connectivity.create) {
-  name: connectivityRgName
-  location: location
-  tags: union(landingZones.connectivity.tags, {
-    'component': 'connectivity'
   })
 }
 
@@ -127,26 +116,13 @@ module security '../src/security/security.bicep' = {
   ]
 }
 
-@description('Network connectivity resources')
-module connectivity '../src/connectivity/connectivity.bicep' = {
-  name: 'connectivity-network-deployment-${environmentName}'
-  scope: resourceGroup(connectivityRgName)
-  params: {
-    logAnalyticsId: monitoring.outputs.logAnalyticsId
-  }
-  dependsOn: [
-    connectivityRg
-    monitoring
-  ]
-}
-
 @description('DevCenter workload deployment')
 module workload '../src/workload/workload.bicep' = {
   name: 'workload-devcenter-deployment-${environmentName}'
   scope: resourceGroup(workloadRgName)
   params: {
+    environmentName: environmentName
     logAnalyticsId: monitoring.outputs.logAnalyticsId
-    virtualNetworks: connectivity.outputs.AZURE_VIRTUAL_NETWORKS
     secretIdentifier: security.outputs.secretIdentifier
     keyVaultName: security.outputs.keyVaultName
     securityResourceGroupName: securityRgName
@@ -154,7 +130,6 @@ module workload '../src/workload/workload.bicep' = {
   dependsOn: [
     workloadRg
     security
-    connectivity
   ]
 }
 

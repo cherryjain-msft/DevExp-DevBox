@@ -71,6 +71,26 @@ projects:
   - name: "identityProvider"
     description: "Identity Provider project."
 
+    network:
+      name: identityProvider
+      create: true
+      resourceGroupName: "contoso-devcenter-rg"
+      virtualNetworkType: Managed  
+      addressPrefixes:
+        - 10.0.0.0/16
+      subnets:
+        - name: identityProvider-subnet
+          properties:
+            addressPrefix: 10.0.1.0/24
+      tags:
+        environment: dev
+        division: Platforms
+        team: DevExP
+        project: DevExP-DevBox
+        costCenter: IT
+        owner: Contoso
+        resources: Network
+
     # Project identity configuration - controls project-level security
     identity:
       type: SystemAssigned
@@ -129,6 +149,26 @@ projects:
 
   - name: "eShop"
     description: "eShop project."
+
+    network:
+      name: identityProvider
+      create: true
+      resourceGroupName: "contoso-devcenter-rg"
+      virtualNetworkType: Managed  
+      addressPrefixes:
+        - 10.0.0.0/16
+      subnets:
+        - name: identityProvider-subnet
+          properties:
+            addressPrefix: 10.0.1.0/24
+      tags:
+        environment: dev
+        division: Platforms
+        team: DevExP
+        project: DevExP-DevBox
+        costCenter: IT
+        owner: Contoso
+        resources: Network
 
     # Project identity configuration - controls project-level security
     identity:
