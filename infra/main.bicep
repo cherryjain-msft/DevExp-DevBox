@@ -46,9 +46,6 @@ var createResourceGroupName = {
   monitoring: landingZones.monitoring.create
     ? '${landingZones.monitoring.name}-${resourceNameSuffix}'
     : landingZones.monitoring.name
-  connectivity: landingZones.connectivity.create
-    ? '${landingZones.connectivity.name}-${resourceNameSuffix}'
-    : landingZones.connectivity.name
   workload: landingZones.workload.create
     ? '${landingZones.workload.name}-${resourceNameSuffix}'
     : landingZones.workload.name
