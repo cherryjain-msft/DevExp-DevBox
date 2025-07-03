@@ -95,43 +95,11 @@
                 "description",
                 "tags"
             ]
-        },
-        "connectivity": {
-            "type": "object",
-            "properties": {
-                "create": {
-                    "type": "boolean",
-                    "description": "Flag to indicate if the resource group should be created"
-                },
-                "name": {
-                    "type": "string",
-                    "description": "Name of the resource group",
-                    "default": "connectivity"
-                },
-                "description": {
-                    "type": "string",
-                    "description": "Description of the resource group"
-                },
-                "tags": {
-                    "type": "object",
-                    "additionalProperties": {
-                        "type": "string"
-                    },
-                    "description": "The tags to automatically apply to deployed environments"
-                }
-            },
-            "required": [
-                "create",
-                "name",
-                "description",
-                "tags"
-            ]
         }
     },
     "required": [
         "workload",
         "security",
-        "monitoring",
-        "connectivity"
+        "monitoring"
     ]
 }

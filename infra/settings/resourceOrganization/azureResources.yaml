@@ -86,29 +86,3 @@ monitoring:
     owner: Contoso
     landingZone: Workload
     resources: ResourceGroup
-
-# Connectivity Resource Group
-# --------------------------
-# Purpose: Contains networking and connectivity resources including:
-# - Virtual Networks and Subnets
-# - Network Security Groups
-# - Virtual Network Peerings
-# - Private DNS Zones
-# - Azure Bastion (if applicable)
-#
-# Best practice: Segregate network infrastructure to enable specialized management
-# by networking teams and facilitate network-wide security policies.
-connectivity:
-  create: true
-  name: devexp-connectivity
-  description: prodExp
-  
-  tags:
-    environment: dev
-    division: Platforms
-    team: DevExP
-    project: Contoso-DevExp-DevBox
-    costCenter: IT
-    owner: Contoso
-    landingZone: Workload
-    resources: ResourceGroup
