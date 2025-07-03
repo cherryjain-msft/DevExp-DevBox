@@ -47,7 +47,7 @@ module networkConnection './networkConnection.bicep' = if (projectNetwork.create
   scope: resourceGroup()
   params: {
     devCenterName: devCenterName
-    name: 'netconn-${virtualNetwork.name}'
+    name: 'netconn-${virtualNetwork.outputs.AZURE_VIRTUAL_NETWORK.name}'
     subnetId: virtualNetwork.outputs.AZURE_VIRTUAL_NETWORK.subnets[0].id
   }
   dependsOn: [

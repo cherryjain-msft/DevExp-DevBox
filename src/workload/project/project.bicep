@@ -185,6 +185,7 @@ module pools 'projectPool.bicep' = [
     }
     dependsOn: [
       project
+      connectivity
     ]
   }
 ]
