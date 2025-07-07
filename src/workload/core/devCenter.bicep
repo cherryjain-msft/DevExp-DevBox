@@ -20,6 +20,8 @@ param logAnalyticsId string
 @secure()
 param secretIdentifier string
 
+param securityResourceGroupName string
+
 // Type definitions with proper naming conventions
 @description('DevCenter configuration type')
 type DevCenterConfig = {
@@ -57,6 +59,7 @@ type RoleAssignment = {
 type AzureRBACRole = {
   id: string
   name: string
+  scope: string
 }
 
 @description('Organization role type configuration')
@@ -121,7 +124,24 @@ module devCenterIdentityRoleAssignment '../../identity/devCenterRoleAssignment.b
     params: {
       id: role.id
       principalId: devCenterPrincipalId
+      scope: role.scope
     }
+  }
+]
+
+@description('Dev Center Identity Role Assignments')
+module devCenterIdentityRoleAssignmentRG '../../identity/devCenterRoleAssignmentRG.bicep' = [
+  for (role, i) in config.identity.roleAssignments.devCenter: {
+    name: 'RBACDevCenter-${i}-${devCenterName}'
+    scope: resourceGroup(securityResourceGroupName)
+    params: {
+      id: role.id
+      principalId: devCenterPrincipalId
+      scope: role.scope
+    }
+    dependsOn: [
+      devCenterIdentityRoleAssignment
+    ]
   }
 ]
 
@@ -129,7 +149,7 @@ module devCenterIdentityRoleAssignment '../../identity/devCenterRoleAssignment.b
 module devCenterIdentityUserGroupsRoleAssignment '../../identity/orgRoleAssignment.bicep' = [
   for (role, i) in config.identity.roleAssignments.orgRoleTypes: {
     name: 'RBACUserGroup-${i}-${devCenterName}'
-    scope: subscription()
+    scope: resourceGroup()
     params: {
       principalId: role.azureADGroupId
       roles: role.azureRBACRoles
@@ -153,6 +173,7 @@ module catalog 'catalog.bicep' = [
     }
     dependsOn: [
       devCenterIdentityRoleAssignment
+      devCenterIdentityRoleAssignmentRG
     ]
   }
 ]

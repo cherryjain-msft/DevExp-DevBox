@@ -18,13 +18,20 @@
       "minLength": 1,
       "maxLength": 64,
       "pattern": "^[a-zA-Z0-9][a-zA-Z0-9\\-_.]*[a-zA-Z0-9]$",
-      "examples": ["contoso-devcenter", "my-devcenter"]
+      "examples": [
+        "contoso-devcenter",
+        "my-devcenter"
+      ]
     },
     "location": {
       "type": "string",
       "description": "Azure region where the DevCenter will be deployed",
       "minLength": 1,
-      "examples": ["eastus2", "westus", "centralus"]
+      "examples": [
+        "eastus2",
+        "westus",
+        "centralus"
+      ]
     },
     "catalogItemSyncEnableStatus": {
       "type": "string",
@@ -144,20 +151,41 @@
       "additionalProperties": false,
       "required": [
         "id",
-        "name"
+        "name",
+        "scope"
       ],
       "properties": {
         "id": {
           "type": "string",
           "description": "UUID of the role definition",
           "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
-          "examples": ["b24988ac-6180-42a0-ab88-20f7382dd24c"]
+          "examples": [
+            "b24988ac-6180-42a0-ab88-20f7382dd24c"
+          ]
         },
         "name": {
           "type": "string",
           "description": "Name of the role",
           "minLength": 1,
-          "examples": ["Contributor", "Reader"]
+          "examples": [
+            "Contributor",
+            "Reader"
+          ]
+        },
+        "scope": {
+          "type": "string",
+          "description": "Scope of the role assignment",
+          "enum": [
+            "Subscription",
+            "ResourceGroup",
+            "Project"
+          ],
+          "default": "Subscription",
+          "examples": [
+            "Subscription",
+            "ResourceGroup",
+            "Project"
+          ]
         }
       }
     },
@@ -175,7 +203,10 @@
         "type": {
           "type": "string",
           "description": "Type of organizational role",
-          "examples": ["DevManager", "Developer"]
+          "examples": [
+            "DevManager",
+            "Developer"
+          ]
         },
         "azureADGroupId": {
           "type": "string",
@@ -216,8 +247,13 @@
         "type": {
           "type": "string",
           "description": "Type of catalog repository",
-          "enum": ["gitHub", "azureDevOps"],
-          "examples": ["gitHub"]
+          "enum": [
+            "gitHub",
+            "adoGit"
+          ],
+          "examples": [
+            "gitHub"
+          ]
         },
         "uri": {
           "type": "string",
@@ -232,7 +268,9 @@
         "path": {
           "type": "string",
           "description": "Path within the repository",
-          "examples": [".configuration/devcenter/tasks"]
+          "examples": [
+            ".configuration/devcenter/tasks"
+          ]
         }
       }
     },
@@ -249,12 +287,19 @@
           "type": "string",
           "description": "Name of the environment type",
           "minLength": 1,
-          "examples": ["dev", "staging", "prod"]
+          "examples": [
+            "dev",
+            "staging",
+            "prod"
+          ]
         },
         "deploymentTargetId": {
           "type": "string",
           "description": "Deployment target identifier (empty for default subscription)",
-          "examples": ["", "subscription-id"]
+          "examples": [
+            "",
+            "subscription-id"
+          ]
         }
       }
     },
@@ -300,7 +345,10 @@
             "virtualNetworkType": {
               "type": "string",
               "description": "Type of virtual network",
-              "enum": ["Managed", "Unmanaged"],
+              "enum": [
+                "Managed",
+                "Unmanaged"
+              ],
               "default": "Managed"
             },
             "addressPrefixes": {
@@ -417,7 +465,10 @@
         "virtualNetworkType": {
           "type": "string",
           "description": "Type of virtual network",
-          "enum": ["Managed", "Unmanaged"],
+          "enum": [
+            "Managed",
+            "Unmanaged"
+          ],
           "default": "Managed"
         },
         "addressPrefixes": {
@@ -521,7 +572,10 @@
           "type": "string",
           "description": "Name of the DevBox pool",
           "minLength": 1,
-          "examples": ["backend-engineer", "frontend-engineer"]
+          "examples": [
+            "backend-engineer",
+            "frontend-engineer"
+          ]
         },
         "imageDefinitionName": {
           "type": "string",

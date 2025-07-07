@@ -50,6 +50,7 @@ module devcenter 'core/devCenter.bicep' = {
     environmentTypes: devCenterSettings.environmentTypes
     logAnalyticsId: logAnalyticsId
     secretIdentifier: secretIdentifier
+    securityResourceGroupName: securityResourceGroupName
   }
 }
 

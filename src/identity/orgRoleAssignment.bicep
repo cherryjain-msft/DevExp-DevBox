@@ -1,4 +1,3 @@
-targetScope = 'subscription'
 
 @description('The principal (object) ID of the security group to assign roles to')
 param principalId string
@@ -20,6 +19,7 @@ param principalType string = 'Group'
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for role in roles: {
     name: guid(subscription().id, principalId, role.id)
+    scope: resourceGroup()
     properties: {
       principalId: principalId
       roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', role.id)
