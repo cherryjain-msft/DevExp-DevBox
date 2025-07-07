@@ -12,7 +12,7 @@
 # - Dev Center documentation: https://learn.microsoft.com/en-us/azure/dev-box/overview-what-is-microsoft-dev-box
 # - Azure RBAC roles: https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles
 
-name: "devexp-devcenter2"
+name: "devexp-devcenter"
 location: "eastus2"
 catalogItemSyncEnableStatus: "Enabled"
 microsoftHostedNetworkEnableStatus: "Enabled"
@@ -59,7 +59,7 @@ identity:
 catalogs:
   - name: "customTasks"
     type: adoGit
-    uri: "https://contososa2@dev.azure.com/contososa2/DevExp-DevBox/_git/DevExp-DevBox"
+    uri: "https://dev.azure.com/contososa2/_git/DevExp-DevBox"
     branch: "main"
     path: ".configuration/devcenter/tasks"
 

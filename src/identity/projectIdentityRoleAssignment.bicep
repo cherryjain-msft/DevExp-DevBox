@@ -15,10 +15,10 @@ param roles array
   'ForeignGroup'
   'Device'
 ])
-param principalType string = 'Group'
+param principalType string
 
 @description('Reference to the existing DevCenter project')
-resource project 'Microsoft.DevCenter/projects@2025-02-01' existing = {
+resource project 'Microsoft.DevCenter/projects@2025-04-01-preview' existing = {
   name: projectName
 }
 

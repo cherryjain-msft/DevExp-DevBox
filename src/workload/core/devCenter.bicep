@@ -72,7 +72,7 @@ type OrgRoleType = {
 
 // Main DevCenter resource
 @description('Dev Center Resource')
-resource devcenter 'Microsoft.DevCenter/devcenters@2025-02-01' = {
+resource devcenter 'Microsoft.DevCenter/devcenters@2025-04-01-preview' = {
   name: devCenterName
   location: resourceGroup().location
   identity: {

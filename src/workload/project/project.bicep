@@ -67,12 +67,12 @@ type RoleAssignment = {
 }
 
 @description('Reference to existing DevCenter')
-resource devCenter 'Microsoft.DevCenter/devcenters@2025-02-01' existing = {
+resource devCenter 'Microsoft.DevCenter/devcenters@2025-04-01-preview' existing = {
   name: devCenterName
 }
 
 @description('DevCenter Project resource')
-resource project 'Microsoft.DevCenter/projects@2025-02-01' = {
+resource project 'Microsoft.DevCenter/projects@2025-04-01-preview' = {
   name: name
   location: resourceGroup().location
   identity: {
@@ -96,14 +96,15 @@ resource project 'Microsoft.DevCenter/projects@2025-02-01' = {
 }
 
 @description('Configure project identity role assignments')
-module projectIdentity '../../identity/projectIdentityRoleAssignment.bicep' = [
+module projectIdentityUG '../../identity/projectIdentityRoleAssignment.bicep' = [
   for (role, i) in identity.roleAssignments: {
-    name: 'prj-rbac-${i}-${uniqueString(project.id, role.azureADGroupId)}'
+    name: 'prj-rbac-UG-${i}-${uniqueString(project.id, role.azureADGroupId)}'
     scope: resourceGroup()
     params: {
       projectName: project.name
       principalId: role.azureADGroupId
       roles: role.azureRBACRoles
+      principalType: 'Group'
     }
     dependsOn: [
       project
@@ -112,14 +113,15 @@ module projectIdentity '../../identity/projectIdentityRoleAssignment.bicep' = [
 ]
 
 @description('Configure project identity role assignments')
-module projectIdentityRG '../../identity/projectIdentityRoleAssignment.bicep' = [
+module projectIdentityUGRG '../../identity/projectIdentityRoleAssignmentRG.bicep' = [
   for (role, i) in identity.roleAssignments: {
-    name: 'prj-rbac-${i}-${uniqueString(project.id, role.azureADGroupId)}'
+    name: 'prj-rbac-UGRG-${i}-${uniqueString(project.id, role.azureADGroupId)}'
     scope: resourceGroup(securityResourceGroupName)
     params: {
       projectName: project.name
       principalId: role.azureADGroupId
       roles: role.azureRBACRoles
+      principalType: 'Group'
     }
     dependsOn: [
       project
@@ -127,6 +129,22 @@ module projectIdentityRG '../../identity/projectIdentityRoleAssignment.bicep' = 
   }
 ]
 
+@description('Configure project identity role assignments')
+module projectIdentity '../../identity/projectIdentityRoleAssignmentRG.bicep' = [
+  for (role, i) in identity.roleAssignments: {
+    name: 'prj-rbac-RG-${i}-${uniqueString(project.id, role.azureADGroupId)}'
+    scope: resourceGroup(securityResourceGroupName)
+    params: {
+      projectName: project.name
+      principalId: project.identity.principalId
+      roles: role.azureRBACRoles
+      principalType: 'ServicePrincipal'
+    }
+    dependsOn: [
+      project
+    ]
+  }
+]
 
 @description('Configure environment definition catalogs')
 module catalogs 'projectCatalog.bicep' = {
@@ -138,8 +156,9 @@ module catalogs 'projectCatalog.bicep' = {
     secretIdentifier: secretIdentifier
   }
   dependsOn: [
+    projectIdentityUG
+    projectIdentityUGRG
     projectIdentity
-    projectIdentityRG
   ]
 }
 
@@ -153,8 +172,9 @@ module environmentTypes 'projectEnvironmentType.bicep' = [
       environmentConfig: envType
     }
     dependsOn: [
+      projectIdentityUG
+      projectIdentityUGRG
       projectIdentity
-      projectIdentityRG
       catalogs
     ]
   }
@@ -171,8 +191,9 @@ module connectivity '../../connectivity/connectivity.bicep' = {
     location: resourceGroup().location
   }
   dependsOn: [
+    projectIdentityUG
+    projectIdentityUGRG
     projectIdentity
-    projectIdentityRG
     catalogs
   ]
 }
