@@ -95,18 +95,6 @@ resource project 'Microsoft.DevCenter/projects@2025-02-01' = {
   })
 }
 
-@description('Role assignment resource')
-module roleAssignment '../../identity/keyVaultAccess.bicep' = {
-  scope: resourceGroup(securityResourceGroupName)
-  params: {
-    name: project.name
-    principalId: project.identity.principalId
-  }
-  dependsOn: [
-    project
-  ]
-}
-
 @description('Configure project identity role assignments')
 module projectIdentity '../../identity/projectIdentityRoleAssignment.bicep' = [
   for (role, i) in identity.roleAssignments: {
@@ -119,10 +107,26 @@ module projectIdentity '../../identity/projectIdentityRoleAssignment.bicep' = [
     }
     dependsOn: [
       project
-      roleAssignment
     ]
   }
 ]
+
+@description('Configure project identity role assignments')
+module projectIdentityRG '../../identity/projectIdentityRoleAssignment.bicep' = [
+  for (role, i) in identity.roleAssignments: {
+    name: 'prj-rbac-${i}-${uniqueString(project.id, role.azureADGroupId)}'
+    scope: resourceGroup(securityResourceGroupName)
+    params: {
+      projectName: project.name
+      principalId: role.azureADGroupId
+      roles: role.azureRBACRoles
+    }
+    dependsOn: [
+      project
+    ]
+  }
+]
+
 
 @description('Configure environment definition catalogs')
 module catalogs 'projectCatalog.bicep' = {
@@ -135,6 +139,7 @@ module catalogs 'projectCatalog.bicep' = {
   }
   dependsOn: [
     projectIdentity
+    projectIdentityRG
   ]
 }
 
@@ -149,6 +154,7 @@ module environmentTypes 'projectEnvironmentType.bicep' = [
     }
     dependsOn: [
       projectIdentity
+      projectIdentityRG
       catalogs
     ]
   }
@@ -166,6 +172,7 @@ module connectivity '../../connectivity/connectivity.bicep' = {
   }
   dependsOn: [
     projectIdentity
+    projectIdentityRG
     catalogs
   ]
 }
