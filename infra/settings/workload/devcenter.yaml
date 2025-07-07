@@ -12,7 +12,7 @@
 # - Dev Center documentation: https://learn.microsoft.com/en-us/azure/dev-box/overview-what-is-microsoft-dev-box
 # - Azure RBAC roles: https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles
 
-name: "devexp-devcenter"
+name: "devexp-devcenter2"
 location: "eastus2"
 catalogItemSyncEnableStatus: "Enabled"
 microsoftHostedNetworkEnableStatus: "Enabled"
@@ -58,8 +58,8 @@ identity:
 # Best practice: Use Git repositories for configuration-as-code approach
 catalogs:
   - name: "customTasks"
-    type: gitHub
-    uri: "https://github.com/evilazaro/DevExp-DevBox.git"
+    type: adoGit
+    uri: "https://dev.azure.com/contososa2/DevExp-DevBox/_git/DevExp-DevBox"
     branch: "main"
     path: ".configuration/devcenter/tasks"
 
