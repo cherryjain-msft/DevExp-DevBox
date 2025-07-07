@@ -1,4 +1,4 @@
-targetScope = 'subscription'
+targetScope = 'resourceGroup'
 
 @description('The role definition ID to assign to the identity')
 param id string
@@ -19,13 +19,13 @@ param scope string
 @description('Existing role definition reference')
 resource roleDefinition 'Microsoft.Authorization/roleDefinitions@2022-05-01-preview' existing = {
   name: id
-  scope: subscription()
+  scope: resourceGroup()
 }
 
 @description('Role assignment resource')
-resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (scope == 'Subscription') {
-  name: guid(subscription().id, principalId, id)
-  scope: subscription()
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (scope == 'ResourceGroup') {
+  name: guid(resourceGroup().id, principalId, id)
+  scope: resourceGroup()
   properties: {
     roleDefinitionId: roleDefinition.id
     principalType: principalType

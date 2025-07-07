@@ -67,12 +67,12 @@ type RoleAssignment = {
 }
 
 @description('Reference to existing DevCenter')
-resource devCenter 'Microsoft.DevCenter/devcenters@2025-02-01' existing = {
+resource devCenter 'Microsoft.DevCenter/devcenters@2025-04-01-preview' existing = {
   name: devCenterName
 }
 
 @description('DevCenter Project resource')
-resource project 'Microsoft.DevCenter/projects@2025-02-01' = {
+resource project 'Microsoft.DevCenter/projects@2025-04-01-preview' = {
   name: name
   location: resourceGroup().location
   identity: {
@@ -95,31 +95,53 @@ resource project 'Microsoft.DevCenter/projects@2025-02-01' = {
   })
 }
 
-@description('Role assignment resource')
-module roleAssignment '../../identity/keyVaultAccess.bicep' = {
-  scope: resourceGroup(securityResourceGroupName)
-  params: {
-    name: project.name
-    principalId: project.identity.principalId
-  }
-  dependsOn: [
-    project
-  ]
-}
-
 @description('Configure project identity role assignments')
-module projectIdentity '../../identity/projectIdentityRoleAssignment.bicep' = [
+module projectIdentityUG '../../identity/projectIdentityRoleAssignment.bicep' = [
   for (role, i) in identity.roleAssignments: {
-    name: 'prj-rbac-${i}-${uniqueString(project.id, role.azureADGroupId)}'
+    name: 'prj-rbac-UG-${i}-${uniqueString(project.id, role.azureADGroupId)}'
     scope: resourceGroup()
     params: {
       projectName: project.name
       principalId: role.azureADGroupId
       roles: role.azureRBACRoles
+      principalType: 'Group'
     }
     dependsOn: [
       project
-      roleAssignment
+    ]
+  }
+]
+
+@description('Configure project identity role assignments')
+module projectIdentityUGRG '../../identity/projectIdentityRoleAssignmentRG.bicep' = [
+  for (role, i) in identity.roleAssignments: {
+    name: 'prj-rbac-UGRG-${i}-${uniqueString(project.id, role.azureADGroupId)}'
+    scope: resourceGroup(securityResourceGroupName)
+    params: {
+      projectName: project.name
+      principalId: role.azureADGroupId
+      roles: role.azureRBACRoles
+      principalType: 'Group'
+    }
+    dependsOn: [
+      project
+    ]
+  }
+]
+
+@description('Configure project identity role assignments')
+module projectIdentity '../../identity/projectIdentityRoleAssignmentRG.bicep' = [
+  for (role, i) in identity.roleAssignments: {
+    name: 'prj-rbac-RG-${i}-${uniqueString(project.id, role.azureADGroupId)}'
+    scope: resourceGroup(securityResourceGroupName)
+    params: {
+      projectName: project.name
+      principalId: project.identity.principalId
+      roles: role.azureRBACRoles
+      principalType: 'ServicePrincipal'
+    }
+    dependsOn: [
+      project
     ]
   }
 ]
@@ -134,6 +156,8 @@ module catalogs 'projectCatalog.bicep' = {
     secretIdentifier: secretIdentifier
   }
   dependsOn: [
+    projectIdentityUG
+    projectIdentityUGRG
     projectIdentity
   ]
 }
@@ -148,6 +172,8 @@ module environmentTypes 'projectEnvironmentType.bicep' = [
       environmentConfig: envType
     }
     dependsOn: [
+      projectIdentityUG
+      projectIdentityUGRG
       projectIdentity
       catalogs
     ]
@@ -165,30 +191,32 @@ module connectivity '../../connectivity/connectivity.bicep' = {
     location: resourceGroup().location
   }
   dependsOn: [
+    projectIdentityUG
+    projectIdentityUGRG
     projectIdentity
     catalogs
   ]
 }
 
-@description('Configure DevBox pools for the project')
-module pools 'projectPool.bicep' = [
-  for (pool, i) in projectPools: {
-    name: 'pool-${i}-${uniqueString(project.id, pool.name)}'
-    scope: resourceGroup()
-    params: {
-      name: pool.name
-      projectName: project.name
-      catalogName: projectCatalogs.imageDefinition.name
-      imageDefinitionName: pool.imageDefinitionName
-      networkConnectionName: connectivity.outputs.networkConnectionName
-      networkType: connectivity.outputs.networkType
-    }
-    dependsOn: [
-      project
-      connectivity
-    ]
-  }
-]
+// @description('Configure DevBox pools for the project')
+// module pools 'projectPool.bicep' = [
+//   for (pool, i) in projectPools: {
+//     name: 'pool-${i}-${uniqueString(project.id, pool.name)}'
+//     scope: resourceGroup()
+//     params: {
+//       name: pool.name
+//       projectName: project.name
+//       catalogName: projectCatalogs.imageDefinition.name
+//       imageDefinitionName: pool.imageDefinitionName
+//       networkConnectionName: connectivity.outputs.networkConnectionName
+//       networkType: connectivity.outputs.networkType
+//     }
+//     dependsOn: [
+//       project
+//       connectivity
+//     ]
+//   }
+// ]
 
 @description('The name of the deployed project')
 output AZURE_PROJECT_NAME string = project.name

@@ -28,10 +28,16 @@ identity:
     devCenter:      
       - id: "b24988ac-6180-42a0-ab88-20f7382dd24c"
         name: "Contributor"
+        scope: "Subscription"
       - id: "18d7d88d-d35e-4fb5-a5c3-7773c20a72d9"
         name: "User Access Administrator"
+        scope: "Subscription"
       - id: "4633458b-17de-408a-b874-0445c86b69e6"
         name: "Key Vault Secrets User"
+        scope: "ResourceGroup"
+      - id: "b86a8fe4-44ce-4948-aee5-eccb2c155cd7"
+        name: "Key Vault Secrets Officer"
+        scope: "ResourceGroup"
 
     orgRoleTypes:
       # Dev Manager role - for users who manage Dev Box deployments
@@ -45,14 +51,15 @@ identity:
           # DevCenter Project Admin role allows managing project settings
           - name: "DevCenter Project Admin"
             id: "331c37c6-af14-46d9-b9f4-e1909e1b95a0"
+            scope: ResourceGroup
 
 # Catalogs section - defines repositories containing Dev Box configurations
 # These catalogs provide centralized, version-controlled configuration
 # Best practice: Use Git repositories for configuration-as-code approach
 catalogs:
   - name: "customTasks"
-    type: "gitHub"
-    uri: "https://github.com/Evilazaro/DevExP-DevBox.git"
+    type: gitHub
+    uri: "https://github.com/evilazaro/DevExp-DevBox"
     branch: "main"
     path: ".configuration/devcenter/tasks"
 
@@ -102,12 +109,19 @@ projects:
           azureRBACRoles:
             - name: "Contributor"
               id: "b24988ac-6180-42a0-ab88-20f7382dd24c"
+              scope: Project
             - name: "Dev Box User"
-              id: "45d50f46-0b78-4001-a660-4198cbe8cd05"            
+              id: "45d50f46-0b78-4001-a660-4198cbe8cd05"
+              scope: Project
             - name: "Deployment Environment User"
               id: "18e40d4e-8d2e-438d-97e1-9528336e149c"
+              scope: Project
             - name: "Key Vault Secrets User"
               id: "4633458b-17de-408a-b874-0445c86b69e6"
+              scope: ResourceGroup
+            - id: "b86a8fe4-44ce-4948-aee5-eccb2c155cd7"
+              name: "Key Vault Secrets Officer"
+              scope: ResourceGroup
     
     # Dev Box pools - collections of Dev Boxes with specific configurations
     # Best practice: Create role-specific pools with appropriate tools and settings
@@ -129,14 +143,14 @@ projects:
     catalogs:
       environmentDefinition:
         name: "environments"
-        type: "gitHub"
-        uri: "https://github.com/Evilazaro/identityProvider.git"
+        type: gitHub
+        uri: "https://github.com/evilazaro/IdentityProvider"
         branch: "main"
         path: ".configuration/devcenter/environments"
       imageDefinition:
         name: "imageDefinitions"
-        type: "gitHub"
-        uri: "https://github.com/Evilazaro/identityProvider.git"
+        type: gitHub
+        uri: "https://github.com/evilazaro/IdentityProvider"
         branch: "main"
         path: ".configuration/devcenter/imageDefinitions"
 
@@ -183,12 +197,19 @@ projects:
           azureRBACRoles:
             - name: "Contributor"
               id: "b24988ac-6180-42a0-ab88-20f7382dd24c"
+              scope: Project
             - name: "Dev Box User"
-              id: "45d50f46-0b78-4001-a660-4198cbe8cd05"            
+              id: "45d50f46-0b78-4001-a660-4198cbe8cd05"
+              scope: Project
             - name: "Deployment Environment User"
               id: "18e40d4e-8d2e-438d-97e1-9528336e149c"
+              scope: Project
             - name: "Key Vault Secrets User"
               id: "4633458b-17de-408a-b874-0445c86b69e6"
+              scope: ResourceGroup
+            - id: "b86a8fe4-44ce-4948-aee5-eccb2c155cd7"
+              name: "Key Vault Secrets Officer"
+              scope: ResourceGroup
 
     # Dev Box pools - collections of Dev Boxes with specific configurations
     # Best practice: Create role-specific pools with appropriate tools and settings
@@ -210,14 +231,14 @@ projects:
     catalogs:
       environmentDefinition:
         name: "environments"
-        type: "gitHub"
-        uri: "https://github.com/Evilazaro/eShop.git"
+        type: gitHub
+        uri: "https://github.com/evilazaro/eShop"
         branch: "main"
         path: ".devcenter/environments"
       imageDefinition:
         name: "imageDefinitions"
-        type: "gitHub"
-        uri: "https://github.com/Evilazaro/eShop.git"
+        type: gitHub
+        uri: "https://github.com/evilazaro/eShop"
         branch: "main"
         path: ".devcenter/imageDefinitions"
 

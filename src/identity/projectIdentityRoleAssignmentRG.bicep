@@ -23,10 +23,10 @@ resource project 'Microsoft.DevCenter/projects@2025-04-01-preview' existing = {
 }
 
 @description('Role assignments for the project')
-resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for role in roles: if (role.scope == 'Project') {
+resource roleAssignmentRG 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for role in roles: if (role.scope == 'ResourceGroup') {
     name: guid(project.id, principalId, role.id)
-    scope: project
+    scope: resourceGroup()
     properties: {
       principalId: principalId
       roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', role.id)
@@ -43,7 +43,7 @@ output roleAssignmentIds array = [
   for (role, i) in roles: {
     roleId: role.id
     roleName: contains(role, 'name') ? role.name : role.id
-    assignmentId: roleAssignment[i].id
+    assignmentId: roleAssignmentRG[i].id
   }
 ]
 

@@ -30,12 +30,12 @@ type Catalog = {
 type CatalogType = 'gitHub' | 'adoGit'
 
 @description('Reference to the existing DevCenter')
-resource devCenter 'Microsoft.DevCenter/devcenters@2025-02-01' existing = {
+resource devCenter 'Microsoft.DevCenter/devcenters@2025-04-01-preview' existing = {
   name: devCenterName
 }
 
 @description('DevCenter catalog configuration')
-resource catalog 'Microsoft.DevCenter/devcenters/catalogs@2025-02-01' = {
+resource catalog 'Microsoft.DevCenter/devcenters/catalogs@2025-04-01-preview' = {
   name: catalogConfig.name
   parent: devCenter
   properties: {

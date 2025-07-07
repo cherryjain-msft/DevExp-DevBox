@@ -24,7 +24,7 @@ resource secret 'Microsoft.KeyVault/vaults/secrets@2024-12-01-preview' = {
     attributes: {
       enabled: true
     }
-    contentType: 'string'
+    contentType: 'text/plain'
     value: secretValue
   }
 }
