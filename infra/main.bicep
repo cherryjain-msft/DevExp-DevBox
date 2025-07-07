@@ -134,5 +134,5 @@ module workload '../src/workload/workload.bicep' = {
 @description('Name of the deployed Azure DevCenter')
 output AZURE_DEV_CENTER_NAME string = workload.outputs.AZURE_DEV_CENTER_NAME
 
-// @description('List of project names deployed in the DevCenter')
-// output AZURE_DEV_CENTER_PROJECTS array = workload.outputs.AZURE_DEV_CENTER_PROJECTS
+@description('List of project names deployed in the DevCenter')
+output AZURE_DEV_CENTER_PROJECTS array = workload.outputs.AZURE_DEV_CENTER_PROJECTS

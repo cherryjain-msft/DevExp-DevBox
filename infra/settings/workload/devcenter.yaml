@@ -59,7 +59,7 @@ identity:
 catalogs:
   - name: "customTasks"
     type: gitHub
-    uri: "https://github.com/evilazaro/DevExp-DevBox"
+    uri: "https://github.com/evilazaro/DevExp-DevBox.git"
     branch: "main"
     path: ".configuration/devcenter/tasks"
 
@@ -144,13 +144,13 @@ projects:
       environmentDefinition:
         name: "environments"
         type: gitHub
-        uri: "https://github.com/evilazaro/IdentityProvider"
+        uri: "https://github.com/evilazaro/IdentityProvider.git"
         branch: "main"
         path: ".configuration/devcenter/environments"
       imageDefinition:
         name: "imageDefinitions"
         type: gitHub
-        uri: "https://github.com/evilazaro/IdentityProvider"
+        uri: "https://github.com/evilazaro/IdentityProvider.git"
         branch: "main"
         path: ".configuration/devcenter/imageDefinitions"
 
@@ -232,13 +232,13 @@ projects:
       environmentDefinition:
         name: "environments"
         type: gitHub
-        uri: "https://github.com/evilazaro/eShop"
+        uri: "https://github.com/evilazaro/eShop.git"
         branch: "main"
         path: ".devcenter/environments"
       imageDefinition:
         name: "imageDefinitions"
         type: gitHub
-        uri: "https://github.com/evilazaro/eShop"
+        uri: "https://github.com/evilazaro/eShop.git"
         branch: "main"
         path: ".devcenter/imageDefinitions"
 
