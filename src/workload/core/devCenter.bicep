@@ -119,7 +119,7 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
 @description('Dev Center Identity Role Assignments')
 module devCenterIdentityRoleAssignment '../../identity/devCenterRoleAssignment.bicep' = [
   for (role, i) in config.identity.roleAssignments.devCenter: {
-    name: 'RBACDevCenter-${i}-${devCenterName}'
+    name: 'RBACDevCenterSub-${i}-${devCenterName}'
     scope: subscription()
     params: {
       id: role.id
@@ -132,7 +132,7 @@ module devCenterIdentityRoleAssignment '../../identity/devCenterRoleAssignment.b
 @description('Dev Center Identity Role Assignments')
 module devCenterIdentityRoleAssignmentRG '../../identity/devCenterRoleAssignmentRG.bicep' = [
   for (role, i) in config.identity.roleAssignments.devCenter: {
-    name: 'RBACDevCenter-${i}-${devCenterName}'
+    name: 'RBACDevCenterRG-${i}-${devCenterName}'
     scope: resourceGroup(securityResourceGroupName)
     params: {
       id: role.id

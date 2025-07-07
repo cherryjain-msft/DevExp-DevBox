@@ -170,25 +170,25 @@ module connectivity '../../connectivity/connectivity.bicep' = {
   ]
 }
 
-@description('Configure DevBox pools for the project')
-module pools 'projectPool.bicep' = [
-  for (pool, i) in projectPools: {
-    name: 'pool-${i}-${uniqueString(project.id, pool.name)}'
-    scope: resourceGroup()
-    params: {
-      name: pool.name
-      projectName: project.name
-      catalogName: projectCatalogs.imageDefinition.name
-      imageDefinitionName: pool.imageDefinitionName
-      networkConnectionName: connectivity.outputs.networkConnectionName
-      networkType: connectivity.outputs.networkType
-    }
-    dependsOn: [
-      project
-      connectivity
-    ]
-  }
-]
+// @description('Configure DevBox pools for the project')
+// module pools 'projectPool.bicep' = [
+//   for (pool, i) in projectPools: {
+//     name: 'pool-${i}-${uniqueString(project.id, pool.name)}'
+//     scope: resourceGroup()
+//     params: {
+//       name: pool.name
+//       projectName: project.name
+//       catalogName: projectCatalogs.imageDefinition.name
+//       imageDefinitionName: pool.imageDefinitionName
+//       networkConnectionName: connectivity.outputs.networkConnectionName
+//       networkType: connectivity.outputs.networkType
+//     }
+//     dependsOn: [
+//       project
+//       connectivity
+//     ]
+//   }
+// ]
 
 @description('The name of the deployed project')
 output AZURE_PROJECT_NAME string = project.name

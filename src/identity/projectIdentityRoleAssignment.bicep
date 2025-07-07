@@ -17,14 +17,6 @@ param roles array
 ])
 param principalType string = 'Group'
 
-@description('The scope for the role assignments')
-@allowed([
-  'Subscription'
-  'ResourceGroup'
-  'Project'
-])
-param scope string
-
 @description('Reference to the existing DevCenter project')
 resource project 'Microsoft.DevCenter/projects@2025-02-01' existing = {
   name: projectName
@@ -32,7 +24,7 @@ resource project 'Microsoft.DevCenter/projects@2025-02-01' existing = {
 
 @description('Role assignments for the project')
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for role in roles: if (scope == 'Project') {
+  for role in roles: if (role.scope == 'Project') {
     name: guid(project.id, principalId, role.id)
     scope: project
     properties: {
@@ -48,7 +40,7 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
 
 @description('Role assignments for the project')
 resource roleAssignmentRG 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for role in roles: if (scope == 'ResourceGroup') {
+  for role in roles: if (role.scope == 'ResourceGroup') {
     name: guid(project.id, principalId, role.id)
     scope: resourceGroup()
     properties: {
@@ -67,7 +59,7 @@ output roleAssignmentIds array = [
   for (role, i) in roles: {
     roleId: role.id
     roleName: contains(role, 'name') ? role.name : role.id
-    assignmentId: (scope == 'Project') ? roleAssignment[i].id : roleAssignmentRG[i].id
+    assignmentId: (role.scope == 'Project') ? roleAssignment[i].id : roleAssignmentRG[i].id
   }
 ]
 
