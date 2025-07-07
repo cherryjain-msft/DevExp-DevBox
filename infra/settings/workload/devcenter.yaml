@@ -25,7 +25,7 @@ identity:
 
   # Role assignments section - defines permissions for Dev Center operation
   roleAssignments:
-    devCenter:      
+    devCenter:
       - id: "b24988ac-6180-42a0-ab88-20f7382dd24c"
         name: "Contributor"
         scope: "Subscription"
@@ -45,7 +45,7 @@ identity:
       - type: DevManager
         azureADGroupId: "8dae87fa-87b2-460b-b972-a4239fbd4a96"
         azureADGroupName: "Dev Manager"
-        
+
         # RBAC roles assigned to Dev Managers
         azureRBACRoles:
           # DevCenter Project Admin role allows managing project settings
@@ -68,9 +68,11 @@ catalogs:
 # Best practice: Create environments that match your SDLC stages (dev, test, prod)
 environmentTypes:
   - name: "dev"
-    deploymentTargetId: ""  # Empty for default subscription target
+    deploymentTargetId: "" # Empty for default subscription target
   - name: "staging"
-    deploymentTargetId: ""  # Empty for default subscription target
+    deploymentTargetId: "" # Empty for default subscription target
+  - name: "UAT"
+    deploymentTargetId: "" # Empty for default subscription target
 
 # Projects section - defines distinct projects within the Dev Center
 # Each project has its own Dev Box configurations, catalogs, and permissions
@@ -84,7 +86,7 @@ projects:
       name: identityProvider
       create: true
       resourceGroupName: "identityProvider-connectivity-RG"
-      virtualNetworkType: Managed  
+      virtualNetworkType: Managed
       addressPrefixes:
         - 10.0.0.0/16
       subnets:
@@ -122,7 +124,7 @@ projects:
             - id: "b86a8fe4-44ce-4948-aee5-eccb2c155cd7"
               name: "Key Vault Secrets Officer"
               scope: ResourceGroup
-    
+
     # Dev Box pools - collections of Dev Boxes with specific configurations
     # Best practice: Create role-specific pools with appropriate tools and settings
     pools:
@@ -157,13 +159,13 @@ projects:
     # Project-specific tags for resource governance and organization
     # Best practice: Apply consistent tags for cost allocation and ownership
     tags:
-      environment: "dev"           # Identifies the deployment environment
-      division: "Platforms"        # Organizational division responsible for the project
-      team: "DevExP"               # Team responsible for implementation
-      project: "DevExP-DevBox"     # Project name for cost allocation
-      costCenter: "IT"             # Financial tracking designation
-      owner: "Contoso"             # Resource ownership
-      resources: "Project"         # Resource type identifier
+      environment: "dev" # Identifies the deployment environment
+      division: "Platforms" # Organizational division responsible for the project
+      team: "DevExP" # Team responsible for implementation
+      project: "DevExP-DevBox" # Project name for cost allocation
+      costCenter: "IT" # Financial tracking designation
+      owner: "Contoso" # Resource ownership
+      resources: "Project" # Resource type identifier
 
   - name: "eShop"
     description: "eShop project."
@@ -172,7 +174,7 @@ projects:
       name: eShop
       create: true
       resourceGroupName: "eShop-connectivity-RG"
-      virtualNetworkType: Managed
+      virtualNetworkType: Unmanaged
       addressPrefixes:
         - 10.0.0.0/16
       subnets:
@@ -226,6 +228,10 @@ projects:
         deploymentTargetId: ""
       - name: "staging"
         deploymentTargetId: ""
+      - name: "UAT"
+        deploymentTargetId: ""
+      - name: "Prod"
+        deploymentTargetId: ""
 
     # Project-specific catalogs - repositories containing project configurations
     catalogs:
@@ -245,22 +251,22 @@ projects:
     # Project-specific tags for resource governance and organization
     # Best practice: Apply consistent tags for cost allocation and ownership
     tags:
-      environment: "dev"           # Identifies the deployment environment
-      division: "Platforms"        # Organizational division responsible for the project
-      team: "DevExP"               # Team responsible for implementation
-      project: "DevExP-DevBox"     # Project name for cost allocation
-      costCenter: "IT"             # Financial tracking designation
-      owner: "Contoso"             # Resource ownership
-      resources: "Project"         # Resource type identifier
+      environment: "dev" # Identifies the deployment environment
+      division: "Platforms" # Organizational division responsible for the project
+      team: "DevExP" # Team responsible for implementation
+      project: "DevExP-DevBox" # Project name for cost allocation
+      costCenter: "IT" # Financial tracking designation
+      owner: "Contoso" # Resource ownership
+      resources: "Project" # Resource type identifier
 
 # Top-level tags applied to the Dev Center resource
 # Best practice: Implement consistent tagging across all Azure resources
 # for improved governance, cost management, and operational tracking
 tags:
-  environment: "dev"           # Identifies the deployment environment
-  division: "Platforms"        # Organizational division responsible for the resource
-  team: "DevExP"               # Team responsible for implementation
-  project: "DevExP-DevBox"     # Project name for cost allocation
-  costCenter: "IT"             # Financial tracking designation
-  owner: "Contoso"             # Resource ownership
-  resources: "DevCenter"       # Resource type identifier
+  environment: "dev" # Identifies the deployment environment
+  division: "Platforms" # Organizational division responsible for the resource
+  team: "DevExP" # Team responsible for implementation
+  project: "DevExP-DevBox" # Project name for cost allocation
+  costCenter: "IT" # Financial tracking designation
+  owner: "Contoso" # Resource ownership
+  resources: "DevCenter" # Resource type identifier
