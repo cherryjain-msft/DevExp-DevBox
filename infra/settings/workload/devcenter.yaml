@@ -58,8 +58,8 @@ identity:
 # Best practice: Use Git repositories for configuration-as-code approach
 catalogs:
   - name: "customTasks"
-    type: adoGit
-    uri: "https://dev.azure.com/contososa2/_git/DevExp-DevBox"
+    type: gitHub
+    uri: "https://github.com/evilazaro/DevExp-DevBox"
     branch: "main"
     path: ".configuration/devcenter/tasks"
 
@@ -143,14 +143,14 @@ projects:
     catalogs:
       environmentDefinition:
         name: "environments"
-        type: adoGit
-        uri: "https://contososa2@dev.azure.com/contososa2/IdentityProvider/_git/IdentityProvider"
+        type: gitHub
+        uri: "https://github.com/evilazaro/IdentityProvider"
         branch: "main"
         path: ".configuration/devcenter/environments"
       imageDefinition:
         name: "imageDefinitions"
-        type: adoGit
-        uri: "https://contososa2@dev.azure.com/contososa2/IdentityProvider/_git/IdentityProvider"
+        type: gitHub
+        uri: "https://github.com/evilazaro/IdentityProvider"
         branch: "main"
         path: ".configuration/devcenter/imageDefinitions"
 
@@ -231,14 +231,14 @@ projects:
     catalogs:
       environmentDefinition:
         name: "environments"
-        type: adoGit
-        uri: "https://contososa2@dev.azure.com/contososa2/eShop/_git/eShop"
+        type: gitHub
+        uri: "https://github.com/evilazaro/eShop"
         branch: "main"
         path: ".devcenter/environments"
       imageDefinition:
         name: "imageDefinitions"
-        type: adoGit
-        uri: "https://contososa2@dev.azure.com/contososa2/eShop/_git/eShop"
+        type: gitHub
+        uri: "https://github.com/evilazaro/eShop"
         branch: "main"
         path: ".devcenter/imageDefinitions"
 
