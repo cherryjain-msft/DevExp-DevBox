@@ -40,7 +40,6 @@ param(
     [string]$EnvName = "demo",
     
     [Parameter(Mandatory=$false)]
-    [ValidateSet("eastus", "eastus2", "westus", "westus2", "northeurope", "westeurope")]
     [string]$Location = "eastus2",
 
     [Parameter(Mandatory=$false)]
