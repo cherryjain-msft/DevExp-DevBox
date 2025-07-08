@@ -13,7 +13,6 @@
 # - Azure RBAC roles: https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles
 
 name: "devexp-devcenter"
-location: "eastus2"
 catalogItemSyncEnableStatus: "Enabled"
 microsoftHostedNetworkEnableStatus: "Enabled"
 installAzureMonitorAgentEnableStatus: "Enabled"
@@ -58,10 +57,10 @@ identity:
 # Best practice: Use Git repositories for configuration-as-code approach
 catalogs:
   - name: "customTasks"
-    type: gitHub
-    uri: "https://github.com/evilazaro/DevExp-DevBox.git"
+    type: adoGit
+    uri: "https://dev.azure.com/contososa2/DevExp-DevBox/_git/DevExp-DevBox"
     branch: "main"
-    path: ".configuration/devcenter/tasks"
+    path: "/.configuration/devcenter/tasks"
 
 # Environment Types section - defines deployment environments for applications
 # Each environment type represents a different stage in the development lifecycle
@@ -145,16 +144,16 @@ projects:
     catalogs:
       environmentDefinition:
         name: "environments"
-        type: gitHub
-        uri: "https://github.com/evilazaro/IdentityProvider.git"
+        type: adoGit
+        uri: "https://dev.azure.com/contososa2/IdentityProvider/_git/IdentityProvider"
         branch: "main"
-        path: ".configuration/devcenter/environments"
+        path: "/.configuration/devcenter/environments"
       imageDefinition:
         name: "imageDefinitions"
-        type: gitHub
-        uri: "https://github.com/evilazaro/IdentityProvider.git"
+        type: adoGit
+        uri: "https://dev.azure.com/contososa2/IdentityProvider/_git/IdentityProvider"
         branch: "main"
-        path: ".configuration/devcenter/imageDefinitions"
+        path: "/.configuration/devcenter/imageDefinitions"
 
     # Project-specific tags for resource governance and organization
     # Best practice: Apply consistent tags for cost allocation and ownership
@@ -230,23 +229,21 @@ projects:
         deploymentTargetId: ""
       - name: "UAT"
         deploymentTargetId: ""
-      - name: "Prod"
-        deploymentTargetId: ""
 
     # Project-specific catalogs - repositories containing project configurations
     catalogs:
       environmentDefinition:
         name: "environments"
-        type: gitHub
-        uri: "https://github.com/evilazaro/eShop.git"
+        type: adoGit
+        uri: "https://dev.azure.com/contososa2/eShop/_git/eShop"
         branch: "main"
-        path: ".devcenter/environments"
+        path: "/.devcenter/environments"
       imageDefinition:
         name: "imageDefinitions"
-        type: gitHub
-        uri: "https://github.com/evilazaro/eShop.git"
+        type: adoGit
+        uri: "https://dev.azure.com/contososa2/eShop/_git/eShop"
         branch: "main"
-        path: ".devcenter/imageDefinitions"
+        path: "/.devcenter/imageDefinitions"
 
     # Project-specific tags for resource governance and organization
     # Best practice: Apply consistent tags for cost allocation and ownership

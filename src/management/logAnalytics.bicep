@@ -31,7 +31,7 @@ param sku string = 'PerGB2018'
 var workspaceName = '${name}-${uniqueString(resourceGroup().id)}'
 
 @description('Log Analytics Workspace')
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' = {
   name: workspaceName
   location: location
   tags: union(tags, {

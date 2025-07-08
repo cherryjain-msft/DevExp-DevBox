@@ -1,5 +1,15 @@
 # PowerShell script to clean up the setup by deleting users, credentials, and GitHub secrets
 
+[CmdletBinding()]
+param(
+    [Parameter(Mandatory=$false)]
+    [string]$EnvName = "demo",
+    
+    [Parameter(Mandatory=$false)]
+    [ValidateSet("eastus", "eastus2", "westus", "westus2", "northeurope", "westeurope")]
+    [string]$Location = "eastus2"
+)
+
 # Exit immediately if a command exits with a non-zero status, treat unset variables as an error, and propagate errors in pipelines.
 $ErrorActionPreference = "Stop"
 $WarningPreference = "Stop"
@@ -84,8 +94,7 @@ function Remove-SetUp {
 # Main script execution
 try {
     Clear-Host
-    .\.configuration\powershell\cleanUp.ps1
-    Remove-SetUp -appDisplayName $appDisplayName -ghSecretName $ghSecretName
+    .\.configuration\powershell\cleanUp.ps1 $EnvName $Location
 }
 catch {
     Write-Error "Script execution failed: $_"
