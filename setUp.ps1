@@ -213,28 +213,27 @@ function Get-SecureAdoGitToken {
         $pat = $env:AZURE_DEVOPS_EXT_PAT
         if (-not $pat) {
             Write-LogMessage "Azure DevOps PAT not found in environment variable 'AZURE_DEVOPS_EXT_PAT'. Please enter your PAT securely." -Level "Warning"
-            $pat = Read-Host -Prompt "Enter your Azure DevOps Personal Access Token" -AsSecureString
+            $secureInput = Read-Host -Prompt "Enter your Azure DevOps Personal Access Token" -AsSecureString
             # Convert SecureString to plain text for storage (in-memory only)
-            $plainPat = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($pat))
+            $pat = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($secureInput))
             az devops configure --defaults organization=https://dev.azure.com/contososa2 project=DevExp-DevBox 
             if ($LASTEXITCODE -ne 0) {
                 Write-LogMessage "Azure DevOps organization and project not set. Please configure them first." -Level "Error"
                 return $null
             }
-            
+            $securePat = $secureInput
         } else {
             # Convert to SecureString for consistency
-            $pat = ConvertTo-SecureString -String $pat -AsPlainText -Force
-            $plainPat = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($pat))
+            $securePat = ConvertTo-SecureString -String $pat -AsPlainText -Force
         }
 
-        if (-not $plainPat) {
+        if (-not $pat) {
             Write-LogMessage "Failed to retrieve Azure DevOps PAT" -Level "Error"
             return $null
         }
 
         Write-LogMessage "Azure DevOps PAT retrieved and stored securely" -Level "Success"
-        return $plainPat, $pat
+        return $pat, $securePat
     }
     catch {
         Write-LogMessage "Failed to retrieve Azure DevOps PAT: $_" -Level "Error"
@@ -257,7 +256,7 @@ function Initialize-AzdEnvironment {
             $pat, $securePat = $tokenResult
         }
         elseif ($sourceControlPlatform -eq "adoGit") {
-            Write-LogMessage "Azure DevOps Git integration is not yet implemented in this script." -Level "Warning"
+            Write-LogMessage "Retrieving Azure DevOps token for environment initialization..." -Level "Info"
             # Placeholder for future Azure DevOps PAT/token retrieval
             $tokenResult = Get-SecureAdoGitToken
             if (-not $tokenResult) {
@@ -271,7 +270,8 @@ function Initialize-AzdEnvironment {
 
         # Mask most of the token for security best practices
         $maskedToken = if ($pat.Length -ge 8) { "$($pat.Substring(0,4))****$($pat.Substring($pat.Length-2,2))" } else { "****" }
-        Write-LogMessage "🔐 GitHub token stored securely in memory. Masked: $maskedToken" -Level "Success"
+        $tokenType = if ($sourceControlPlatform -eq "gitHub") { "GitHub" } else { "Azure DevOps" }
+        Write-LogMessage "🔐 $tokenType token stored securely in memory. Masked: $maskedToken" -Level "Success"
 
         # Create new Azure Developer CLI environment
         Write-LogMessage "Creating new Azure Developer CLI environment: '$EnvName'" -Level "Info"
@@ -307,7 +307,6 @@ function Initialize-AzdEnvironment {
         return $false
     }
 }
-#endregion
 
 function Start-AzureProvisioning {
     [CmdletBinding()]
@@ -343,6 +342,7 @@ function Start-AzureProvisioning {
     }
 }
 #endregion
+#endregion
 
 #region Main Script Execution
 try {
@@ -351,7 +351,10 @@ try {
     Write-LogMessage "Environment name: $EnvName" -Level "Info"
     
     # Verify required tools - Azure best practice for dependency validation
-    $requiredTools = @("az", "azd", "gh")
+    $requiredTools = @("az", "azd")
+    if ($sourceControlPlatform -eq "gitHub") {
+        $requiredTools += "gh"
+    }
     $toolsAvailable = $true
     foreach ($tool in $requiredTools) {
         if (-not (Test-CommandAvailability -Command $tool)) {
@@ -371,24 +374,24 @@ try {
     }
     
     if ($sourceControlPlatform -eq "gitHub") {
-        Write-LogMessage "GitHub Git integration is not yet implemented in this script." -Level "Warning"
         # Verify GitHub authentication
         if (-not (Test-GitHubAuthentication)) {
             exit 1
         }
     }
     elseif ($sourceControlPlatform -eq "adoGit") {
-        Write-LogMessage "Azure DevOps Git integration is not yet implemented in this script." -Level "Warning"
         # Verify Azure DevOps authentication
         if (-not (Test-AdoAuthentication)) {
             exit 1
         }
-        Write-LogMessage "Please ensure you are authenticated with Azure DevOps CLI." -Level "Info"
     }    
     # Initialize azd environment using the original code
     # This step creates the environment and stores the GitHub token
     Write-LogMessage "Initializing Azure Developer CLI environment..." -Level "Info"
-    Initialize-AzdEnvironment
+    if (-not (Initialize-AzdEnvironment)) {
+        Write-LogMessage "Failed to initialize Azure Developer CLI environment. Exiting." -Level "Error"
+        exit 1
+    }
     
     # Success message with environment details
     Write-LogMessage "Dev Box environment '$EnvName' setup successfully in '$Location'" -Level "Success"
@@ -409,5 +412,6 @@ catch {
 finally {
     # Clean up any temporary resources - Azure best practice
     Remove-Variable -Name pat -ErrorAction SilentlyContinue
+    Remove-Variable -Name securePat -ErrorAction SilentlyContinue
 }
 #endregion
