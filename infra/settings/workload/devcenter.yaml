@@ -13,7 +13,6 @@
 # - Azure RBAC roles: https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles
 
 name: "devexp-devcenter2"
-location: "eastus2"
 catalogItemSyncEnableStatus: "Enabled"
 microsoftHostedNetworkEnableStatus: "Enabled"
 installAzureMonitorAgentEnableStatus: "Enabled"

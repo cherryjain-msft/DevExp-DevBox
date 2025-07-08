@@ -34,24 +34,37 @@ resource devCenter 'Microsoft.DevCenter/devcenters@2025-04-01-preview' existing 
   name: devCenterName
 }
 
-@description('DevCenter catalog configuration')
-resource catalog 'Microsoft.DevCenter/devcenters/catalogs@2025-04-01-preview' = {
+// @description('DevCenter catalog configuration')
+// resource catalog 'Microsoft.DevCenter/devcenters/catalogs@2025-04-01-preview' = {
+//   name: catalogConfig.name
+//   parent: devCenter
+//   properties: {
+//     syncType: 'Scheduled'
+//     gitHub: catalogConfig.type == 'gitHub' ? {
+//       uri: catalogConfig.uri
+//       branch: catalogConfig.branch
+//       path: catalogConfig.path
+//       secretIdentifier: secretIdentifier
+//     } : null
+//     adoGit: catalogConfig.type == 'adoGit' ? {
+//       uri: catalogConfig.uri
+//       branch: catalogConfig.branch
+//       path: catalogConfig.path
+//       secretIdentifier: secretIdentifier
+//     } : null
+//   }
+// }
+
+resource catalog 'Microsoft.DevCenter/devcenters/catalogs@2025-04-01-preview'= {
   name: catalogConfig.name
   parent: devCenter
   properties: {
-    syncType: 'Scheduled'
-    gitHub: catalogConfig.type == 'gitHub' ? {
-      uri: catalogConfig.uri
+    adoGit: {
       branch: catalogConfig.branch
       path: catalogConfig.path
       secretIdentifier: secretIdentifier
-    } : null
-    adoGit: catalogConfig.type == 'adoGit' ? {
       uri: catalogConfig.uri
-      branch: catalogConfig.branch
-      path: catalogConfig.path
-      secretIdentifier: secretIdentifier
-    } : null
+    }
   }
 }
 

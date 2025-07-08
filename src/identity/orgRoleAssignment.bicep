@@ -1,4 +1,3 @@
-
 @description('The principal (object) ID of the security group to assign roles to')
 param principalId string
 
