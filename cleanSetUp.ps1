@@ -25,15 +25,25 @@ function Remove-Deployments {
 
     try {
         $deployments = az deployment sub list --query "[].name" -o tsv
-        foreach ($deployment in $deployments) {
-            Write-Output "Deleting deployment: $deployment"
-            az deployment sub delete --name $deployment
-            Write-Output "Deployment $deployment deleted."
+        if ($LASTEXITCODE -ne 0) {
+            throw "Failed to list deployments."
         }
+        
+        foreach ($deployment in $deployments) {
+            if (-not [string]::IsNullOrEmpty($deployment)) {
+                Write-Output "Deleting deployment: $deployment"
+                az deployment sub delete --name $deployment
+                if ($LASTEXITCODE -ne 0) {
+                    throw "Failed to delete deployment: $deployment"
+                }
+                Write-Output "Deployment $deployment deleted."
+            }
+        }
+        return $true
     }
     catch {
         Write-Error "Error deleting deployments: $_"
-        return 1
+        return $false
     }
 }
 
@@ -57,44 +67,58 @@ function Remove-SetUp {
 
         # Delete deployments
         Write-Output "Deleting deployments..."
-        Remove-Deployments
-        if ($LASTEXITCODE -ne 0) {
+        $deploymentResult = Remove-Deployments
+        if (-not $deploymentResult) {
             throw "Failed to delete deployments."
         }
 
         # Delete users and assigned roles
         Write-Output "Deleting users and assigned roles..."
-        .\.configuration\setup\powershell\Azure\deleteUsersAndAssignedRoles.ps1 -appDisplayName $appDisplayName
+        & ".\.configuration\setup\powershell\Azure\deleteUsersAndAssignedRoles.ps1" -appDisplayName $appDisplayName
         if ($LASTEXITCODE -ne 0) {
             throw "Failed to delete users and assigned roles."
         }
 
         # Delete deployment credentials
         Write-Output "Deleting deployment credentials..."
-        .\.configuration\setup\powershell\Azure\deleteDeploymentCredentials.ps1 -appDisplayName $appDisplayName
+        & ".\.configuration\setup\powershell\Azure\deleteDeploymentCredentials.ps1" -appDisplayName $appDisplayName
         if ($LASTEXITCODE -ne 0) {
             throw "Failed to delete deployment credentials."
         }
 
         # Delete GitHub secret for Azure credentials
         Write-Output "Deleting GitHub secret for Azure credentials..."
-        .\GitHub\deleteGitHubSecretAzureCredentials.ps1 -ghSecretName $ghSecretName
+        & ".\GitHub\deleteGitHubSecretAzureCredentials.ps1" -ghSecretName $ghSecretName
         if ($LASTEXITCODE -ne 0) {
             throw "Failed to delete GitHub secret for Azure credentials."
         }
 
         Write-Output "Cleanup process completed successfully for appDisplayName: $appDisplayName and ghSecretName: $ghSecretName"
+        return $true
     }
     catch {
         Write-Error "Error during cleanup process: $_"
-        return 1
+        return $false
     }
 }
 
 # Main script execution
 try {
     Clear-Host
-    .\.configuration\powershell\cleanUp.ps1 $EnvName $Location
+    
+    # Call the cleanup function with the required parameters
+    Write-Output "Starting cleanup process with EnvName: $EnvName and Location: $Location"
+    
+    # Additional cleanup script if it exists
+    $cleanupScriptPath = ".\.configuration\powershell\cleanUp.ps1"
+    if (Test-Path $cleanupScriptPath) {
+        & $cleanupScriptPath $EnvName $Location
+        if ($LASTEXITCODE -ne 0) {
+            throw "Cleanup script failed."
+        }
+    }
+    
+    Write-Output "All cleanup operations completed successfully."
 }
 catch {
     Write-Error "Script execution failed: $_"
