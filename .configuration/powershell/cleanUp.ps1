@@ -1,12 +1,23 @@
 # PowerShell script to clean up Azure resources
 
+
+[CmdletBinding()]
+param(
+    [Parameter(Mandatory=$false)]
+    [string]$EnvName = "demo",
+    
+    [Parameter(Mandatory=$false)]
+    [ValidateSet("eastus", "eastus2", "westus", "westus2", "northeurope", "westeurope")]
+    [string]$Location = "eastus2"
+)
+
 # Exit immediately if a command exits with a non-zero status, treat unset variables as an error, and propagate errors in pipelines.
 $ErrorActionPreference = "Stop"
 $WarningPreference = "Stop"
 
 $workloadname = "devexp"  # Replace with your workload name
-$environment = "demo"
-$location = "eastus2"          # Replace with your environment (e.g., dev, prod)
+$environment = $EnvName          # Replace with your environment name (e.g., dev, prod)
+$location = $Location        # Replace with your environment (e.g., dev, prod)
 # Azure Resource Group Names Constants
 $workloadResourceGroup = "${workloadname}-workload-${environment}-${location}-rg"
 $connectivityResourceGroup = "${workloadname}-connectivity-${environment}-${location}-rg"
