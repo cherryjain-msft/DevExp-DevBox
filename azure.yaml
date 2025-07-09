@@ -8,4 +8,4 @@ hooks:
     continueOnError: false
     interactive: true
     run: |
-      ./setup.sh -e ${AZURE_ENV_NAME} -s adogit
+      ./setup.sh -e ${AZURE_ENV_NAME} -s github
