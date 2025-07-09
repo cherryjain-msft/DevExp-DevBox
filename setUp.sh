@@ -272,7 +272,7 @@ initialize_azd_environment() {
     write_log_message "Initializing Azure Developer CLI environment..." "Info"
     
     # Get appropriate token based on source control platform
-    case "$SOURCE_CONTROL_PLATFORM" in
+    case "${SOURCE_CONTROL_PLATFORM}" in
         "github")
             write_log_message "Retrieving GitHub token for environment initialization..." "Info"
             if ! get_secure_github_token; then
@@ -366,12 +366,12 @@ select_source_control_platform() {
         
         case "$selection" in
             "1")
-                SOURCE_CONTROL_PLATFORM="adogit"
+                export SOURCE_CONTROL_PLATFORM="adogit"
                 write_log_message "Selected: Azure DevOps Git" "Success"
                 valid_selection=true
                 ;;
             "2")
-                SOURCE_CONTROL_PLATFORM="github"
+                export SOURCE_CONTROL_PLATFORM="github"
                 write_log_message "Selected: GitHub" "Success"
                 valid_selection=true
                 ;;

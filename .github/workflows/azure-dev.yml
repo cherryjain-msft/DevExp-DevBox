@@ -45,7 +45,9 @@ jobs:
 
 
       - name: Provision Infrastructure
-        run: azd provision --no-prompt
+        run: |
+          echo "AZURE_ENV_NAME: ${{ env.AZURE_ENV_NAME }}"
+          azd provision --no-prompt
         env:
           KEY_VAULT_SECRET: ${{ secrets.KEY_VAULT_SECRET }}
           SOURCE_CONTROL_PLATFORM: 'github'
