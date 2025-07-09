@@ -39,12 +39,12 @@ type ProjectCatalog = {
 type CatalogType = string
 
 @description('Reference to the existing DevCenter project')
-resource project 'Microsoft.DevCenter/projects@2024-02-01' existing = {
+resource project 'Microsoft.DevCenter/projects@2025-04-01-preview' existing = {
   name: projectName
 }
 
 @description('Environment Definition Catalog')
-resource environmentDefinitionCatalog 'Microsoft.DevCenter/projects/catalogs@2024-02-01' = {
+resource environmentDefinitionCatalog 'Microsoft.DevCenter/projects/catalogs@2025-04-01-preview' = {
   name: catalogConfig.environmentDefinition.name
   parent: project
   properties: {
@@ -69,7 +69,7 @@ resource environmentDefinitionCatalog 'Microsoft.DevCenter/projects/catalogs@202
 }
 
 @description('Image Definition Catalog')
-resource imageDefinitionCatalog 'Microsoft.DevCenter/projects/catalogs@2024-02-01' = {
+resource imageDefinitionCatalog 'Microsoft.DevCenter/projects/catalogs@2025-04-01-preview' = {
   name: catalogConfig.imageDefinition.name
   parent: project
   properties: {

@@ -243,7 +243,15 @@ get_secure_ado_git_token() {
         write_log_message "Failed to retrieve Azure DevOps PAT" "Error"
         return 1
     fi
-    
+
+    # Export the token to environment variable
+    export AZURE_DEVOPS_EXT_PAT="$ADO_TOKEN"
+
+    if [[ -n "${AZURE_DEVOPS_EXT_PAT:-}" ]]; then
+        ADO_TOKEN="$AZURE_DEVOPS_EXT_PAT"
+        write_log_message "Azure DevOps PAT retrieved from environment variable" "Success"
+    fi
+
     write_log_message "Azure DevOps PAT retrieved and stored securely" "Success"
     return 0
 }
@@ -308,10 +316,8 @@ initialize_azd_environment() {
     # Azure best practice: Use environment-specific configuration
     write_log_message "Configuring environment variables in $env_file" "Info"
     
-    cat > "$env_file" << EOF
-AZURE_ENV_NAME='$ENV_NAME'
-KEY_VAULT_SECRET='$pat'
-EOF
+    # Append to existing file or create if it doesn't exist
+    echo "KEY_VAULT_SECRET='$pat'" >> "$env_file"
     
     # Show current configuration for verification
     write_log_message "Current Azure Developer CLI configuration:" "Info"
