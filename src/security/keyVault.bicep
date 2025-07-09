@@ -12,7 +12,7 @@ param unique string = uniqueString(resourceGroup().id, location, subscription().
 
 @description('Azure Key Vault')
 resource keyVault 'Microsoft.KeyVault/vaults@2024-12-01-preview' = {
-  name: '${keyvaultSettings.keyVault.name}-${uniqueString(deployer().tenantId, location, unique, subscription().subscriptionId)}-kv'
+  name: '${keyvaultSettings.keyVault.name}-${unique}-kv'
   location: location
   tags: tags
   properties: {
