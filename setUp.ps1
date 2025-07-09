@@ -36,15 +36,15 @@
 
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory=$false)]
-    [string]$EnvName = "demo",
+    [Parameter(Mandatory=$true)]
+    [string]$EnvName,
     
-    [Parameter(Mandatory=$false)]
-    [string]$Location = "eastus2",
+    [Parameter(Mandatory=$true)]
+    [string]$Location,
 
-    [Parameter(Mandatory=$false)]
+    [Parameter(Mandatory=$true)]
     [ValidateSet("gitHub", "adoGit")]
-    [string]$sourceControlPlatform = "adoGit"
+    [string]$sourceControlPlatform
 )
 
 #region Script Configuration
@@ -371,6 +371,35 @@ try {
     # Verify Azure authentication - Azure security best practice
     if (-not (Test-AzureAuthentication)) {
         exit 1
+    }
+
+    # Prompt for source control platform if not provided
+    if (-not $PSBoundParameters.ContainsKey('sourceControlPlatform')) {
+        Write-LogMessage "Please select your source control platform:" -Level "Info"
+        Write-Host ""
+        Write-Host "  1. Azure DevOps Git (adoGit)" -ForegroundColor Yellow
+        Write-Host "  2. GitHub (gitHub)" -ForegroundColor Yellow
+        Write-Host ""
+        
+        do {
+            $selection = Read-Host "Enter your choice (1 or 2)"
+            switch ($selection) {
+                "1" { 
+                    $sourceControlPlatform = "adoGit"
+                    Write-LogMessage "Selected: Azure DevOps Git" -Level "Success"
+                    $validSelection = $true
+                }
+                "2" { 
+                    $sourceControlPlatform = "gitHub"
+                    Write-LogMessage "Selected: GitHub" -Level "Success"
+                    $validSelection = $true
+                }
+                default {
+                    Write-LogMessage "Invalid selection. Please enter 1 or 2." -Level "Warning"
+                    $validSelection = $false
+                }
+            }
+        } while (-not $validSelection)
     }
     
     if ($sourceControlPlatform -eq "gitHub") {

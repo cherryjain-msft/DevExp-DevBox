@@ -13,19 +13,9 @@ param logAnalyticsId string
 @secure()
 param secretIdentifier string
 
-@description('Key Vault Name for accessing secrets')
-@minLength(3)
-@maxLength(24)
-param keyVaultName string
-
 @description('Security Resource Group Name')
 @minLength(3)
 param securityResourceGroupName string
-
-@description('Environment name used for resource naming (dev, test, prod)')
-@minLength(2)
-@maxLength(10)
-param environmentName string
 
 // Resource types with documentation
 @description('Landing Zone configuration type')

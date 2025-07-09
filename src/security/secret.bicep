@@ -11,13 +11,13 @@ param keyVaultName string
 @description('Log Analytics Workspace ID')
 param logAnalyticsId string
 
-resource keyVault 'Microsoft.KeyVault/vaults@2024-12-01-preview' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
   name: keyVaultName
   scope: resourceGroup()
 }
 
 @description('Azure Key Vault Secret')
-resource secret 'Microsoft.KeyVault/vaults/secrets@2024-12-01-preview' = {
+resource secret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
   name: name
   parent: keyVault
   properties: {

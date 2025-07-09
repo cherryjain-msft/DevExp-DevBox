@@ -23,7 +23,7 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
       principalId: principalId
       roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', role.id)
       principalType: principalType
-      description: contains(role, 'name') ? 'Role: ${role.name}' : 'Role assignment for ${principalId}'
+      description: contains(role, 'name') ? 'Role: ${role.name!}' : 'Role assignment for ${principalId}'
     }
   }
 ]
@@ -32,7 +32,7 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
 output roleAssignmentIds array = [
   for (role, i) in roles: {
     roleId: role.id
-    roleName: contains(role, 'name') ? role.name : role.id
+    roleName: contains(role, 'name') ? role.name! : role.id
     assignmentId: roleAssignment[i].id
   }
 ]

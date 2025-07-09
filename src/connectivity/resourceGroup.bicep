@@ -2,7 +2,7 @@ targetScope = 'subscription'
 
 param create bool
 
-@secure()
+@description('Name of the resource group')
 param name string
 
 param location string

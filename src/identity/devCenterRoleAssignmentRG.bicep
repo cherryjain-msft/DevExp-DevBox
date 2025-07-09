@@ -14,10 +14,11 @@ param principalId string
 ])
 param principalType string = 'ServicePrincipal'
 
+@description('The scope at which the role assignment should be created')
 param scope string
 
 @description('Existing role definition reference')
-resource roleDefinition 'Microsoft.Authorization/roleDefinitions@2022-05-01-preview' existing = {
+resource roleDefinition 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
   name: id
   scope: resourceGroup()
 }
@@ -35,7 +36,7 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = i
 }
 
 @description('The ID of the created role assignment')
-output roleAssignmentId string = roleAssignment.id
+output roleAssignmentId string = (scope == 'ResourceGroup') ? roleAssignment!.id : ''
 
 @description('The scope of the role assignment')
-output scope string = subscription().id
+output scope string = resourceGroup().id

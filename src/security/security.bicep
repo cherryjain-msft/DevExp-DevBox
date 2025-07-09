@@ -14,13 +14,13 @@ var securitySettings = loadYamlContent('../../infra/settings/security/security.y
 @description('Azure Key Vault')
 module keyVault 'keyVault.bicep' = if (securitySettings.create) {
   params: {
-    tags: {}
+    tags: tags
     keyvaultSettings: securitySettings
   }
 }
 
 @description('Existing Key Vault')
-resource existingKeyVault 'Microsoft.KeyVault/vaults@2024-12-01-preview' existing = if (!securitySettings.create) {
+resource existingKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!securitySettings.create) {
   name: securitySettings.keyVault.name
   scope: resourceGroup()
 }
@@ -29,17 +29,17 @@ resource existingKeyVault 'Microsoft.KeyVault/vaults@2024-12-01-preview' existin
 module secret 'secret.bicep' = {
   params: {
     name: securitySettings.keyVault.secretName
-    keyVaultName: (securitySettings.create ? keyVault.outputs.AZURE_KEY_VAULT_NAME : existingKeyVault.name)
+    keyVaultName: (securitySettings.create ? keyVault!.outputs.AZURE_KEY_VAULT_NAME : existingKeyVault!.name)
     logAnalyticsId: logAnalyticsId
     secretValue: secretValue
   }
 }
 
 @description('The name of the Key Vault')
-output AZURE_KEY_VAULT_NAME string = (securitySettings.create ? keyVault.outputs.AZURE_KEY_VAULT_NAME : existingKeyVault.name)
+output AZURE_KEY_VAULT_NAME string = (securitySettings.create ? keyVault!.outputs.AZURE_KEY_VAULT_NAME : existingKeyVault!.name)
 
 @description('The identifier of the secret')
 output AZURE_KEY_VAULT_SECRET_IDENTIFIER string = secret.outputs.AZURE_KEY_VAULT_SECRET_IDENTIFIER
 
 @description('The endpoint URI of the Key Vault')
-output AZURE_KEY_VAULT_ENDPOINT string = (securitySettings.create ? keyVault.outputs.AZURE_KEY_VAULT_ENDPOINT : existingKeyVault.properties.vaultUri)
+output AZURE_KEY_VAULT_ENDPOINT string = (securitySettings.create ? keyVault!.outputs.AZURE_KEY_VAULT_ENDPOINT : existingKeyVault!.properties.vaultUri)

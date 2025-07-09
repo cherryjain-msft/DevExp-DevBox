@@ -67,12 +67,12 @@ type RoleAssignment = {
 }
 
 @description('Reference to existing DevCenter')
-resource devCenter 'Microsoft.DevCenter/devcenters@2025-04-01-preview' existing = {
+resource devCenter 'Microsoft.DevCenter/devcenters@2024-02-01' existing = {
   name: devCenterName
 }
 
 @description('DevCenter Project resource')
-resource project 'Microsoft.DevCenter/projects@2025-04-01-preview' = {
+resource project 'Microsoft.DevCenter/projects@2024-02-01' = {
   name: name
   location: resourceGroup().location
   identity: {
@@ -91,7 +91,7 @@ resource project 'Microsoft.DevCenter/projects@2025-04-01-preview' = {
   }
   tags: union(tags, {
     'ms-resource-usage': 'azure-cloud-devbox'
-    'project': name
+    project: name
   })
 }
 
@@ -106,9 +106,6 @@ module projectIdentityUG '../../identity/projectIdentityRoleAssignment.bicep' = 
       roles: role.azureRBACRoles
       principalType: 'Group'
     }
-    dependsOn: [
-      project
-    ]
   }
 ]
 
@@ -123,9 +120,6 @@ module projectIdentityUGRG '../../identity/projectIdentityRoleAssignmentRG.bicep
       roles: role.azureRBACRoles
       principalType: 'Group'
     }
-    dependsOn: [
-      project
-    ]
   }
 ]
 
@@ -140,9 +134,6 @@ module projectIdentity '../../identity/projectIdentityRoleAssignmentRG.bicep' = 
       roles: role.azureRBACRoles
       principalType: 'ServicePrincipal'
     }
-    dependsOn: [
-      project
-    ]
   }
 ]
 
@@ -212,10 +203,6 @@ module pools 'projectPool.bicep' = [
       networkConnectionName: connectivity.outputs.networkConnectionName
       networkType: connectivity.outputs.networkType
     }
-    dependsOn: [
-      project
-      connectivity
-    ]
   }
 ]
 

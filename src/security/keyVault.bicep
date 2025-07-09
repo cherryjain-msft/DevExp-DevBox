@@ -1,4 +1,4 @@
-@description('Key Valult Settings')
+@description('Key Vault Settings')
 param keyvaultSettings object
 
 @description('Key Vault Location')
@@ -8,7 +8,7 @@ param location string = resourceGroup().location
 param tags object
 
 @description('Unique string for resource naming')
-param unique string = utcNow('yyyyMMddHHmm')
+param unique string = uniqueString(resourceGroup().id, location, subscription().subscriptionId, deployer().tenantId)
 
 @description('Azure Key Vault')
 resource keyVault 'Microsoft.KeyVault/vaults@2024-12-01-preview' = {
@@ -29,8 +29,8 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-12-01-preview' = {
       {
         objectId: deployer().objectId
         permissions: {
-          secrets: ['all']
-          keys: ['all']
+          secrets: ['get', 'list', 'set', 'delete', 'backup', 'restore', 'recover']
+          keys: ['get', 'list', 'create', 'delete', 'backup', 'restore', 'recover']
         }
         tenantId: subscription().tenantId
       }

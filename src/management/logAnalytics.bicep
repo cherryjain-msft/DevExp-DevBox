@@ -1,6 +1,6 @@
 @description('The name of the Log Analytics Workspace')
-@minLength(3)
-@maxLength(24)
+@minLength(4)
+@maxLength(49)
 param name string
 
 @description('The Azure region for the Log Analytics Workspace')
@@ -22,8 +22,11 @@ param tags object = {}
 ])
 param sku string = 'PerGB2018'
 
-// Naming convention variable using recommended pattern
-var workspaceName = '${name}-${uniqueString(resourceGroup().id)}'
+// Naming convention variable using recommended pattern - ensure total length doesn't exceed 63 characters
+var uniqueSuffix = uniqueString(resourceGroup().id)
+var maxNameLength = 63 - length(uniqueSuffix) - 1 // 1 for the dash
+var truncatedName = length(name) > maxNameLength ? take(name, maxNameLength) : name
+var workspaceName = '${truncatedName}-${uniqueSuffix}'
 
 @description('Log Analytics Workspace')
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' = {

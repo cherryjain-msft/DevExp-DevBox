@@ -61,7 +61,7 @@ resource securityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landin
   name: securityRgName
   location: location
   tags: union(landingZones.security.tags, {
-    'component': 'security'
+    component: 'security'
   })
 }
 
@@ -73,7 +73,7 @@ resource monitoringRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (land
   name: monitoringRgName
   location: location
   tags: union(landingZones.monitoring.tags, {
-    'component': 'monitoring'
+    component: 'monitoring'
   })
 }
 
@@ -85,7 +85,7 @@ resource workloadRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landin
   name: workloadRgName
   location: location
   tags: union(landingZones.workload.tags, {
-    'component': 'workload'
+    component: 'workload'
   })
 }
 
@@ -121,7 +121,6 @@ module security '../src/security/security.bicep' = {
   }
   dependsOn: [
     securityRg
-    monitoring
   ]
 }
 
@@ -139,15 +138,12 @@ module workload '../src/workload/workload.bicep' = {
   name: 'workload-devcenter-deployment-${environmentName}'
   scope: resourceGroup(workloadRgName)
   params: {
-    environmentName: environmentName
     logAnalyticsId: monitoring.outputs.AZURE_LOG_ANALYTICS_WORKSPACE_ID
     secretIdentifier: security.outputs.AZURE_KEY_VAULT_SECRET_IDENTIFIER
-    keyVaultName: security.outputs.AZURE_KEY_VAULT_NAME
     securityResourceGroupName: securityRgName
   }
   dependsOn: [
     workloadRg
-    security
   ]
 }
 

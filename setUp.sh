@@ -1,8 +1,6 @@
 #!/bin/bash
 
-#
-# SYNOPSIS
-#     Sets up Azure Dev Box environment with GitHub integration.
+# setUp.sh - Sets up Azure Dev Box environment with GitHub integration
 #
 # DESCRIPTION
 #     Automates the setup of an Azure Developer CLI (azd) environment for Dev Box,
@@ -12,353 +10,499 @@
 #     and resource management.
 #
 # PARAMETERS
-#     EnvName - Name of the Azure environment to create. Default is "demo".
-#     Location - Azure region where resources will be deployed. Default is "eastus2".
-#     sourceControlPlatform - Source control platform ("gitHub" or "adoGit"). Default is "adoGit".
+#     -e, --env-name       Name of the Azure environment to create
+#     -s, --source-control Source control platform (github or adogit)
+#     -h, --help          Show this help message
 #
 # EXAMPLES
-#     ./setUp.sh
-#     # Creates a "demo" environment in eastus2 region
+#     ./setUp.sh -e "prod" -s "github"
+#     # Creates a "prod" environment with GitHub
 #     
-#     ./setUp.sh --env-name "dev" --location "westus2"
-#     # Creates a "dev" environment in westus2 region
+#     ./setUp.sh -e "dev" -s "adogit"
+#     # Creates a "dev" environment with Azure DevOps
 #
-#     ./setUp.sh --source-control "gitHub"
-#     # Uses GitHub as source control platform
-#
-# NOTES
-#     Requires:
+# REQUIREMENTS
 #     - Azure CLI (az)
 #     - Azure Developer CLI (azd)
-#     - GitHub CLI (gh) - when using GitHub platform
+#     - GitHub CLI (gh) [if using GitHub]
 #     - Valid authentication for chosen platform
 #     
-#     Author: DevExp Team
-#     Last Updated: 2023-05-15
-#
+# Author: DevExp Team
+# Last Updated: 2023-05-15
 
 # Script Configuration
-# Stop on errors for better error handling
-set -e
+set -euo pipefail  # Exit on error, undefined vars, pipe failures
+IFS=$'\n\t'       # Secure Internal Field Separator
 
-# Default parameters
-EnvName="${1:-demo}"  # Default environment name is "demo"
-Location="${2:-eastus2}"  # Default location is "eastus2"
-sourceControlPlatform="${3:-adoGit}"  # Default source control platform is "adoGit"
+# Global Variables
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly TIMESTAMP_FORMAT="%Y-%m-%d %H:%M:%S"
 
-#region Helper Functions
-Write-LogMessage() {
-    local Message="$1"
-    local Level="${2:-Info}"
+# Color codes for output
+readonly RED='\033[0;31m'
+readonly GREEN='\033[0;32m'
+readonly YELLOW='\033[1;33m'
+readonly CYAN='\033[0;36m'
+readonly NC='\033[0m' # No Color
+
+# Unicode icons
+readonly INFO_ICON="ℹ️"
+readonly WARNING_ICON="⚠️"
+readonly ERROR_ICON="❌"
+readonly SUCCESS_ICON="✅"
+
+# Global variables for script state
+ENV_NAME=""
+SOURCE_CONTROL_PLATFORM=""
+GITHUB_TOKEN=""
+ADO_TOKEN=""
+
+#######################################
+# Helper Functions
+#######################################
+
+# Logging function with different levels and colors
+write_log_message() {
+    local message="$1"
+    local level="${2:-Info}"
+    local timestamp
+    timestamp=$(date +"$TIMESTAMP_FORMAT")
     
-    local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-    local icon
-    local color
-    
-    case "$Level" in
-        "Info")
-            icon="[INFO]"
-            color="\033[0;36m"  # Cyan
+    case "$level" in
+        "Error")
+            echo -e "${ERROR_ICON} ${RED}[$timestamp] $message${NC}" >&2
             ;;
         "Warning")
-            icon="[WARN]"
-            color="\033[0;33m"  # Yellow
-            ;;
-        "Error")
-            icon="[ERROR]"
-            color="\033[0;31m"  # Red
+            echo -e "${WARNING_ICON} ${YELLOW}[$timestamp] $message${NC}"
             ;;
         "Success")
-            icon="[SUCCESS]"
-            color="\033[0;32m"  # Green
+            echo -e "${SUCCESS_ICON} ${GREEN}[$timestamp] $message${NC}"
             ;;
-        *)
-            icon="[INFO]"
-            color="\033[0;36m"  # Cyan
+        "Info"|*)
+            echo -e "${INFO_ICON} ${CYAN}[$timestamp] $message${NC}"
             ;;
     esac
-    
-    # Use appropriate colors for different message types
-    echo -e "${color}${icon} [${timestamp}] ${Message}\033[0m"
 }
 
-Test-CommandAvailability() {
-    local Command="$1"
+# Check if a command is available in PATH
+test_command_availability() {
+    local command="$1"
     
-    # Check if command exists in PATH
-    if ! command -v "$Command" &> /dev/null; then
-        Write-LogMessage "Required command '$Command' was not found. Please install it before continuing." "Error"
+    if ! command -v "$command" &> /dev/null; then
+        write_log_message "Required command '$command' was not found. Please install it before continuing." "Error"
         return 1
     fi
     return 0
 }
-#endregion
 
-#region Authentication Functions
-Test-AzureAuthentication() {
-    local azContext
+# Show help message
+show_help() {
+    cat << EOF
+setUp.sh - Sets up Azure Dev Box environment with source control integration
+
+USAGE:
+    ./setUp.sh -e ENV_NAME -s SOURCE_CONTROL
+
+PARAMETERS:
+    -e, --env-name ENV_NAME          Name of the Azure environment to create
+    -s, --source-control PLATFORM    Source control platform (github or adogit)
+    -h, --help                       Show this help message
+
+EXAMPLES:
+    ./setUp.sh -e "prod" -s "github"
+    ./setUp.sh -e "dev" -s "adogit"
+
+REQUIREMENTS:
+    - Azure CLI (az)
+    - Azure Developer CLI (azd)
+    - GitHub CLI (gh) [if using GitHub]
+    - Valid authentication for chosen platform
+EOF
+}
+
+# Validate source control platform
+validate_source_control() {
+    local platform="$1"
     
-    # Redirect error output to null to prevent error messages from displaying
-    if ! azContext=$(az account show 2>/dev/null); then
-        Write-LogMessage "Not logged into Azure. Please run 'az login' first." "Error"
+    case "$platform" in
+        "github"|"adogit")
+            return 0
+            ;;
+        *)
+            write_log_message "Invalid source control platform: $platform" "Error"
+            write_log_message "Valid platforms: github, adogit" "Info"
+            return 1
+            ;;
+    esac
+}
+
+#######################################
+# Authentication Functions
+#######################################
+
+# Test Azure CLI authentication
+test_azure_authentication() {
+    local az_context
+    
+    write_log_message "Verifying Azure authentication..." "Info"
+    
+    # Redirect stderr to /dev/null to prevent error messages from displaying
+    if ! az_context=$(az account show 2>/dev/null); then
+        write_log_message "Not logged into Azure. Please run 'az login' first." "Error"
         return 1
     fi
     
+    # Parse JSON output to check subscription state
+    local subscription_name subscription_id subscription_state
+    subscription_name=$(echo "$az_context" | jq -r '.name')
+    subscription_id=$(echo "$az_context" | jq -r '.id')
+    subscription_state=$(echo "$az_context" | jq -r '.state')
+    
     # Check if subscription is enabled (Azure best practice)
-    local state=$(echo "$azContext" | jq -r '.state')
-    if [[ "$state" != "Enabled" ]]; then
-        local name=$(echo "$azContext" | jq -r '.name')
-        Write-LogMessage "Current subscription '$name' is not in 'Enabled' state." "Error"
+    if [[ "$subscription_state" != "Enabled" ]]; then
+        write_log_message "Current subscription '$subscription_name' is not in 'Enabled' state." "Error"
         return 1
     fi
     
     # Output subscription details for verification
-    local name=$(echo "$azContext" | jq -r '.name')
-    local id=$(echo "$azContext" | jq -r '.id')
-    Write-LogMessage "Using Azure subscription: $name (ID: $id)" "Info"
+    write_log_message "Using Azure subscription: $subscription_name (ID: $subscription_id)" "Info"
     return 0
 }
 
-Test-AdoAuthentication() {
-    local adoStatus
+# Test Azure DevOps authentication
+test_ado_authentication() {
+    write_log_message "Verifying Azure DevOps authentication..." "Info"
     
     # Check if Azure DevOps CLI is authenticated
-    if ! adoStatus=$(az devops configure --list 2>&1); then
-        Write-LogMessage "Not logged into Azure DevOps. Please run 'az devops login' first." "Error"
+    if ! az devops configure --list &>/dev/null; then
+        write_log_message "Not logged into Azure DevOps. Please run 'az devops login' first." "Error"
         return 1
     fi
     
-    Write-LogMessage "Azure DevOps authentication verified successfully" "Success"
+    write_log_message "Azure DevOps authentication verified successfully" "Success"
     return 0
 }
 
-Test-GitHubAuthentication() {
-    local ghStatus
+# Test GitHub CLI authentication
+test_github_authentication() {
+    write_log_message "Verifying GitHub authentication..." "Info"
     
-    # Capture standard output and error output
-    if ! ghStatus=$(gh auth status 2>&1); then
-        Write-LogMessage "Not logged into GitHub. Please run 'gh auth login' first." "Error"
+    # Check if GitHub CLI is authenticated
+    if ! gh auth status &>/dev/null; then
+        write_log_message "Not logged into GitHub. Please run 'gh auth login' first." "Error"
         return 1
     fi
     
-    Write-LogMessage "GitHub authentication verified successfully" "Success"
+    write_log_message "GitHub authentication verified successfully" "Success"
     return 0
 }
 
-# Global variables for function returns
-GITHUB_TOKEN=""
-ADO_TOKEN=""
-
-Get-SecureGitHubToken() {
-    local pat
+# Get GitHub token securely
+get_secure_github_token() {
+    write_log_message "Retrieving GitHub token..." "Info"
     
-    # Get GitHub token
-    if ! pat=$(gh auth token); then
-        Write-LogMessage "Failed to retrieve GitHub token" "Error"
+    if ! GITHUB_TOKEN=$(gh auth token 2>/dev/null); then
+        write_log_message "Failed to retrieve GitHub token" "Error"
         return 1
     fi
     
-    if [[ -z "$pat" ]]; then
-        Write-LogMessage "Failed to retrieve GitHub token" "Error"
+    if [[ -z "$GITHUB_TOKEN" ]]; then
+        write_log_message "Failed to retrieve GitHub token" "Error"
         return 1
     fi
     
-    Write-LogMessage "GitHub token retrieved and stored securely" "Success"
-    
-    # Store the token in global variable instead of echo
-    GITHUB_TOKEN="$pat"
+    write_log_message "GitHub token retrieved and stored securely" "Success"
     return 0
 }
 
-Get-SecureAdoGitToken() {
-    local pat="$AZURE_DEVOPS_EXT_PAT"
+# Get Azure DevOps token securely
+get_secure_ado_git_token() {
+    write_log_message "Retrieving Azure DevOps token..." "Info"
     
-    if [[ -z "$pat" ]]; then
-        Write-LogMessage "Azure DevOps PAT not found in environment variable 'AZURE_DEVOPS_EXT_PAT'. Please enter your PAT securely." "Warning"
+    # Try to get PAT from environment variable first
+    if [[ -n "${AZURE_DEVOPS_EXT_PAT:-}" ]]; then
+        ADO_TOKEN="$AZURE_DEVOPS_EXT_PAT"
+        write_log_message "Azure DevOps PAT retrieved from environment variable" "Success"
+    else
+        write_log_message "Azure DevOps PAT not found in environment variable 'AZURE_DEVOPS_EXT_PAT'." "Warning"
+        write_log_message "Please enter your PAT securely." "Warning"
+        
+        # Prompt for PAT securely (no echo)
         echo -n "Enter your Azure DevOps Personal Access Token: "
-        read -s pat
-        echo  # New line after silent input
+        read -rs ADO_TOKEN
+        echo
         
         # Configure Azure DevOps defaults
-        if ! az devops configure --defaults organization=https://dev.azure.com/contososa2 project=DevExp-DevBox; then
-            Write-LogMessage "Azure DevOps organization and project not set. Please configure them first." "Error"
+        if ! az devops configure --defaults organization=https://dev.azure.com/contososa2 project=DevExp-DevBox &>/dev/null; then
+            write_log_message "Azure DevOps organization and project not set. Please configure them first." "Error"
             return 1
         fi
     fi
-
-    if [[ -z "$pat" ]]; then
-        Write-LogMessage "Failed to retrieve Azure DevOps PAT" "Error"
+    
+    if [[ -z "$ADO_TOKEN" ]]; then
+        write_log_message "Failed to retrieve Azure DevOps PAT" "Error"
         return 1
     fi
-
-    Write-LogMessage "Azure DevOps PAT retrieved and stored securely" "Success"
     
-    # Store the token in global variable instead of echo
-    ADO_TOKEN="$pat"
+    write_log_message "Azure DevOps PAT retrieved and stored securely" "Success"
     return 0
 }
-#endregion
 
-#region Azure Configuration Functions
-Initialize-AzdEnvironment() {
-    local pat
-    local tokenType
+#######################################
+# Azure Configuration Functions
+#######################################
+
+# Initialize Azure Developer CLI environment
+initialize_azd_environment() {
+    local pat token_type masked_token
+    local env_dir env_file
     
-    if [[ "$sourceControlPlatform" == "gitHub" ]]; then
-        Write-LogMessage "Retrieving GitHub token for environment initialization..." "Info"
-        if ! Get-SecureGitHubToken; then
-            Write-LogMessage "Unable to retrieve GitHub token. Aborting environment initialization." "Error"
+    write_log_message "Initializing Azure Developer CLI environment..." "Info"
+    
+    # Get appropriate token based on source control platform
+    case "$SOURCE_CONTROL_PLATFORM" in
+        "github")
+            write_log_message "Retrieving GitHub token for environment initialization..." "Info"
+            if ! get_secure_github_token; then
+                write_log_message "Unable to retrieve GitHub token. Aborting environment initialization." "Error"
+                return 1
+            fi
+            pat="$GITHUB_TOKEN"
+            token_type="GitHub"
+            ;;
+        "adogit")
+            write_log_message "Retrieving Azure DevOps token for environment initialization..." "Info"
+            if ! get_secure_ado_git_token; then
+                write_log_message "Unable to retrieve Azure DevOps token. Aborting environment initialization." "Error"
+                return 1
+            fi
+            pat="$ADO_TOKEN"
+            token_type="Azure DevOps"
+            ;;
+        *)
+            write_log_message "Unsupported source control platform: $SOURCE_CONTROL_PLATFORM" "Error"
             return 1
-        fi
-        pat="$GITHUB_TOKEN"
-        tokenType="GitHub"
-    elif [[ "$sourceControlPlatform" == "adoGit" ]]; then
-        Write-LogMessage "Retrieving Azure DevOps token for environment initialization..." "Info"
-        if ! Get-SecureAdoGitToken; then
-            Write-LogMessage "Unable to retrieve Azure DevOps token. Aborting environment initialization." "Error"
-            return 1
-        fi
-        pat="$ADO_TOKEN"
-        tokenType="Azure DevOps"
-    else
-        Write-LogMessage "Unsupported source control platform: $sourceControlPlatform" "Error"
-        return 1
-    fi
-
+            ;;
+    esac
+    
     # Mask most of the token for security best practices
-    local maskedToken
     if [[ ${#pat} -ge 8 ]]; then
-        maskedToken="${pat:0:4}****${pat: -2}"
+        masked_token="${pat:0:4}****${pat: -2}"
     else
-        maskedToken="****"
+        masked_token="****"
     fi
-    Write-LogMessage "$tokenType token stored securely in memory. Masked: $maskedToken" "Success"
-
-    # Create new Azure Developer CLI environment
-    Write-LogMessage "Creating new Azure Developer CLI environment: '$EnvName'" "Info"
-    if ! azd env new "$EnvName" --no-prompt; then
-        Write-LogMessage "Failed to create Azure Developer CLI environment '$EnvName'." "Error"
-        return 1
-    fi
-
+    
+    write_log_message "🔐 $token_type token stored securely in memory. Masked: $masked_token" "Success"
+    
+    # Azure best practice: Verify environment exists or use existing
+    write_log_message "Using Azure Developer CLI environment: '$ENV_NAME'" "Info"
+    
     # Prepare environment file path
-    local envDir="./.azure/$EnvName"
-    local envFile="$envDir/.env"
-    if [[ ! -d "$envDir" ]]; then
-        mkdir -p "$envDir"
+    env_dir="./.azure/$ENV_NAME"
+    env_file="$env_dir/.env"
+    
+    if [[ ! -d "$env_dir" ]]; then
+        mkdir -p "$env_dir"
     fi
-
+    
     # Azure best practice: Use environment-specific configuration
-    Write-LogMessage "Configuring environment variables in $envFile" "Info"
-    cat > "$envFile" << EOF
-AZURE_ENV_NAME='$EnvName'
-AZURE_LOCATION='$Location'
+    write_log_message "Configuring environment variables in $env_file" "Info"
+    
+    cat > "$env_file" << EOF
+AZURE_ENV_NAME='$ENV_NAME'
 KEY_VAULT_SECRET='$pat'
 EOF
-
+    
     # Show current configuration for verification
-    Write-LogMessage "Current Azure Developer CLI configuration:" "Info"
+    write_log_message "Current Azure Developer CLI configuration:" "Info"
     azd config show
-
-    Write-LogMessage "Azure Developer CLI environment '$EnvName' initialized successfully." "Success"
+    
+    write_log_message "Azure Developer CLI environment '$ENV_NAME' initialized successfully." "Success"
     return 0
 }
 
-Start-AzureProvisioning() {
-    Write-LogMessage "Starting Azure resource provisioning with azd..." "Info"
+# Start Azure resource provisioning
+start_azure_provisioning() {
+    write_log_message "Starting Azure resource provisioning with azd..." "Info"
     
     # Run the provisioning process
-    # Use the environment name provided by the user
-    if ! azd provision -e "$EnvName"; then
-        Write-LogMessage "Azure provisioning failed" "Error"
+    if ! azd provision -e "$ENV_NAME"; then
+        local exit_code=$?
+        write_log_message "Azure provisioning failed with exit code $exit_code" "Error"
         
         # Provide guidance on common failures
-        Write-LogMessage "This might be a quota or permissions issue. Check your Azure subscription limits and role assignments." "Warning"
+        write_log_message "This might be a quota or permissions issue. Check your Azure subscription limits and role assignments." "Warning"
+        
         return 1
     fi
     
-    Write-LogMessage "Azure provisioning completed successfully" "Success"
+    write_log_message "Azure provisioning completed successfully" "Success"
     return 0
 }
-#endregion
 
-#region Main Script Execution
-main() {
-    # Trap errors for cleanup
-    trap 'Write-LogMessage "Script interrupted or failed. Cleaning up..." "Warning"; cleanup_variables' EXIT
+# Interactive source control platform selection
+select_source_control_platform() {
+    local selection valid_selection=false
     
-    # Script header with basic information
-    Write-LogMessage "Starting Dev Box environment setup in '$Location' region" "Info"
-    Write-LogMessage "Environment name: $EnvName" "Info"
-    Write-LogMessage "Source control platform: $sourceControlPlatform" "Info"
+    write_log_message "Please select your source control platform:" "Info"
+    echo ""
+    echo -e "  ${YELLOW}1. Azure DevOps Git (adogit)${NC}"
+    echo -e "  ${YELLOW}2. GitHub (github)${NC}"
+    echo ""
     
-    # Verify required tools - Azure best practice for dependency validation
-    local requiredTools=("az" "azd" "jq")
-    if [[ "$sourceControlPlatform" == "gitHub" ]]; then
-        requiredTools+=("gh")
-    fi
-    
-    local toolsAvailable=true
-    for tool in "${requiredTools[@]}"; do
-        if ! Test-CommandAvailability "$tool"; then
-            toolsAvailable=false
-        fi
+    while [[ "$valid_selection" == false ]]; do
+        echo -n "Enter your choice (1 or 2): "
+        read -r selection
+        
+        case "$selection" in
+            "1")
+                SOURCE_CONTROL_PLATFORM="adogit"
+                write_log_message "Selected: Azure DevOps Git" "Success"
+                valid_selection=true
+                ;;
+            "2")
+                SOURCE_CONTROL_PLATFORM="github"
+                write_log_message "Selected: GitHub" "Success"
+                valid_selection=true
+                ;;
+            *)
+                write_log_message "Invalid selection. Please enter 1 or 2." "Warning"
+                ;;
+        esac
+    done
+}
+
+#######################################
+# Main Script Logic
+#######################################
+
+# Parse command line arguments
+parse_arguments() {
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -e|--env-name)
+                ENV_NAME="$2"
+                shift 2
+                ;;
+            -s|--source-control)
+                SOURCE_CONTROL_PLATFORM="$2"
+                shift 2
+                ;;
+            -h|--help)
+                show_help
+                exit 0
+                ;;
+            *)
+                write_log_message "Unknown parameter: $1" "Error"
+                show_help
+                exit 1
+                ;;
+        esac
     done
     
-    # Exit if any required tools are missing
-    if [[ "$toolsAvailable" == false ]]; then
-        Write-LogMessage "Missing required tools. Please install them and retry." "Error"
+    # Validate required parameters
+    if [[ -z "$ENV_NAME" ]]; then
+        write_log_message "Environment name is required. Use -e or --env-name parameter." "Error"
+        show_help
         exit 1
     fi
+    
+    # If source control not provided, prompt for it
+    if [[ -z "$SOURCE_CONTROL_PLATFORM" ]]; then
+        select_source_control_platform
+    fi
+    
+    # Validate parameters
+    if ! validate_source_control "$SOURCE_CONTROL_PLATFORM"; then
+        exit 1
+    fi
+}
+
+# Cleanup function for security
+cleanup_variables() {
+    # Clean up any temporary resources - Azure best practice
+    unset GITHUB_TOKEN 2>/dev/null || true
+    unset ADO_TOKEN 2>/dev/null || true
+    unset AZURE_DEVOPS_EXT_PAT 2>/dev/null || true
+}
+
+# Main execution function
+main() {
+    local required_tools=("az" "azd" "jq")
+    local tool
+    
+    # Parse command line arguments
+    parse_arguments "$@"
+    
+    # Script header with basic information
+    write_log_message "Starting Dev Box environment setup" "Info"
+    write_log_message "Environment name: $ENV_NAME" "Info"
+    write_log_message "Source control platform: $SOURCE_CONTROL_PLATFORM" "Info"
+    
+    # Add GitHub CLI to required tools if using GitHub
+    if [[ "$SOURCE_CONTROL_PLATFORM" == "github" ]]; then
+        required_tools+=("gh")
+    fi
+    
+    # Verify required tools - Azure best practice for dependency validation
+    write_log_message "Checking required tools..." "Info"
+    for tool in "${required_tools[@]}"; do
+        if ! test_command_availability "$tool"; then
+            write_log_message "Missing required tools. Please install them and retry." "Error"
+            exit 1
+        fi
+    done
+    write_log_message "All required tools are available" "Success"
     
     # Verify Azure authentication - Azure security best practice
-    if ! Test-AzureAuthentication; then
+    if ! test_azure_authentication; then
         exit 1
     fi
     
-    if [[ "$sourceControlPlatform" == "gitHub" ]]; then
-        # Verify GitHub authentication
-        if ! Test-GitHubAuthentication; then
-            exit 1
-        fi
-    elif [[ "$sourceControlPlatform" == "adoGit" ]]; then
-        # Verify Azure DevOps authentication
-        if ! Test-AdoAuthentication; then
-            exit 1
-        fi
-    fi
+    # Verify source control authentication
+    case "$SOURCE_CONTROL_PLATFORM" in
+        "github")
+            if ! test_github_authentication; then
+                exit 1
+            fi
+            ;;
+        "adogit")
+            if ! test_ado_authentication; then
+                exit 1
+            fi
+            ;;
+    esac
     
-    # Initialize azd environment using the original code
-    # This step creates the environment and stores the token
-    Write-LogMessage "Initializing Azure Developer CLI environment..." "Info"
-    if ! Initialize-AzdEnvironment; then
-        Write-LogMessage "Failed to initialize Azure Developer CLI environment. Exiting." "Error"
+    # Initialize azd environment
+    write_log_message "Initializing Azure Developer CLI environment..." "Info"
+    if ! initialize_azd_environment; then
+        write_log_message "Failed to initialize Azure Developer CLI environment. Exiting." "Error"
         exit 1
     fi
     
     # Success message with environment details
-    Write-LogMessage "Dev Box environment '$EnvName' setup successfully in '$Location'" "Success"
-    Write-LogMessage "Access your Dev Center from the Azure portal" "Info"
-    Write-LogMessage "Use 'azd env get-values' to view environment settings" "Info"
+    write_log_message "Dev Box environment '$ENV_NAME' setup successfully" "Success"
+    write_log_message "Access your Dev Center from the Azure portal" "Info"
+    write_log_message "Use 'azd env get-values' to view environment settings" "Info"
 }
 
-# Cleanup function for security best practices
-cleanup_variables() {
-    # Clean up any temporary resources - Azure best practice
-    unset pat
-    unset securePat
-    unset GITHUB_TOKEN
-    unset ADO_TOKEN
-}
-
-# Error handling wrapper
-if ! main "$@"; then
-    # Comprehensive error handling with specific message
-    local errorLine="${BASH_LINENO[0]}"
-    Write-LogMessage "Setup failed at line $errorLine" "Error"
+# Cleanup function for trap
+cleanup() {
+    local exit_code=$?
     
-    # Provide guidance on next steps
-    Write-LogMessage "Check the error details above and try again" "Info"
-    exit 1
-fi
-#endregion
+    # Clean up any temporary resources - Azure best practice
+    cleanup_variables
+    
+    if [[ $exit_code -ne 0 ]]; then
+        write_log_message "Script execution failed. Check the error details above and try again." "Error"
+    fi
+    
+    exit $exit_code
+}
+
+# Set up error handling and cleanup
+trap cleanup EXIT
+trap 'write_log_message "Script interrupted by user" "Warning"; exit 130' INT TERM
+
+# Execute main function with all arguments
+main "$@"
