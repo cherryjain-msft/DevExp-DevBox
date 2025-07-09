@@ -424,14 +424,6 @@ parse_arguments() {
     fi
 }
 
-# Cleanup function for security
-cleanup_variables() {
-    # Clean up any temporary resources - Azure best practice
-    unset GITHUB_TOKEN 2>/dev/null || true
-    unset ADO_TOKEN 2>/dev/null || true
-    unset AZURE_DEVOPS_EXT_PAT 2>/dev/null || true
-}
-
 # Main execution function
 main() {
     local required_tools=("az" "azd" "jq")
@@ -492,22 +484,7 @@ main() {
     write_log_message "Use 'azd env get-values' to view environment settings" "Info"
 }
 
-# Cleanup function for trap
-cleanup() {
-    local exit_code=$?
-    
-    # Clean up any temporary resources - Azure best practice
-    cleanup_variables
-    
-    if [[ $exit_code -ne 0 ]]; then
-        write_log_message "Script execution failed. Check the error details above and try again." "Error"
-    fi
-    
-    exit $exit_code
-}
-
 # Set up error handling and cleanup
-trap cleanup EXIT
 trap 'write_log_message "Script interrupted by user" "Warning"; exit 130' INT TERM
 
 # Execute main function with all arguments
