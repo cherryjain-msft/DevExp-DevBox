@@ -124,16 +124,13 @@ EOF
 validate_source_control() {
     local platform="$1"
     
-    case "$platform" in
-        "github"|"adogit")
-            return 0
-            ;;
-        *)
-            write_log_message "Invalid source control platform: $platform" "Error"
-            write_log_message "Valid platforms: github, adogit" "Info"
-            return 1
-            ;;
-    esac
+    if [[ "$platform" == "github" ]] || [[ "$platform" == "adogit" ]] || [[ -z "$platform" ]]; then
+        return 0
+    else
+        write_log_message "Invalid source control platform: $platform" "Error"
+        write_log_message "Valid platforms: github, adogit" "Info"
+        return 1
+    fi
 }
 
 #######################################
@@ -322,6 +319,7 @@ initialize_azd_environment() {
     
     # Append to existing file or create if it doesn't exist
     echo "KEY_VAULT_SECRET='$pat'" >> "$env_file"
+    echo "SOURCE_CONTROL_PLATFORM='$SOURCE_CONTROL_PLATFORM'" >> "$env_file"
     
     # Show current configuration for verification
     write_log_message "Current Azure Developer CLI configuration:" "Info"
@@ -366,12 +364,12 @@ select_source_control_platform() {
         
         case "$selection" in
             "1")
-                export SOURCE_CONTROL_PLATFORM="adogit"
+                SOURCE_CONTROL_PLATFORM="adogit"
                 write_log_message "Selected: Azure DevOps Git" "Success"
                 valid_selection=true
                 ;;
             "2")
-                export SOURCE_CONTROL_PLATFORM="github"
+                SOURCE_CONTROL_PLATFORM="github"
                 write_log_message "Selected: GitHub" "Success"
                 valid_selection=true
                 ;;
@@ -476,7 +474,6 @@ main() {
     esac
     
     # Initialize azd environment
-    write_log_message "Initializing Azure Developer CLI environment..." "Info"
     if ! initialize_azd_environment; then
         write_log_message "Failed to initialize Azure Developer CLI environment. Exiting." "Error"
         exit 1

@@ -11,9 +11,9 @@ on:
         description: 'Azure region (e.g., eastus, westus)'
         required: true
         default: 'eastus2'
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
 
 # Set up permissions for deploying with secretless Azure federated credentials
 # https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Clinux#set-up-azure-login-with-openid-connect-authentication

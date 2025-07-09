@@ -8,10 +8,13 @@ hooks:
     continueOnError: false
     interactive: true
     run: |
-      if [[ -n "${SOURCE_CONTROL_PLATFORM:-}" ]]; then
-        echo "Using existing SOURCE_CONTROL_PLATFORM from environment variable."
+      #!/bin/bash
+      defaultPlatform="github"
+      # Add a if statement to check if the environment variable is set
+      if [ -z "${SOURCE_CONTROL_PLATFORM}" ]; then
+          echo "SOURCE_CONTROL_PLATFORM is not set. Setting it to '${defaultPlatform}' by default."
+          export SOURCE_CONTROL_PLATFORM="${SOURCE_CONTROL_PLATFORM:-${defaultPlatform}}"
       else
-        export SOURCE_CONTROL_PLATFORM="adogit"
-        echo "SOURCE_CONTROL_PLATFORM is set with 'adogit'"
-      fi
+          echo "Existing SOURCE_CONTROL_PLATFORM is set to '${SOURCE_CONTROL_PLATFORM}'."
+      fi      
       ./setup.sh -e ${AZURE_ENV_NAME} -s ${SOURCE_CONTROL_PLATFORM}
