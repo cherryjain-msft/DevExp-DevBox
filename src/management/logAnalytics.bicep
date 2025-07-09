@@ -83,10 +83,7 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
 }
 
 @description('The resource ID of the Log Analytics Workspace')
-output workspaceId string = logAnalyticsWorkspace.id
-
-@description('The resource ID of the Log Analytics Workspace')
-output logAnalyticsId string = logAnalyticsWorkspace.id
+output AZURE_LOG_ANALYTICS_WORKSPACE_ID string = logAnalyticsWorkspace.id
 
 @description('The name of the Log Analytics Workspace')
-output logAnalyticsName string = logAnalyticsWorkspace.name
+output AZURE_LOG_ANALYTICS_WORKSPACE_NAME string = logAnalyticsWorkspace.name

@@ -39,7 +39,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-12-01-preview' = {
 }
 
 @description('The name of the Key Vault')
-output keyVaultName string = keyVault.name
+output AZURE_KEY_VAULT_NAME string = keyVault.name
 
 @description('The endpoint URI of the Key Vault')
-output endpoint string = keyVault.properties.vaultUri
+output AZURE_KEY_VAULT_ENDPOINT string = keyVault.properties.vaultUri

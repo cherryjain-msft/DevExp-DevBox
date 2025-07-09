@@ -65,6 +65,8 @@ resource securityRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landin
   })
 }
 
+output SECURITY_AZURE_RESOURCE_GROUP_NAME string = securityRg.name
+
 // Monitoring resources
 @description('Monitoring Resource Group for Log Analytics and related resources')
 resource monitoringRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZones.monitoring.create) {
@@ -75,6 +77,8 @@ resource monitoringRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (land
   })
 }
 
+output MONITORING_AZURE_RESOURCE_GROUP_NAME string = monitoringRg.name
+
 // Workload resources
 @description('Workload Resource Group for DevCenter resources')
 resource workloadRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landingZones.workload.create) {
@@ -84,6 +88,8 @@ resource workloadRg 'Microsoft.Resources/resourceGroups@2024-11-01' = if (landin
     'component': 'workload'
   })
 }
+
+output WORKLOAD_AZURE_RESOURCE_GROUP_NAME string = workloadRg.name
 
 // Module deployments with improved names and organization
 @description('Log Analytics Workspace for centralized monitoring')
@@ -98,13 +104,19 @@ module monitoring '../src/management/logAnalytics.bicep' = {
   ]
 }
 
+@description('The resource ID of the Log Analytics Workspace')
+output AZURE_LOG_ANALYTICS_WORKSPACE_ID string = monitoring.outputs.AZURE_LOG_ANALYTICS_WORKSPACE_ID
+
+@description('The name of the Log Analytics Workspace')
+output AZURE_LOG_ANALYTICS_WORKSPACE_NAME string = monitoring.outputs.AZURE_LOG_ANALYTICS_WORKSPACE_NAME
+
 @description('Security components including Key Vault')
 module security '../src/security/security.bicep' = {
   name: 'security-keyvault-deployment-${environmentName}'
   scope: resourceGroup(securityRgName)
   params: {
     secretValue: secretValue
-    logAnalyticsId: monitoring.outputs.logAnalyticsId
+    logAnalyticsId: monitoring.outputs.AZURE_LOG_ANALYTICS_WORKSPACE_ID
     tags: landingZones.security.tags
   }
   dependsOn: [
@@ -113,15 +125,24 @@ module security '../src/security/security.bicep' = {
   ]
 }
 
+@description('The name of the Key Vault')
+output AZURE_KEY_VAULT_NAME string = security.outputs.AZURE_KEY_VAULT_NAME
+
+@description('The identifier of the secret')
+output AZURE_KEY_VAULT_SECRET_IDENTIFIER string = security.outputs.AZURE_KEY_VAULT_SECRET_IDENTIFIER
+
+@description('The endpoint URI of the Key Vault')
+output AZURE_KEY_VAULT_ENDPOINT string = security.outputs.AZURE_KEY_VAULT_ENDPOINT
+
 @description('DevCenter workload deployment')
 module workload '../src/workload/workload.bicep' = {
   name: 'workload-devcenter-deployment-${environmentName}'
   scope: resourceGroup(workloadRgName)
   params: {
     environmentName: environmentName
-    logAnalyticsId: monitoring.outputs.logAnalyticsId
-    secretIdentifier: security.outputs.secretIdentifier
-    keyVaultName: security.outputs.keyVaultName
+    logAnalyticsId: monitoring.outputs.AZURE_LOG_ANALYTICS_WORKSPACE_ID
+    secretIdentifier: security.outputs.AZURE_KEY_VAULT_SECRET_IDENTIFIER
+    keyVaultName: security.outputs.AZURE_KEY_VAULT_NAME
     securityResourceGroupName: securityRgName
   }
   dependsOn: [

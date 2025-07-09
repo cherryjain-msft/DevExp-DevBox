@@ -92,6 +92,9 @@ resource devcenter 'Microsoft.DevCenter/devcenters@2025-04-01-preview' = {
   tags: config.tags
 }
 
+@description('Deployed Dev Center name')
+output AZURE_DEV_CENTER_NAME string = devCenterName
+
 // Monitoring configuration
 @description('Log Analytics Diagnostic Settings')
 resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
@@ -191,6 +194,3 @@ module environment 'environmentType.bicep' = [
   }
 ]
 
-// Outputs with clear descriptions
-@description('Deployed Dev Center name')
-output AZURE_DEV_CENTER_NAME string = devCenterName

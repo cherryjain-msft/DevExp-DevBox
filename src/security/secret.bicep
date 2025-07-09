@@ -52,4 +52,4 @@ resource diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
 }
 
 @description('The identifier of the secret')
-output secretIdentifier string = secret.properties.secretUri
+output AZURE_KEY_VAULT_SECRET_IDENTIFIER string = secret.properties.secretUri

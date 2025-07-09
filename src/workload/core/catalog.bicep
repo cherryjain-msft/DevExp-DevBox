@@ -63,10 +63,10 @@ resource catalog 'Microsoft.DevCenter/devcenters/catalogs@2025-04-01-preview' = 
 }
 
 @description('The name of the created catalog')
-output catalogName string = catalog.name
+output AZURE_DEV_CENTER_CATALOG_NAME string = catalog.name
 
 @description('The ID of the created catalog')
-output catalogId string = catalog.id
+output AZURE_DEV_CENTER_CATALOG_ID string = catalog.id
 
 @description('The type of the created catalog')
-output catalogType string = catalogConfig.type
+output AZURE_DEV_CENTER_CATALOG_TYPE string = catalogConfig.type

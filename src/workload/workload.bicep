@@ -54,6 +54,9 @@ module devcenter 'core/devCenter.bicep' = {
   }
 }
 
+@description('Name of the deployed DevCenter')
+output AZURE_DEV_CENTER_NAME string = devcenter.outputs.AZURE_DEV_CENTER_NAME
+
 // Deploy individual projects with proper dependencies
 @description('DevCenter Projects')
 module projects 'project/project.bicep' = [
@@ -79,10 +82,6 @@ module projects 'project/project.bicep' = [
     ]
   }
 ]
-
-// Outputs with clear naming and descriptions
-@description('Name of the deployed DevCenter')
-output AZURE_DEV_CENTER_NAME string = devcenter.outputs.AZURE_DEV_CENTER_NAME
 
 @description('List of project names deployed in the DevCenter')
 output AZURE_DEV_CENTER_PROJECTS array = [
