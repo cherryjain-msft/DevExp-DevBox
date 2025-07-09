@@ -6,11 +6,6 @@ param name string
 @description('The Azure region for the Log Analytics Workspace')
 param location string = resourceGroup().location
 
-@description('The number of days to retain data in the workspace')
-@minValue(30)
-@maxValue(730)
-param retentionInDays int = 30
-
 @description('Tags to apply to the Log Analytics Workspace')
 param tags object = {}
 
