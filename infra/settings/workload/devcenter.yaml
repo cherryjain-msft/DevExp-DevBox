@@ -129,8 +129,10 @@ projects:
     pools:
       - name: "backend-engineer"
         imageDefinitionName: "identityProvider-backend-engineer"
+        vmSku: general_i_32c128gb512ssd_v2
       - name: "frontend-engineer"
         imageDefinitionName: "identityProvider-frontend-engineer"
+        vmSku: general_i_16c64gb256ssd_v2
 
     # Project-specific environment types
     # Defines which deployment environments are available to the project
@@ -217,8 +219,10 @@ projects:
     pools:
       - name: "backend-engineer"
         imageDefinitionName: "eShop-backend-engineer"
+        vmSku: general_i_32c128gb512ssd_v2
       - name: "frontend-engineer"
         imageDefinitionName: "eShop-frontend-engineer"
+        vmSku: general_i_16c64gb256ssd_v2
 
     # Project-specific environment types
     # Defines which deployment environments are available to the project

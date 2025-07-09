@@ -13,6 +13,9 @@ param imageDefinitionName string
 @description('The name of the network connection to use for the pool')
 param networkConnectionName string
 
+@description('The SKU of the virtual machine to use for the pool')
+param vmSku string
+
 @description('Network type for resource deployment')
 param networkType string
 
@@ -36,13 +39,9 @@ resource pool 'Microsoft.DevCenter/projects/pools@2025-04-01-preview' = {
       imageReference: {
         id: '${project.id}/images/~Catalog~${catalogName}~${imageDefinitionName}'
       }
-      sku: (contains(imageDefinitionName, 'backend'))
-        ? {
-            name: 'general_i_32c128gb512ssd_v2'
-          }
-        : {
-            name: 'general_i_16c64gb256ssd_v2'
-          }
+      sku: {
+        name: vmSku
+      }
     }
     networkConnectionName: networkConnectionName
     licenseType: 'Windows_Client'

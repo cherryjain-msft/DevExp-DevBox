@@ -22,7 +22,6 @@
         "my-devcenter"
       ]
     },
-
     "catalogItemSyncEnableStatus": {
       "type": "string",
       "description": "Status of catalog item synchronization",
@@ -555,7 +554,8 @@
       "additionalProperties": false,
       "required": [
         "name",
-        "imageDefinitionName"
+        "imageDefinitionName",
+        "vmSku"
       ],
       "properties": {
         "name": {
@@ -571,6 +571,37 @@
           "type": "string",
           "description": "Name of the image definition to use",
           "minLength": 1
+        },
+        "vmSku": {
+          "type": "string",
+          "description": "SKU of the virtual machine to use for this pool",
+          "minLength": 1,
+          "enum": [
+            "general_i_8c32gb256ssd_v2",
+            "general_i_8c32gb512ssd_v2",
+            "general_i_8c32gb1024ssd_v2",
+            "general_i_8c32gb2048ssd_v2",
+            "general_i_16c64gb256ssd_v2",
+            "general_i_16c64gb512ssd_v2",
+            "general_i_16c64gb1024ssd_v2",
+            "general_i_16c64gb2048ssd_v2",
+            "general_i_32c128gb512ssd_v2",
+            "general_i_32c128gb1024ssd_v2",
+            "general_i_32c128gb2048ssd_v2"
+          ],
+          "examples": [
+            "general_i_8c32gb256ssd_v2",
+            "general_i_8c32gb512ssd_v2",
+            "general_i_8c32gb1024ssd_v2",
+            "general_i_8c32gb2048ssd_v2",
+            "general_i_16c64gb256ssd_v2",
+            "general_i_16c64gb512ssd_v2",
+            "general_i_16c64gb1024ssd_v2",
+            "general_i_16c64gb2048ssd_v2",
+            "general_i_32c128gb512ssd_v2",
+            "general_i_32c128gb1024ssd_v2",
+            "general_i_32c128gb2048ssd_v2"
+          ]
         }
       }
     }

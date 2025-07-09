@@ -208,6 +208,7 @@ module pools 'projectPool.bicep' = [
       projectName: project.name
       catalogName: projectCatalogs.imageDefinition.name
       imageDefinitionName: pool.imageDefinitionName
+      vmSku: pool.vmSku
       networkConnectionName: connectivity.outputs.networkConnectionName
       networkType: connectivity.outputs.networkType
     }
