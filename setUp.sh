@@ -200,10 +200,19 @@ test_github_authentication() {
 # Get GitHub token securely
 get_secure_github_token() {
     write_log_message "Retrieving GitHub token..." "Info"
-    
-    if ! GITHUB_TOKEN=$(gh auth token 2>/dev/null); then
-        write_log_message "Failed to retrieve GitHub token" "Error"
-        return 1
+
+    # Check if KEY_VAULT_SECRET environment variable is already set
+    if [[ -n "${KEY_VAULT_SECRET:-}" ]]; then
+        write_log_message "Using existing KEY_VAULT_SECRET from environment" "Info"
+        GITHUB_TOKEN="${KEY_VAULT_SECRET}"
+    else
+        # Retrieve GitHub token using gh CLI
+        if ! GITHUB_TOKEN=$(gh auth token 2>/dev/null); then
+            write_log_message "Failed to retrieve GitHub token" "Error"
+            return 1
+        fi
+        # Export as environment variable for future use
+        export KEY_VAULT_SECRET="${GITHUB_TOKEN}"
     fi
     
     if [[ -z "$GITHUB_TOKEN" ]]; then
@@ -246,11 +255,6 @@ get_secure_ado_git_token() {
 
     # Export the token to environment variable
     export AZURE_DEVOPS_EXT_PAT="$ADO_TOKEN"
-
-    if [[ -n "${AZURE_DEVOPS_EXT_PAT:-}" ]]; then
-        ADO_TOKEN="$AZURE_DEVOPS_EXT_PAT"
-        write_log_message "Azure DevOps PAT retrieved from environment variable" "Success"
-    fi
 
     write_log_message "Azure DevOps PAT retrieved and stored securely" "Success"
     return 0

@@ -8,4 +8,4 @@ hooks:
     continueOnError: false
     interactive: true
     run: |
-      ./setup.sh -e ${AZURE_ENV_NAME} -s github
+      ./setup.sh -e ${AZURE_ENV_NAME} -s ${SOURCE_CONTROL_PLATFORM}
