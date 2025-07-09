@@ -1,3 +1,4 @@
+name: Dev Box Accelerator - Deployment
 # Run when commits are pushed to feature/gitHubActions
 on:
   workflow_dispatch:
@@ -22,7 +23,7 @@ permissions:
 
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     env:
       AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
