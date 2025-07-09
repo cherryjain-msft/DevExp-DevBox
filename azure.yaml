@@ -8,4 +8,10 @@ hooks:
     continueOnError: false
     interactive: true
     run: |
-      ./setup.sh -e ${AZURE_ENV_NAME} -s github
+      if [[ -n "${SOURCE_CONTROL_PLATFORM:-}" ]]; then
+        echo "Using existing SOURCE_CONTROL_PLATFORM from environment variable."
+      else
+        export SOURCE_CONTROL_PLATFORM="adogit"
+        echo "SOURCE_CONTROL_PLATFORM is set with 'adogit'"
+      fi
+      ./setup.sh -e ${AZURE_ENV_NAME} -s ${SOURCE_CONTROL_PLATFORM}

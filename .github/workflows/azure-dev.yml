@@ -1,7 +1,18 @@
-name: Deploy Dev Box Accelerator to Azure
-# Run when commits are pushed to main
+# Run when commits are pushed to feature/gitHubActions
 on:
   workflow_dispatch:
+    inputs:
+      AZURE_ENV_NAME:
+        description: 'Azure environment name'
+        required: true
+        default: 'demo'
+      AZURE_LOCATION:
+        description: 'Azure region (e.g., eastus, westus)'
+        required: true
+        default: 'eastus2'
+  push:
+    branches:
+      - main
 
 # Set up permissions for deploying with secretless Azure federated credentials
 # https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Clinux#set-up-azure-login-with-openid-connect-authentication
@@ -17,8 +28,8 @@ jobs:
       AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-      AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
-      AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
+      AZURE_ENV_NAME: ${{ github.event_name == 'workflow_dispatch' && inputs.AZURE_ENV_NAME || vars.AZURE_ENV_NAME }}
+      AZURE_LOCATION: ${{ github.event_name == 'workflow_dispatch' && inputs.AZURE_LOCATION || vars.AZURE_LOCATION }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,12 +45,9 @@ jobs:
 
 
       - name: Provision Infrastructure
-        run: azd provision --no-prompt
+        run: |
+          echo "AZURE_ENV_NAME: ${{ env.AZURE_ENV_NAME }}"
+          azd provision --no-prompt
         env:
           KEY_VAULT_SECRET: ${{ secrets.KEY_VAULT_SECRET }}
-
-      - name: Deploy Application
-        run: azd deploy --no-prompt
-        env:
-          KEY_VAULT_SECRET: ${{ secrets.KEY_VAULT_SECRET }}
-        
+          SOURCE_CONTROL_PLATFORM: 'github'
