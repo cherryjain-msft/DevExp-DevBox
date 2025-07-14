@@ -9,7 +9,10 @@ hooks:
     interactive: true
     run: |
       #!/bin/bash
+      
+      set -e 
       defaultPlatform="github"
+      
       # Add a if statement to check if the environment variable is set
       if [ -z "${SOURCE_CONTROL_PLATFORM}" ]; then
           echo "SOURCE_CONTROL_PLATFORM is not set. Setting it to '${defaultPlatform}' by default."
