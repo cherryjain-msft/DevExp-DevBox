@@ -31,11 +31,17 @@ jobs:
       AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
       AZURE_ENV_NAME: ${{ github.event_name == 'workflow_dispatch' && inputs.AZURE_ENV_NAME || 'devexp2' }}
       AZURE_LOCATION: ${{ github.event_name == 'workflow_dispatch' && inputs.AZURE_LOCATION || vars.AZURE_LOCATION }}
+    
     steps:
+      - name: Update Packages
+        run: sudo apt-get update && sudo apt-get upgrade - y
+      
       - name: Checkout
         uses: actions/checkout@v4
+      
       - name: Install azd
         uses: Azure/setup-azd@v2
+      
       - name: Log in with Azure (Federated Credentials)
         run: |
           azd auth login `
@@ -43,7 +49,6 @@ jobs:
             --federated-credential-provider "github" `
             --tenant-id "$Env:AZURE_TENANT_ID"
         shell: pwsh
-
 
       - name: Provision Infrastructure
         run: |
