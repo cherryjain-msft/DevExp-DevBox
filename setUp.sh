@@ -226,11 +226,11 @@ get_secure_ado_git_token() {
     write_log_message "Retrieving Azure DevOps token..." "Info"
     
     # Try to get PAT from environment variable first
-    if [[ -n "${AZURE_DEVOPS_EXT_PAT:-}" ]]; then
-        ADO_TOKEN="$AZURE_DEVOPS_EXT_PAT"
-        write_log_message "Azure DevOps PAT retrieved from environment variable" "Success"
+    if [[ -n "${KEY_VAULT_SECRET:-}" ]]; then
+        ADO_TOKEN="${KEY_VAULT_SECRET}"
+        write_log_message "Azure DevOps PAT retrieved from Key Vault" "Success"
     else
-        write_log_message "Azure DevOps PAT not found in environment variable 'AZURE_DEVOPS_EXT_PAT'." "Warning"
+        write_log_message "Azure DevOps PAT not found in environment variables." "Warning"
         write_log_message "Please enter your PAT securely." "Warning"
         
         # Prompt for PAT securely (no echo)
