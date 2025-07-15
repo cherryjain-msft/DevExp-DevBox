@@ -23,7 +23,8 @@ permissions:
 
 
 jobs:
-  deploy-to-azure:
+
+  build-and-deploy-to-azure:    
     runs-on: ubuntu-latest
     env:
       AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
@@ -41,6 +42,10 @@ jobs:
       
       - name: Install azd
         uses: Azure/setup-azd@v2
+
+      - name: Build Accelerator Bicep
+        run: |
+          az bicep build ../infra/main.bicep
       
       - name: Log in with Azure (Federated Credentials)
         run: |
@@ -50,7 +55,7 @@ jobs:
             --tenant-id "$Env:AZURE_TENANT_ID"
         shell: pwsh
 
-      - name: Provision Infrastructure
+      - name: Provision Infrastructure and Deploy Accelerator
         run: |
           echo "AZURE_ENV_NAME: ${{ env.AZURE_ENV_NAME }}"
           azd provision --no-prompt
