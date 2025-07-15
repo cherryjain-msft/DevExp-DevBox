@@ -41,9 +41,10 @@ identity:
     orgRoleTypes:
       # Dev Manager role - for users who manage Dev Box deployments
       # These users can configure Dev Box definitions but typically don't use Dev Boxes
-      - type: DevManager
-        azureADGroupId: "8dae87fa-87b2-460b-b972-a4239fbd4a96"
-        azureADGroupName: "Dev Manager"
+      #This is the group where I need to add PE MAnager team menbers to the Goup
+      - type: DevManager #PE TEAM
+        azureADGroupId: "c757e7ca-2806-4532-a6c7-f3ac6e370690"
+        azureADGroupName: "PE_DevManager"
 
         # RBAC roles assigned to Dev Managers
         azureRBACRoles:
@@ -58,7 +59,7 @@ identity:
 catalogs:
   - name: "customTasks"
     type: gitHub
-    uri: "https://github.com/Evilazaro/DevExp-DevBox.git"
+    uri: "https://github.com/cherryjain-msft/DevExp-DevBox.git"    
     branch: "main"
     path: "/.configuration/devcenter/tasks"
 
@@ -105,8 +106,8 @@ projects:
     identity:
       type: SystemAssigned
       roleAssignments:
-        - azureADGroupId: "331f48d7-4a23-4ec4-b03a-4af29c9c6f34"
-          azureADGroupName: "identityProvider Developers"
+        - azureADGroupId: "e83e8dcc-060e-4e70-ade7-7f52bec6ca62"
+          azureADGroupName: "identityProvider Projetcs Developer"
           azureRBACRoles:
             - name: "Contributor"
               id: "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -147,13 +148,13 @@ projects:
       environmentDefinition:
         name: "environments"
         type: gitHub
-        uri: "https://github.com/Evilazaro/IdentityProvider.git"
+        uri: "https://github.com/cherryjain-msft/IdentityProvider.git"
         branch: "main"
         path: "/.configuration/devcenter/environments"
       imageDefinition:
         name: "imageDefinitions"
         type: gitHub
-        uri: "https://github.com/Evilazaro/IdentityProvider.git"
+        uri: "https://github.com/cherryjain-msft/IdentityProvider.git"
         branch: "main"
         path: "/.configuration/devcenter/imageDefinitions"
 
@@ -195,8 +196,8 @@ projects:
     identity:
       type: SystemAssigned
       roleAssignments:
-        - azureADGroupId: "19d12c65-509f-491d-bb38-49297e1c56a0"
-          azureADGroupName: "eShop Developers"
+        - azureADGroupId: "412458a5-3b26-4f80-b41e-bf2bc284b137"
+          azureADGroupName: "eShop Projects Developers"
           azureRBACRoles:
             - name: "Contributor"
               id: "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -239,13 +240,13 @@ projects:
       environmentDefinition:
         name: "environments"
         type: gitHub
-        uri: "https://github.com/Evilazaro/eShop.git"
+        uri: "https://github.com/cherryjain-msft/DevBox_eShop.git"
         branch: "main"
         path: "/.devcenter/environments"
       imageDefinition:
         name: "imageDefinitions"
         type: gitHub
-        uri: "https://github.com/Evilazaro/eShop.git"
+        uri: "https://github.com/cherryjain-msft/DevBox_eShop.git"
         branch: "main"
         path: "/.devcenter/imageDefinitions"
 
