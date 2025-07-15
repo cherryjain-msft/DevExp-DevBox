@@ -31,11 +31,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Update all Packages
-        run: |
-          sudo apt-get update && \
-          sudo apt-get upgrade -y
-
       - name: Checkout code
         uses: actions/checkout@v4
         with:
@@ -63,6 +58,7 @@ jobs:
       release_type: ${{ steps.determine_release_type.outputs.release_type }}
       previous_tag: ${{ steps.get_tag.outputs.tag }}
       should_release: ${{ steps.determine_release_type.outputs.should_release }}
+      should_publish: ${{ steps.determine_release_type.outputs.should_publish }}
       branch_name: ${{ steps.branch_info.outputs.branch_name }}
 
     steps:
@@ -117,38 +113,49 @@ jobs:
         run: |
           branch_name="${{ steps.branch_info.outputs.branch_name }}"
           should_release="true"
+          should_publish="true"
           
           echo "🔍 Analyzing branch: $branch_name"
           
           # For PR events, only create pre-releases
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             echo "📋 Pull Request detected - Creating pre-release"
+            should_publish="false"
           fi
           
           if [[ "$branch_name" == "main" ]]; then
-            # Main branch: major+1.0.0
+            # Main branch: major+1.0.0 (keep existing rule)
             release_type="main"
-            echo "✅ Main branch detected - Major release strategy"
+            should_publish="true"
+            echo "✅ Main branch detected - Major release strategy with full publication"
             
           elif [[ "$branch_name" == feature/* ]]; then
-            # Feature branch: major.numberofcommits.patch
+            # Feature branch: patch increment with overflow logic
             release_type="feature"
-            echo "✅ Feature branch detected - Feature release strategy"
+            should_publish="false"
+            echo "✅ Feature branch detected - Patch increment with overflow strategy (no release publication)"
             
           elif [[ "$branch_name" == fix/* ]]; then
-            # Fix branch: major.minor.numberofcommits
+            # Fix branch: minor increment with overflow logic
             release_type="fix"
-            echo "✅ Fix branch detected - Fix release strategy"
+            should_publish="false"
+            echo "✅ Fix branch detected - Minor increment with overflow strategy (no release publication)"
             
           else
             echo "⚠️ Unsupported branch pattern: $branch_name"
             echo "Only main, feature/*, and fix/* branches are supported for releases"
             should_release="false"
+            should_publish="false"
             release_type="none"
           fi
           
           echo "release_type=$release_type" >> $GITHUB_OUTPUT
           echo "should_release=$should_release" >> $GITHUB_OUTPUT
+          echo "should_publish=$should_publish" >> $GITHUB_OUTPUT
+          
+          echo "📋 Release Summary:"
+          echo "  - Will create tag and version: $should_release"
+          echo "  - Will publish GitHub release: $should_publish"
 
       - name: Count commits since last tag
         id: count_commits
@@ -215,22 +222,59 @@ jobs:
           
           case "$release_type" in
             main)
-              # Main branch: major+1.0.0
+              # Main branch: major+1.0.0 (keep existing rule)
               major=$((major + 1))
               minor=0
               patch=0
               version_suffix=""
+              echo "🎯 Main branch: Incrementing major version"
               ;;
             feature)
-              # Feature branch: major.numberofcommits.patch
-              minor=$commit_count
+              # Feature branch: patch increment with overflow logic
+              # patch: if previous patch + commits > 99, then patch = 0 and minor += 1
+              new_patch=$((patch + commit_count))
+              
+              echo "🔢 Calculating patch overflow: $patch + $commit_count = $new_patch"
+              
+              if [ $new_patch -gt 99 ]; then
+                # Overflow: reset patch to 0 and increment minor
+                patch=0
+                minor=$((minor + 1))
+                
+                # Check if minor also overflows
+                if [ $minor -gt 99 ]; then
+                  minor=0
+                  major=$((major + 1))
+                  echo "⚠️ Minor overflow detected: Incrementing major to $major, resetting minor to 0"
+                fi
+                
+                echo "⚠️ Patch overflow detected: Incrementing minor to $minor, resetting patch to 0"
+              else
+                patch=$new_patch
+                echo "✅ No overflow: Setting patch to $patch"
+              fi
+              
               # Clean branch name for version suffix
               clean_branch_name=$(echo "${branch_name#feature/}" | sed 's/[^a-zA-Z0-9]/-/g')
               version_suffix="-feature.$clean_branch_name"
               ;;
             fix)
-              # Fix branch: major.minor.numberofcommits
-              patch=$commit_count
+              # Fix branch: minor increment with overflow logic
+              # minor: if previous minor + commits > 99, then minor = 0 and major += 1
+              new_minor=$((minor + commit_count))
+              
+              echo "🔢 Calculating minor overflow: $minor + $commit_count = $new_minor"
+              
+              if [ $new_minor -gt 99 ]; then
+                # Overflow: reset minor to 0 and increment major
+                minor=0
+                major=$((major + 1))
+                echo "⚠️ Minor overflow detected: Incrementing major to $major, resetting minor to 0"
+              else
+                minor=$new_minor
+                echo "✅ No overflow: Setting minor to $minor"
+              fi
+              
               # Clean branch name for version suffix
               clean_branch_name=$(echo "${branch_name#fix/}" | sed 's/[^a-zA-Z0-9]/-/g')
               version_suffix="-fix.$clean_branch_name"
@@ -248,11 +292,50 @@ jobs:
           
           new_version="v$major.$minor.$patch$version_suffix"
           echo "✅ Next version: $new_version"
+          echo "📊 Final version breakdown: major=$major, minor=$minor, patch=$patch"
           echo "new_version=$new_version" >> $GITHUB_OUTPUT
-  
-  publish_release:
+
+  create_tag:
     runs-on: ubuntu-latest
     needs: generate_release
+    if: needs.generate_release.outputs.should_release == 'true'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Git identity
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+      - name: Create and push tag
+        run: |
+          tag_name="${{ needs.generate_release.outputs.new_version }}"
+          branch_name="${{ needs.generate_release.outputs.branch_name }}"
+          should_publish="${{ needs.generate_release.outputs.should_publish }}"
+          
+          echo "🏷️ Creating tag: $tag_name"
+          echo "🔀 For branch: $branch_name"
+          echo "📋 Will publish release: $should_publish"
+          
+          # Create annotated tag
+          if [[ "$branch_name" == "main" ]]; then
+            git tag -a "$tag_name" -m "Release $tag_name from main branch"
+          else
+            git tag -a "$tag_name" -m "Development tag $tag_name from $branch_name branch (no release)"
+          fi
+          
+          # Push the tag
+          git push origin "$tag_name"
+          echo "✅ Tag $tag_name created and pushed successfully"
+  
+  upload_artifacts:
+    runs-on: ubuntu-latest
+    needs: [generate_release, create_tag]
     if: needs.generate_release.outputs.should_release == 'true'
     steps:
       - name: Update all Packages
@@ -288,13 +371,43 @@ jobs:
           overwrite: true
           if-no-files-found: warn
 
+      - name: Artifact Summary
+        run: |
+          branch_name="${{ needs.generate_release.outputs.branch_name }}"
+          version="${{ needs.generate_release.outputs.new_version }}"
+          should_publish="${{ needs.generate_release.outputs.should_publish }}"
+          
+          echo "📦 Artifacts Summary:"
+          echo "  - Version: $version"
+          echo "  - Branch: $branch_name"
+          echo "  - Tag created: ✅"
+          echo "  - Artifacts uploaded: ✅"
+          echo "  - GitHub release will be published: $should_publish"
+          
+          if [[ "$should_publish" == "false" ]]; then
+            echo ""
+            echo "ℹ️  This is a development build from a non-main branch."
+            echo "   Tag and artifacts are created for tracking, but no GitHub release is published."
+          fi
+
+  publish_release:
+    runs-on: ubuntu-latest
+    needs: [generate_release, create_tag, upload_artifacts]
+    if: needs.generate_release.outputs.should_publish == 'true'
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: artifacts-${{ needs.generate_release.outputs.new_version }}
+          path: ./artifacts
+
       - name: Create Git Tag and GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ needs.generate_release.outputs.new_version }}
           name: Release ${{ needs.generate_release.outputs.new_version }}
           body: |
-            🌟 **Branch-Based Release Strategy**
+            🌟 **Branch-Based Release Strategy with Overflow Logic**
             
             🔀 **Branch**: `${{ needs.generate_release.outputs.branch_name }}`
             🏷️ **Version**: `${{ needs.generate_release.outputs.new_version }}`
@@ -306,14 +419,20 @@ jobs:
             ## Release Strategy Applied
             
             ${{ needs.generate_release.outputs.release_type == 'main' && '🎯 **Main Branch**: Major version increment (major+1.0.0)' || '' }}
-            ${{ needs.generate_release.outputs.release_type == 'feature' && '✨ **Feature Branch**: Version format (major.commits.patch)' || '' }}
-            ${{ needs.generate_release.outputs.release_type == 'fix' && '🔧 **Fix Branch**: Version format (major.minor.commits)' || '' }}
+            ${{ needs.generate_release.outputs.release_type == 'feature' && '✨ **Feature Branch**: Patch increment with overflow logic (patch += commits, overflow at 99 → minor+1)' || '' }}
+            ${{ needs.generate_release.outputs.release_type == 'fix' && '🔧 **Fix Branch**: Minor increment with overflow logic (minor += commits, overflow at 99 → major+1)' || '' }}
+            
+            ## Overflow Logic
+            
+            - **Feature branches**: If `patch + commits > 99` → `patch = 0, minor += 1`
+            - **Fix branches**: If `minor + commits > 99` → `minor = 0, major += 1`
+            - **Cascading overflow**: If minor overflows during patch overflow → `minor = 0, major += 1`
             
             ## Artifacts
             - 📄 Bicep templates compiled to ARM templates
             - 🏗️ Infrastructure deployment files
             - 📋 Release metadata and documentation
           files: ./artifacts/*
-          draft: ${{ github.event_name == 'pull_request' }}
-          prerelease: ${{ needs.generate_release.outputs.release_type != 'main' || github.event_name == 'pull_request' }}
-          make_latest: ${{ needs.generate_release.outputs.release_type == 'main' && github.event_name != 'pull_request' }}
+          draft: false
+          prerelease: false
+          make_latest: true
