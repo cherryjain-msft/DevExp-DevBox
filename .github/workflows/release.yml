@@ -232,11 +232,6 @@ jobs:
         with:
           ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
 
-      - name: Setup Azure CLI
-        uses: azure/setup-azure@v1
-        with:
-          enable-AzPSSession: false
-
       - name: Build Accelerator Bicep
         run: |
           echo "✅ Building Bicep templates..."
