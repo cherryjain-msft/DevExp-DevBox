@@ -6,8 +6,6 @@ on:
       - main
       - 'feature/**'
       - 'fix/**'
-    # Removed paths-ignore to ensure the workflow triggers
-    # If you need to ignore specific paths, add them back selectively
   workflow_dispatch:
     inputs:
       release_type:
