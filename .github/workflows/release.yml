@@ -1,0 +1,77 @@
+name: Semantic Release (Fixed Strategy)
+
+on:
+  workflow_dispatch:
+    
+permissions:
+  contents: write
+
+jobs:
+  release-version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Git identity
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+      - name: Read release type
+        id: read_release_type
+        run: |
+          type=$(cat RELEASE_TYPE | tr -d '[:space:]')
+          echo "release_type=$type" >> $GITHUB_OUTPUT
+
+      - name: Get latest tag
+        id: get_tag
+        run: |
+          tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          echo "tag=$tag" >> $GITHUB_OUTPUT
+
+      - name: Calculate next version
+        id: next_version
+        run: |
+          version=${{ steps.get_tag.outputs.tag }}
+          version=${version#v}
+          IFS='.' read -r major minor patch <<< "$version"
+
+          case "${{ steps.read_release_type.outputs.release_type }}" in
+            major)
+              major=$((major + 1)); minor=0; patch=0;;
+            minor)
+              minor=$((minor + 1)); patch=0;;
+            patch)
+              patch=$((patch + 1));;
+            *)
+              echo "❌ Invalid release type"; exit 1;;
+          esac
+
+          new_version="v$major.$minor.$patch"
+          echo "✅ Next version: $new_version"
+          echo "new_version=$new_version" >> $GITHUB_OUTPUT
+
+      - name: Build Accelerator Bicep
+        run: |
+          az bicep build --file ./infra/main.bicep --outdir ./artifacts
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts
+          path: ./artifacts
+          compression-level: true
+          overwrite: true
+          if-no-files-found: ignore
+          
+
+      - name: Create Git Tag and GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.next_version.outputs.new_version }}
+          name: Release ${{ steps.next_version.outputs.new_version }}
+          body: |
+            🛠️ Release type: ${{ steps.read_release_type.outputs.release_type }}
+            📦 Based on commit: ${{ github.sha }}
