@@ -79,6 +79,7 @@ jobs:
       - name: Build Accelerator Bicep
         run: |
           echo "✅ Building Bicep templates..."
+          mkdir -p ./artifacts
           az bicep build --file ./infra/main.bicep --outdir ./artifacts
           echo "✅ Bicep build completed"
 
