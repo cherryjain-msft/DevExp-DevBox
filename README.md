@@ -57,3 +57,9 @@ When implementing a scalable Microsoft Dev Box landing zone, consider the follow
 > - **Brownfield**: Import existing landing zone services by disabling and parameterizing connections (e.g., pointing to an existing VNet, Subnet, Resource Group or Key Vault).
 
 **Learn more** how to configure the Accelerator in the [Accelerator Configuration](https://evilazaro.github.io/DevExp-DevBox/docs/configureresources/) session.
+
+## Release Strategy
+
+## Overview
+
+The Dev Box landing zone accelerator uses a **branch-based semantic release strategy** with intelligent overflow handling and conditional versioning rules. This approach ensures consistent, predictable releases while maintaining development flexibility across different branch types. [Learn more...](RELEASE_STRATEGY.md)
