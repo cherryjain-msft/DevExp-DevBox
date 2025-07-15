@@ -227,6 +227,11 @@ jobs:
     needs: generate_release
     if: needs.generate_release.outputs.should_release == 'true'
     steps:
+      - name: Update all Packages
+        run: |
+          sudo apt-get update && \
+          sudo apt-get upgrade -y
+          
       - name: Checkout code
         uses: actions/checkout@v4
         with:

@@ -34,8 +34,10 @@ jobs:
       AZURE_LOCATION: ${{ github.event_name == 'workflow_dispatch' && inputs.AZURE_LOCATION || vars.AZURE_LOCATION }}
     
     steps:
-      - name: Update Packages
-        run: sudo apt-get update && sudo apt-get upgrade -y
+      - name: Update all Packages
+        run: |
+          sudo apt-get update && \
+          sudo apt-get upgrade -y
       
       - name: Checkout
         uses: actions/checkout@v4
