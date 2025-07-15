@@ -13,8 +13,8 @@ on:
   push:
     branches:
       - main
-      - 'feature/**'
-      - 'fix/**'
+      - feature/**
+      - fix/**
     paths-ignore:
       - '**.md'
       - '.github/**'
@@ -176,11 +176,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Setup Azure CLI
-        uses: azure/setup-azure@v1
-        with:
-          enable-AzPSSession: false
 
       - name: Build Accelerator Bicep
         run: |
