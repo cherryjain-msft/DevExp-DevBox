@@ -1,15 +1,6 @@
 name: Branch-Based Semantic Release
 
 on:
-  workflow_dispatch:
-    inputs:
-      release_type:
-        description: 'Release type (only for main branch)'
-        required: false
-        default: 'major'
-        type: choice
-        options:
-          - major
   push:
     branches:
       - main
@@ -19,6 +10,15 @@ on:
       - '**.md'
       - '.github/**'
       - 'docs/**'
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Release type (only for main branch)'
+        required: false
+        default: 'major'
+        type: choice
+        options:
+          - major
     
 permissions:
   contents: write
