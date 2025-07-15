@@ -1,4 +1,4 @@
-name: Branch-Based Semantic Release
+name: Release
 
 on:
   push:
