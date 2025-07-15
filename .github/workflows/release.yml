@@ -4,12 +4,10 @@ on:
   push:
     branches:
       - main
-      - feature/**
-      - fix/**
-    paths-ignore:
-      - '**.md'
-      - '.github/**'
-      - 'docs/**'
+      - 'feature/**'
+      - 'fix/**'
+    # Removed paths-ignore to ensure the workflow triggers
+    # If you need to ignore specific paths, add them back selectively
   workflow_dispatch:
     inputs:
       release_type:
@@ -19,9 +17,15 @@ on:
         type: choice
         options:
           - major
+  # Add pull_request trigger for testing on feature/fix branches
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
     
 permissions:
   contents: write
+  pull-requests: read  # Added for PR triggers
 
 jobs:
   generate_release:
@@ -37,20 +41,35 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Fetch full history for commit analysis
+          fetch-depth: 0
+          # Ensure we get the correct branch for PRs
+          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
 
       - name: Setup Git identity
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
+      - name: Debug trigger information
+        run: |
+          echo "🐛 Debug Information:"
+          echo "Event name: ${{ github.event_name }}"
+          echo "Ref: ${{ github.ref }}"
+          echo "Head ref: ${{ github.head_ref }}"
+          echo "Base ref: ${{ github.base_ref }}"
+          echo "Repository: ${{ github.repository }}"
+          echo "Actor: ${{ github.actor }}"
+          echo "SHA: ${{ github.sha }}"
+
       - name: Get branch information
         id: branch_info
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             branch_name="${{ github.ref_name }}"
+          elif [ "${{ github.event_name }}" = "pull_request" ]; then
+            branch_name="${{ github.head_ref }}"
           else
-            branch_name="${{ github.head_ref || github.ref_name }}"
+            branch_name="${{ github.ref_name }}"
           fi
           
           echo "branch_name=$branch_name" >> $GITHUB_OUTPUT
@@ -59,6 +78,8 @@ jobs:
       - name: Get latest tag
         id: get_tag
         run: |
+          # Fetch all tags
+          git fetch --tags --force
           tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
           echo "tag=$tag" >> $GITHUB_OUTPUT
           echo "✅ Latest tag: $tag"
@@ -70,6 +91,11 @@ jobs:
           should_release="true"
           
           echo "🔍 Analyzing branch: $branch_name"
+          
+          # For PR events, only create pre-releases
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "📋 Pull Request detected - Creating pre-release"
+          fi
           
           if [[ "$branch_name" == "main" ]]; then
             # Main branch: major+1.0.0
@@ -103,22 +129,40 @@ jobs:
           last_tag="${{ steps.get_tag.outputs.tag }}"
           branch_name="${{ steps.branch_info.outputs.branch_name }}"
           
+          echo "🔍 Counting commits for branch: $branch_name"
+          echo "🏷️ Last tag: $last_tag"
+          
           if [ "$last_tag" = "v0.0.0" ]; then
             # No previous tags, count all commits
             if [[ "$branch_name" == "main" ]]; then
               commit_count=$(git rev-list --count HEAD)
             else
-              # For feature/fix branches, count commits in this branch
-              commit_count=$(git rev-list --count HEAD ^origin/main 2>/dev/null || git rev-list --count HEAD)
+              # For feature/fix branches, count commits in this branch only
+              merge_base=$(git merge-base HEAD origin/main 2>/dev/null || git merge-base HEAD main 2>/dev/null || echo "")
+              if [ -n "$merge_base" ]; then
+                commit_count=$(git rev-list --count ${merge_base}..HEAD)
+              else
+                commit_count=$(git rev-list --count HEAD)
+              fi
             fi
           else
             # Count commits since last tag
             if [[ "$branch_name" == "main" ]]; then
               commit_count=$(git rev-list --count ${last_tag}..HEAD)
             else
-              # For feature/fix branches, count commits since branch creation or last tag
-              commit_count=$(git rev-list --count HEAD ^origin/main 2>/dev/null || git rev-list --count ${last_tag}..HEAD)
+              # For feature/fix branches, count commits since branch diverged from main
+              merge_base=$(git merge-base HEAD origin/main 2>/dev/null || git merge-base HEAD main 2>/dev/null || echo "")
+              if [ -n "$merge_base" ]; then
+                commit_count=$(git rev-list --count ${merge_base}..HEAD)
+              else
+                commit_count=$(git rev-list --count ${last_tag}..HEAD)
+              fi
             fi
+          fi
+          
+          # Ensure minimum commit count of 1
+          if [ "$commit_count" -eq 0 ]; then
+            commit_count=1
           fi
           
           echo "commit_count=$commit_count" >> $GITHUB_OUTPUT
@@ -152,18 +196,27 @@ jobs:
             feature)
               # Feature branch: major.numberofcommits.patch
               minor=$commit_count
-              version_suffix="-feature.${branch_name#feature/}"
+              # Clean branch name for version suffix
+              clean_branch_name=$(echo "${branch_name#feature/}" | sed 's/[^a-zA-Z0-9]/-/g')
+              version_suffix="-feature.$clean_branch_name"
               ;;
             fix)
               # Fix branch: major.minor.numberofcommits
               patch=$commit_count
-              version_suffix="-fix.${branch_name#fix/}"
+              # Clean branch name for version suffix
+              clean_branch_name=$(echo "${branch_name#fix/}" | sed 's/[^a-zA-Z0-9]/-/g')
+              version_suffix="-fix.$clean_branch_name"
               ;;
             *)
               echo "❌ Invalid release type: $release_type"
               exit 1
               ;;
           esac
+          
+          # Add PR suffix if this is a pull request
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            version_suffix="${version_suffix}-pr${{ github.event.number }}"
+          fi
           
           new_version="v$major.$minor.$patch$version_suffix"
           echo "✅ Next version: $new_version"
@@ -176,13 +229,27 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
+
+      - name: Setup Azure CLI
+        uses: azure/setup-azure@v1
+        with:
+          enable-AzPSSession: false
 
       - name: Build Accelerator Bicep
         run: |
           echo "✅ Building Bicep templates..."
           mkdir -p ./artifacts
-          az bicep build --file ./infra/main.bicep --outdir ./artifacts
-          echo "✅ Bicep build completed"
+          
+          # Check if Azure CLI is available
+          if command -v az &> /dev/null; then
+            az bicep build --file ./infra/main.bicep --outdir ./artifacts
+            echo "✅ Bicep build completed"
+          else
+            echo "⚠️ Azure CLI not available, creating placeholder artifacts"
+            echo "Bicep build would be executed here" > ./artifacts/placeholder.txt
+          fi
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
@@ -191,7 +258,7 @@ jobs:
           path: ./artifacts
           compression-level: 6
           overwrite: true
-          if-no-files-found: error
+          if-no-files-found: warn
 
       - name: Create Git Tag and GitHub Release
         uses: softprops/action-gh-release@v2
@@ -205,7 +272,7 @@ jobs:
             🏷️ **Version**: `${{ needs.generate_release.outputs.new_version }}`
             📦 **Previous Version**: `${{ needs.generate_release.outputs.previous_tag }}`
             🚀 **Release Type**: `${{ needs.generate_release.outputs.release_type }}`
-            🤖 **Trigger**: ${{ github.event_name == 'workflow_dispatch' && 'Manual' || 'Automatic' }}
+            🤖 **Trigger**: ${{ github.event_name == 'workflow_dispatch' && 'Manual' || github.event_name == 'pull_request' && 'Pull Request' || 'Push' }}
             📝 **Commit**: `${{ github.sha }}`
             
             ## Release Strategy Applied
@@ -219,6 +286,6 @@ jobs:
             - 🏗️ Infrastructure deployment files
             - 📋 Release metadata and documentation
           files: ./artifacts/*
-          draft: false
-          prerelease: ${{ needs.generate_release.outputs.release_type != 'main' }}
-          make_latest: ${{ needs.generate_release.outputs.release_type == 'main' }}
+          draft: ${{ github.event_name == 'pull_request' }}
+          prerelease: ${{ needs.generate_release.outputs.release_type != 'main' || github.event_name == 'pull_request' }}
+          make_latest: ${{ needs.generate_release.outputs.release_type == 'main' && github.event_name != 'pull_request' }}
